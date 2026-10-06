@@ -28,17 +28,24 @@ class CostReservation:
     id: str
     model: str
     estimate_thb: float
+    price: dict | None = None
 
 
 def prices() -> dict[str, dict[str, float]]:
-    if not settings.MODEL_PRICES_THB.strip():
+    """Optional MODEL_PRICES_THB override table. Quotes pasted around the JSON are tolerated."""
+    raw = settings.MODEL_PRICES_THB.strip().strip("'").strip()
+    if raw.startswith('"') and raw.endswith('"'):
+        raw = raw[1:-1].replace('\\"', '"')
+    if not raw:
         return {}
     try:
-        data = json.loads(settings.MODEL_PRICES_THB)
+        data = json.loads(raw)
         return {str(k): {"input_per_mtok": float(v["input_per_mtok"]), "output_per_mtok": float(v["output_per_mtok"])}
                 for k, v in data.items()}
     except (ValueError, KeyError, TypeError, AttributeError):
-        raise ConversationError("price_table_invalid", "The model price table is invalid. Fix MODEL_PRICES_THB.", 503) from None
+        raise ConversationError("price_table_invalid",
+            'MODEL_PRICES_THB is not valid JSON. Remove it (prices then come from /staff → AI providers) or use '
+            '{"model": {"input_per_mtok": 10, "output_per_mtok": 10}}.', 503) from None
 
 
 def prior_spend() -> float:
@@ -80,11 +87,12 @@ def _count_tokens(body: dict) -> int:
     return text_chars // 3 + 1 + images * settings.COST_IMAGE_TOKEN_ESTIMATE
 
 
-def estimate(model: str, body: dict) -> float:
-    table = prices()
-    if model not in table:
-        raise ConversationError("price_unknown", f"No price is configured for this model. Add it to MODEL_PRICES_THB before use.", 503)
-    price = table[model]
+def estimate(model: str, body: dict, price: dict | None = None) -> float:
+    if price is None:
+        table = prices()
+        if model not in table:
+            raise ConversationError("price_unknown", "No price is set for this model. Set it on /staff → AI providers.", 503)
+        price = table[model]
     output = int(body.get("max_tokens") or 512)
     return round((_count_tokens(body) * price["input_per_mtok"] + output * price["output_per_mtok"]) / 1_000_000, 6)
 
@@ -111,16 +119,24 @@ def status() -> dict:
         "available": True, "scope": "project_total", "cap_thb": cap, "prior_spend_thb": prior,
         "settled_thb": round(data["settled_thb"], 4), "reserved_thb": round(data["reserved_thb"], 4), "calls": data["calls"],
         "remaining_thb": None if prior is None else round(max(0.0, cap - prior - used), 4),
-        "priced_models": sorted(prices().keys()) if settings.MODEL_PRICES_THB.strip() else [],
+        "priced_models": _priced_models(),
         "enabled": settings.COST_LEDGER_ENABLED,
     }
 
 
-def reserve(model: str, body: dict) -> CostReservation | None:
+def _priced_models() -> list[str]:
+    try:
+        from services.providers import SLOTS, runtime
+        return sorted({runtime(slot).model for slot in SLOTS if runtime(slot).model})
+    except Exception:
+        return []
+
+
+def reserve(model: str, body: dict, price: dict | None = None) -> CostReservation | None:
     if not settings.COST_LEDGER_ENABLED:
         return None
     from services import business_store as db
-    cost = estimate(model, body)
+    cost = estimate(model, body, price)
     prior = prior_spend()
     with db.transaction() as tx:
         data = _ledger(tx)
@@ -132,7 +148,7 @@ def reserve(model: str, body: dict) -> CostReservation | None:
         tx.put(LEDGER_ID, "cost_ledger", "system", data, "active")
         rid = "cost_" + secrets.token_hex(10)
         tx.put(rid, "cost_entry", "system", {"model": model, "estimate_thb": cost, "at": time.time()}, "reserved")
-    return CostReservation(rid, model, cost)
+    return CostReservation(rid, model, cost, price)
 
 
 def settle(reservation: CostReservation | None, usage: dict | None, outcome: str) -> None:
@@ -142,7 +158,7 @@ def settle(reservation: CostReservation | None, usage: dict | None, outcome: str
     actual = reservation.estimate_thb
     if outcome == "succeeded" and isinstance(usage, dict):
         try:
-            price = prices()[reservation.model]
+            price = reservation.price or prices()[reservation.model]
             prompt = int(usage.get("prompt_tokens", usage.get("input_tokens")))
             completion = int(usage.get("completion_tokens", usage.get("output_tokens")))
             actual = round((prompt * price["input_per_mtok"] + completion * price["output_per_mtok"]) / 1_000_000, 6)

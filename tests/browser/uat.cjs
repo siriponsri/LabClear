@@ -191,6 +191,18 @@ async function signUp(page, email) {
       await s.getByRole('button', { name: 'Run worker once' }).click(); await s.locator('#notice').waitFor();
       await s.getByText(/line_job/).first().waitFor(); await shot(s, 'channels-1440', true);
     });
+    await check('UI-28', 'Manager: AI providers page saves a provider, masks the key, never returns it', async () => {
+      await s.locator('[data-view=ai]').click(); await s.getByRole('heading', { name: 'Language model' }).waitFor();
+      assert(await s.locator('#content section.card').count() === 3, 'three AI slots expected');
+      const card = s.locator('#content section.card').filter({ has: s.getByRole('heading', { name: 'Language model' }) });
+      await card.getByLabel('Provider').selectOption('anthropic'); await card.getByLabel('API key').fill('sk-ant-uat-0123456789wxyz');
+      await card.getByRole('button', { name: 'Save' }).click(); await s.locator('#notice').filter({ hasText: 'saved' }).waitFor();
+      const again = s.locator('#content section.card').filter({ has: s.getByRole('heading', { name: 'Language model' }) });
+      await again.getByText('Saved key: •••• wxyz').waitFor(); assert(await again.getByLabel('Provider').inputValue() === 'anthropic', 'provider not kept');
+      const body = await (await s.request.get(base + '/api/business/staff/ai-providers')).text(); assert(!body.includes('0123456789wxyz'), 'key returned to browser');
+      await shot(s, 'ai-providers-1440', true);
+      await again.getByRole('button', { name: 'Use server settings' }).click(); await s.locator('#notice').filter({ hasText: 'server environment' }).waitFor();
+    });
     await check('UI-23', 'Staff dashboard: numbers from records, capacity table, centers edit, roles pause/resume, audit log', async () => {
       await s.locator('[data-view=overview]').click(); await s.locator('.kpi-value').first().waitFor();
       const d = await (await s.request.get(base + '/api/business/staff/dashboard')).json();

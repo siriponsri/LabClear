@@ -153,6 +153,8 @@ def label(cx, cy, text, color, size=11):
 def eyebrow(x, y, text, color, size=9, ls=0.14, anchor="start"):
     """Tracked mono eyebrow; any Thai segment after ' · ' is set untracked in Noto Sans Thai."""
     latin, _, thai = text.partition(" · ")
+    if not is_thai(thai):
+        latin, thai = text, ""
     w = tw(latin + " · ", MONO, size, 500, ls) + (tw(thai, THAI, size + 1, 500, 0) if thai else 0)
     spans = f'<tspan font-family="{MONO}" letter-spacing="{ls}em">{escape(latin)}{" · " if thai else ""}</tspan>'
     if thai:
@@ -191,7 +193,7 @@ def legend(y, x0, x1, items):
     """items: ('box', kind, text) | ('line', color, dashed, marker, width, text)"""
     out = [
         f'\n  <line x1="{x0}" y1="{y}" x2="{x1}" y2="{y}" stroke="rgba({INK_RGB},0.12)" stroke-width="0.8"/>',
-        "\n  " + eyebrow(x0, y + 20, "LEGEND · คำอธิบายสัญลักษณ์", MUTED, ls=0.18)[0],
+        "\n  " + eyebrow(x0, y + 20, "LEGEND", MUTED, ls=0.18)[0],
     ]
     x = x0
     row_y = y + 44
@@ -259,9 +261,9 @@ def architecture():
 
     parts = [defs()]
     # zones (bg -> zones -> arrows -> labels -> nodes)
-    parts.append(zone(16, r1 - 32, 768, NH + 48, "USERS · ผู้ใช้งาน", 400))
-    parts.append(zone(16, r2 - 32, 768, (r3 + NH) - r2 + 48, "RENDER WEB SERVICE · แอปพลิเคชัน", 400))
-    parts.append(zone(16, r4 - 32, 768, NH + 48, "DATA & MODELS · ข้อมูลและโมเดล", 530))
+    parts.append(zone(16, r1 - 32, 768, NH + 48, "USERS", 400))
+    parts.append(zone(16, r2 - 32, 768, (r3 + NH) - r2 + 48, "WEB SERVICE · RENDER OR VERCEL", 400))
+    parts.append(zone(16, r4 - 32, 768, NH + 48, "DATA & MODELS", 530))
 
     ln = lambda x1, y1, x2, y2, c, m, sw=1.2: (
         f'\n  <line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" stroke="{c}" stroke-width="{sw}" marker-end="url(#{m})"/>'
@@ -296,34 +298,34 @@ def architecture():
         (cx[0], mid23, "POST /CHAT", ACCENT),
         (cx[1], mid23, "/REPORTS/READ", MUTED),
         (cx[2], mid23, "/BOOKINGS · /PAY", MUTED),
-        (cx[0], mid34, "ค้นข้อมูล", MUTED),
-        (gx, mid34, "5 CALLS/ข้อความ", MUTED),
+        (cx[0], mid34, "SEARCH", MUTED),
+        (gx, mid34, "5 CALLS/MSG", MUTED),
         (cx[1], mid34, "OCR · LLM", MUTED),
         (cx[2], mid34, "SQL", MUTED),
     ]:
         parts.append(label(x, y, t, c)[0])
 
     # nodes
-    parts.append(node(C[0], r1, CW, NH, "input", "WEB", "ลูกค้า", "หน้าเว็บ · แชท · อ่านผลแลป"))
-    parts.append(node(C[2], r1, CW, NH, "input", "STAFF", "เจ้าหน้าที่ร้าน", "/staff · ยืนยันคิว · ดูงบ"))
+    parts.append(node(C[0], r1, CW, NH, "input", "WEB", "Customers", "website · chat · reports"))
+    parts.append(node(C[2], r1, CW, NH, "input", "STAFF", "Clinic staff", "/staff · bookings · AI keys"))
     parts.append(node(C[0], r2, C[2] + CW - C[0], NH, "backend", "API", "FastAPI · Business API",
                       "/api/business/* · session · CSRF · rate limit · access code"))
     parts.append(node(C[0], r3, CW, NH, "focal", "CORE", "Chatbot pipeline", "guard·plan·answer·review"))
-    parts.append(node(C[1], r3, CW, NH, "backend", "OCR", "อ่านใบผลแลป", "OCR → ค่า → สถานะ"))
-    parts.append(node(C[2], r3, CW, NH, "backend", "BIZ", "จองคิว · ชำระเงิน", "แพ็กเกจ · Plus · staff"))
-    parts.append(node(C[0], r4, CW, NH, "store", "RAG", "คลังความรู้", "BM25 · 58 แหล่ง · catalog"))
-    parts.append(node(C[1], r4, CW, NH, "external", "API", "Typhoon · OpenRouter", "LLM · OCR · Llama Guard 4"))
-    parts.append(node(C[2], r4, CW, NH, "store", "DB", "PostgreSQL", "เข้ารหัส · ledger 300 บาท"))
+    parts.append(node(C[1], r3, CW, NH, "backend", "OCR", "Report reader", "OCR → values → status"))
+    parts.append(node(C[2], r3, CW, NH, "backend", "BIZ", "Booking · Payments", "packages · Plus · staff"))
+    parts.append(node(C[0], r4, CW, NH, "store", "RAG", "Knowledge base", "BM25 · 58 sources · catalog"))
+    parts.append(node(C[1], r4, CW, NH, "external", "API", "AI providers", "LLM · OCR · SystemOne guard"))
+    parts.append(node(C[2], r4, CW, NH, "store", "DB", "PostgreSQL", "encrypted · keys · THB cap"))
 
     leg, last_y = legend(r4 + NH + 48, 16, 784, [
-        ("box", "focal", "จุดหลัก"),
-        ("box", "backend", "โมดูลในแอป"),
-        ("box", "store", "ที่เก็บข้อมูล"),
-        ("box", "external", "บริการภายนอก"),
-        ("box", "input", "ผู้ใช้"),
-        ("line", LINK, False, "rs-arrow-link", 1.2, "คำขอ HTTPS"),
-        ("line", ACCENT, False, "rs-arrow-accent", 1.6, "เส้นทางแชท"),
-        ("line", MUTED, False, "rs-arrow", 1.2, "เรียกใช้ภายใน"),
+        ("box", "focal", "Core"),
+        ("box", "backend", "Module"),
+        ("box", "store", "Data store"),
+        ("box", "external", "External"),
+        ("box", "input", "User"),
+        ("line", LINK, False, "rs-arrow-link", 1.2, "HTTPS request"),
+        ("line", ACCENT, False, "rs-arrow-accent", 1.6, "Chat path"),
+        ("line", MUTED, False, "rs-arrow", 1.2, "Internal call"),
     ])
     parts.append(leg)
     H = snap(last_y + 20)
@@ -331,13 +333,11 @@ def architecture():
     svg = (
         f'<svg viewBox="0 0 {W} {H}" xmlns="http://www.w3.org/2000/svg" role="img" '
         f'aria-labelledby="rs-arch-title rs-arch-desc">\n'
-        f'  <title id="rs-arch-title">สถาปัตยกรรมระบบ LabClear</title>\n'
-        f'  <desc id="rs-arch-desc">ลูกค้าและเจ้าหน้าที่เรียก FastAPI Business API ผ่าน HTTPS บน Render. API ส่งต่อไปยัง '
-        f'Chatbot pipeline (จุดหลัก), โมดูลอ่านใบผลแลป และโมดูลจองคิว/ชำระเงิน. Pipeline ค้นคลังความรู้ BM25 และเรียก '
-        f'Typhoon/OpenRouter 5 ครั้งต่อข้อความ; โมดูลอ่านผลใช้ OCR; โมดูลจองบันทึกลง PostgreSQL.</desc>'
+        f'  <title id="rs-arch-title">LabClear architecture</title>\n'
+        f'  <desc id="rs-arch-desc">Customers and clinic staff call the FastAPI business API over HTTPS. The API routes to the chatbot pipeline (core), the report reader and booking/payments. The pipeline searches the BM25 knowledge base and makes five AI calls per message; the reader uses OCR; bookings, settings and the spending cap are stored in PostgreSQL.</desc>'
         + "".join(parts) + "\n</svg>"
     )
-    return page("สถาปัตยกรรมระบบ LabClear", "Architecture · LabClear", svg, W), (W, H)
+    return page("LabClear architecture", "Architecture · LabClear", svg, W), (W, H)
 
 
 # ---------------------------------------------------------------- sequence
@@ -367,14 +367,14 @@ def sequence():
     for x in LX:
         parts.append(f'\n  <line x1="{x}" y1="{top}" x2="{x}" y2="{life_b}" stroke="rgba({INK_RGB},0.20)" stroke-width="1" stroke-dasharray="3,3"/>')
 
-    # ALT frame (spans ลูกค้า + API only)
+    # ALT frame (spans the customer and the API only)
     fx, fw = 32, 300
     parts.append(f'\n  <rect x="{fx}" y="{frame_y}" width="{fw}" height="{frame_b - frame_y}" rx="4" fill="rgba({INK_RGB},0.02)" stroke="rgba({INK_RGB},0.22)" stroke-width="1"/>')
     parts.append(f'\n  <rect x="{fx}" y="{frame_y}" width="40" height="{tab_h}" rx="2" fill="{PAPER}" stroke="rgba({INK_RGB},0.22)" stroke-width="1"/>')
     parts.append(f'\n  <text x="{fx+20}" y="{frame_y+12}" fill="{MUTED}" font-size="9" font-weight="500" font-family="{MONO}" text-anchor="middle" letter-spacing="0.12em">ALT</text>')
-    parts.append(f'\n  <text x="{fx+12}" y="{g1}" fill="{MUTED}" font-size="11" font-family="{THAI}">[ผ่านทุกด่าน]</text>')
+    parts.append(f'\n  <text x="{fx+12}" y="{g1}" fill="{MUTED}" font-size="11" font-family="{THAI}">[all checks pass]</text>')
     parts.append(f'\n  <line x1="{fx+8}" y1="{div}" x2="{fx+fw-8}" y2="{div}" stroke="rgba({INK_RGB},0.20)" stroke-width="1" stroke-dasharray="4,3"/>')
-    parts.append(f'\n  <text x="{fx+12}" y="{g2}" fill="{MUTED}" font-size="11" font-family="{THAI}">[ไม่ผ่าน guard / AI ขัดข้อง / งบหมด]</text>')
+    parts.append(f'\n  <text x="{fx+12}" y="{g2}" fill="{MUTED}" font-size="11" font-family="{THAI}">[blocked / AI error / budget used]</text>')
 
     # activation bars
     def bar(x, y0, y1):
@@ -415,51 +415,48 @@ def sequence():
 
     mid = lambda a, b: (LX[a] + LX[b]) / 2
     parts.append(above(mid(0, 1), msgs_y["m1"], "POST /chat", LINK))
-    parts.append(above(mid(1, 2), msgs_y["m2"], "นับ call · ตรวจงบ", MUTED))
-    parts.append(above(mid(1, 2), msgs_y["m3"], "1/5 guard ข้อความเข้า", MUTED))
-    parts.append(above(mid(1, 2), msgs_y["m4"], "2/5 วางแผน (planner)", MUTED))
-    sl1, w1 = label(0, 0, "ค้น BM25 + catalog", MUTED)
-    parts.append(label(LX[1] + 48 + w1 / 2, msgs_y["m5"] + 16, "ค้น BM25 + catalog", MUTED)[0])
-    parts.append(above(mid(1, 2), msgs_y["m6"], "3/5 ร่างคำตอบภาษาไทย", MUTED))
-    sl2, w2 = label(0, 0, "ตรวจราคา/นโยบาย", MUTED)
-    parts.append(label(LX[1] + 48 + w2 / 2, msgs_y["m7"] + 16, "ตรวจราคา/นโยบาย", MUTED)[0])
-    parts.append(above(mid(1, 2), msgs_y["m8"], "4/5 ตรวจทาน (reviewer)", MUTED))
-    parts.append(above(mid(1, 2), msgs_y["m9"], "5/5 guard คำตอบออก", MUTED))
-    parts.append(above(mid(1, 2), msgs_y["m10"], "บันทึกแชท · ledger", MUTED))
-    parts.append(above(mid(0, 1), m11, "คำตอบ + แหล่งอ้างอิง", ACCENT))
-    parts.append(above(mid(0, 1), m12, "failed · ปุ่ม Retry", MUTED))
+    parts.append(above(mid(1, 2), msgs_y["m2"], "count + budget", MUTED))
+    parts.append(above(mid(1, 2), msgs_y["m3"], "1/5 screen message", MUTED))
+    parts.append(above(mid(1, 2), msgs_y["m4"], "2/5 plan", MUTED))
+    sl1, w1 = label(0, 0, "BM25 + catalog", MUTED)
+    parts.append(label(LX[1] + 48 + w1 / 2, msgs_y["m5"] + 16, "BM25 + catalog", MUTED)[0])
+    parts.append(above(mid(1, 2), msgs_y["m6"], "3/5 draft answer", MUTED))
+    sl2, w2 = label(0, 0, "check prices", MUTED)
+    parts.append(label(LX[1] + 48 + w2 / 2, msgs_y["m7"] + 16, "check prices", MUTED)[0])
+    parts.append(above(mid(1, 2), msgs_y["m8"], "4/5 review", MUTED))
+    parts.append(above(mid(1, 2), msgs_y["m9"], "5/5 screen answer", MUTED))
+    parts.append(above(mid(1, 2), msgs_y["m10"], "save chat · ledger", MUTED))
+    parts.append(above(mid(0, 1), m11, "answer + sources", ACCENT))
+    parts.append(above(mid(0, 1), m12, "failed · Retry", MUTED))
 
     # actors
     actors = [
-        ("input", "WEB", "ลูกค้า", "เบราว์เซอร์"),
+        ("input", "WEB", "Customer", "browser"),
         ("focal", "API", "Business API", "FastAPI"),
-        ("external", "LLM", "Typhoon", "typhoon-v2.5"),
-        ("external", "SAFE", "Llama Guard 4", "OpenRouter"),
-        ("store", "DB", "PostgreSQL", "งบ · ประวัติแชท"),
+        ("external", "LLM", "Language model", "Typhoon by default"),
+        ("external", "SAFE", "Safety check", "OpenThai-SystemOne"),
+        ("store", "DB", "PostgreSQL", "cap · ledger · chat"),
     ]
     for x, (k, tag, n, s) in zip(LX, actors):
         parts.append(node(x - AW / 2, AY, AW, AH, k, tag, n, s, name_size=15, sub_size=11))
 
     leg, last_y = legend(life_b + 24, 16, W - 16, [
-        ("line", LINK, False, "rs-arrow-link", 1.2, "คำขอจากเบราว์เซอร์"),
-        ("line", MUTED, False, "rs-arrow", 1.2, "เรียกแบบรอผล (sync)"),
-        ("line", ACCENT, False, "rs-arrow-accent", 1.6, "คำตอบหลัก"),
-        ("line", MUTED, True, "rs-arrow", 1.2, "เส้นทางผิดพลาด"),
-        ("box", "store", "แถบ = ช่วงที่ทำงาน"),
+        ("line", LINK, False, "rs-arrow-link", 1.2, "Browser request"),
+        ("line", MUTED, False, "rs-arrow", 1.2, "Synchronous call"),
+        ("line", ACCENT, False, "rs-arrow-accent", 1.6, "Answer"),
+        ("line", MUTED, True, "rs-arrow", 1.2, "Error path"),
+        ("box", "store", "Bar = busy"),
     ])
     parts.append(leg)
     H = snap(last_y + 20)
     svg = (
         f'<svg viewBox="0 0 {W} {H}" xmlns="http://www.w3.org/2000/svg" role="img" '
         f'aria-labelledby="rs-seq-title rs-seq-desc">\n'
-        f'  <title id="rs-seq-title">ลำดับการทำงานของ 1 ข้อความแชท</title>\n'
-        f'  <desc id="rs-seq-desc">ลูกค้าส่ง POST /chat ไปยัง Business API. API นับ call และตรวจงบใน PostgreSQL, ตรวจข้อความเข้า'
-        f'ด้วย Llama Guard 4, ให้ Typhoon วางแผน, ค้นคลังความรู้ BM25, ให้ Typhoon ร่างคำตอบ, ตรวจราคาและนโยบายด้วย Python, '
-        f'ให้ Typhoon ตรวจทาน, ตรวจคำตอบออกด้วย Llama Guard 4 แล้วบันทึกลง PostgreSQL. ถ้าผ่านทุกด่านจะส่งคำตอบพร้อมแหล่งอ้างอิง '
-        f'ถ้าไม่ผ่านจะแสดง failed และปุ่ม Retry.</desc>'
+        f'  <title id="rs-seq-title">How one chat message is processed</title>\n'
+        f'  <desc id="rs-seq-desc">The browser posts a message to the business API. The API counts the call and checks the budget in PostgreSQL, screens the message with the safety check, asks the language model to plan, searches the knowledge base, drafts an answer, checks prices and policies in Python, has the model review it, screens the answer and saves the chat. If every check passes the answer is shown with sources; otherwise the message is marked failed with a Retry button.</desc>'
         + "".join(parts) + "\n</svg>"
     )
-    return page("ลำดับการทำงานของ 1 ข้อความแชท", "Sequence · LabClear", svg, W), (W, H)
+    return page("How one chat message is processed", "Sequence · LabClear", svg, W), (W, H)
 
 
 def build():

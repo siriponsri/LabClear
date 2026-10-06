@@ -13,7 +13,7 @@ from services.conversation_transport import ConversationError
 ROOT=Path(__file__).resolve().parents[1]
 
 def cloud():
-    return bool(os.getenv('RENDER') or os.getenv('APP_ENV')=='production')
+    return bool(os.getenv('RENDER') or os.getenv('VERCEL') or os.getenv('APP_ENV')=='production')
 
 def cipher():
     key=os.getenv('BUSINESS_DATA_KEY','')

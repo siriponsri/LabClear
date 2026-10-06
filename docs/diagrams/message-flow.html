@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ลำดับการทำงานของ 1 ข้อความแชท</title>
+<title>How one chat message is processed</title>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Noto+Sans+Thai:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -17,10 +17,10 @@ svg{width:100%;display:block}
 <body>
 <div class="frame">
 <p class="eyebrow">Sequence · LabClear</p>
-<h1>ลำดับการทำงานของ 1 ข้อความแชท</h1>
+<h1>How one chat message is processed</h1>
 <svg viewBox="0 0 816 940" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="rs-seq-title rs-seq-desc">
-  <title id="rs-seq-title">ลำดับการทำงานของ 1 ข้อความแชท</title>
-  <desc id="rs-seq-desc">ลูกค้าส่ง POST /chat ไปยัง Business API. API นับ call และตรวจงบใน PostgreSQL, ตรวจข้อความเข้าด้วย Llama Guard 4, ให้ Typhoon วางแผน, ค้นคลังความรู้ BM25, ให้ Typhoon ร่างคำตอบ, ตรวจราคาและนโยบายด้วย Python, ให้ Typhoon ตรวจทาน, ตรวจคำตอบออกด้วย Llama Guard 4 แล้วบันทึกลง PostgreSQL. ถ้าผ่านทุกด่านจะส่งคำตอบพร้อมแหล่งอ้างอิง ถ้าไม่ผ่านจะแสดง failed และปุ่ม Retry.</desc>
+  <title id="rs-seq-title">How one chat message is processed</title>
+  <desc id="rs-seq-desc">The browser posts a message to the business API. The API counts the call and checks the budget in PostgreSQL, screens the message with the safety check, asks the language model to plan, searches the knowledge base, drafts an answer, checks prices and policies in Python, has the model review it, screens the answer and saves the chat. If every check passes the answer is shown with sources; otherwise the message is marked failed with a Retry button.</desc>
   <defs>
     <pattern id="rs-dots" width="22" height="22" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="0.9" fill="rgba(33,23,47,0.10)"/></pattern>
     <marker id="rs-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#61586f"/></marker>
@@ -37,9 +37,9 @@ svg{width:100%;display:block}
   <rect x="32" y="672" width="300" height="164" rx="4" fill="rgba(33,23,47,0.02)" stroke="rgba(33,23,47,0.22)" stroke-width="1"/>
   <rect x="32" y="672" width="40" height="16" rx="2" fill="#f8f8ff" stroke="rgba(33,23,47,0.22)" stroke-width="1"/>
   <text x="52" y="684" fill="#61586f" font-size="9" font-weight="500" font-family="'Geist Mono','Noto Sans Thai',monospace" text-anchor="middle" letter-spacing="0.12em">ALT</text>
-  <text x="44" y="704" fill="#61586f" font-size="11" font-family="'Noto Sans Thai','Geist',sans-serif">[ผ่านทุกด่าน]</text>
+  <text x="44" y="704" fill="#61586f" font-size="11" font-family="'Noto Sans Thai','Geist',sans-serif">[all checks pass]</text>
   <line x1="40" y1="760" x2="324" y2="760" stroke="rgba(33,23,47,0.20)" stroke-width="1" stroke-dasharray="4,3"/>
-  <text x="44" y="784" fill="#61586f" font-size="11" font-family="'Noto Sans Thai','Geist',sans-serif">[ไม่ผ่าน guard / AI ขัดข้อง / งบหมด]</text>
+  <text x="44" y="784" fill="#61586f" font-size="11" font-family="'Noto Sans Thai','Geist',sans-serif">[blocked / AI error / budget used]</text>
   <rect x="244" y="152" width="8" height="664" fill="rgba(33,23,47,0.06)" stroke="#61586f" stroke-width="0.8"/>
   <rect x="724" y="200" width="8" height="20" fill="rgba(33,23,47,0.06)" stroke="#61586f" stroke-width="0.8"/>
   <rect x="564" y="248" width="8" height="20" fill="rgba(33,23,47,0.06)" stroke="#61586f" stroke-width="0.8"/>
@@ -62,35 +62,35 @@ svg{width:100%;display:block}
   <line x1="244" y1="812" x2="88" y2="812" stroke="#61586f" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#rs-arrow)"/>
   <rect x="124.0" y="132" width="88" height="14" rx="2" fill="#f8f8ff"/>
   <text x="168.0" y="143" fill="#2e5aa8" font-size="11" font-weight="500" font-family="'Geist Mono','Noto Sans Thai',monospace" text-anchor="middle" letter-spacing="0.06em">POST /chat</text>
-  <rect x="282.0" y="180" width="92" height="14" rx="2" fill="#f8f8ff"/>
-  <text x="328.0" y="191" fill="#61586f" font-size="11" font-weight="500" font-family="'Noto Sans Thai','Geist',sans-serif" text-anchor="middle" letter-spacing="0em">นับ call · ตรวจงบ</text>
-  <rect x="268.0" y="228" width="120" height="14" rx="2" fill="#f8f8ff"/>
-  <text x="328.0" y="239" fill="#61586f" font-size="11" font-weight="500" font-family="'Noto Sans Thai','Geist',sans-serif" text-anchor="middle" letter-spacing="0em">1/5 guard ข้อความเข้า</text>
-  <rect x="268.0" y="276" width="120" height="14" rx="2" fill="#f8f8ff"/>
-  <text x="328.0" y="287" fill="#61586f" font-size="11" font-weight="500" font-family="'Noto Sans Thai','Geist',sans-serif" text-anchor="middle" letter-spacing="0em">2/5 วางแผน (planner)</text>
-  <rect x="296.0" y="353" width="112" height="14" rx="2" fill="#f8f8ff"/>
-  <text x="352.0" y="364" fill="#61586f" font-size="11" font-weight="500" font-family="'Noto Sans Thai','Geist',sans-serif" text-anchor="middle" letter-spacing="0em">ค้น BM25 + catalog</text>
-  <rect x="268.0" y="396" width="120" height="14" rx="2" fill="#f8f8ff"/>
-  <text x="328.0" y="407" fill="#61586f" font-size="11" font-weight="500" font-family="'Noto Sans Thai','Geist',sans-serif" text-anchor="middle" letter-spacing="0em">3/5 ร่างคำตอบภาษาไทย</text>
+  <rect x="270.0" y="180" width="116" height="14" rx="2" fill="#f8f8ff"/>
+  <text x="328.0" y="191" fill="#61586f" font-size="11" font-weight="500" font-family="'Geist Mono','Noto Sans Thai',monospace" text-anchor="middle" letter-spacing="0.06em">count + budget</text>
+  <rect x="256.0" y="228" width="144" height="14" rx="2" fill="#f8f8ff"/>
+  <text x="328.0" y="239" fill="#61586f" font-size="11" font-weight="500" font-family="'Geist Mono','Noto Sans Thai',monospace" text-anchor="middle" letter-spacing="0.06em">1/5 screen message</text>
+  <rect x="292.0" y="276" width="72" height="14" rx="2" fill="#f8f8ff"/>
+  <text x="328.0" y="287" fill="#61586f" font-size="11" font-weight="500" font-family="'Geist Mono','Noto Sans Thai',monospace" text-anchor="middle" letter-spacing="0.06em">2/5 plan</text>
+  <rect x="296.0" y="353" width="116" height="14" rx="2" fill="#f8f8ff"/>
+  <text x="354.0" y="364" fill="#61586f" font-size="11" font-weight="500" font-family="'Geist Mono','Noto Sans Thai',monospace" text-anchor="middle" letter-spacing="0.06em">BM25 + catalog</text>
+  <rect x="262.0" y="396" width="132" height="14" rx="2" fill="#f8f8ff"/>
+  <text x="328.0" y="407" fill="#61586f" font-size="11" font-weight="500" font-family="'Geist Mono','Noto Sans Thai',monospace" text-anchor="middle" letter-spacing="0.06em">3/5 draft answer</text>
   <rect x="296.0" y="473" width="100" height="14" rx="2" fill="#f8f8ff"/>
-  <text x="346.0" y="484" fill="#61586f" font-size="11" font-weight="500" font-family="'Noto Sans Thai','Geist',sans-serif" text-anchor="middle" letter-spacing="0em">ตรวจราคา/นโยบาย</text>
-  <rect x="262.0" y="516" width="132" height="14" rx="2" fill="#f8f8ff"/>
-  <text x="328.0" y="527" fill="#61586f" font-size="11" font-weight="500" font-family="'Noto Sans Thai','Geist',sans-serif" text-anchor="middle" letter-spacing="0em">4/5 ตรวจทาน (reviewer)</text>
-  <rect x="268.0" y="564" width="120" height="14" rx="2" fill="#f8f8ff"/>
-  <text x="328.0" y="575" fill="#61586f" font-size="11" font-weight="500" font-family="'Noto Sans Thai','Geist',sans-serif" text-anchor="middle" letter-spacing="0em">5/5 guard คำตอบออก</text>
-  <rect x="276.0" y="612" width="104" height="14" rx="2" fill="#f8f8ff"/>
-  <text x="328.0" y="623" fill="#61586f" font-size="11" font-weight="500" font-family="'Noto Sans Thai','Geist',sans-serif" text-anchor="middle" letter-spacing="0em">บันทึกแชท · ledger</text>
-  <rect x="112.0" y="712" width="112" height="14" rx="2" fill="#f8f8ff"/>
-  <text x="168.0" y="723" fill="#8a2be2" font-size="11" font-weight="500" font-family="'Noto Sans Thai','Geist',sans-serif" text-anchor="middle" letter-spacing="0em">คำตอบ + แหล่งอ้างอิง</text>
-  <rect x="120.0" y="792" width="96" height="14" rx="2" fill="#f8f8ff"/>
-  <text x="168.0" y="803" fill="#61586f" font-size="11" font-weight="500" font-family="'Noto Sans Thai','Geist',sans-serif" text-anchor="middle" letter-spacing="0em">failed · ปุ่ม Retry</text>
+  <text x="346.0" y="484" fill="#61586f" font-size="11" font-weight="500" font-family="'Geist Mono','Noto Sans Thai',monospace" text-anchor="middle" letter-spacing="0.06em">check prices</text>
+  <rect x="284.0" y="516" width="88" height="14" rx="2" fill="#f8f8ff"/>
+  <text x="328.0" y="527" fill="#61586f" font-size="11" font-weight="500" font-family="'Geist Mono','Noto Sans Thai',monospace" text-anchor="middle" letter-spacing="0.06em">4/5 review</text>
+  <rect x="260.0" y="564" width="136" height="14" rx="2" fill="#f8f8ff"/>
+  <text x="328.0" y="575" fill="#61586f" font-size="11" font-weight="500" font-family="'Geist Mono','Noto Sans Thai',monospace" text-anchor="middle" letter-spacing="0.06em">5/5 screen answer</text>
+  <rect x="256.0" y="612" width="144" height="14" rx="2" fill="#f8f8ff"/>
+  <text x="328.0" y="623" fill="#61586f" font-size="11" font-weight="500" font-family="'Geist Mono','Noto Sans Thai',monospace" text-anchor="middle" letter-spacing="0.06em">save chat · ledger</text>
+  <rect x="102.0" y="712" width="132" height="14" rx="2" fill="#f8f8ff"/>
+  <text x="168.0" y="723" fill="#8a2be2" font-size="11" font-weight="500" font-family="'Geist Mono','Noto Sans Thai',monospace" text-anchor="middle" letter-spacing="0.06em">answer + sources</text>
+  <rect x="110.0" y="792" width="116" height="14" rx="2" fill="#f8f8ff"/>
+  <text x="168.0" y="803" fill="#61586f" font-size="11" font-weight="500" font-family="'Geist Mono','Noto Sans Thai',monospace" text-anchor="middle" letter-spacing="0.06em">failed · Retry</text>
   <g>
     <rect x="20.0" y="32" width="136" height="72" rx="6" fill="#f8f8ff"/>
     <rect x="20.0" y="32" width="136" height="72" rx="6" fill="rgba(97,88,111,0.10)" stroke="#8d819d" stroke-width="1"/>
     <rect x="28.0" y="40" width="32" height="14" rx="2" fill="none" stroke="rgba(141,129,157,0.40)" stroke-width="0.8"/>
     <text x="44.0" y="50.5" fill="#8d819d" font-size="9" font-weight="500" font-family="'Geist Mono','Noto Sans Thai',monospace" text-anchor="middle" letter-spacing="0.08em">WEB</text>
-    <text x="88.0" y="72.0" fill="#21172f" font-size="15" font-weight="600" font-family="'Noto Sans Thai','Geist',sans-serif" text-anchor="middle">ลูกค้า</text>
-    <text x="88.0" y="91.0" fill="#61586f" font-size="11" font-family="'Noto Sans Thai','Geist',sans-serif" text-anchor="middle">เบราว์เซอร์</text>
+    <text x="88.0" y="72.0" fill="#21172f" font-size="15" font-weight="600" font-family="'Geist','Noto Sans Thai',sans-serif" text-anchor="middle">Customer</text>
+    <text x="88.0" y="91.0" fill="#61586f" font-size="11" font-family="'Geist Mono','Noto Sans Thai',monospace" text-anchor="middle">browser</text>
   </g>
   <g>
     <rect x="180.0" y="32" width="136" height="72" rx="6" fill="#f8f8ff"/>
@@ -105,16 +105,16 @@ svg{width:100%;display:block}
     <rect x="340.0" y="32" width="136" height="72" rx="6" fill="rgba(33,23,47,0.03)" stroke="rgba(33,23,47,0.30)" stroke-width="1"/>
     <rect x="348.0" y="40" width="32" height="14" rx="2" fill="none" stroke="rgba(33,23,47,0.22)" stroke-width="0.8"/>
     <text x="364.0" y="50.5" fill="#8d819d" font-size="9" font-weight="500" font-family="'Geist Mono','Noto Sans Thai',monospace" text-anchor="middle" letter-spacing="0.08em">LLM</text>
-    <text x="408.0" y="72.0" fill="#21172f" font-size="15" font-weight="600" font-family="'Geist','Noto Sans Thai',sans-serif" text-anchor="middle">Typhoon</text>
-    <text x="408.0" y="91.0" fill="#61586f" font-size="11" font-family="'Geist Mono','Noto Sans Thai',monospace" text-anchor="middle">typhoon-v2.5</text>
+    <text x="408.0" y="72.0" fill="#21172f" font-size="15" font-weight="600" font-family="'Geist','Noto Sans Thai',sans-serif" text-anchor="middle">Language model</text>
+    <text x="408.0" y="91.0" fill="#61586f" font-size="11" font-family="'Geist Mono','Noto Sans Thai',monospace" text-anchor="middle">Typhoon by default</text>
   </g>
   <g>
     <rect x="500.0" y="32" width="136" height="72" rx="6" fill="#f8f8ff"/>
     <rect x="500.0" y="32" width="136" height="72" rx="6" fill="rgba(33,23,47,0.03)" stroke="rgba(33,23,47,0.30)" stroke-width="1"/>
     <rect x="508.0" y="40" width="40" height="14" rx="2" fill="none" stroke="rgba(33,23,47,0.22)" stroke-width="0.8"/>
     <text x="528.0" y="50.5" fill="#8d819d" font-size="9" font-weight="500" font-family="'Geist Mono','Noto Sans Thai',monospace" text-anchor="middle" letter-spacing="0.08em">SAFE</text>
-    <text x="568.0" y="72.0" fill="#21172f" font-size="15" font-weight="600" font-family="'Geist','Noto Sans Thai',sans-serif" text-anchor="middle">Llama Guard 4</text>
-    <text x="568.0" y="91.0" fill="#61586f" font-size="11" font-family="'Geist Mono','Noto Sans Thai',monospace" text-anchor="middle">OpenRouter</text>
+    <text x="568.0" y="72.0" fill="#21172f" font-size="15" font-weight="600" font-family="'Geist','Noto Sans Thai',sans-serif" text-anchor="middle">Safety check</text>
+    <text x="568.0" y="91.0" fill="#61586f" font-size="11" font-family="'Geist Mono','Noto Sans Thai',monospace" text-anchor="middle">OpenThai-SystemOne</text>
   </g>
   <g>
     <rect x="660.0" y="32" width="136" height="72" rx="6" fill="#f8f8ff"/>
@@ -122,20 +122,20 @@ svg{width:100%;display:block}
     <rect x="668.0" y="40" width="28" height="14" rx="2" fill="none" stroke="rgba(97,88,111,0.50)" stroke-width="0.8"/>
     <text x="682.0" y="50.5" fill="#61586f" font-size="9" font-weight="500" font-family="'Geist Mono','Noto Sans Thai',monospace" text-anchor="middle" letter-spacing="0.08em">DB</text>
     <text x="728.0" y="72.0" fill="#21172f" font-size="15" font-weight="600" font-family="'Geist','Noto Sans Thai',sans-serif" text-anchor="middle">PostgreSQL</text>
-    <text x="728.0" y="91.0" fill="#61586f" font-size="11" font-family="'Noto Sans Thai','Geist',sans-serif" text-anchor="middle">งบ · ประวัติแชท</text>
+    <text x="728.0" y="91.0" fill="#61586f" font-size="11" font-family="'Geist Mono','Noto Sans Thai',monospace" text-anchor="middle">cap · ledger · chat</text>
   </g>
   <line x1="16" y1="876" x2="800" y2="876" stroke="rgba(33,23,47,0.12)" stroke-width="0.8"/>
-  <text x="16" y="896" fill="#61586f" font-size="9" font-weight="500" text-anchor="start"><tspan font-family="'Geist Mono','Noto Sans Thai',monospace" letter-spacing="0.18em">LEGEND · </tspan><tspan font-family="'Noto Sans Thai','Geist',sans-serif" font-size="10" letter-spacing="0">คำอธิบายสัญลักษณ์</tspan></text>
+  <text x="16" y="896" fill="#61586f" font-size="9" font-weight="500" text-anchor="start"><tspan font-family="'Geist Mono','Noto Sans Thai',monospace" letter-spacing="0.18em">LEGEND</tspan></text>
   <line x1="16" y1="916" x2="44" y2="916" stroke="#2e5aa8" stroke-width="1.2" marker-end="url(#rs-arrow-link)"/>
-  <text x="52" y="920" fill="#61586f" font-size="11.5" font-family="'Noto Sans Thai','Geist',sans-serif">คำขอจากเบราว์เซอร์</text>
-  <line x1="164" y1="916" x2="192" y2="916" stroke="#61586f" stroke-width="1.2" marker-end="url(#rs-arrow)"/>
-  <text x="200" y="920" fill="#61586f" font-size="11.5" font-family="'Noto Sans Thai','Geist',sans-serif">เรียกแบบรอผล (sync)</text>
-  <line x1="324" y1="916" x2="352" y2="916" stroke="#8a2be2" stroke-width="1.6" marker-end="url(#rs-arrow-accent)"/>
-  <text x="360" y="920" fill="#61586f" font-size="11.5" font-family="'Noto Sans Thai','Geist',sans-serif">คำตอบหลัก</text>
-  <line x1="432" y1="916" x2="460" y2="916" stroke="#61586f" stroke-width="1.2" stroke-dasharray="4,3" marker-end="url(#rs-arrow)"/>
-  <text x="468" y="920" fill="#61586f" font-size="11.5" font-family="'Noto Sans Thai','Geist',sans-serif">เส้นทางผิดพลาด</text>
-  <rect x="564" y="911" width="16" height="11" rx="2" fill="rgba(33,23,47,0.05)" stroke="#61586f" stroke-width="1"/>
-  <text x="586" y="920" fill="#61586f" font-size="11.5" font-family="'Noto Sans Thai','Geist',sans-serif">แถบ = ช่วงที่ทำงาน</text>
+  <text x="52" y="920" fill="#61586f" font-size="11.5" font-family="'Noto Sans Thai','Geist',sans-serif">Browser request</text>
+  <line x1="160" y1="916" x2="188" y2="916" stroke="#61586f" stroke-width="1.2" marker-end="url(#rs-arrow)"/>
+  <text x="196" y="920" fill="#61586f" font-size="11.5" font-family="'Noto Sans Thai','Geist',sans-serif">Synchronous call</text>
+  <line x1="308" y1="916" x2="336" y2="916" stroke="#8a2be2" stroke-width="1.6" marker-end="url(#rs-arrow-accent)"/>
+  <text x="344" y="920" fill="#61586f" font-size="11.5" font-family="'Noto Sans Thai','Geist',sans-serif">Answer</text>
+  <line x1="404" y1="916" x2="432" y2="916" stroke="#61586f" stroke-width="1.2" stroke-dasharray="4,3" marker-end="url(#rs-arrow)"/>
+  <text x="440" y="920" fill="#61586f" font-size="11.5" font-family="'Noto Sans Thai','Geist',sans-serif">Error path</text>
+  <rect x="516" y="911" width="16" height="11" rx="2" fill="rgba(33,23,47,0.05)" stroke="#61586f" stroke-width="1"/>
+  <text x="538" y="920" fill="#61586f" font-size="11.5" font-family="'Noto Sans Thai','Geist',sans-serif">Bar = busy</text>
 </svg>
 </div>
 </body>

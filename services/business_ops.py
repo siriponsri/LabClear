@@ -42,20 +42,16 @@ def line_mode() -> str:
 
 def modes() -> dict:
     from config import settings
-    from services.provider_config import runtime_provider
+    from services.providers import runtime
 
     def model_state(slot: str) -> str:
-        try:
-            provider = runtime_provider(slot, fallback_base_url=getattr(settings, "LLM_BASE_URL", ""),
-                                        fallback_model=getattr(settings, "LLM_MODEL", ""),
-                                        fallback_key=getattr(settings, "LLM_API_KEY", ""),
-                                        fallback_timeout=getattr(settings, "LLM_TIMEOUT_SECONDS", 30))
-            configured = bool(provider.enabled and provider.model and provider.api_key)
-        except Exception:
-            configured = False
         if not settings.PROVIDER_NETWORK_ENABLED:
             return "UNAVAILABLE"
-        return "LIVE_MODEL" if configured else "UNAVAILABLE"
+        try:
+            ready = runtime("llm").ready and runtime("guard").ready
+        except Exception:
+            ready = False
+        return "LIVE_MODEL" if ready else "UNAVAILABLE"
 
     return {
         "business_data": {"mode": "SIMULATED_BUSINESS_DATA", "label": "Simulated packages, prices and centers"},

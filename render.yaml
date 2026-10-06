@@ -1,6 +1,5 @@
-# Render Blueprint: New → Blueprint → pick this repository.
+# Render Blueprint. See docs/deploy/render.md.
 # Values marked `sync: false` are entered in the Render dashboard and never committed.
-# See README → "Deploy on Render" for the values to use.
 services:
   - type: web
     name: labclear
@@ -21,25 +20,28 @@ services:
         sync: false
       - key: BUSINESS_DATA_KEY
         sync: false
-      # AI models
+      # AI stays off unless PROVIDER_NETWORK_ENABLED is true. Providers and keys can be set
+      # here or later by a manager on /staff → AI providers.
+      - key: PROVIDER_NETWORK_ENABLED
+        sync: false
+      - key: LLM_PROVIDER
+        sync: false
       - key: LLM_API_KEY
+        sync: false
+      - key: GUARD_PROVIDER
+        sync: false
+      - key: GUARD_API_KEY
         sync: false
       - key: VISION_ENABLED
         sync: false
       - key: VISION_API_KEY
         sync: false
-      - key: GUARD_API_KEY
-        sync: false
-      # Spending limits. AI stays off unless PROVIDER_NETWORK_ENABLED is set to true.
-      - key: PROVIDER_NETWORK_ENABLED
-        sync: false
+      # Spending limits
       - key: PROVIDER_BUDGET_CYCLE_ID
         sync: false
       - key: CLOUD_CALL_LIMIT
         sync: false
       - key: PROJECT_BUDGET_PRIOR_SPEND_THB
-        sync: false
-      - key: MODEL_PRICES_THB
         sync: false
       # Optional access code for the AI features
       - key: DEMO_ACCESS_CODE

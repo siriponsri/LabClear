@@ -1169,10 +1169,60 @@
     wrap.append(t); box.append(wrap); return box;
   }
 
+  /* ------------------------------------------------------------ staff: AI providers (manager) */
+  async function aiProviders() {
+    const box = el('div'); box.append(intro('AI providers', 'Choose the provider, model and API key for each AI step. Keys are stored encrypted on the server and never shown again; leave the key empty to keep the saved one.'));
+    if (!isManager()) { box.append(empty('Manager access required', '')); return box; }
+    const d = await api('/staff/ai-providers');
+    if (!d.network_enabled) box.append(el('p', 'AI calls are switched off on this server (PROVIDER_NETWORK_ENABLED is not true). You can still save providers now.', 'callout warn small'));
+    const ORDER = ['llm', 'guard', 'vision'];
+    const HELP = { llm: 'Plans, writes and reviews every answer. Must follow JSON instructions well.', guard: 'Screens every customer message and every answer before it is shown. Anything not clearly safe is blocked.', vision: 'Reads lab report photos and PDFs. Typhoon OCR is tuned for Thai reports.' };
+    ORDER.forEach(slot => {
+      const cur = d.slots[slot], card = el('section', null, 'card stack'), head = el('div', null, 'record-head');
+      head.append(el('h3', cur.label), badge(cur.ready ? (cur.source === 'app' ? 'Saved here' : 'From server environment') : 'Not set up', cur.ready ? 'ok' : 'warn'));
+      card.append(head, el('p', HELP[slot], 'small muted'));
+      const f = el('form', null, 'ai-form');
+      const prov = field('Provider', 'select'), options = d.presets.filter(p => p.slots.includes(slot));
+      options.forEach(p => { const o = el('option', p.label); o.value = p.id; prov.input.append(o); });
+      prov.input.value = cur.preset;
+      const model = field('Model', 'text', cur.model, 'Leave empty to use the provider default.');
+      const key = field('API key', 'password', '', cur.key ? 'Saved key: ' + cur.key + '. Leave empty to keep it.' : 'Paste the key from the provider console.');
+      key.input.autocomplete = 'off'; key.input.spellcheck = false;
+      const url = field('Endpoint URL', 'url', cur.base_url, 'OpenAI-compatible base URL, for example https://api.example.com/v1');
+      const pin = field('Input price (THB per 1M tokens)', 'number', cur.price_in), pout = field('Output price (THB per 1M tokens)', 'number', cur.price_out);
+      [pin, pout].forEach(x => { x.input.min = '0'; x.input.step = 'any'; });
+      const on = el('label', null, 'check'); const box2 = el('input'); box2.type = 'checkbox'; box2.checked = cur.enabled; on.append(box2, el('span', ' Report reading is on'));
+      const keyLink = el('a', '', 'small'); keyLink.target = '_blank'; keyLink.rel = 'noopener';
+      const sync = (reset) => {
+        const p = d.presets.find(x => x.id === prov.input.value);
+        url.wrap.hidden = p.id !== 'custom';
+        model.input.placeholder = (slot === 'vision' && p.vision_model) || p.default_model || 'model name';
+        if (reset) { model.input.value = ''; pin.input.value = p.price_in; pout.input.value = p.price_out; key.input.value = ''; }
+        keyLink.textContent = p.key_url ? 'Get a key from ' + p.label + ' ↗' : ''; keyLink.href = p.key_url || '#'; keyLink.hidden = !p.key_url;
+      };
+      prov.input.onchange = () => sync(true); sync(false);
+      key.wrap.classList.add('wide'); url.wrap.classList.add('wide'); on.classList.add('wide');
+      f.append(prov.wrap, model.wrap, key.wrap, url.wrap, pin.wrap, pout.wrap);
+      if (slot === 'vision') f.append(on);
+      const actions = el('div', null, 'form-actions wide');
+      actions.append(
+        button('Save', async () => {
+          await api('/staff/ai-providers/' + slot, { method: 'PUT', body: JSON.stringify({ preset: prov.input.value, model: model.input.value.trim(), api_key: key.input.value.trim(), base_url: url.input.value.trim(), enabled: slot === 'vision' ? box2.checked : true, price_in: pin.input.value === '' ? null : Number(pin.input.value), price_out: pout.input.value === '' ? null : Number(pout.input.value) }) });
+          notice(cur.label + ' saved.'); await navigate('ai', false); connection();
+        }, 'btn primary sm'),
+        button('Test', async () => { const r = await post('/staff/ai-providers/' + slot + '/test'); notice(r.message); }, 'btn sm'));
+      if (cur.source === 'app') actions.append(button('Use server settings', async () => { await api('/staff/ai-providers/' + slot, { method: 'DELETE' }); notice('Saved settings removed; the server environment is used again.'); await navigate('ai', false); connection(); }, 'btn sm'));
+      f.append(actions); f.onsubmit = e => e.preventDefault();
+      card.append(f, keyLink); box.append(card);
+    });
+    box.append(el('p', 'Each test makes one real call, counted in the call cap and the THB budget shown under Channels and budget. Prices are estimates used only for that budget; set them to your provider\'s real prices.', 'small muted'));
+    return box;
+  }
+
   /* ------------------------------------------------------------ navigation */
-  const TITLES = { customers: 'Customers', payments: 'Payments', chat: 'Conversation', packages: 'Health checks', book: 'Request an appointment', bookings: 'My appointments', reports: 'My reports', labs: 'Lab dashboard', plan: 'Plan', history: 'Past conversations', notifications: 'Notifications', overview: 'Overview', staff: 'Inbox', operations: 'Appointments', 'catalog-admin': 'Catalog', centers: 'Centers', roles: 'Assistant roles', channels: 'Channels and budget', audit: 'Audit log' };
-  const FACTORIES = { customers: customersView, payments: paymentsView, packages, book: bookView, bookings, reports, labs: labsView, plan: planView, history: historyView, notifications, overview, staff: staffView, operations: operationsView, 'catalog-admin': catalogAdmin, centers: centersAdmin, roles: rolesAdmin, channels, audit: auditView };
-  const STAFF_ONLY = ['customers', 'payments', 'overview', 'operations', 'catalog-admin', 'centers', 'roles', 'channels', 'audit'];
+  const TITLES = { customers: 'Customers', payments: 'Payments', chat: 'Conversation', packages: 'Health checks', book: 'Request an appointment', bookings: 'My appointments', reports: 'My reports', labs: 'Lab dashboard', plan: 'Plan', history: 'Past conversations', notifications: 'Notifications', overview: 'Overview', staff: 'Inbox', operations: 'Appointments', 'catalog-admin': 'Catalog', centers: 'Centers', roles: 'Assistant roles', ai: 'AI providers', channels: 'Channels and budget', audit: 'Audit log' };
+  const FACTORIES = { customers: customersView, payments: paymentsView, packages, book: bookView, bookings, reports, labs: labsView, plan: planView, history: historyView, notifications, overview, staff: staffView, operations: operationsView, 'catalog-admin': catalogAdmin, centers: centersAdmin, roles: rolesAdmin, ai: aiProviders, channels, audit: auditView };
+  const STAFF_ONLY = ['customers', 'payments', 'overview', 'operations', 'catalog-admin', 'centers', 'roles', 'ai', 'channels', 'audit'];
   const mobile = matchMedia(STAFF_MODE ? '(max-width:860px)' : '(max-width:1100px)');
   function setMenu(open) { $('sidebar').classList.toggle('open', open); $('sidebar').inert = mobile.matches && !open; $('menu-toggle').setAttribute('aria-expanded', String(open)); $('menu-toggle').setAttribute('aria-label', open ? 'Close navigation' : 'Open navigation'); }
   async function navigate(next, push = true, params = {}) {
@@ -1209,7 +1259,8 @@
     n.append(el('p', modes?.assistant.mode === 'LIVE_MODEL' ? 'The conversation model is connected. Replies pass safety and evidence checks before they appear.' : 'The conversation model is not connected or is paused. Browsing, booking, payments, reports review and our team still work; AI replies will show a clear error instead of an invented answer.', 'small'));
     if (modes) { const ul = el('ul', null, 'plain small'); Object.values(modes).forEach(x => { const li = el('li'); li.append(el('span', x.label + ': '), badge(x.mode.replaceAll('_', ' ').toLowerCase(), 'neutral')); ul.append(li); }); n.append(ul); }
     const f = field('Demo access code for this tab', 'password', '', 'Only if the deployment owner gave you one');
-    n.append(f.wrap, button('Use access code', () => { accessCode = f.input.value; f.input.value = ''; closeModal(); notice('Access code set for this tab only.'); }, 'btn sm'), link('Connection settings', '/settings', 'small'));
+    n.append(f.wrap, button('Use access code', () => { accessCode = f.input.value; f.input.value = ''; closeModal(); notice('Access code set for this tab only.'); }, 'btn sm'));
+    if (STAFF_MODE && isManager()) n.append(button('Open AI providers', () => { closeModal(); navigate('ai'); }, 'btn sm'));
     modal('Assistant and integrations', n);
   };
   async function checkLink() {

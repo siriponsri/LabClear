@@ -205,7 +205,7 @@ def test_hosted_call_cap_is_kept_in_the_database(monkeypatch):
 def test_provider_rejection_names_service_and_status_without_secrets(caplog):
     from services.conversation_transport import rejection_error
     with caplog.at_level("WARNING", logger="labclear.provider"):
-        err = rejection_error("guard", 402, '{"error":{"message":"Insufficient credits","key":"sk-or-v1-abcdef123456"}}')
+        err = rejection_error("guard", 402, '{"error":{"message":"Insufficient credits","key":"sk-or-v1-abcdef123456"}}', "Llama Guard 4 (OpenRouter)")
     assert "OpenRouter" in err.message and "HTTP 402" in err.message and "credit" in err.message
     assert "sk-or-v1-abcdef123456" not in caplog.text and "Insufficient credits" in caplog.text
-    assert "HTTP 401" in rejection_error("llm", 401).message and "Typhoon" in rejection_error("llm", 401).message
+    assert "HTTP 401" in rejection_error("llm", 401, "", "Typhoon").message and "Typhoon" in rejection_error("llm", 401, "", "Typhoon").message

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="th">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="vendor/reveal.js-5.2.1/reset.css">
 <link rel="stylesheet" href="vendor/reveal.js-5.2.1/reveal.css">
 <style>
-/* Fonts ship with the repository (static/fonts); nothing is loaded from the internet. */
+/* LabClear slides (reveal.js 5). Fonts ship with the repository; nothing is loaded from the internet. */
 @font-face{font-family:"Geist";src:url(../static/fonts/geist-variable.woff2) format("woff2");font-weight:100 900}
 @font-face{font-family:"Geist Mono";src:url(../static/fonts/geist-mono-variable.woff2) format("woff2");font-weight:100 900}
 @font-face{font-family:"Noto Sans Thai";src:url(../static/fonts/NotoSansThai.ttf) format("truetype");font-weight:100 900}
@@ -24,10 +24,10 @@
   --serif:"Source Serif 4","Noto Sans Thai",Georgia,serif;
 }
 html,body{background:var(--paper)}
-.reveal{font-family:var(--thai);font-size:30px;color:var(--ink);line-height:1.55}
+.reveal{font-family:var(--sans);font-size:30px;color:var(--ink);line-height:1.55}
 .reveal .slides{text-align:left}
 .reveal .slides section{padding:0 8px}
-.reveal h1,.reveal h2,.reveal h3{font-family:var(--thai);color:var(--ink);font-weight:600;letter-spacing:-.01em;line-height:1.25;margin:0 0 .5em}
+.reveal h1,.reveal h2,.reveal h3{font-family:var(--sans);color:var(--ink);font-weight:600;letter-spacing:-.01em;line-height:1.25;margin:0 0 .5em}
 .reveal h1{font-size:2.3em}
 .reveal h2{font-size:1.45em}
 .reveal h3{font-size:1em;margin-bottom:.3em}
@@ -84,238 +84,255 @@ table.t td{border-bottom:1px solid var(--line);padding:9px 10px;vertical-align:t
 <div class="reveal"><div class="slides">
 
 <!-- 1 -->
-<section class="title-slide" data-background-color="#f8f8ff">
+<section class="title-slide">
   <div class="brand"><img src="../static/img/mark.svg" alt="">LabClear</div>
   <div class="rule" style="width:120px"></div>
-  <p class="eyebrow">Final Project · Intelligent Chatbot</p>
+  <p class="eyebrow">Final Project · Intelligent Chatbot Development</p>
   <h1>Book the check.<br>Understand the result.</h1>
-  <p class="sub">แชทบอทแนะนำแพ็กเกจตรวจสุขภาพ จองคิว และช่วยอ่านผลแลปพร้อมแหล่งอ้างอิง</p>
-  <p class="small" style="margin-top:1.4em">[ชื่อผู้พัฒนา] · [รหัสนักศึกษา]<br>
-  ระบบจริง <a href="https://labclear.onrender.com">labclear.onrender.com</a> · โค้ด <a href="https://github.com/siriponsri/LabClear">github.com/siriponsri/LabClear</a></p>
-  <aside class="notes">แนะนำตัวและชื่อโปรเจกต์ LabClear: ร้านตรวจสุขภาพจำลองที่มีแชทบอทเป็นด่านหน้า ช่วยเลือกแพ็กเกจ จองคิว และอธิบายผลแลป</aside>
+  <p class="sub">A Thai health-check assistant that recommends packages, books appointments and explains lab reports with sources.</p>
+  <p class="small" style="margin-top:1.4em">[Developer name] · [Student ID]<br>
+  Live <a href="https://labclear.onrender.com">labclear.onrender.com</a> · Code <a href="https://github.com/siriponsri/LabClear">github.com/siriponsri/LabClear</a></p>
+  <aside class="notes">Introduce LabClear: a simulated health-check clinic whose front door is a chatbot. It helps customers choose a package, book a time and understand their lab report.</aside>
 </section>
 
 <!-- 2 -->
 <section>
   <p class="eyebrow">01 · Problem</p>
-  <h2>ลูกค้าตรวจสุขภาพเจอคำถามเดิม ๆ ก่อนและหลังตรวจ</h2>
+  <h2>The same questions, every check-up</h2>
   <div class="grid g3" style="margin-top:28px">
-    <div class="card"><span class="tag">ก่อนตรวจ</span><h3>เลือกแพ็กเกจไม่ถูก</h3>งบ 1,500 บาทควรตรวจอะไร ต่างกันตรงไหน ราคาเท่าไร</div>
-    <div class="card"><span class="tag">นัดหมาย</span><h3>จองและเลื่อนนัด</h3>สาขาไหน เปิดกี่โมง ต้องงดอาหารไหม ยกเลิกได้เมื่อไร</div>
-    <div class="card focal"><span class="tag">หลังตรวจ</span><h3>อ่านผลไม่เข้าใจ</h3>ค่าไหนเกินช่วงอ้างอิง หมายความว่าอะไร โดยไม่ถูกวินิจฉัยโรคแทนแพทย์</div>
+    <div class="card"><span class="tag">Before</span><h3>Which package?</h3>What fits a 1,500 THB budget, what is the difference between packages, what does it cost.</div>
+    <div class="card"><span class="tag">Booking</span><h3>When and where?</h3>Which branch, opening hours, fasting rules, how to cancel or reschedule.</div>
+    <div class="card focal"><span class="tag">After</span><h3>What do my results mean?</h3>Which values are outside the printed range and what that means, without a diagnosis.</div>
   </div>
-  <p class="lead" style="margin-top:28px">เจ้าหน้าที่ตอบซ้ำทั้งวัน และอธิบายผลแลปได้ไม่ทั่วถึง แชทบอทจึงรับคำถามทั่วไปตลอดเวลา ส่วนงานที่ต้องใช้ดุลยพินิจยังเป็นของคน</p>
-  <aside class="notes">เล่าปัญหา 3 ช่วงของลูกค้า และย้ำว่าแชทบอทไม่แทนแพทย์</aside>
+  <p class="lead" style="margin-top:28px">Staff answer the same questions all day and rarely have time to explain results. The chatbot handles the routine questions; people keep the decisions that need judgement.</p>
+  <aside class="notes">Three moments in the customer journey. The chatbot never replaces a doctor.</aside>
 </section>
 
 <!-- 3 -->
 <section>
   <p class="eyebrow">02 · Business (simulated)</p>
-  <h2>สองสินค้า สามสาขา</h2>
+  <h2>Two products, three branches</h2>
   <div class="grid g2" style="margin-top:20px">
     <div class="card">
-      <span class="tag">สินค้า 1</span><h3>แพ็กเกจตรวจสุขภาพ 18 รายการ</h3>
+      <span class="tag">Product 1</span><h3>18 health-check packages</h3>
       <ul>
-        <li>จองได้ทันที 4 แพ็กเกจ เช่น Essential Check ฿1,190, Workday Check ฿1,690</li>
-        <li>ตรวจติดตาม 11 รายการ ฿290–฿990 (ทีมงานพิจารณาก่อน)</li>
-        <li>แพ็กเกจองค์กร 3 รายการ สำหรับ 20 คนขึ้นไป</li>
+        <li>4 book-now packages, e.g. Essential Check ฿1,190, Workday Check ฿1,690</li>
+        <li>11 follow-up tests, ฿290–฿990, reviewed by staff first</li>
+        <li>3 corporate packages for 20+ people</li>
       </ul>
     </div>
     <div class="card focal">
-      <span class="tag">สินค้า 2</span><h3>AI Lab Report</h3>
+      <span class="tag">Product 2</span><h3>AI Lab Report</h3>
       <ul>
-        <li><strong>Free</strong> อ่านรายงานผลแลป 1 ภาพ พร้อมแหล่งอ้างอิง</li>
-        <li><strong>Plus ฿355 / 30 วัน</strong> อ่านได้ไม่จำกัด ครั้งละ 3 หน้า, Lab dashboard, เทียบผลครั้งก่อน</li>
+        <li><strong>Free</strong>: one report image read and explained with sources</li>
+        <li><strong>Plus ฿355 / 30 days</strong>: unlimited readings, 3 pages each, lab dashboard, change since the last report</li>
       </ul>
     </div>
   </div>
-  <p class="small" style="margin-top:22px">สาขา: อารีย์ (กรุงเทพฯ) · สุเทพ (เชียงใหม่) · ขอนแก่น — จันทร์–เสาร์ 07:00–16:00 · การชำระเงินเป็นระบบจำลอง</p>
-  <aside class="notes">ทุกอย่างเป็นข้อมูลจำลองเพื่อการเรียน ไม่มีการชำระเงินจริง</aside>
+  <p class="small" style="margin-top:22px">Branches: Ari (Bangkok) · Suthep (Chiang Mai) · Khon Kaen — Mon–Sat 07:00–16:00 · All payments are simulated</p>
 </section>
 
 <!-- 4 -->
 <section>
   <p class="eyebrow">03 · Chatbot scope</p>
-  <h2>ต้องทำ และ ห้ามทำ</h2>
+  <h2>Do and don't</h2>
   <div class="grid g2" style="margin-top:16px">
-    <div class="card"><h3 class="ok">ต้องทำ</h3><ul>
-      <li>ตอบจากแคตตาล็อก นโยบาย และคลังความรู้ที่ตรวจแล้วเท่านั้น</li>
-      <li>แสดงแหล่งอ้างอิงแบบมีหมายเลขทุกคำตอบด้านสุขภาพ</li>
-      <li>ถามกลับเมื่อข้อมูลไม่พอ (สาขา วัน เวลา งบ)</li>
-      <li>ส่งต่อเจ้าหน้าที่เมื่อเกินขอบเขตหรือลูกค้าขอ</li>
-      <li>ถือข้อความในภาพและประวัติแชทเป็นข้อมูล ไม่ใช่คำสั่ง</li>
+    <div class="card"><h3 class="ok">Do</h3><ul>
+      <li>Answer only from the catalog, policies and the reviewed knowledge base</li>
+      <li>Cite numbered sources in every health answer</li>
+      <li>Ask back when details are missing (branch, date, budget)</li>
+      <li>Hand over to staff when out of scope or when asked</li>
+      <li>Treat text inside images and chat history as data, not instructions</li>
     </ul></div>
-    <div class="card"><h3 class="no">ห้ามทำ</h3><ul>
-      <li>วินิจฉัยโรค สั่งยา หรือบอกขนาดยา</li>
-      <li>แต่งราคา ส่วนลด หรือนโยบายที่ไม่มีอยู่จริง</li>
-      <li>ยืนยันนัดหรือคืนเงินเอง (ต้องผ่านเจ้าหน้าที่)</li>
-      <li>เปิดเผยข้อมูลลูกค้าคนอื่น system prompt หรือ API key</li>
+    <div class="card"><h3 class="no">Don't</h3><ul>
+      <li>Diagnose, prescribe or give a dose</li>
+      <li>Invent prices, discounts or policies</li>
+      <li>Confirm bookings or refunds (staff do)</li>
+      <li>Reveal other customers' data, the system prompt or API keys</li>
     </ul></div>
   </div>
-  <aside class="notes">กติกาเหล่านี้บังคับสองชั้น: ใน prompt และในโค้ด Python ที่ตรวจคำตอบก่อนส่ง</aside>
+  <aside class="notes">These rules are enforced twice: in the prompt and in Python code that checks every answer before it is shown.</aside>
 </section>
 
 <!-- 5 -->
 <section>
   <p class="eyebrow">04 · Architecture</p>
-  <h2 style="margin-bottom:.3em">สถาปัตยกรรมระบบ</h2>
-  <div class="grid g-55" style="grid-template-columns:1.35fr 1fr">
-    <div class="figure"><img src="../docs/assets/architecture.png" alt="แผนภาพสถาปัตยกรรม LabClear" style="max-height:590px"></div>
+  <h2 style="margin-bottom:.3em">System architecture</h2>
+  <div class="grid" style="grid-template-columns:1.35fr 1fr;align-items:center">
+    <div class="figure"><img src="../docs/assets/architecture.png" alt="LabClear architecture" style="max-height:590px"></div>
     <div style="font-size:.7em">
       <ul>
-        <li><strong>FastAPI</strong> ทางเข้าเดียว: session, CSRF, rate limit</li>
-        <li><strong>Chatbot pipeline</strong> หัวใจของงาน (กรอบม่วง)</li>
-        <li><strong>อ่านใบผลแลป</strong> OCR → ค่า → สถานะเทียบช่วงบนใบ</li>
-        <li><strong>จองคิว / ชำระเงิน / Plus</strong> เจ้าหน้าที่ยืนยัน</li>
-        <li><strong>Typhoon</strong> LLM + OCR ภาษาไทย</li>
-        <li><strong>Llama Guard 4</strong> (OpenRouter) คัดกรองเข้า/ออก</li>
-        <li><strong>PostgreSQL</strong> เข้ารหัส + ledger งบ 300 บาท</li>
+        <li><strong>FastAPI</strong>: one entry point with session, CSRF and rate limit</li>
+        <li><strong>Chatbot pipeline</strong>: the core of the project</li>
+        <li><strong>Report reader</strong>: OCR → values → status</li>
+        <li><strong>Booking · payments · Plus</strong>, confirmed by staff</li>
+        <li><strong>AI providers</strong>: chosen per step on an admin page</li>
+        <li><strong>PostgreSQL</strong>: encrypted data, keys and the 300 THB cap</li>
       </ul>
-      <p class="small">Deploy บน Render (Web Service + Postgres) จาก GitHub</p>
+      <p class="small">Deploys to Render or Vercel from GitHub</p>
     </div>
   </div>
-  <aside class="notes">อ่านจากบนลงล่าง: ผู้ใช้ → API บน Render → 3 โมดูล → ข้อมูลและโมเดล</aside>
 </section>
 
 <!-- 6 -->
 <section>
   <p class="eyebrow">05 · Data flow</p>
-  <h2 style="margin-bottom:.3em">1 ข้อความ = 5 ด่านของโมเดล</h2>
+  <h2 style="margin-bottom:.3em">One message, five model checkpoints</h2>
   <div class="grid" style="grid-template-columns:1fr 1.05fr;align-items:center">
-    <div class="figure"><img src="../docs/assets/message-flow.png" alt="ลำดับการทำงานของ 1 ข้อความ" style="max-height:600px"></div>
+    <div class="figure"><img src="../docs/assets/message-flow.png" alt="How one message is processed" style="max-height:600px"></div>
     <ol class="steps" style="font-size:.66em">
-      <li>นับ call และตรวจงบก่อนเรียกโมเดลทุกครั้ง</li>
-      <li>Llama Guard ตรวจข้อความเข้า</li>
-      <li>Typhoon วางแผนและสร้างคำค้น</li>
-      <li>ค้นคลังความรู้ BM25 + แคตตาล็อก</li>
-      <li>Typhoon ร่างคำตอบภาษาไทยพร้อมแหล่ง</li>
-      <li>Python ตรวจราคา นโยบาย แหล่งอ้างอิง</li>
-      <li>Typhoon ตรวจทาน แล้ว Llama Guard ตรวจขาออก</li>
-      <li>ผ่านทุกด่าน → ตอบ · ไม่ผ่าน → failed + Retry</li>
+      <li>Count the call and check the budget first</li>
+      <li>Safety check screens the message</li>
+      <li>Language model plans and writes search terms</li>
+      <li>BM25 searches the knowledge base and catalog</li>
+      <li>Language model drafts a Thai answer with sources</li>
+      <li>Python checks prices, policies and citations</li>
+      <li>Language model reviews; safety check screens the answer</li>
+      <li>All pass → answer · otherwise → failed + Retry</li>
     </ol>
   </div>
-  <aside class="notes">fail closed: ด่านไหนไม่ผ่าน ลูกค้าเห็นสถานะและปุ่ม Retry แทนคำตอบที่ไม่ผ่านการตรวจ</aside>
+  <aside class="notes">Fail closed: if any step fails, the customer sees the status and a Retry button instead of an unchecked answer.</aside>
 </section>
 
 <!-- 7 -->
 <section>
   <p class="eyebrow">06 · RAG</p>
-  <h2>คลังความรู้ภาษาไทย ตอบพร้อมแหล่งอ้างอิง</h2>
+  <h2>Thai knowledge base with citations</h2>
   <div class="grid g4" style="margin:18px 0 26px">
-    <div><div class="stat">58</div><div class="stat-label">แหล่งความรู้ทางการแพทย์</div></div>
-    <div><div class="stat">46</div><div class="stat-label">จากศิริราช (โรงพยาบาลและคณะแพทย์)</div></div>
+    <div><div class="stat">58</div><div class="stat-label">reviewed medical sources</div></div>
+    <div><div class="stat">46</div><div class="stat-label">Siriraj Hospital and Faculty of Medicine</div></div>
     <div><div class="stat">9</div><div class="stat-label">MedlinePlus</div></div>
-    <div><div class="stat">3</div><div class="stat-label">ศรีนครินทร์ มข.</div></div>
+    <div><div class="stat">3</div><div class="stat-label">Srinagarind Hospital, KKU</div></div>
   </div>
   <div class="grid g2">
-    <div class="card"><h3>ค้นอย่างไร</h3>BM25 บนข้อความที่ตรวจ SHA-256 ทุกครั้งที่โหลด ทุกแหล่งมีคำเรียกภาษาไทย เช่น “น้ำตาลในเลือด” → Glucose, HbA1c planner แปลงคำถามเป็นคำค้นก่อน</div>
-    <div class="card"><h3>ทำไมไม่ใช้ vector DB</h3>คลังมี 58 แหล่งและต้องแม่นชื่อการตรวจ BM25 ค้นได้ตรง ตรวจสอบย้อนกลับได้ง่าย ไม่ต้องดูแล embedding หรือฐานข้อมูลเวกเตอร์เพิ่ม</div>
+    <div class="card"><h3>How it searches</h3>BM25 over text checked by SHA-256 on every load. Every source has Thai aliases, e.g. “น้ำตาลในเลือด” → glucose, HbA1c. The planner turns the question into search terms first.</div>
+    <div class="card"><h3>Why no vector database</h3>58 sources and exact test names: BM25 finds them precisely, is easy to audit and needs no embeddings or extra database.</div>
   </div>
-  <aside class="notes">ข้อมูลธุรกิจ (ราคา สาขา นโยบาย) มาจากไฟล์เดียวกับหน้าเว็บ ราคาในแชทจึงตรงกับหน้าเว็บเสมอ</aside>
+  <aside class="notes">Prices, branches and policies come from the same files the website uses, so the chat always matches the site.</aside>
 </section>
 
 <!-- 8 -->
 <section>
   <p class="eyebrow">07 · Safety</p>
-  <h2>ความปลอดภัยหลายชั้น</h2>
+  <h2>Layered safety</h2>
   <div class="grid g3" style="margin-top:14px">
-    <div class="card"><span class="tag">โมเดล</span><h3>Llama Guard 4</h3>คัดกรองทั้งข้อความเข้าและคำตอบออก ถ้าโมเดลไม่ตอบถือว่าไม่ผ่าน</div>
-    <div class="card"><span class="tag">โค้ด</span><h3>Validator</h3>ราคาต้องตรงแคตตาล็อก แหล่งต้องมีอยู่จริง ค่าแลปต้องตรงใบรายงาน</div>
-    <div class="card"><span class="tag">โมเดล</span><h3>Reviewer</h3>Typhoon อีกรอบตรวจว่าคำตอบอยู่ในหลักฐานและไม่วินิจฉัย</div>
-    <div class="card"><span class="tag">ธุรกิจ</span><h3>คนยืนยัน</h3>นัด การชำระเงิน และคืนเงิน ต้องผ่านเจ้าหน้าที่</div>
-    <div class="card"><span class="tag">ข้อมูล</span><h3>เข้ารหัส</h3>ข้อมูลลูกค้าเข้ารหัสในฐานข้อมูล แต่ละ session เห็นเฉพาะของตัวเอง</div>
-    <div class="card focal"><span class="tag">ค่าใช้จ่าย</span><h3>เพดาน</h3>นับ call ใน PostgreSQL และงบรวม 300 บาท เกินแล้วหยุดทันที</div>
+    <div class="card"><span class="tag">Model</span><h3>Safety check</h3>OpenThai-SystemOne (or Jev, Llama Guard) screens every message and answer. No verdict means blocked.</div>
+    <div class="card"><span class="tag">Code</span><h3>Validator</h3>Prices must match the catalog, sources must exist, lab values must match the report.</div>
+    <div class="card"><span class="tag">Model</span><h3>Reviewer</h3>A second pass checks the answer stays within the evidence and does not diagnose.</div>
+    <div class="card"><span class="tag">Business</span><h3>People confirm</h3>Bookings, payments and refunds go through staff.</div>
+    <div class="card"><span class="tag">Data</span><h3>Encryption</h3>Customer data and API keys are encrypted; each session sees only its own records.</div>
+    <div class="card focal"><span class="tag">Cost</span><h3>Spending cap</h3>Calls counted in the database plus a 300 THB budget; AI stops when either is reached.</div>
   </div>
 </section>
 
 <!-- 9 -->
 <section>
-  <p class="eyebrow">08 · Product</p>
-  <h2>เว็บไซต์และพื้นที่ลูกค้า</h2>
-  <div class="grid g2" style="gap:18px 26px">
-    <div><div class="shot" style="height:215px"><img src="../docs/assets/screenshots/home.jpg" alt="หน้าแรก"></div><p class="cap">หน้าแรก</p></div>
-    <div><div class="shot" style="height:215px"><img src="../docs/assets/screenshots/compare.jpg" alt="เปรียบเทียบแพ็กเกจ"></div><p class="cap">เปรียบเทียบแพ็กเกจทีละรายการตรวจ</p></div>
-    <div><div class="shot" style="height:215px"><img src="../docs/assets/screenshots/lab-dashboard.jpg" alt="Lab dashboard"></div><p class="cap">Lab dashboard (Plus)</p></div>
-    <div><div class="shot" style="height:215px"><img src="../docs/assets/screenshots/lab-report.jpg" alt="Lab Report"></div><p class="cap">Lab Report พิมพ์ได้</p></div>
+  <p class="eyebrow">08 · AI providers</p>
+  <h2>Any provider, chosen on an admin page</h2>
+  <div class="grid" style="grid-template-columns:1fr 1.1fr;gap:28px;align-items:center">
+    <div style="font-size:.72em">
+      <p><span class="pill">Typhoon</span><span class="pill">OpenAI</span><span class="pill">Claude</span><span class="pill">Gemini</span><span class="pill">Hugging Face</span><span class="pill">OpenRouter</span><span class="pill">Grok</span><span class="pill">Kimi</span><span class="pill">Qwen</span><span class="pill">DeepSeek</span><span class="pill">Custom</span></p>
+      <p><strong>Safety check:</strong> <span class="pill">OpenThai-SystemOne</span><span class="pill">Jev</span><span class="pill">Llama Guard 4</span></p>
+      <ul>
+        <li>Managers pick a provider, model and key for each step</li>
+        <li>Keys are encrypted and never shown again</li>
+        <li>Every change is audit-logged; <em>Test</em> makes one real call</li>
+      </ul>
+    </div>
+    <div class="shot" style="height:420px"><img src="../docs/assets/screenshots/ai-providers.jpg" alt="AI providers admin page"></div>
   </div>
-  <p class="small">ภาพจากชุดทดสอบเบราว์เซอร์ (ข้อมูลจำลอง) · แชทจริงสาธิตสดในสไลด์ถัดไป</p>
+  <aside class="notes">System One models are decision models: one call returns a calibrated label such as safe or medical_advice, with no generated text.</aside>
 </section>
 
 <!-- 10 -->
 <section>
-  <p class="eyebrow">09 · Live demo · 3 min</p>
-  <h2>สาธิตบน labclear.onrender.com</h2>
-  <div class="grid" style="grid-template-columns:1.4fr 1fr;align-items:start">
-    <ol class="steps" style="font-size:.72em">
-      <li>ถาม “งบประมาณ 1,500 บาท ควรตรวจแพ็กเกจไหน” → ได้ราคาจริงจากแคตตาล็อก</li>
-      <li>ถาม “HbA1c คืออะไร” → คำตอบภาษาไทยพร้อมแหล่งอ้างอิงหมายเลข</li>
-      <li>เปิดรายงานตัวอย่าง → ตรวจค่าที่อ่านได้ → ยืนยัน → ถามอธิบายผล</li>
-      <li>ลองหลอกขอส่วนลด 50% → ถูกปฏิเสธตามนโยบาย</li>
-      <li>ขอเวลานัด → เจ้าหน้าที่ยืนยันใน <code>/staff</code></li>
-    </ol>
-    <div class="shot" style="width:250px;height:470px;justify-self:center"><img src="../docs/assets/screenshots/mobile.jpg" alt="หน้าเว็บบนมือถือ"></div>
+  <p class="eyebrow">09 · Product</p>
+  <h2>Website and customer workspace</h2>
+  <div class="grid g2" style="gap:18px 26px">
+    <div><div class="shot" style="height:215px"><img src="../docs/assets/screenshots/home.jpg" alt="Home page"></div><p class="cap">Home</p></div>
+    <div><div class="shot" style="height:215px"><img src="../docs/assets/screenshots/compare.jpg" alt="Compare packages"></div><p class="cap">Compare packages test by test</p></div>
+    <div><div class="shot" style="height:215px"><img src="../docs/assets/screenshots/lab-dashboard.jpg" alt="Lab dashboard"></div><p class="cap">Lab dashboard (Plus)</p></div>
+    <div><div class="shot" style="height:215px"><img src="../docs/assets/screenshots/lab-report.jpg" alt="Lab Report"></div><p class="cap">Printable Lab Report</p></div>
   </div>
-  <aside class="notes">เปิดเว็บล่วงหน้า 1 นาที (Render แผนฟรีหลับเมื่อไม่มีผู้ใช้ 15 นาที) ถ้าเครือข่ายมีปัญหา ใช้ภาพในสไลด์ก่อนหน้าแทน</aside>
+  <p class="small">Screens from the browser test run (simulated data) · live chat demo on the next slide</p>
 </section>
 
 <!-- 11 -->
 <section>
-  <p class="eyebrow">10 · Testing</p>
-  <h2>ทดสอบตามโจทย์ + ทดสอบอัตโนมัติ</h2>
-  <div class="grid g3" style="margin:14px 0 22px">
-    <div class="card"><div class="stat">10</div><div class="stat-label">คำถามธุรกิจและสุขภาพ (ตรวจคำสำคัญ + แหล่งอ้างอิง)</div></div>
-    <div class="card"><div class="stat">5</div><div class="stat-label">ภาพผลแลปจำลอง 3 รูปแบบ (ผ่านเมื่อค่าตรงเฉลย ≥ 90%)</div></div>
-    <div class="card"><div class="stat">5</div><div class="stat-label">กรณีความปลอดภัย เช่น prompt injection ขอข้อมูลคนอื่น ขอขนาดยา</div></div>
+  <p class="eyebrow">10 · Live demo · 3 min</p>
+  <h2>Demo on labclear.onrender.com</h2>
+  <div class="grid" style="grid-template-columns:1.4fr 1fr;align-items:start">
+    <ol class="steps" style="font-size:.72em">
+      <li>“Which package fits 1,500 baht?” → real catalog prices</li>
+      <li>“What is HbA1c?” → Thai answer with numbered sources</li>
+      <li>Open a sample report → check the values → confirm → ask for an explanation</li>
+      <li>Try to talk it into a 50% discount → refused by policy</li>
+      <li>Request a time → staff confirm it in <code>/staff</code></li>
+    </ol>
+    <div class="shot" style="width:250px;height:470px;justify-self:center"><img src="../docs/assets/screenshots/mobile.jpg" alt="LabClear on a phone"></div>
   </div>
-  <table class="t">
-    <tr><th>ชุดอัตโนมัติ</th><th>ผล</th><th>ครอบคลุม</th></tr>
-    <tr><td>pytest</td><td class="ok">112 ผ่าน</td><td>กติกาธุรกิจ สถานะนัด การชำระเงิน สิทธิ์ ledger งบ เพดาน call</td></tr>
-    <tr><td>Browser UAT (Playwright)</td><td class="ok">29 / 29</td><td>ลูกค้า → จอง → เจ้าหน้าที่ยืนยัน → ชำระเงิน → AI Lab Report</td></tr>
-  </table>
-  <p class="small" style="margin-top:14px">ชุด 10 / 5 / 5 รันกับเว็บจริงด้วย <code>scripts/course_eval.py</code> ผลจริงอยู่ในรายงานหัวข้อ 9</p>
-  <aside class="notes">ชุดอัตโนมัติใช้ตัวแทนโมเดล จึงพิสูจน์ flow และหน้าจอ ส่วนคุณภาพคำตอบวัดจากชุดที่รันกับเว็บจริง</aside>
+  <aside class="notes">Open the site a minute early: Render's free plan sleeps after 15 idle minutes. If the network fails, use the screenshots on the previous slide.</aside>
 </section>
 
 <!-- 12 -->
 <section>
-  <p class="eyebrow">11 · Improvements</p>
-  <h2>3 จุด ก่อน → หลัง</h2>
-  <table class="t" style="font-size:.6em">
-    <tr><th style="width:24%">จุด</th><th>ก่อน</th><th>หลัง</th></tr>
-    <tr><td><strong>AI บน Render ฟรี</strong></td><td>“Assistant unavailable” เพราะตัวนับ call อยู่บนดิสก์ที่ถูกล้างทุกครั้งที่รีสตาร์ต</td><td>ย้ายตัวนับไป PostgreSQL ใช้งานได้บนแผนฟรี และเห็นยอดในหน้า Staff</td></tr>
-    <tr><td><strong>แหล่งอ้างอิง</strong></td><td>คำตอบแสดงรหัสดิบ เช่น <code>[siriraj-glucose-07]</code></td><td>หมายเลข [1] [2] ลิงก์ไปแหล่งจริง + กล่อง “How this was checked”</td></tr>
-    <tr><td><strong>การจอง</strong></td><td>ยืนยันนัดอัตโนมัติ เสี่ยงเต็มคิวหรือผิดเงื่อนไข</td><td>สถานะ “รอยืนยัน” เจ้าหน้าที่กดยืนยันก่อนชำระเงิน</td></tr>
+  <p class="eyebrow">11 · Testing</p>
+  <h2>Assignment tests and automated tests</h2>
+  <div class="grid g3" style="margin:14px 0 22px">
+    <div class="card"><div class="stat">10</div><div class="stat-label">business and health questions (keywords + sources)</div></div>
+    <div class="card"><div class="stat">5</div><div class="stat-label">synthetic lab reports in 3 layouts (pass at ≥ 90% values)</div></div>
+    <div class="card"><div class="stat">5</div><div class="stat-label">safety cases: injection, other people's data, dosing</div></div>
+  </div>
+  <table class="t">
+    <tr><th>Automated suite</th><th>Result</th><th>Covers</th></tr>
+    <tr><td>pytest</td><td class="ok">108 passed</td><td>Business rules, bookings, payments, permissions, ledger, call cap, AI providers, safety guards</td></tr>
+    <tr><td>Browser UAT (Playwright)</td><td class="ok">30 / 30</td><td>Customer → booking → staff confirmation → payment → AI Lab Report → AI providers page</td></tr>
   </table>
+  <p class="small" style="margin-top:14px">The 10 / 5 / 5 sets run against the live site with <code>scripts/course_eval.py</code>; results are in the report.</p>
+  <aside class="notes">Automated suites use model doubles, so they prove flows and screens; answer quality is measured by the live evaluation.</aside>
 </section>
 
 <!-- 13 -->
 <section>
-  <p class="eyebrow">12 · Cost &amp; limits</p>
-  <h2>ใช้งานจริงได้ ในงบที่คุมได้</h2>
+  <p class="eyebrow">12 · Improvements</p>
+  <h2>Before → after</h2>
+  <table class="t" style="font-size:.6em">
+    <tr><th style="width:24%">Area</th><th>Before</th><th>After</th></tr>
+    <tr><td><strong>AI on Render free</strong></td><td>“Assistant unavailable”: the call counter lived on a disk wiped at every restart</td><td>Counter moved to the database; works on the free plan and shows in the staff view</td></tr>
+    <tr><td><strong>Sources</strong></td><td>Answers showed raw IDs such as <code>[siriraj-glucose-07]</code></td><td>Numbered [1] [2] links to real sources plus “How this was checked”</td></tr>
+    <tr><td><strong>Booking</strong></td><td>Auto-confirmed, risking full slots or broken rules</td><td>“Awaiting confirmation” until staff confirm, then payment</td></tr>
+    <tr><td><strong>AI providers</strong></td><td>One hard-coded provider; keys only in server settings</td><td>12 providers and 3 safety models, chosen on an admin page with encrypted keys</td></tr>
+  </table>
+</section>
+
+<!-- 14 -->
+<section>
+  <p class="eyebrow">13 · Cost &amp; limits</p>
+  <h2>Useful, on a controlled budget</h2>
   <div class="grid g2">
-    <div class="card"><h3>ต้นทุน</h3><ul>
-      <li>Typhoon API: free tier (200 requests/นาที)</li>
-      <li>Llama Guard 4: จ่ายตามใช้ ราว $0.18 ต่อ 1 ล้านโทเคน</li>
-      <li>Render Web Service + Postgres: แผนฟรี</li>
-      <li>เพดานรวม 300 บาท บังคับในโค้ด</li>
+    <div class="card"><h3>Cost</h3><ul>
+      <li>Typhoon API: free tier</li>
+      <li>OpenThai-SystemOne: free preview, 1,000 decisions a day</li>
+      <li>Render or Vercel and Postgres: free plans</li>
+      <li>Hard cap: 300 THB and a call limit, enforced in code</li>
     </ul></div>
-    <div class="card"><h3>ข้อจำกัด</h3><ul>
-      <li>ข้อมูลธุรกิจและผลแลปเป็นข้อมูลจำลอง</li>
-      <li>ไม่ใช่คำแนะนำทางการแพทย์ ไม่วินิจฉัย</li>
-      <li>Render ฟรีหลับหลังว่าง 15 นาที ครั้งแรกช้า ~1 นาที</li>
-      <li>ฐานข้อมูลฟรีหมดอายุ 30 วัน</li>
+    <div class="card"><h3>Limits</h3><ul>
+      <li>Business data and lab reports are simulated</li>
+      <li>General health information, not a diagnosis</li>
+      <li>Render free sleeps after 15 idle minutes</li>
+      <li>Free Render databases expire after 30 days</li>
     </ul></div>
   </div>
 </section>
 
-<!-- 14 -->
+<!-- 15 -->
 <section class="title-slide">
   <div class="brand"><img src="../static/img/mark.svg" alt="">LabClear</div>
   <div class="rule" style="width:120px"></div>
-  <h1 style="font-size:3em">ขอบคุณครับ</h1>
-  <p class="sub">ถาม–ตอบ</p>
-  <p class="small" style="margin-top:1.2em">ทดลองใช้ <a href="https://labclear.onrender.com">labclear.onrender.com</a><br>
-  โค้ดและรายงาน <a href="https://github.com/siriponsri/LabClear">github.com/siriponsri/LabClear</a></p>
+  <h1 style="font-size:3em">Thank you</h1>
+  <p class="sub">Questions?</p>
+  <p class="small" style="margin-top:1.2em">Try it <a href="https://labclear.onrender.com">labclear.onrender.com</a><br>
+  Code and report <a href="https://github.com/siriponsri/LabClear">github.com/siriponsri/LabClear</a></p>
 </section>
 
 </div></div>

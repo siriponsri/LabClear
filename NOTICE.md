@@ -27,6 +27,12 @@ The documents in `knowledge/medical_sources/raw/` are public education and refer
 the publishers listed in `knowledge/README.md`, kept so answers can be checked against them.
 They remain the property of their publishers.
 
+## AI providers
+
+LabClear can call third-party AI services (Typhoon, OpenAI, Anthropic, Google, Hugging Face, OpenRouter,
+xAI, Moonshot, Alibaba Cloud, DeepSeek, iApp and TypeSafe). Each is used under its own terms with the
+operator's own API key; no provider code is bundled.
+
 ## Data
 
 All packages, prices, centers, payments and lab reports in this project are simulated. The

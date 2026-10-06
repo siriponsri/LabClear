@@ -10,6 +10,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 from config import settings
+from routers.ai_admin import router as ai_admin_router
 from routers.business import router as business_router
 from routers.business_ops import router as business_ops_router
 from routers.samples import router as samples_router
@@ -26,8 +27,8 @@ logging.basicConfig(
 
 app = FastAPI(
     title=settings.APP_NAME,
-    description="Multilingual, LLM-led laboratory conversations grounded in traceable references.",
-    version="3.0.0",
+    description="Health-check chatbot with Thai RAG, lab report reading and multi-provider AI.",
+    version="1.1.0",
 )
 
 cors_origins = [
@@ -47,6 +48,7 @@ if cors_origins:
 app.mount("/static", StaticFiles(directory=BASE_DIR / "static"), name="static")
 templates = Jinja2Templates(directory=BASE_DIR / "templates")
 app.include_router(samples_router)
+app.include_router(ai_admin_router)
 app.include_router(business_router)
 app.include_router(business_ops_router)
 app.include_router(site_router)

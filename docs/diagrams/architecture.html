@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>สถาปัตยกรรมระบบ LabClear</title>
+<title>LabClear architecture</title>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Noto+Sans+Thai:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -17,10 +17,10 @@ svg{width:100%;display:block}
 <body>
 <div class="frame">
 <p class="eyebrow">Architecture · LabClear</p>
-<h1>สถาปัตยกรรมระบบ LabClear</h1>
+<h1>LabClear architecture</h1>
 <svg viewBox="0 0 800 760" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="rs-arch-title rs-arch-desc">
-  <title id="rs-arch-title">สถาปัตยกรรมระบบ LabClear</title>
-  <desc id="rs-arch-desc">ลูกค้าและเจ้าหน้าที่เรียก FastAPI Business API ผ่าน HTTPS บน Render. API ส่งต่อไปยัง Chatbot pipeline (จุดหลัก), โมดูลอ่านใบผลแลป และโมดูลจองคิว/ชำระเงิน. Pipeline ค้นคลังความรู้ BM25 และเรียก Typhoon/OpenRouter 5 ครั้งต่อข้อความ; โมดูลอ่านผลใช้ OCR; โมดูลจองบันทึกลง PostgreSQL.</desc>
+  <title id="rs-arch-title">LabClear architecture</title>
+  <desc id="rs-arch-desc">Customers and clinic staff call the FastAPI business API over HTTPS. The API routes to the chatbot pipeline (core), the report reader and booking/payments. The pipeline searches the BM25 knowledge base and makes five AI calls per message; the reader uses OCR; bookings, settings and the spending cap are stored in PostgreSQL.</desc>
   <defs>
     <pattern id="rs-dots" width="22" height="22" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="0.9" fill="rgba(33,23,47,0.10)"/></pattern>
     <marker id="rs-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#61586f"/></marker>
@@ -30,14 +30,14 @@ svg{width:100%;display:block}
   <rect width="100%" height="100%" fill="#f8f8ff"/>
   <rect width="100%" height="100%" fill="url(#rs-dots)" opacity="0.55"/>
   <rect x="16" y="24" width="768" height="128" rx="8" fill="rgba(33,23,47,0.02)" stroke="rgba(33,23,47,0.12)" stroke-width="0.8"/>
-  <rect x="350.0" y="28" width="100" height="12" rx="2" fill="#f8f8ff"/>
-  <text x="400" y="37.5" fill="rgba(33,23,47,0.52)" font-size="9" font-weight="500" text-anchor="middle"><tspan font-family="'Geist Mono','Noto Sans Thai',monospace" letter-spacing="0.14em">USERS · </tspan><tspan font-family="'Noto Sans Thai','Geist',sans-serif" font-size="10" letter-spacing="0">ผู้ใช้งาน</tspan></text>
+  <rect x="366.0" y="28" width="68" height="12" rx="2" fill="#f8f8ff"/>
+  <text x="400" y="37.5" fill="rgba(33,23,47,0.52)" font-size="9" font-weight="500" text-anchor="middle"><tspan font-family="'Geist Mono','Noto Sans Thai',monospace" letter-spacing="0.14em">USERS</tspan></text>
   <rect x="16" y="200" width="768" height="288" rx="8" fill="rgba(33,23,47,0.02)" stroke="rgba(33,23,47,0.12)" stroke-width="0.8"/>
-  <rect x="298.0" y="204" width="204" height="12" rx="2" fill="#f8f8ff"/>
-  <text x="400" y="213.5" fill="rgba(33,23,47,0.52)" font-size="9" font-weight="500" text-anchor="middle"><tspan font-family="'Geist Mono','Noto Sans Thai',monospace" letter-spacing="0.14em">RENDER WEB SERVICE · </tspan><tspan font-family="'Noto Sans Thai','Geist',sans-serif" font-size="10" letter-spacing="0">แอปพลิเคชัน</tspan></text>
+  <rect x="284.0" y="204" width="232" height="12" rx="2" fill="#f8f8ff"/>
+  <text x="400" y="213.5" fill="rgba(33,23,47,0.52)" font-size="9" font-weight="500" text-anchor="middle"><tspan font-family="'Geist Mono','Noto Sans Thai',monospace" letter-spacing="0.14em">WEB SERVICE · RENDER OR VERCEL</tspan></text>
   <rect x="16" y="536" width="768" height="128" rx="8" fill="rgba(33,23,47,0.02)" stroke="rgba(33,23,47,0.12)" stroke-width="0.8"/>
-  <rect x="438.0" y="540" width="184" height="12" rx="2" fill="#f8f8ff"/>
-  <text x="530" y="549.5" fill="rgba(33,23,47,0.52)" font-size="9" font-weight="500" text-anchor="middle"><tspan font-family="'Geist Mono','Noto Sans Thai',monospace" letter-spacing="0.14em">DATA &amp; MODELS · </tspan><tspan font-family="'Noto Sans Thai','Geist',sans-serif" font-size="10" letter-spacing="0">ข้อมูลและโมเดล</tspan></text>
+  <rect x="470.0" y="540" width="120" height="12" rx="2" fill="#f8f8ff"/>
+  <text x="530" y="549.5" fill="rgba(33,23,47,0.52)" font-size="9" font-weight="500" text-anchor="middle"><tspan font-family="'Geist Mono','Noto Sans Thai',monospace" letter-spacing="0.14em">DATA &amp; MODELS</tspan></text>
   <line x1="140.0" y1="136" x2="140.0" y2="232" stroke="#2e5aa8" stroke-width="1.2" marker-end="url(#rs-arrow-link)"/>
   <line x1="660.0" y1="136" x2="660.0" y2="232" stroke="#2e5aa8" stroke-width="1.2" marker-end="url(#rs-arrow-link)"/>
   <line x1="140.0" y1="312" x2="140.0" y2="392" stroke="#8a2be2" stroke-width="1.6" marker-end="url(#rs-arrow-accent)"/>
@@ -57,10 +57,10 @@ svg{width:100%;display:block}
   <text x="400.0" y="356.0" fill="#61586f" font-size="11" font-weight="500" font-family="'Geist Mono','Noto Sans Thai',monospace" text-anchor="middle" letter-spacing="0.06em">/REPORTS/READ</text>
   <rect x="594.0" y="345.0" width="132" height="14" rx="2" fill="#f8f8ff"/>
   <text x="660.0" y="356.0" fill="#61586f" font-size="11" font-weight="500" font-family="'Geist Mono','Noto Sans Thai',monospace" text-anchor="middle" letter-spacing="0.06em">/BOOKINGS · /PAY</text>
-  <rect x="114.0" y="505.0" width="52" height="14" rx="2" fill="#f8f8ff"/>
-  <text x="140.0" y="516.0" fill="#61586f" font-size="11" font-weight="500" font-family="'Noto Sans Thai','Geist',sans-serif" text-anchor="middle" letter-spacing="0em">ค้นข้อมูล</text>
-  <rect x="222.0" y="505.0" width="96" height="14" rx="2" fill="#f8f8ff"/>
-  <text x="270.0" y="516.0" fill="#61586f" font-size="11" font-weight="500" font-family="'Noto Sans Thai','Geist',sans-serif" text-anchor="middle" letter-spacing="0em">5 CALLS/ข้อความ</text>
+  <rect x="112.0" y="505.0" width="56" height="14" rx="2" fill="#f8f8ff"/>
+  <text x="140.0" y="516.0" fill="#61586f" font-size="11" font-weight="500" font-family="'Geist Mono','Noto Sans Thai',monospace" text-anchor="middle" letter-spacing="0.06em">SEARCH</text>
+  <rect x="224.0" y="505.0" width="92" height="14" rx="2" fill="#f8f8ff"/>
+  <text x="270.0" y="516.0" fill="#61586f" font-size="11" font-weight="500" font-family="'Geist Mono','Noto Sans Thai',monospace" text-anchor="middle" letter-spacing="0.06em">5 CALLS/MSG</text>
   <rect x="360.0" y="505.0" width="80" height="14" rx="2" fill="#f8f8ff"/>
   <text x="400.0" y="516.0" fill="#61586f" font-size="11" font-weight="500" font-family="'Geist Mono','Noto Sans Thai',monospace" text-anchor="middle" letter-spacing="0.06em">OCR · LLM</text>
   <rect x="642.0" y="505.0" width="36" height="14" rx="2" fill="#f8f8ff"/>
@@ -70,16 +70,16 @@ svg{width:100%;display:block}
     <rect x="32" y="56" width="216" height="80" rx="6" fill="rgba(97,88,111,0.10)" stroke="#8d819d" stroke-width="1"/>
     <rect x="40" y="64" width="32" height="14" rx="2" fill="none" stroke="rgba(141,129,157,0.40)" stroke-width="0.8"/>
     <text x="56.0" y="74.5" fill="#8d819d" font-size="9" font-weight="500" font-family="'Geist Mono','Noto Sans Thai',monospace" text-anchor="middle" letter-spacing="0.08em">WEB</text>
-    <text x="140.0" y="100.0" fill="#21172f" font-size="17" font-weight="600" font-family="'Noto Sans Thai','Geist',sans-serif" text-anchor="middle">ลูกค้า</text>
-    <text x="140.0" y="120.0" fill="#61586f" font-size="12" font-family="'Noto Sans Thai','Geist',sans-serif" text-anchor="middle">หน้าเว็บ · แชท · อ่านผลแลป</text>
+    <text x="140.0" y="100.0" fill="#21172f" font-size="17" font-weight="600" font-family="'Geist','Noto Sans Thai',sans-serif" text-anchor="middle">Customers</text>
+    <text x="140.0" y="120.0" fill="#61586f" font-size="12" font-family="'Geist Mono','Noto Sans Thai',monospace" text-anchor="middle">website · chat · reports</text>
   </g>
   <g>
     <rect x="552" y="56" width="216" height="80" rx="6" fill="#f8f8ff"/>
     <rect x="552" y="56" width="216" height="80" rx="6" fill="rgba(97,88,111,0.10)" stroke="#8d819d" stroke-width="1"/>
     <rect x="560" y="64" width="44" height="14" rx="2" fill="none" stroke="rgba(141,129,157,0.40)" stroke-width="0.8"/>
     <text x="582.0" y="74.5" fill="#8d819d" font-size="9" font-weight="500" font-family="'Geist Mono','Noto Sans Thai',monospace" text-anchor="middle" letter-spacing="0.08em">STAFF</text>
-    <text x="660.0" y="100.0" fill="#21172f" font-size="17" font-weight="600" font-family="'Noto Sans Thai','Geist',sans-serif" text-anchor="middle">เจ้าหน้าที่ร้าน</text>
-    <text x="660.0" y="120.0" fill="#61586f" font-size="12" font-family="'Noto Sans Thai','Geist',sans-serif" text-anchor="middle">/staff · ยืนยันคิว · ดูงบ</text>
+    <text x="660.0" y="100.0" fill="#21172f" font-size="17" font-weight="600" font-family="'Geist','Noto Sans Thai',sans-serif" text-anchor="middle">Clinic staff</text>
+    <text x="660.0" y="120.0" fill="#61586f" font-size="12" font-family="'Geist Mono','Noto Sans Thai',monospace" text-anchor="middle">/staff · bookings · AI keys</text>
   </g>
   <g>
     <rect x="32" y="232" width="736" height="80" rx="6" fill="#f8f8ff"/>
@@ -102,32 +102,32 @@ svg{width:100%;display:block}
     <rect x="292" y="392" width="216" height="80" rx="6" fill="#ffffff" stroke="#21172f" stroke-width="1"/>
     <rect x="300" y="400" width="32" height="14" rx="2" fill="none" stroke="rgba(33,23,47,0.40)" stroke-width="0.8"/>
     <text x="316.0" y="410.5" fill="#21172f" font-size="9" font-weight="500" font-family="'Geist Mono','Noto Sans Thai',monospace" text-anchor="middle" letter-spacing="0.08em">OCR</text>
-    <text x="400.0" y="436.0" fill="#21172f" font-size="17" font-weight="600" font-family="'Noto Sans Thai','Geist',sans-serif" text-anchor="middle">อ่านใบผลแลป</text>
-    <text x="400.0" y="456.0" fill="#61586f" font-size="12" font-family="'Noto Sans Thai','Geist',sans-serif" text-anchor="middle">OCR → ค่า → สถานะ</text>
+    <text x="400.0" y="436.0" fill="#21172f" font-size="17" font-weight="600" font-family="'Geist','Noto Sans Thai',sans-serif" text-anchor="middle">Report reader</text>
+    <text x="400.0" y="456.0" fill="#61586f" font-size="12" font-family="'Geist Mono','Noto Sans Thai',monospace" text-anchor="middle">OCR → values → status</text>
   </g>
   <g>
     <rect x="552" y="392" width="216" height="80" rx="6" fill="#f8f8ff"/>
     <rect x="552" y="392" width="216" height="80" rx="6" fill="#ffffff" stroke="#21172f" stroke-width="1"/>
     <rect x="560" y="400" width="32" height="14" rx="2" fill="none" stroke="rgba(33,23,47,0.40)" stroke-width="0.8"/>
     <text x="576.0" y="410.5" fill="#21172f" font-size="9" font-weight="500" font-family="'Geist Mono','Noto Sans Thai',monospace" text-anchor="middle" letter-spacing="0.08em">BIZ</text>
-    <text x="660.0" y="436.0" fill="#21172f" font-size="17" font-weight="600" font-family="'Noto Sans Thai','Geist',sans-serif" text-anchor="middle">จองคิว · ชำระเงิน</text>
-    <text x="660.0" y="456.0" fill="#61586f" font-size="12" font-family="'Noto Sans Thai','Geist',sans-serif" text-anchor="middle">แพ็กเกจ · Plus · staff</text>
+    <text x="660.0" y="436.0" fill="#21172f" font-size="17" font-weight="600" font-family="'Geist','Noto Sans Thai',sans-serif" text-anchor="middle">Booking · Payments</text>
+    <text x="660.0" y="456.0" fill="#61586f" font-size="12" font-family="'Geist Mono','Noto Sans Thai',monospace" text-anchor="middle">packages · Plus · staff</text>
   </g>
   <g>
     <rect x="32" y="568" width="216" height="80" rx="6" fill="#f8f8ff"/>
     <rect x="32" y="568" width="216" height="80" rx="6" fill="rgba(33,23,47,0.05)" stroke="#61586f" stroke-width="1"/>
     <rect x="40" y="576" width="32" height="14" rx="2" fill="none" stroke="rgba(97,88,111,0.50)" stroke-width="0.8"/>
     <text x="56.0" y="586.5" fill="#61586f" font-size="9" font-weight="500" font-family="'Geist Mono','Noto Sans Thai',monospace" text-anchor="middle" letter-spacing="0.08em">RAG</text>
-    <text x="140.0" y="612.0" fill="#21172f" font-size="17" font-weight="600" font-family="'Noto Sans Thai','Geist',sans-serif" text-anchor="middle">คลังความรู้</text>
-    <text x="140.0" y="632.0" fill="#61586f" font-size="12" font-family="'Noto Sans Thai','Geist',sans-serif" text-anchor="middle">BM25 · 58 แหล่ง · catalog</text>
+    <text x="140.0" y="612.0" fill="#21172f" font-size="17" font-weight="600" font-family="'Geist','Noto Sans Thai',sans-serif" text-anchor="middle">Knowledge base</text>
+    <text x="140.0" y="632.0" fill="#61586f" font-size="12" font-family="'Geist Mono','Noto Sans Thai',monospace" text-anchor="middle">BM25 · 58 sources · catalog</text>
   </g>
   <g>
     <rect x="292" y="568" width="216" height="80" rx="6" fill="#f8f8ff"/>
     <rect x="292" y="568" width="216" height="80" rx="6" fill="rgba(33,23,47,0.03)" stroke="rgba(33,23,47,0.30)" stroke-width="1"/>
     <rect x="300" y="576" width="32" height="14" rx="2" fill="none" stroke="rgba(33,23,47,0.22)" stroke-width="0.8"/>
     <text x="316.0" y="586.5" fill="#8d819d" font-size="9" font-weight="500" font-family="'Geist Mono','Noto Sans Thai',monospace" text-anchor="middle" letter-spacing="0.08em">API</text>
-    <text x="400.0" y="612.0" fill="#21172f" font-size="17" font-weight="600" font-family="'Geist','Noto Sans Thai',sans-serif" text-anchor="middle">Typhoon · OpenRouter</text>
-    <text x="400.0" y="632.0" fill="#61586f" font-size="12" font-family="'Geist Mono','Noto Sans Thai',monospace" text-anchor="middle">LLM · OCR · Llama Guard 4</text>
+    <text x="400.0" y="612.0" fill="#21172f" font-size="17" font-weight="600" font-family="'Geist','Noto Sans Thai',sans-serif" text-anchor="middle">AI providers</text>
+    <text x="400.0" y="632.0" fill="#61586f" font-size="12" font-family="'Geist Mono','Noto Sans Thai',monospace" text-anchor="middle">LLM · OCR · SystemOne guard</text>
   </g>
   <g>
     <rect x="552" y="568" width="216" height="80" rx="6" fill="#f8f8ff"/>
@@ -135,26 +135,26 @@ svg{width:100%;display:block}
     <rect x="560" y="576" width="28" height="14" rx="2" fill="none" stroke="rgba(97,88,111,0.50)" stroke-width="0.8"/>
     <text x="574.0" y="586.5" fill="#61586f" font-size="9" font-weight="500" font-family="'Geist Mono','Noto Sans Thai',monospace" text-anchor="middle" letter-spacing="0.08em">DB</text>
     <text x="660.0" y="612.0" fill="#21172f" font-size="17" font-weight="600" font-family="'Geist','Noto Sans Thai',sans-serif" text-anchor="middle">PostgreSQL</text>
-    <text x="660.0" y="632.0" fill="#61586f" font-size="12" font-family="'Noto Sans Thai','Geist',sans-serif" text-anchor="middle">เข้ารหัส · ledger 300 บาท</text>
+    <text x="660.0" y="632.0" fill="#61586f" font-size="12" font-family="'Geist Mono','Noto Sans Thai',monospace" text-anchor="middle">encrypted · keys · THB cap</text>
   </g>
   <line x1="16" y1="696" x2="784" y2="696" stroke="rgba(33,23,47,0.12)" stroke-width="0.8"/>
-  <text x="16" y="716" fill="#61586f" font-size="9" font-weight="500" text-anchor="start"><tspan font-family="'Geist Mono','Noto Sans Thai',monospace" letter-spacing="0.18em">LEGEND · </tspan><tspan font-family="'Noto Sans Thai','Geist',sans-serif" font-size="10" letter-spacing="0">คำอธิบายสัญลักษณ์</tspan></text>
+  <text x="16" y="716" fill="#61586f" font-size="9" font-weight="500" text-anchor="start"><tspan font-family="'Geist Mono','Noto Sans Thai',monospace" letter-spacing="0.18em">LEGEND</tspan></text>
   <rect x="16" y="731" width="16" height="11" rx="2" fill="rgba(138,43,226,0.08)" stroke="#8a2be2" stroke-width="1"/>
-  <text x="38" y="740" fill="#61586f" font-size="11.5" font-family="'Noto Sans Thai','Geist',sans-serif">จุดหลัก</text>
-  <rect x="92" y="731" width="16" height="11" rx="2" fill="#ffffff" stroke="#21172f" stroke-width="1"/>
-  <text x="114" y="740" fill="#61586f" font-size="11.5" font-family="'Noto Sans Thai','Geist',sans-serif">โมดูลในแอป</text>
-  <rect x="188" y="731" width="16" height="11" rx="2" fill="rgba(33,23,47,0.05)" stroke="#61586f" stroke-width="1"/>
-  <text x="210" y="740" fill="#61586f" font-size="11.5" font-family="'Noto Sans Thai','Geist',sans-serif">ที่เก็บข้อมูล</text>
-  <rect x="280" y="731" width="16" height="11" rx="2" fill="rgba(33,23,47,0.03)" stroke="rgba(33,23,47,0.30)" stroke-width="1"/>
-  <text x="302" y="740" fill="#61586f" font-size="11.5" font-family="'Noto Sans Thai','Geist',sans-serif">บริการภายนอก</text>
-  <rect x="392" y="731" width="16" height="11" rx="2" fill="rgba(97,88,111,0.10)" stroke="#8d819d" stroke-width="1"/>
-  <text x="414" y="740" fill="#61586f" font-size="11.5" font-family="'Noto Sans Thai','Geist',sans-serif">ผู้ใช้</text>
-  <line x1="452" y1="736" x2="480" y2="736" stroke="#2e5aa8" stroke-width="1.2" marker-end="url(#rs-arrow-link)"/>
-  <text x="488" y="740" fill="#61586f" font-size="11.5" font-family="'Noto Sans Thai','Geist',sans-serif">คำขอ HTTPS</text>
-  <line x1="572" y1="736" x2="600" y2="736" stroke="#8a2be2" stroke-width="1.6" marker-end="url(#rs-arrow-accent)"/>
-  <text x="608" y="740" fill="#61586f" font-size="11.5" font-family="'Noto Sans Thai','Geist',sans-serif">เส้นทางแชท</text>
-  <line x1="684" y1="736" x2="712" y2="736" stroke="#61586f" stroke-width="1.2" marker-end="url(#rs-arrow)"/>
-  <text x="720" y="740" fill="#61586f" font-size="11.5" font-family="'Noto Sans Thai','Geist',sans-serif">เรียกใช้ภายใน</text>
+  <text x="38" y="740" fill="#61586f" font-size="11.5" font-family="'Noto Sans Thai','Geist',sans-serif">Core</text>
+  <rect x="84" y="731" width="16" height="11" rx="2" fill="#ffffff" stroke="#21172f" stroke-width="1"/>
+  <text x="106" y="740" fill="#61586f" font-size="11.5" font-family="'Noto Sans Thai','Geist',sans-serif">Module</text>
+  <rect x="168" y="731" width="16" height="11" rx="2" fill="rgba(33,23,47,0.05)" stroke="#61586f" stroke-width="1"/>
+  <text x="190" y="740" fill="#61586f" font-size="11.5" font-family="'Noto Sans Thai','Geist',sans-serif">Data store</text>
+  <rect x="268" y="731" width="16" height="11" rx="2" fill="rgba(33,23,47,0.03)" stroke="rgba(33,23,47,0.30)" stroke-width="1"/>
+  <text x="290" y="740" fill="#61586f" font-size="11.5" font-family="'Noto Sans Thai','Geist',sans-serif">External</text>
+  <rect x="356" y="731" width="16" height="11" rx="2" fill="rgba(97,88,111,0.10)" stroke="#8d819d" stroke-width="1"/>
+  <text x="378" y="740" fill="#61586f" font-size="11.5" font-family="'Noto Sans Thai','Geist',sans-serif">User</text>
+  <line x1="424" y1="736" x2="452" y2="736" stroke="#2e5aa8" stroke-width="1.2" marker-end="url(#rs-arrow-link)"/>
+  <text x="460" y="740" fill="#61586f" font-size="11.5" font-family="'Noto Sans Thai','Geist',sans-serif">HTTPS request</text>
+  <line x1="560" y1="736" x2="588" y2="736" stroke="#8a2be2" stroke-width="1.6" marker-end="url(#rs-arrow-accent)"/>
+  <text x="596" y="740" fill="#61586f" font-size="11.5" font-family="'Noto Sans Thai','Geist',sans-serif">Chat path</text>
+  <line x1="668" y1="736" x2="696" y2="736" stroke="#61586f" stroke-width="1.2" marker-end="url(#rs-arrow)"/>
+  <text x="704" y="740" fill="#61586f" font-size="11.5" font-family="'Noto Sans Thai','Geist',sans-serif">Internal call</text>
 </svg>
 </div>
 </body>

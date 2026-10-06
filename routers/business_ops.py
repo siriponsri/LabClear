@@ -89,7 +89,6 @@ async def budget_status(request: Request):
             raise ConversationError("forbidden", "Manager access required.", 403)
     return {"cost": cost_ledger.status(), "network_enabled": settings.PROVIDER_NETWORK_ENABLED,
             "call_cycle": settings.PROVIDER_BUDGET_CYCLE_ID or None,
-            "call_limits": {"llm": settings.PROVIDER_BUDGET_LLM_LIMIT, "ocr": settings.PROVIDER_BUDGET_OCR_LIMIT},
             "hosted_calls": __import__("services.conversation_transport", fromlist=["durable_call_status"]).durable_call_status()}
 
 
