@@ -1,0 +1,19 @@
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Node / browser tests
+node_modules/
+test-results/
+
+# Secrets and local data (generated at runtime; never commit)
+.env
+.env.local
+data/*
+!data/.gitkeep
+
+# OS
+.DS_Store
+Thumbs.db

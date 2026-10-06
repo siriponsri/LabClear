@@ -1,0 +1,12 @@
+{% extends "site/base.html" %}
+{% block body_class %} lab-report-page{% endblock %}
+{% block body_attrs %}data-no-dock="true"{% endblock %}
+{% block content %}
+<div class="wrap page-head no-print">
+  <nav class="crumbs small" aria-label="Breadcrumb"><a href="/app?view=labs">Lab dashboard</a> / <a href="/app?view=reports">My reports</a> / <span aria-current="page">Lab Report</span></nav>
+</div>
+<article class="wrap lab-doc" data-lab-report="{{ report_id }}" aria-live="polite">
+  <div class="skeleton"></div>
+</article>
+{% endblock %}
+{% block scripts %}<script src="/static/js/lab_report.js" defer></script>{% endblock %}

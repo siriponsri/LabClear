@@ -1,0 +1,30 @@
+{% extends "site/base.html" %}
+{% block content %}
+<div class="wrap page-head">
+  <nav class="crumbs small" aria-label="Breadcrumb"><a href="/">Home</a> / <span aria-current="page">Centers</span></nav>
+  <h1>Our centers</h1>
+  <p class="muted">Three simulated service areas. Every appointment request is confirmed by the team at that center.</p>
+</div>
+<div class="wrap center-list">
+  {% for b in branches %}
+  <article class="card center-row" id="{{ b.id }}">
+    <div class="stack-sm">
+      <h2 class="h3">{{ b.name }}</h2>
+      <p class="muted">{{ b.area }}</p>
+      <dl class="facts small">
+        <div><dt>Hours</dt><dd>{{ b.hours }}, <span class="nowrap">{{ b.timezone.split('/')[-1]|replace('_', ' ') }} time</span></dd></div>
+        <div><dt>Slots</dt><dd>Every {{ b.booking_slot_minutes }} minutes, up to {{ b.capacity_per_slot }} visits each</dd></div>
+        <div><dt>Closed</dt><dd>{{ b.closed_days|join(', ') }}</dd></div>
+      </dl>
+      <p class="callout warn small">{{ b.address_disclaimer }}</p>
+    </div>
+    <div class="stack-sm center-actions">
+      <a class="btn primary" href="/app?view=book&branch={{ b.id }}">Request a time here</a>
+      <a class="btn" href="/packages?branch_id={{ b.id }}">Packages offered</a>
+      <a class="btn ghost" href="https://www.google.com/maps/search/?api=1&query={{ b.lat }},{{ b.lng }}" target="_blank" rel="noopener noreferrer">Open area in Google Maps<span class="sr-only"> (opens in a new tab)</span></a>
+    </div>
+  </article>
+  {% endfor %}
+  <p class="small muted">Embedded maps are {{ 'enabled' if maps_key else 'not configured; links open Google Maps' }}. {{ policies.handoff_policy }}</p>
+</div>
+{% endblock %}

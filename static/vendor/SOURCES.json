@@ -1,0 +1,13 @@
+{
+  "purpose": "Self-hosted dependencies; no remote scripts or fonts at app runtime.",
+  "marked": "https://cdn.jsdelivr.net/npm/marked@15.0.12/marked.min.js",
+  "dompurify": {
+    "source": "https://registry.npmjs.org/dompurify/-/dompurify-3.4.16.tgz",
+    "version": "3.4.16",
+    "sha256": "2c90a9b46d6463f26038a29b686e82bc91de01fdac9d5229e7cfe3b360134ea2"
+  },
+  "three": {
+    "version": "0.186.1",
+    "note": "bundled into static/js/hero3d.js with esbuild; license in static/vendor/three/LICENSE"
+  }
+}

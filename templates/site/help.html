@@ -1,0 +1,32 @@
+{% extends "site/base.html" %}
+{% block content %}
+<div class="wrap page-head">
+  <nav class="crumbs small" aria-label="Breadcrumb"><a href="/">Home</a> / <span aria-current="page">Help</span></nav>
+  <h1>Help and policies</h1>
+</div>
+<div class="wrap prose stack">
+  <nav class="toc small" aria-label="On this page"><a href="#simulation">Simulation</a><a href="#booking">Booking</a><a href="#payments">Payments</a><a href="#reports">Reports</a><a href="#assistant">Assistant</a><a href="#team">Our team</a></nav>
+  <section id="simulation" class="card stack-sm"><h2 class="h3">What is simulated</h2>
+    <p>LabClear is a university coursework business. The packages, prices, centers, staff accounts and payments are simulated. No clinic operates at the listed areas and no real money can be paid. Medical explanations use real public references listed on <a href="/sources">Medical sources</a>.</p>
+    <ul class="plain small">
+      <li><span class="badge sim">Simulated business data</span> packages, prices, <span class="nowrap">centers ({{ policies.version }})</span></li>
+      <li><span class="badge sim">Simulated integration</span> test payments, LINE channel simulator, center calendar</li>
+      <li><span class="badge">Live model</span> only when the owner connects an AI provider; otherwise the assistant says it is unavailable</li>
+    </ul></section>
+  <section id="booking" class="card stack-sm"><h2 class="h3">Booking, changes and cancellations</h2>
+    <p>Requests hold a half-hour slot until a team member confirms or declines them. Booking is open up to {{ policies.booking_advance_days }} days ahead, Monday to Saturday.</p>
+    <p>{{ policies.cancellation_policy }}</p><p>{{ policies.refund_policy }}</p></section>
+  <section id="payments" class="card stack-sm"><h2 class="h3">Payments</h2>
+    <p>{{ policies.payment_policy }}</p>
+    <p>Payment opens after confirmation. A test payment moves through pending, then paid, failed, expired or cancelled; refunds are approved by a manager. A confirmed appointment and a paid order are separate states.</p></section>
+  <section id="reports" class="card stack-sm"><h2 class="h3">Lab reports</h2>
+    <p>You review every value read from an image or PDF before it is used. Missing values stay empty; the units and ranges printed on your report come first. Deleting a report also clears conversation history that could contain its values.</p></section>
+  <section id="assistant" class="card stack-sm"><h2 class="h3">The assistant</h2>
+    <p>It follows your language, asks for missing details and proposes actions you confirm, such as an appointment request. It does not diagnose, prescribe or change treatment, and it does not suggest extra tests just because a value is outside its range. Severe symptoms need urgent care, not this queue.</p>
+    <p>{{ policies.discount_policy }}</p></section>
+  <section id="team" class="card stack-sm"><h2 class="h3">Talking to our team</h2>
+    <p>{{ policies.handoff_policy }}</p>
+    <ul class="plain small">{% for b in branches %}<li>{{ b.name }} · <span class="nowrap">{{ b.hours }}</span></li>{% endfor %}</ul>
+    <a class="btn primary" href="/app?view=chat&team=1">Talk to our team</a></section>
+</div>
+{% endblock %}

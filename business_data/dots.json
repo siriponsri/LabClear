@@ -1,0 +1,9 @@
+{
+  "version": "2026-10-06",
+  "is_demo": true,
+  "note": "Assistant roles ('Dots') are AI roles with server-enforced permissions, routed automatically in one conversation. They are not people and not clinicians. Kept to two roles so customers reach packages, booking and reports without extra steps.",
+  "dots": [
+    {"id": "advisor", "name": "Health-check Advisor", "role": "Packages, booking and organizations", "summary": "Helps you choose and compare packages, find a time, prepare an appointment request or payment, and start an organization quotation.", "actions": ["answer", "clarify", "redirect", "urgent", "quote", "book", "pay", "organization", "handoff", "link"], "ui": ["filter_catalog", "open_package", "open_compare", "prefill_booking", "open_org_form", "open_view"], "reads": ["catalog", "branches", "policies", "medical", "customer_bookings"], "enabled": true},
+    {"id": "explainer", "name": "Report Explainer", "role": "Lab report explanations", "summary": "Explains values you confirmed from your report, with public sources. It has no sales or booking tools.", "actions": ["answer", "clarify", "redirect", "urgent", "handoff"], "ui": ["highlight_report_field", "open_view"], "reads": ["report", "medical", "policies"], "enabled": true}
+  ]
+}

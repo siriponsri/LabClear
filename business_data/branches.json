@@ -1,0 +1,53 @@
+{
+  "version": "2026-10-05-proposed",
+  "branches": [
+    {
+      "id": "BKK01",
+      "name": "Bangkok Ari Demo Center",
+      "area": "Phaya Thai, Bangkok",
+      "lat": 13.7796,
+      "lng": 100.5446,
+      "is_demo": true,
+      "address_disclaimer": "Area marker only. No operating clinic exists at this pin. Do not travel to this demo location.",
+      "timezone": "Asia/Bangkok",
+      "hours": "Mon-Sat 07:00-16:00",
+      "booking_slot_minutes": 30,
+      "capacity_per_slot": 3,
+      "closed_days": [
+        "Sunday"
+      ]
+    },
+    {
+      "id": "CNX01",
+      "name": "Chiang Mai Suthep Demo Center",
+      "area": "Suthep, Chiang Mai",
+      "lat": 18.7969,
+      "lng": 98.9674,
+      "is_demo": true,
+      "address_disclaimer": "Area marker only. No operating clinic exists at this pin. Do not travel to this demo location.",
+      "timezone": "Asia/Bangkok",
+      "hours": "Mon-Sat 07:00-16:00",
+      "booking_slot_minutes": 30,
+      "capacity_per_slot": 3,
+      "closed_days": [
+        "Sunday"
+      ]
+    },
+    {
+      "id": "KKC01",
+      "name": "Khon Kaen City Demo Center",
+      "area": "Mueang Khon Kaen",
+      "lat": 16.4419,
+      "lng": 102.835,
+      "is_demo": true,
+      "address_disclaimer": "Area marker only. No operating clinic exists at this pin. Do not travel to this demo location.",
+      "timezone": "Asia/Bangkok",
+      "hours": "Mon-Sat 07:00-16:00",
+      "booking_slot_minutes": 30,
+      "capacity_per_slot": 3,
+      "closed_days": [
+        "Sunday"
+      ]
+    }
+  ]
+}

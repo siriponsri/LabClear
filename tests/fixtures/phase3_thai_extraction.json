@@ -1,0 +1,20 @@
+{
+  "document_type": "รายงานผลสังเคราะห์",
+  "fields": [
+    {
+      "marker": "ตัวอย่าง-A",
+      "raw_value": "12,5",
+      "unit": "หน่วยทดลอง",
+      "reference_low": "10",
+      "reference_high": "15"
+    },
+    {
+      "marker": "ตัวอย่าง-B",
+      "raw_value": null,
+      "unit": null,
+      "reference_low": null,
+      "reference_high": null
+    }
+  ],
+  "warnings": ["ตัวอย่างสังเคราะห์ ไม่ใช่ข้อมูลทางคลินิก"]
+}

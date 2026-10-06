@@ -1,0 +1,17 @@
+{% macro money(n) %}฿{{ "{:,}".format(n) }}{% endmacro %}
+
+{% macro kind(p) %}{% if p.segment == 'organization' %}For organizations of 20 or more{% elif p.staff_review_required %}Follow-up test, reviewed with our team before booking{% else %}Book directly{% endif %}{% endmacro %}
+
+{% macro package_card(p, branches=None) %}
+<article class="pkg-row" data-package="{{ p.id }}">
+  <div>
+    <h3><a href="/packages/{{ p.id }}">{{ p.name }}</a></h3>
+    <p class="kind">{{ kind(p) }}</p>
+  </div>
+  <ul class="pkg-tests" aria-label="Included tests">{% for s in p.services %}<li>{{ s }}</li>{% endfor %}</ul>
+  <div class="pkg-price"><strong>{{ money(p.price_thb) }}</strong><span>{{ p.price_unit }}</span></div>
+  <div class="pkg-actions">
+    <label class="compare-toggle"><input type="checkbox" data-compare="{{ p.id }}" data-name="{{ p.name }}"> Compare</label>
+  </div>
+</article>
+{% endmacro %}

@@ -1,0 +1,60 @@
+{% extends "site/base.html" %}
+{% from "site/_macros.html" import money %}
+{% block content %}
+<div class="wrap page-head">
+  <nav class="crumbs small" aria-label="Breadcrumb"><a href="/">Home</a> / <span aria-current="page">For organizations</span></nav>
+  <h1>Health checks for organizations</h1>
+  <p class="muted">For teams of {{ policies.organization_min_people }} or more. At one of our centers or at your workplace.</p>
+</div>
+<div class="wrap org-grid">
+  <section class="stack" aria-labelledby="org-packages">
+    <h2 class="h3" id="org-packages">Organization packages</h2>
+    <div class="table-wrap">
+      <table class="data">
+        <thead><tr><th scope="col">Package</th><th scope="col">Includes</th><th scope="col">Per person</th></tr></thead>
+        <tbody>{% for p in packages %}<tr><td><a href="/packages/{{ p.id }}">{{ p.name }}</a></td><td class="small">{{ p.services|join(', ') }}</td><td><strong>{{ money(p.price_thb) }}</strong></td></tr>{% endfor %}</tbody>
+      </table>
+    </div>
+    <ol class="steps compact">
+      <li><strong>Send your request</strong><span>Headcount, dates and whether you need onsite service.</span></li>
+      <li><strong>Receive a quotation</strong><span>A coordinator prepares it. Revisions create a new version; you can download each as a PDF.</span></li>
+      <li><strong>Accept and plan</strong><span>Accepting creates the service appointment. Payment is arranged with our team.</span></li>
+    </ol>
+    <div class="callout small"><strong>Privacy:</strong> {{ policies.privacy_policy }}</div>
+    <p class="small muted">{{ policies.onsite_service }} {{ policies.discount_policy }}</p>
+  </section>
+  <section class="card stack" aria-labelledby="inq-title" data-inquiry>
+    <h2 class="h3" id="inq-title">Request a quotation</h2>
+    <p class="small muted" data-inquiry-auth>Checking your account…</p>
+    <form class="form-grid" id="inquiry-form" novalidate>
+      <label class="field">Organization name<input class="input" name="organization" required minlength="2" maxlength="160" autocomplete="organization"></label>
+      <label class="field">Your name<input class="input" name="contact_name" required minlength="2" maxlength="120" autocomplete="name"></label>
+      <div class="form-grid two">
+        <label class="field">Number of people<input class="input" name="headcount" type="number" required min="{{ policies.organization_min_people }}" max="10000" value="{{ policies.organization_min_people }}"></label>
+        <label class="field">Preferred date<span class="hint">Optional</span><input class="input" name="preferred_date" type="date"></label>
+      </div>
+      <fieldset>
+        <legend>Where</legend>
+        <label class="check"><input type="radio" name="service_mode" value="center" checked> At one of our centers</label>
+        <label class="check"><input type="radio" name="service_mode" value="onsite"> At our workplace (travel fee quoted)</label>
+      </fieldset>
+      <label class="field">Coordinating center
+        <select class="input" name="branch_id">{% for b in branches %}<option value="{{ b.id }}">{{ b.name }}</option>{% endfor %}</select>
+      </label>
+      <fieldset>
+        <legend>Packages of interest <span class="hint small muted">optional</span></legend>
+        {% for p in packages %}<label class="check"><input type="checkbox" name="package_ids" value="{{ p.id }}" {% if request.query_params.get('package') == p.id %}checked{% endif %}> {{ p.name }}</label>{% endfor %}
+      </fieldset>
+      <label class="field">Anything else<span class="hint">Shifts, languages, accessibility needs. Do not include health information.</span><textarea class="input" name="notes" maxlength="1000"></textarea></label>
+      <p class="field-error" data-form-error role="alert" hidden></p>
+      <div class="form-actions"><button class="btn primary" type="submit">Send request</button><span class="small muted">You need a free account to follow the quotation.</span></div>
+    </form>
+    <div class="state-box" data-inquiry-done hidden>
+      <h3>Request received</h3>
+      <p class="small muted">A coordinator will prepare a quotation. It will appear in My appointments with a notification.</p>
+      <a class="btn primary" href="/app?view=bookings">Open My appointments</a>
+    </div>
+  </section>
+</div>
+{% endblock %}
+{% block scripts %}<script src="/static/js/organizations.js" defer></script>{% endblock %}

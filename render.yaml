@@ -1,0 +1,46 @@
+# Render Blueprint: New → Blueprint → pick this repository.
+# Values marked `sync: false` are entered in the Render dashboard and never committed.
+# See README → "Deploy on Render" for the values to use.
+services:
+  - type: web
+    name: labclear
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python scripts/run_business.py
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.10
+      - key: APP_ENV
+        value: production
+      - key: BUSINESS_EXTERNAL_ENABLED
+        value: "false"
+      # Storage
+      - key: DATABASE_URL
+        sync: false
+      - key: BUSINESS_DATA_KEY
+        sync: false
+      # AI models
+      - key: LLM_API_KEY
+        sync: false
+      - key: VISION_ENABLED
+        sync: false
+      - key: VISION_API_KEY
+        sync: false
+      - key: GUARD_API_KEY
+        sync: false
+      # Spending limits. AI stays off unless PROVIDER_NETWORK_ENABLED is set to true.
+      - key: PROVIDER_NETWORK_ENABLED
+        sync: false
+      - key: PROVIDER_BUDGET_CYCLE_ID
+        sync: false
+      - key: CLOUD_CALL_LIMIT
+        sync: false
+      - key: PROJECT_BUDGET_PRIOR_SPEND_THB
+        sync: false
+      - key: MODEL_PRICES_THB
+        sync: false
+      # Optional access code for the AI features
+      - key: DEMO_ACCESS_CODE
+        sync: false

@@ -1,0 +1,72 @@
+{% extends "site/base.html" %}
+{% from "site/_macros.html" import package_card %}
+{% block content %}
+{% set a = result.applied %}
+<div class="wrap page-head">
+  <nav class="crumbs small" aria-label="Breadcrumb"><a href="/">Home</a> / <span aria-current="page">Health checks</span></nav>
+  <h1>Health checks</h1>
+  <p class="muted">Search by test name, filter by who it is for, price or center, and compare up to three side by side.</p>
+</div>
+<div class="wrap catalog" data-catalog>
+  <form class="filters card" id="filters" action="/packages" method="get" aria-label="Filters">
+    <div class="filters-head"><h2 class="h3">Filters</h2><a class="small" href="/packages" data-reset>Reset all</a></div>
+    <label class="field">Search<input class="input" type="search" name="q" value="{{ a.q }}" maxlength="80" placeholder="e.g. lipid"></label>
+    <fieldset>
+      <legend>Who it is for</legend>
+      <label class="check"><input type="radio" name="segment" value="" {% if not a.segment %}checked{% endif %}> Everyone</label>
+      <label class="check"><input type="radio" name="segment" value="individual" {% if a.segment == 'individual' %}checked{% endif %}> Individuals and families</label>
+      <label class="check"><input type="radio" name="segment" value="organization" {% if a.segment == 'organization' %}checked{% endif %}> Organizations (20+ people)</label>
+    </fieldset>
+    <fieldset>
+      <legend>Booking</legend>
+      <label class="check"><input type="radio" name="review" value="" {% if not a.review %}checked{% endif %}> Any</label>
+      <label class="check"><input type="radio" name="review" value="excluded" {% if a.review == 'excluded' %}checked{% endif %}> Book directly</label>
+      <label class="check"><input type="radio" name="review" value="only" {% if a.review == 'only' %}checked{% endif %}> Needs staff review first</label>
+    </fieldset>
+    <label class="field">Maximum price (THB)
+      <select class="input" name="max_price">
+        <option value="" {% if a.max_price is none %}selected{% endif %}>No limit</option>
+        {% for v in [500, 1000, 1500, 2000, 3000] %}<option value="{{ v }}" {% if a.max_price == v %}selected{% endif %}>Up to ฿{{ "{:,}".format(v) }}</option>{% endfor %}
+      </select>
+    </label>
+    <label class="field">Center
+      <select class="input" name="branch_id">
+        <option value="">All centers</option>
+        {% for b in branches %}<option value="{{ b.id }}" {% if a.branch_id == b.id %}selected{% endif %}>{{ b.name }}</option>{% endfor %}
+      </select>
+    </label>
+    <button class="btn primary filters-apply" type="submit">Apply filters</button>
+  </form>
+
+  <section class="results" aria-labelledby="results-title">
+    <div class="results-bar">
+      <h2 class="h3" id="results-title" aria-live="polite"><span data-count>{{ result.total }}</span> result{{ 's' if result.total != 1 }}</h2>
+      <div class="row">
+        <button class="btn sm filters-open" type="button" aria-controls="filters" aria-expanded="false">Filters</button>
+        <label class="row small" for="sort">Sort
+          <select class="input sort-select" id="sort" name="sort" form="filters">
+            {% for v, label in [('featured','Recommended order'),('price_asc','Price: low to high'),('price_desc','Price: high to low'),('name','Name A–Z'),('relevance','Best match')] %}
+            <option value="{{ v }}" {% if a.sort == v %}selected{% endif %}>{{ label }}</option>{% endfor %}
+          </select>
+        </label>
+      </div>
+    </div>
+    <div class="active-filters row" data-active-filters aria-label="Active filters"></div>
+    <div class="pkg-list" data-results>
+      {% for p in result.packages %}{{ package_card(p) }}{% endfor %}
+    </div>
+    <div class="state-box" data-empty {% if result.total %}hidden{% endif %}>
+      <h3>No health checks match these filters</h3>
+      <p class="muted small">Try a broader search, remove a filter, or describe what you need to the assistant.</p>
+      <div class="row"><a class="btn" href="/packages" data-reset>Clear filters</a><a class="btn primary" href="/app" data-ask-empty>Ask the assistant</a></div>
+    </div>
+    <div class="state-box" data-error hidden role="alert">
+      <h3>Results could not be updated</h3>
+      <p class="muted small" data-error-text>Check your connection and try again.</p>
+      <button class="btn" type="button" data-retry>Try again</button>
+    </div>
+    <p class="tiny muted">Catalog {{ result.catalog_version }} · simulated prices in Thai baht · per-person unless stated.</p>
+  </section>
+</div>
+<script type="application/json" id="page-data">{{ page_json|safe }}</script>
+{% endblock %}

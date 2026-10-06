@@ -1,0 +1,22 @@
+{% extends "site/base.html" %}
+{% block content %}
+<div class="wrap page-head">
+  <nav class="crumbs small" aria-label="Breadcrumb"><a href="/">Home</a> / <span aria-current="page">Privacy</span></nav>
+  <h1>Privacy</h1>
+  <p class="muted">Coursework privacy notice. It describes how this software behaves; it is not a legal compliance statement.</p>
+</div>
+<div class="wrap prose stack">
+  <section class="card stack-sm"><h2 class="h3">Use synthetic data only</h2><p>{{ policies.privacy_policy }}</p></section>
+  <section class="card stack-sm"><h2 class="h3">What is stored</h2>
+    <ul class="plain small">
+      <li>Account email and a salted password hash. Sessions use an HTTP-only cookie.</li>
+      <li>Conversations, reports you upload, appointments, quotations, test payments and notifications, encrypted in the application database.</li>
+      <li>An audit trail of actions such as confirmations and refunds, without message contents.</li>
+    </ul></section>
+  <section class="card stack-sm"><h2 class="h3">Who can see it</h2>
+    <p>Your reports and conversations are private to your account. Staff see a conversation when you ask for the team or when an organization request needs coordination. Organizations never receive individual results.</p>
+    <p>When an AI provider is connected, the minimum text needed for a reply is sent to that provider. Reports are never added to the shared knowledge base.</p></section>
+  <section class="card stack-sm"><h2 class="h3">Your controls</h2>
+    <p>Delete a report from My reports; this also clears conversation history that may contain its values. Sign out from your account menu. Email verification and account recovery are not available in this coursework release.</p></section>
+</div>
+{% endblock %}

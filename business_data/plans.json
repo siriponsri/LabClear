@@ -1,0 +1,25 @@
+{
+  "version": "2026-10-06-plans",
+  "currency": "THB",
+  "is_demo": true,
+  "plans": [
+    {
+      "id": "free",
+      "name": "Free",
+      "price_thb": 0,
+      "period_days": 0,
+      "summary": "Read one lab report with AI and get your Lab Report",
+      "limits": {"ai_reads": 1, "images_per_read": 1, "trends": false},
+      "features": ["AI reads one report image", "Lab Report with every value on its printed range", "Questions to the Report Explainer with sources", "Synthetic sample reports to try"]
+    },
+    {
+      "id": "plus",
+      "name": "LabClear Plus",
+      "price_thb": 355,
+      "period_days": 30,
+      "summary": "Follow your results over time and read reports of several pages",
+      "limits": {"ai_reads": null, "images_per_read": 3, "trends": true},
+      "features": ["Everything in Free", "AI report reading without the one-report limit, up to 3 pages or images each", "Lab dashboard with your results over time", "Change since your previous report for every test", "Printable Lab Report for every confirmed report"]
+    }
+  ]
+}

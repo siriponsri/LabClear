@@ -1,0 +1,21 @@
+{% extends "site/base.html" %}
+{% block body_attrs %}data-no-dock="true"{% endblock %}
+{% block content %}
+<div class="wrap page-head">
+  <nav class="crumbs small" aria-label="Breadcrumb"><a href="/app?view=bookings">My appointments</a> / <span aria-current="page">Test payment</span></nav>
+  <h1>Test payment simulator</h1>
+  <p class="callout warn">This page simulates a payment provider for coursework. It cannot take real money. Never enter card numbers or bank details here.</p>
+</div>
+<div class="wrap pay-grid" data-txn="{{ txn_id }}">
+  <section class="card stack" aria-live="polite" data-pay-panel>
+    <div class="skeleton" data-pay-loading></div>
+  </section>
+  <aside class="card stack-sm small">
+    <h2 class="h3">How the simulator works</h2>
+    <p>Each button sends a signed test event to LabClear, the same way a payment provider would notify a real shop. The server checks the signature, amount, currency and order before changing anything.</p>
+    <p>Failed, expired or cancelled payments leave the appointment unpaid, and you can start again or pay at the center.</p>
+    <a href="/help#payments">Payment policy</a>
+  </aside>
+</div>
+{% endblock %}
+{% block scripts %}<script src="/static/js/pay_sim.js" defer></script>{% endblock %}

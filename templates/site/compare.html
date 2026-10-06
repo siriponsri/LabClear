@@ -1,0 +1,37 @@
+{% extends "site/base.html" %}
+{% from "site/_macros.html" import money %}
+{% block content %}
+<div class="wrap page-head">
+  <nav class="crumbs small" aria-label="Breadcrumb"><a href="/">Home</a> / <a href="/packages">Health checks</a> / <span aria-current="page">Compare</span></nav>
+  <h1>Compare health checks</h1>
+</div>
+<div class="wrap section-tight">
+{% if comparison %}
+  <div class="table-wrap">
+    <table class="data compare-table">
+      <caption class="sr-only">Included tests and simulated prices</caption>
+      <thead><tr><th scope="col">Test</th>{% for p in comparison.packages %}<th scope="col"><a href="/packages/{{ p.id }}">{{ p.name }}</a></th>{% endfor %}</tr></thead>
+      <tbody>
+        <tr><th scope="row">Price</th>{% for p in comparison.packages %}<td><strong>{{ money(p.price_thb) }}</strong> <span class="tiny muted nowrap">{{ p.price_unit }}</span>{% if comparison.price_difference[loop.index0] %}<br><span class="tiny muted nowrap">+{{ money(comparison.price_difference[loop.index0]) }} vs lowest</span>{% endif %}</td>{% endfor %}</tr>
+        <tr><th scope="row">Booking</th>{% for p in comparison.packages %}<td>{{ 'Organization quotation' if p.segment == 'organization' else ('Staff review first' if p.staff_review_required else 'Book directly') }}</td>{% endfor %}</tr>
+        {% for s in comparison.services %}
+        <tr><th scope="row">{{ s.name }}</th>{% for inc in s.included %}<td class="{{ 'yes' if inc else 'no' }}">{{ 'Included' if inc else 'Not included' }}</td>{% endfor %}</tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="row compare-actions">
+    <a class="btn primary" href="/app?compare={{ comparison.packages|map(attribute='id')|join(',') }}">Ask the assistant to compare for me</a>
+    <a class="btn" href="/packages">Change selection</a>
+    <button class="btn ghost" type="button" data-clear-compare>Clear comparison</button>
+  </div>
+  <p class="tiny muted">Prices from catalog {{ comparison.catalog_version }} (simulated). More tests is not automatically better; the assistant can explain the differences with sources.</p>
+{% else %}
+  <div class="state-box">
+    <h3>Choose two or three health checks</h3>
+    <p class="muted small">{{ error or 'Tick “Compare” on any package card to add it here.' }}</p>
+    <a class="btn primary" href="/packages">Browse health checks</a>
+  </div>
+{% endif %}
+</div>
+{% endblock %}

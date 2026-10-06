@@ -1,0 +1,408 @@
+{
+  "version": "2026-10-05-proposed",
+  "is_demo": true,
+  "currency": "THB",
+  "tax_display": "Illustrative final customer price; production tax treatment requires merchant setup.",
+  "packages": [
+    {
+      "id": "P01",
+      "name": "Essential Check",
+      "price_thb": 1190,
+      "price_unit": "per person",
+      "is_demo": true,
+      "clinical_approval": false,
+      "services": [
+        "CBC",
+        "Fasting glucose",
+        "Creatinine/eGFR",
+        "Urinalysis"
+      ],
+      "branch_ids": [
+        "BKK01",
+        "CNX01",
+        "KKC01"
+      ],
+      "segment": "individual",
+      "staff_review_required": false,
+      "source_id": "RS-CATALOG-20261005-P01",
+      "notes": "Illustrative package, not a universal screening recommendation. Staff verifies suitability, preparation and any duplicate tests before confirmation."
+    },
+    {
+      "id": "P02",
+      "name": "Workday Check",
+      "price_thb": 1690,
+      "price_unit": "per person",
+      "is_demo": true,
+      "clinical_approval": false,
+      "services": [
+        "CBC",
+        "Fasting glucose",
+        "Lipid profile",
+        "Creatinine/eGFR",
+        "ALT",
+        "Urinalysis"
+      ],
+      "branch_ids": [
+        "BKK01",
+        "CNX01",
+        "KKC01"
+      ],
+      "segment": "individual",
+      "staff_review_required": false,
+      "source_id": "RS-CATALOG-20261005-P02",
+      "notes": "Illustrative package, not a universal screening recommendation. Staff verifies suitability, preparation and any duplicate tests before confirmation."
+    },
+    {
+      "id": "P03",
+      "name": "Comprehensive Check",
+      "price_thb": 2890,
+      "price_unit": "per person",
+      "is_demo": true,
+      "clinical_approval": false,
+      "services": [
+        "CBC",
+        "HbA1c",
+        "Lipid profile",
+        "Creatinine/eGFR",
+        "Liver panel",
+        "Urinalysis"
+      ],
+      "branch_ids": [
+        "BKK01",
+        "CNX01",
+        "KKC01"
+      ],
+      "segment": "individual",
+      "staff_review_required": false,
+      "source_id": "RS-CATALOG-20261005-P03",
+      "notes": "Illustrative package, not a universal screening recommendation. Staff verifies suitability, preparation and any duplicate tests before confirmation."
+    },
+    {
+      "id": "P04",
+      "name": "Family Pair",
+      "price_thb": 2290,
+      "price_unit": "per pair",
+      "is_demo": true,
+      "clinical_approval": false,
+      "services": [
+        "Essential Check for two adults"
+      ],
+      "branch_ids": [
+        "BKK01",
+        "CNX01",
+        "KKC01"
+      ],
+      "segment": "individual",
+      "staff_review_required": false,
+      "source_id": "RS-CATALOG-20261005-P04",
+      "notes": "Illustrative package, not a universal screening recommendation. Staff verifies suitability, preparation and any duplicate tests before confirmation."
+    },
+    {
+      "id": "P05",
+      "name": "Glucose Follow-up",
+      "price_thb": 590,
+      "price_unit": "per person",
+      "is_demo": true,
+      "clinical_approval": false,
+      "services": [
+        "Fasting glucose",
+        "HbA1c"
+      ],
+      "branch_ids": [
+        "BKK01",
+        "CNX01",
+        "KKC01"
+      ],
+      "segment": "individual",
+      "staff_review_required": true,
+      "source_id": "RS-CATALOG-20261005-P05",
+      "notes": "Illustrative package, not a universal screening recommendation. Staff verifies suitability, preparation and any duplicate tests before confirmation."
+    },
+    {
+      "id": "P06",
+      "name": "Lipid Follow-up",
+      "price_thb": 590,
+      "price_unit": "per person",
+      "is_demo": true,
+      "clinical_approval": false,
+      "services": [
+        "Total cholesterol",
+        "Triglycerides",
+        "HDL cholesterol",
+        "Direct LDL cholesterol"
+      ],
+      "branch_ids": [
+        "BKK01",
+        "CNX01",
+        "KKC01"
+      ],
+      "segment": "individual",
+      "staff_review_required": true,
+      "source_id": "RS-CATALOG-20261005-P06",
+      "notes": "Illustrative package, not a universal screening recommendation. Staff verifies suitability, preparation and any duplicate tests before confirmation."
+    },
+    {
+      "id": "P07",
+      "name": "Kidney Follow-up",
+      "price_thb": 690,
+      "price_unit": "per person",
+      "is_demo": true,
+      "clinical_approval": false,
+      "services": [
+        "BUN",
+        "Creatinine/eGFR",
+        "Urinalysis"
+      ],
+      "branch_ids": [
+        "BKK01",
+        "CNX01",
+        "KKC01"
+      ],
+      "segment": "individual",
+      "staff_review_required": true,
+      "source_id": "RS-CATALOG-20261005-P07",
+      "notes": "Illustrative package, not a universal screening recommendation. Staff verifies suitability, preparation and any duplicate tests before confirmation."
+    },
+    {
+      "id": "P08",
+      "name": "Liver Follow-up",
+      "price_thb": 890,
+      "price_unit": "per person",
+      "is_demo": true,
+      "clinical_approval": false,
+      "services": [
+        "ALT",
+        "AST",
+        "ALP",
+        "Albumin",
+        "Bilirubin"
+      ],
+      "branch_ids": [
+        "BKK01",
+        "CNX01",
+        "KKC01"
+      ],
+      "segment": "individual",
+      "staff_review_required": true,
+      "source_id": "RS-CATALOG-20261005-P08",
+      "notes": "Illustrative package, not a universal screening recommendation. Staff verifies suitability, preparation and any duplicate tests before confirmation."
+    },
+    {
+      "id": "P09",
+      "name": "Blood Count Review",
+      "price_thb": 390,
+      "price_unit": "per person",
+      "is_demo": true,
+      "clinical_approval": false,
+      "services": [
+        "CBC"
+      ],
+      "branch_ids": [
+        "BKK01",
+        "CNX01",
+        "KKC01"
+      ],
+      "segment": "individual",
+      "staff_review_required": true,
+      "source_id": "RS-CATALOG-20261005-P09",
+      "notes": "Illustrative package, not a universal screening recommendation. Staff verifies suitability, preparation and any duplicate tests before confirmation."
+    },
+    {
+      "id": "P10",
+      "name": "Thyroid Function Review",
+      "price_thb": 990,
+      "price_unit": "per person",
+      "is_demo": true,
+      "clinical_approval": false,
+      "services": [
+        "TSH",
+        "Free T4"
+      ],
+      "branch_ids": [
+        "BKK01",
+        "CNX01",
+        "KKC01"
+      ],
+      "segment": "individual",
+      "staff_review_required": true,
+      "source_id": "RS-CATALOG-20261005-P10",
+      "notes": "Illustrative package, not a universal screening recommendation. Staff verifies suitability, preparation and any duplicate tests before confirmation."
+    },
+    {
+      "id": "P11",
+      "name": "Urine Albumin Review",
+      "price_thb": 590,
+      "price_unit": "per person",
+      "is_demo": true,
+      "clinical_approval": false,
+      "services": [
+        "Urine albumin to creatinine ratio"
+      ],
+      "branch_ids": [
+        "BKK01",
+        "CNX01",
+        "KKC01"
+      ],
+      "segment": "individual",
+      "staff_review_required": true,
+      "source_id": "RS-CATALOG-20261005-P11",
+      "notes": "Illustrative package, not a universal screening recommendation. Staff verifies suitability, preparation and any duplicate tests before confirmation."
+    },
+    {
+      "id": "P12",
+      "name": "Electrolyte Review",
+      "price_thb": 490,
+      "price_unit": "per person",
+      "is_demo": true,
+      "clinical_approval": false,
+      "services": [
+        "Sodium",
+        "Potassium",
+        "Chloride",
+        "Bicarbonate"
+      ],
+      "branch_ids": [
+        "BKK01",
+        "CNX01",
+        "KKC01"
+      ],
+      "segment": "individual",
+      "staff_review_required": true,
+      "source_id": "RS-CATALOG-20261005-P12",
+      "notes": "Illustrative package, not a universal screening recommendation. Staff verifies suitability, preparation and any duplicate tests before confirmation."
+    },
+    {
+      "id": "P13",
+      "name": "HbA1c Add-on",
+      "price_thb": 350,
+      "price_unit": "per person",
+      "is_demo": true,
+      "clinical_approval": false,
+      "services": [
+        "HbA1c"
+      ],
+      "branch_ids": [
+        "BKK01",
+        "CNX01",
+        "KKC01"
+      ],
+      "segment": "individual",
+      "staff_review_required": true,
+      "source_id": "RS-CATALOG-20261005-P13",
+      "notes": "Illustrative package, not a universal screening recommendation. Staff verifies suitability, preparation and any duplicate tests before confirmation."
+    },
+    {
+      "id": "P14",
+      "name": "Direct LDL Add-on",
+      "price_thb": 290,
+      "price_unit": "per person",
+      "is_demo": true,
+      "clinical_approval": false,
+      "services": [
+        "Direct LDL cholesterol"
+      ],
+      "branch_ids": [
+        "BKK01",
+        "CNX01",
+        "KKC01"
+      ],
+      "segment": "individual",
+      "staff_review_required": true,
+      "source_id": "RS-CATALOG-20261005-P14",
+      "notes": "Illustrative package, not a universal screening recommendation. Staff verifies suitability, preparation and any duplicate tests before confirmation."
+    },
+    {
+      "id": "P15",
+      "name": "Ferritin Review",
+      "price_thb": 650,
+      "price_unit": "per person",
+      "is_demo": true,
+      "clinical_approval": false,
+      "services": [
+        "Ferritin"
+      ],
+      "branch_ids": [
+        "BKK01",
+        "CNX01",
+        "KKC01"
+      ],
+      "segment": "individual",
+      "staff_review_required": true,
+      "source_id": "RS-CATALOG-20261005-P15",
+      "notes": "Illustrative package, not a universal screening recommendation. Staff verifies suitability, preparation and any duplicate tests before confirmation."
+    },
+    {
+      "id": "P16",
+      "name": "Corporate Essential",
+      "price_thb": 990,
+      "price_unit": "per person",
+      "is_demo": true,
+      "clinical_approval": false,
+      "services": [
+        "CBC",
+        "Fasting glucose",
+        "Creatinine/eGFR",
+        "Urinalysis"
+      ],
+      "branch_ids": [
+        "BKK01",
+        "CNX01",
+        "KKC01"
+      ],
+      "segment": "organization",
+      "staff_review_required": false,
+      "source_id": "RS-CATALOG-20261005-P16",
+      "notes": "Illustrative package, not a universal screening recommendation. Staff verifies suitability, preparation and any duplicate tests before confirmation."
+    },
+    {
+      "id": "P17",
+      "name": "Corporate Workday",
+      "price_thb": 1490,
+      "price_unit": "per person",
+      "is_demo": true,
+      "clinical_approval": false,
+      "services": [
+        "CBC",
+        "Fasting glucose",
+        "Lipid profile",
+        "Creatinine/eGFR",
+        "ALT",
+        "Urinalysis"
+      ],
+      "branch_ids": [
+        "BKK01",
+        "CNX01",
+        "KKC01"
+      ],
+      "segment": "organization",
+      "staff_review_required": false,
+      "source_id": "RS-CATALOG-20261005-P17",
+      "notes": "Illustrative package, not a universal screening recommendation. Staff verifies suitability, preparation and any duplicate tests before confirmation."
+    },
+    {
+      "id": "P18",
+      "name": "Corporate Extended",
+      "price_thb": 2390,
+      "price_unit": "per person",
+      "is_demo": true,
+      "clinical_approval": false,
+      "services": [
+        "CBC",
+        "HbA1c",
+        "Lipid profile",
+        "Creatinine/eGFR",
+        "Liver panel",
+        "Urinalysis"
+      ],
+      "branch_ids": [
+        "BKK01",
+        "CNX01",
+        "KKC01"
+      ],
+      "segment": "organization",
+      "staff_review_required": false,
+      "source_id": "RS-CATALOG-20261005-P18",
+      "notes": "Illustrative package, not a universal screening recommendation. Staff verifies suitability, preparation and any duplicate tests before confirmation."
+    }
+  ]
+}

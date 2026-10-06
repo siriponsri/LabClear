@@ -1,0 +1,7 @@
+# Evidence files are verified by SHA-256 at runtime; keep their bytes identical on every OS.
+knowledge/** -text
+*.png binary
+*.jpg binary
+*.pdf binary
+*.woff2 binary
+*.ttf binary

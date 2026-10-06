@@ -1,0 +1,64 @@
+{% extends "site/base.html" %}
+{% from "site/_macros.html" import package_card, money %}
+{% block content %}
+<div class="wrap page-head">
+  <nav class="crumbs small" aria-label="Breadcrumb"><a href="/">Home</a> / <a href="/packages">Health checks</a> / <span aria-current="page">{{ p.name }}</span></nav>
+</div>
+<div class="wrap detail-grid">
+  <article class="stack detail-main">
+    <div class="stack-sm">
+      <div class="row">
+        {% if p.segment == 'organization' %}<span class="badge org">Organizations · 20+ people</span>
+        {% elif p.staff_review_required %}<span class="badge follow">Staff review before booking</span>
+        {% else %}<span class="badge">Book directly</span>{% endif %}
+        <span class="badge sim">Simulated package</span>
+      </div>
+      <h1>{{ p.name }}</h1>
+      <p class="muted">{{ p.services|length }} included test{{ 's' if p.services|length != 1 }} · offered at {{ detail.branches|length }} center{{ 's' if detail.branches|length != 1 }}</p>
+    </div>
+    <section class="card stack-sm" aria-labelledby="inc">
+      <h2 class="h3" id="inc">What is included</h2>
+      <ul class="included">{% for s in p.services %}<li>{{ s }}</li>{% endfor %}</ul>
+      <p class="small muted">Ask the assistant what any test measures. It answers from cited public references.</p>
+    </section>
+    <section class="card stack-sm" aria-labelledby="fit">
+      <h2 class="h3" id="fit">Is it right for me?</h2>
+      <p>{{ p.notes }}</p>
+      {% if p.staff_review_required %}<p class="small">Follow-up tests are reviewed with you first, to check overlap with recent results and whether a clinician should be involved. We do not recommend add-on tests automatically from an abnormal result.</p>{% endif %}
+    </section>
+    <section class="card stack-sm" aria-labelledby="prep">
+      <h2 class="h3" id="prep">Before your visit</h2>
+      <p>{{ detail.policy.results_policy }}</p>
+      <p class="small muted">Our team confirms preparation instructions with your appointment.</p>
+    </section>
+    <section class="card stack-sm" aria-labelledby="where">
+      <h2 class="h3" id="where">Where it is offered</h2>
+      <ul class="plain">{% for b in detail.branches %}<li><strong>{{ b.name }}</strong> <span class="muted small">· {{ b.area }} · {{ b.hours }}</span></li>{% endfor %}</ul>
+    </section>
+    <section class="card stack-sm" aria-labelledby="policy">
+      <h2 class="h3" id="policy">Changes and payment</h2>
+      <p class="small">{{ detail.policy.cancellation_policy }}</p>
+      <p class="small">{{ detail.policy.payment_policy }}</p>
+    </section>
+  </article>
+  <aside class="buy-box card{{ ' org' if p.segment == 'organization' else (' follow' if p.staff_review_required else '') }}" aria-label="Price and next steps">
+    <div class="pkg-price"><strong>{{ money(p.price_thb) }}</strong><span>{{ p.price_unit }}</span></div>
+    <p class="tiny muted">Simulated price · catalog {{ detail.catalog_version }}</p>
+    {% if p.segment == 'organization' %}
+      <a class="btn primary block" href="/organizations?package={{ p.id }}">Request a quotation</a>
+    {% elif p.staff_review_required %}
+      <a class="btn primary block" href="/app?ask={{ p.id }}">Ask our team to review</a>
+    {% else %}
+      <a class="btn primary block" href="/app?view=book&package={{ p.id }}">Request an appointment</a>
+    {% endif %}
+    <a class="btn block" href="/app?package={{ p.id }}">Ask the assistant about it</a>
+    <label class="compare-toggle"><input type="checkbox" data-compare="{{ p.id }}" data-name="{{ p.name }}"> Add to comparison</label>
+  </aside>
+</div>
+{% if related %}
+<section class="wrap section" aria-labelledby="related-title">
+  <div class="section-head"><h2 id="related-title">Similar options</h2><a href="/packages?segment={{ p.segment }}">See all</a></div>
+  <div class="pkg-list">{% for r in related %}{{ package_card(r) }}{% endfor %}</div>
+</section>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,76 @@
+{% extends "site/base.html" %}
+{% from "site/_macros.html" import money %}
+{% block body_class %} product-page{% endblock %}
+{% block content %}
+{% set plus = plans.plus %}{% set free = plans.free %}
+<section class="hero hero-compact" aria-labelledby="lr-title">
+  <div class="hero-inner">
+    <span class="pill-badge static" data-reveal><span class="pill-new">AI Lab Report</span> Reads results from any laboratory</span>
+    <h1 id="lr-title" class="hero-title" data-split>Your lab report, read and explained.</h1>
+    <p class="hero-lede" data-reveal style="--i:2">Upload a photo or PDF. The AI reads each test row, you confirm every value, and you get a Lab Report with each value on the range printed on your report and an explanation with sources.</p>
+    <div class="hero-ctas" data-reveal style="--i:3">
+      <a class="btn primary lg" href="/app?view=labs">Read my report free</a>
+      <a class="btn lg" href="/app?view=plan">Get Plus, {{ money(plus.price_thb) }}</a>
+    </div>
+    <p class="hero-credit tiny" data-reveal style="--i:4">Free: one report of one image. Plus: {{ plus.period_days }} days, no auto-renewal. Test payments only in this release.</p>
+  </div>
+</section>
+
+<section class="section features" aria-labelledby="lr-steps">
+  <div class="section-intro" data-reveal>
+    <p class="eyebrow">Four steps</p>
+    <h2 id="lr-steps">From a photo to a report you can keep.</h2>
+  </div>
+  <ol class="step-cols">
+    <li data-reveal style="--i:0"><span class="feature-num num">01</span><h3>Upload</h3><p class="muted small">JPEG, PNG or PDF up to 3 MB. Plus reads up to {{ plus.limits.images_per_read }} pages or images together.</p></li>
+    <li data-reveal style="--i:1"><span class="feature-num num">02</span><h3>The AI reads</h3><p class="muted small">Test name, value, unit, printed range and flag, as written. Names, IDs and addresses are not read.</p></li>
+    <li data-reveal style="--i:2"><span class="feature-num num">03</span><h3>You confirm</h3><p class="muted small">Correct anything next to the source image, then confirm the report is about the right person.</p></li>
+    <li data-reveal style="--i:3"><span class="feature-num num">04</span><h3>Lab Report</h3><p class="muted small">Each value on its printed range, a printable report, and questions answered with {{ source_count }} public sources.</p></li>
+  </ol>
+</section>
+
+<section class="section" aria-labelledby="lr-safety">
+  <div class="numbers-grid">
+    <div class="numbers-copy" data-reveal>
+      <p class="eyebrow">What it will not do</p>
+      <h2 id="lr-safety">It explains. It does not diagnose.</h2>
+      <p class="muted">Status comes from code that compares your value with the range printed on the same report, never from the AI. Missing ranges stay unknown. Urgent symptoms are referred to a clinician, and our team can take over the conversation at any time.</p>
+    </div>
+    <ul class="safety-list">
+      <li data-reveal style="--i:0"><strong>Values exactly as printed</strong><span class="muted small">Nothing is filled in, converted or guessed.</span></li>
+      <li data-reveal style="--i:1"><strong>Your laboratory's own ranges</strong><span class="muted small">No invented reference ranges.</span></li>
+      <li data-reveal style="--i:2"><strong>Sources beside each explanation</strong><span class="muted small">{{ source_count }} reviewed public records.</span></li>
+      <li data-reveal style="--i:3"><strong>Private to you</strong><span class="muted small">Staff never see values. Deleting a report clears its history.</span></li>
+    </ul>
+  </div>
+</section>
+
+<section class="section pricing" aria-labelledby="lr-plans">
+  <div class="section-intro" data-reveal>
+    <p class="eyebrow">Plans</p>
+    <h2 id="lr-plans">Start free. Follow your results with Plus.</h2>
+  </div>
+  <div class="plan-pair">
+    {% for pl in [free, plus] %}
+    <article class="plan-col{{ ' featured' if pl.id == 'plus' }}" data-reveal style="--i:{{ loop.index0 }}">
+      <h3>{{ pl.name }}</h3>
+      <p class="plan-amount"><strong class="num display">{{ money(pl.price_thb) if pl.price_thb else '฿0' }}</strong> <span class="muted small">{{ ('for ' ~ pl.period_days ~ ' days') if pl.price_thb else 'always' }}</span></p>
+      <p class="muted small">{{ pl.summary }}</p>
+      <ul class="plan-features">{% for f in pl.features %}<li>{{ f }}</li>{% endfor %}</ul>
+      <a class="btn {{ 'primary' if pl.id == 'plus' }}" href="{{ '/app?view=plan' if pl.id == 'plus' else '/app?view=labs' }}">{{ 'Get Plus' if pl.id == 'plus' else 'Start free' }}</a>
+    </article>
+    {% endfor %}
+  </div>
+  {% if follow %}
+  <p class="small muted pair-note" data-reveal>The Report Explainer never offers a package after a value outside its range. If you want a follow-up test, ask for one and our team reviews it with you first. <a href="/packages?segment=individual&amp;review=only">Follow-up tests</a></p>
+  {% endif %}
+</section>
+
+<section class="closing" aria-labelledby="lr-close">
+  <div class="closing-inner" data-reveal>
+    <h2 id="lr-close">Read your first report free.</h2>
+    <p class="muted">No account is needed to try a synthetic sample. Create one to keep your reports.</p>
+    <div class="row"><a class="btn primary lg" href="/app?view=labs">Open the Lab dashboard</a><a class="btn lg" href="/help#reports">How reports are handled</a></div>
+  </div>
+</section>
+{% endblock %}

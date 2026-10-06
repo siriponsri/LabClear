@@ -1,0 +1,18 @@
+{% extends "site/base.html" %}
+{% block content %}
+<div class="wrap page-head">
+  <nav class="crumbs small" aria-label="Breadcrumb"><a href="/">Home</a> / <span aria-current="page">Medical sources</span></nav>
+  <h1>Medical sources</h1>
+  <p class="muted">The assistant may cite only these {{ records|length }} reviewed public records (catalog {{ version }}). Business information comes from our simulated catalog and policies instead.</p>
+</div>
+<div class="wrap stack">
+  <div class="row small">{% for name, n in publishers.items() %}<span class="badge neutral">{{ name }} · {{ n }}</span>{% endfor %}</div>
+  <div class="table-wrap">
+    <table class="data sources-table">
+      <thead><tr><th scope="col">Title</th><th scope="col">Publisher</th><th scope="col">Reviewed</th></tr></thead>
+      <tbody>{% for r in records %}<tr><td><a href="{{ r.url }}" target="_blank" rel="noopener noreferrer">{{ r.title }}</a><div class="tiny muted">{{ r.id }}</div></td><td class="small">{{ r.publisher }}</td><td class="small">{{ r.reviewed_at }}</td></tr>{% endfor %}</tbody>
+    </table>
+  </div>
+  <p class="small muted">Reference intervals in these sources are context, not personal decision limits. Ranges printed on your own report take precedence. Synthetic test reports are never used as medical knowledge.</p>
+</div>
+{% endblock %}

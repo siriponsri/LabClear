@@ -1,0 +1,12 @@
+{
+  "name": "labclear-browser-tests",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Optional browser UAT for LabClear. The FastAPI app itself has no Node dependency.",
+  "scripts": {
+    "uat": "node tests/browser/uat.cjs"
+  },
+  "devDependencies": {
+    "playwright": "1.56.1"
+  }
+}
