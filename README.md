@@ -16,13 +16,13 @@
   <img src="https://img.shields.io/badge/FastAPI-009688?style=flat-square&logo=fastapi&logoColor=white" alt="FastAPI">
   <img src="https://img.shields.io/badge/RAG-58_Thai_sources-6539a9?style=flat-square" alt="RAG: 58 Thai sources">
   <img src="https://img.shields.io/badge/AI_providers-12-6539a9?style=flat-square" alt="12 AI providers">
-  <img src="https://img.shields.io/badge/tests-170_%2B_34_UAT-2ea44f?style=flat-square" alt="170 tests and 34 browser scenarios">
+  <img src="https://img.shields.io/badge/tests-205_%2B_34_UAT-2ea44f?style=flat-square" alt="205 tests and 34 browser scenarios">
 </p>
 
 <p>
   <a href="https://labclear.onrender.com"><b>Live demo</b></a> ·
   <a href="presentation/index.html"><b>Slides</b></a> ·
-  <a href="docs/report/LabClear_Report.pdf"><b>Report</b></a> ·
+  <a href="docs/report/LabClear_Report_TH_3_0_1.pdf"><b>Report</b></a> ·
   <a href="docs/deploy/render.md"><b>Deploy to Render</b></a> ·
   <a href="docs/deploy/vercel.md"><b>Deploy to Vercel</b></a>
 </p>
@@ -174,3 +174,9 @@ presentation/        reveal.js slides
 <br>
 
 <sub>Built for 06048308 Intelligent Chatbot Development. Packages, prices, centers, payments and lab reports are simulated. LabClear gives general health information, not a diagnosis.</sub>
+
+## ชุดส่งมอบ 3.0.1
+
+[คำสั่งนำเข้า bundle, ทดสอบ, deploy และสถานะข้อจำกัด](docs/release-3.0.1.md) · [รายงานภาษาไทย Word](docs/report/LabClear_Report_TH_3_0_1.docx) · [PDF](docs/report/LabClear_Report_TH_3_0_1.pdf)
+
+ผล local: pytest 205/205 และ UAT 34/34 (ใช้ model doubles) ส่วนคุณภาพโมเดลจริงหลังแก้รอทดสอบรอบ 3

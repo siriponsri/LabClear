@@ -1,0 +1,37 @@
+{
+  "formats": "From template",
+  "show_levels": 3,
+  "styles": {
+    "TOC1": {
+      "left": 0,
+      "right": 0,
+      "hanging": 864
+    },
+    "TOC2": {
+      "left": 864,
+      "right": 0,
+      "hanging": 576
+    },
+    "TOC3": {
+      "left": 1440,
+      "right": 0,
+      "hanging": 720
+    }
+  },
+  "spacing": {
+    "before": 0,
+    "after": 120,
+    "line": 240,
+    "lineRule": "auto",
+    "beforeAutospacing": 0,
+    "afterAutospacing": 0
+  },
+  "font": {
+    "name": "TH Sarabun New",
+    "size_half_points": 32,
+    "style": "Regular",
+    "color": "auto",
+    "underline": "none",
+    "effects": false
+  }
+}

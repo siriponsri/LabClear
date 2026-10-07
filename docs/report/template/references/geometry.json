@@ -1,0 +1,168 @@
+[
+  {
+    "pgSz": {
+      "w": "11907",
+      "h": "16840",
+      "code": "9"
+    },
+    "pgMar": {
+      "top": "1440",
+      "right": "1152",
+      "bottom": "1368",
+      "left": "1440",
+      "header": "720",
+      "footer": "432",
+      "gutter": "0"
+    }
+  },
+  {
+    "pgSz": {
+      "w": "16840",
+      "h": "11907",
+      "orient": "landscape",
+      "code": "9"
+    },
+    "pgMar": {
+      "top": "1440",
+      "right": "1440",
+      "bottom": "1151",
+      "left": "1366",
+      "header": "720",
+      "footer": "431",
+      "gutter": "0"
+    }
+  },
+  {
+    "pgSz": {
+      "w": "16840",
+      "h": "11907",
+      "orient": "landscape",
+      "code": "9"
+    },
+    "pgMar": {
+      "top": "1440",
+      "right": "1152",
+      "bottom": "1368",
+      "left": "1152",
+      "header": "720",
+      "footer": "432",
+      "gutter": "0"
+    }
+  },
+  {
+    "pgSz": {
+      "w": "23811",
+      "h": "16838",
+      "orient": "landscape",
+      "code": "8"
+    },
+    "pgMar": {
+      "top": "1440",
+      "right": "1440",
+      "bottom": "1152",
+      "left": "1368",
+      "header": "720",
+      "footer": "432",
+      "gutter": "0"
+    }
+  },
+  {
+    "pgSz": {
+      "w": "16838",
+      "h": "23811",
+      "code": "8"
+    },
+    "pgMar": {
+      "top": "1440",
+      "right": "1152",
+      "bottom": "1368",
+      "left": "1440",
+      "header": "720",
+      "footer": "432",
+      "gutter": "0"
+    }
+  },
+  {
+    "pgSz": {
+      "w": "16840",
+      "h": "11907",
+      "orient": "landscape",
+      "code": "9"
+    },
+    "pgMar": {
+      "top": "1440",
+      "right": "1152",
+      "bottom": "1368",
+      "left": "1440",
+      "header": "720",
+      "footer": "432",
+      "gutter": "0"
+    }
+  },
+  {
+    "pgSz": {
+      "w": "16838",
+      "h": "23811",
+      "code": "8"
+    },
+    "pgMar": {
+      "top": "1152",
+      "right": "1368",
+      "bottom": "1440",
+      "left": "1440",
+      "header": "720",
+      "footer": "432",
+      "gutter": "0"
+    }
+  },
+  {
+    "pgSz": {
+      "w": "23811",
+      "h": "16838",
+      "orient": "landscape",
+      "code": "8"
+    },
+    "pgMar": {
+      "top": "1440",
+      "right": "1152",
+      "bottom": "1368",
+      "left": "1440",
+      "header": "720",
+      "footer": "432",
+      "gutter": "0"
+    }
+  },
+  {
+    "pgSz": {
+      "w": "16840",
+      "h": "11907",
+      "orient": "landscape",
+      "code": "9"
+    },
+    "pgMar": {
+      "top": "1440",
+      "right": "1440",
+      "bottom": "1152",
+      "left": "1368",
+      "header": "720",
+      "footer": "432",
+      "gutter": "0"
+    }
+  },
+  {
+    "pgSz": {
+      "w": "11907",
+      "h": "16840",
+      "code": "9"
+    },
+    "pgMar": {
+      "top": "1440",
+      "right": "1151",
+      "bottom": "1366",
+      "left": "1440",
+      "header": "720",
+      "footer": "431",
+      "gutter": "0"
+    }
+  }
+]
