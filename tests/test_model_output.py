@@ -88,3 +88,47 @@ def test_changed_report_value_is_still_withheld():
     with pytest.raises(ConversationError) as e:
         agent.validate_answer(answer, [], report)
     assert e.value.code == "observation_invalid"
+
+
+def test_answer_listing_every_package_is_accepted():
+    # First live run of the test sets, Q01: 18 packages cited, rejected by a 12-ID limit.
+    evidence = [{"id": f"rs-p{i:02d}"} for i in range(1, 19)]
+    reply = "\n".join(f"- Package {i} [rs-p{i:02d}]" for i in range(1, 19))
+    answer = agent.Answer.model_validate({"reply": reply, "evidence_ids": [e["id"] for e in evidence]})
+    agent.validate_answer(answer, evidence, None)
+    assert len(answer.evidence_ids) == 18
+
+
+def test_medical_citations_stay_few():
+    evidence = [{"id": f"nlm-{i}"} for i in range(10)]
+    answer = agent.Answer.model_validate({"reply": " ".join(f"[nlm-{i}]" for i in range(9))})
+    with pytest.raises(ConversationError) as e:
+        agent.validate_answer(answer, evidence, None)
+    assert e.value.code == "citation_invalid"
+
+
+def test_observations_without_a_report_are_ignored():
+    # First live run, Q02: a package answer carried "observations" although no report was in the chat.
+    answer = agent.Answer.model_validate({"reply": "Essential Check [rs-p01]", "observations": [
+        {"field_id": "P01", "value": 1190, "unit": "THB", "reference": "", "status": "normal"}, {"name": "x"}]})
+    agent.validate_answer(answer, [{"id": "rs-p01"}], None)
+    assert answer.observations == []
+
+
+def test_observation_shows_the_report_row_and_ignores_spacing_only():
+    report = {"fields": [{"id": "f1", "value": "6.1", "unit": "%", "reference": "4.0–5.6", "status": "high"}]}
+    answer = agent.Answer.model_validate({"reply": "HbA1c 6.1 %", "observations": [
+        {"field_id": "f1", "value": "6.1", "unit": "%", "reference": "4.0 - 5.6", "status": "within"},
+        {"field_id": "f1", "value": "6.1", "unit": "%", "reference": "4.0-5.6", "status": "high"},
+        {"field_id": "zz", "value": "1", "unit": "", "reference": "", "status": "low"}]})
+    agent.validate_answer(answer, [], report)
+    assert [o.model_dump() for o in answer.observations] == [{"field_id": "f1", "value": "6.1", "unit": "%", "reference": "4.0–5.6", "status": "high"}]
+
+
+def test_links_images_and_html_are_removed_before_the_customer_sees_them():
+    answer = agent.Answer.model_validate({"reply": "See <b>this</b> [guide](https://x.example/a) www.x.example "
+                                          "![i](http://a/b.png)<br>LDL < 130 and HDL > 40 [nlm-a](https://medlineplus.gov/)"})
+    agent.validate_answer(answer, [{"id": "nlm-a"}], None)
+    for gone in ("http", "www.", "<b>", "![", "<br>"):
+        assert gone not in answer.reply
+    assert "this guide" in answer.reply and "LDL < 130 and HDL > 40" in answer.reply and answer.evidence_ids == ["nlm-a"]

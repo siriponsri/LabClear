@@ -34,6 +34,9 @@ class Decision(BaseModel):
     drop_nulls = model_validator(mode="before")(_drop_nulls)
 
 
+STATUSES = ("low", "high", "within", "unknown")
+
+
 class Observation(BaseModel):
     # Values are compared character for character with the confirmed report in validate_answer.
     model_config = ConfigDict(extra="ignore", coerce_numbers_to_str=True)
@@ -47,7 +50,7 @@ class Observation(BaseModel):
 class Answer(BaseModel):
     model_config = ConfigDict(extra="ignore")
     reply: str = Field(min_length=1, max_length=6500)
-    evidence_ids: list[str] = Field(default_factory=list, max_length=12)
+    evidence_ids: list[str] = Field(default_factory=list)
     observations: list[Observation] = Field(default_factory=list, max_length=60)
     followups: list[str] = Field(default_factory=list, max_length=3)
 
@@ -56,7 +59,21 @@ class Answer(BaseModel):
     @field_validator("evidence_ids", mode="before")
     @classmethod
     def _ids(cls, value):
-        return [value] if isinstance(value, str) else value
+        # A hint only: validate_answer replaces it with the IDs actually cited in the reply.
+        if isinstance(value, str):
+            value = [value]
+        return [x for x in value if isinstance(x, str)][:40] if isinstance(value, list) else []
+
+    @field_validator("observations", mode="before")
+    @classmethod
+    def _observations(cls, value):
+        # Pointers to confirmed report rows. Incomplete items are dropped here; validate_answer keeps
+        # only those naming a row of the confirmed report, and withholds the answer if a value differs.
+        if not isinstance(value, list):
+            return []
+        keys = ("field_id", "value", "unit", "reference")
+        items = [x for x in value if isinstance(x, dict) and all(x.get(k) is not None for k in keys)]
+        return [{**x, "status": x.get("status") if x.get("status") in STATUSES else "unknown"} for x in items][:60]
 
     @field_validator("followups", mode="before")
     @classmethod
@@ -170,28 +187,65 @@ async def complete_json(messages: list[dict], model, *, step: str, max_tokens: i
             raise
         retry = [*messages, {"role": "user", "content": (
             f"Your previous reply could not be used: {exc.message} Reply again with only the JSON object "
-            "described in the instructions, using only the allowed values.")}]
+            "described in the instructions, using only the allowed values. Keep the reply short enough to finish.")}]
         return parse_model(await transport.complete(retry, slot=slot, json_mode=True, max_tokens=max_tokens), model, step)
+
+
+_TAG = re.compile(r"</?[a-zA-Z][a-zA-Z0-9-]*(?:\s[^<>]*)?/?>")
+_IMAGE = re.compile(r"!\[[^\]\n]*\]\([^)\n]*\)")
+_LINK = re.compile(r"\[([^\]\n]+)\]\(([^)\s]*)\)")
+_URL = re.compile(r"(?:https?://|www\.)[^\s)\]]*", re.I)
+_CITATION = re.compile(r"\[([a-z0-9][a-z0-9_-]+)\]")
+# Business records (catalog, centers, policy) may each be cited; medical sources stay few.
+MAX_MEDICAL_CITATIONS, MAX_CITATIONS = 8, 30
+
+
+def clean_reply(text: str, citations=frozenset()) -> str:
+    """Links, images and HTML written by the model never reach the customer: they are removed and
+    the words kept. A known citation written as a link, [id](url), stays a citation."""
+    text = re.sub(r"<br\s*/?>", "; ", text, flags=re.I)
+    text = _IMAGE.sub("", text)
+    text = _LINK.sub(lambda m: f"[{m[1]}]" if m[1] in citations else m[1], text)
+    text = _URL.sub("", text)
+    text = _TAG.sub("", text)
+    return re.sub(r"(?<=\S)[ \t]{2,}", " ", text).strip()
+
+
+def _same(a, b) -> bool:
+    """Equal as printed, ignoring only spacing and the kind of dash (4.0 - 5.6 = 4.0–5.6, but 5.6 != 5.60)."""
+    norm = lambda s: re.sub(r"\s+", "", str(s or "")).replace("–", "-").replace("—", "-")
+    return norm(a) == norm(b)
 
 
 def validate_answer(answer: Answer, evidence: list[dict], report: dict | None) -> None:
     known = {r["id"] for r in evidence}
+    answer.reply = clean_reply(answer.reply, known)
+    if not answer.reply:
+        raise ConversationError("answer_invalid", "The answer was empty. Please try again.", 502)
     # The sources shown are exactly the ones cited in the text, in order of first citation.
-    inline = list(dict.fromkeys(re.findall(r"\[([a-z0-9][a-z0-9_-]+)\]", answer.reply)))
+    inline = list(dict.fromkeys(_CITATION.findall(answer.reply)))
     if not set(inline) <= known:
+        log.warning("answer_rejected reason=unknown_citation")
         raise ConversationError("citation_invalid", "The answer cited an unavailable source. Please try again.", 502)
-    if len(inline) > 6:
+    if len([i for i in inline if not i.startswith("rs-")]) > MAX_MEDICAL_CITATIONS or len(inline) > MAX_CITATIONS:
+        log.warning("answer_rejected reason=too_many_citations")
         raise ConversationError("citation_invalid", "The answer cited too many sources. Please try again.", 502)
     answer.evidence_ids = inline
-    if re.search(r"https?://|www\.|<[^>]+>|!\[", answer.reply, re.I):
+    if _URL.search(answer.reply) or _TAG.search(answer.reply) or "![" in answer.reply:
         raise ConversationError("answer_invalid", "The answer contained unsupported content.", 502)
+    # Observations only point at rows of the confirmed report; the card always shows the server's row.
     fields = {r["id"]: r for r in (report or {}).get("fields", [])}
-    seen = set()
+    kept: list[Observation] = []
     for observation in answer.observations:
         row = fields.get(observation.field_id)
-        if observation.field_id in seen or row is None or any(getattr(observation, k) != row[k] for k in ("value", "unit", "reference", "status")):
+        if row is None or any(k.field_id == observation.field_id for k in kept):
+            continue
+        if not all(_same(getattr(observation, k), row.get(k)) for k in ("value", "unit", "reference")):
+            log.warning("answer_rejected reason=observation_changed")
             raise ConversationError("observation_invalid", "An answer changed a confirmed report value. It was withheld.", 502)
-        seen.add(observation.field_id)
+        kept.append(Observation(field_id=row["id"], value=str(row.get("value") or ""), unit=str(row.get("unit") or ""),
+                                reference=str(row.get("reference") or ""), status=row.get("status") if row.get("status") in STATUSES else "unknown"))
+    answer.observations = kept
     if any(len(x) > 180 or not x.strip() for x in answer.followups):
         raise ConversationError("answer_invalid", "The model returned invalid follow-up suggestions.", 502)
 
