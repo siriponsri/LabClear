@@ -77,7 +77,7 @@ def test_thai_secret_refusal_is_relevant():
 
 def test_health_reports_consistent_version():
     c=client(False)
-    assert c.get('/health').json()['version']==c.get('/api/business/session').json()['version']=='3.0.1'
+    assert c.get('/health').json()['version']==c.get('/api/business/session').json()['version']=='3.0.2'
 
 def test_valid_catalog_price_cannot_be_attached_to_wrong_package():
     assert answer_checks.unknown_amounts('Essential Check 1,690 บาท',catalog())==['1,690']

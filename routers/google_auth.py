@@ -84,12 +84,10 @@ async def start(request: Request, next: str = "/app"):
         return _page("Google sign-in is not set up", "Sign in with your email and password instead.")
     state, verifier, nonce = secrets.token_urlsafe(24), secrets.token_urlsafe(48), secrets.token_urlsafe(16)
     redirect_uri = _redirect_uri(request)
-    guest = request.cookies.get(business.COOKIE, "")
     with db.transaction() as tx:
-        session = tx.get("session_" + db.digest(guest)) if guest else None
         tx.put("oauth_" + db.digest(state), "oauth", "", {
             "verifier": verifier, "nonce": nonce, "redirect_uri": redirect_uri, "next": _safe_next(next),
-            "expires": time.time() + 600, "guest": session["owner"] if session else "", "guest_session": session["id"] if session else ""})
+            "expires": time.time() + 600})
     query = urlencode({"client_id": os.environ["GOOGLE_CLIENT_ID"], "redirect_uri": redirect_uri, "response_type": "code",
                        "scope": "openid email profile", "state": state, "nonce": nonce, "prompt": "select_account",
                        "code_challenge": _b64url(hashlib.sha256(verifier.encode()).digest()), "code_challenge_method": "S256"})
@@ -145,18 +143,12 @@ async def callback(request: Request, state: str = "", code: str = "", error: str
         if user and (user["data"].get("role", "customer") != "customer" or demo.blocked(user) or user["data"].get("demo")):
             return _page("Use your password for this account", "Staff and demonstration accounts sign in with their password.")
         if not user:
-            guest = tx.get(flow["guest"]) if flow["guest"] else None
-            if guest and guest["data"].get("role") == "customer" and not guest["data"].get("password"):
-                user = guest  # keep the chats and reports made before signing in, as registering does
-            else:
-                uid = "customer_" + secrets.token_hex(12)
-                user = tx.put(uid, "user", uid, {"role": "customer", "email": "", "password": ""})
+            uid = "customer_" + secrets.token_hex(12)
+            user = tx.put(uid, "user", uid, {"role": "customer", "email": "", "password": ""})
             data = {**user["data"], "email": email, "password": NO_PASSWORD, "google_sub": str(c.get("sub", ""))}
             user = tx.put(user["id"], "user", user["id"], data)
             tx.put(index, "email", user["id"], {})
             tx.audit(user["id"], "account.google_created", user["id"])
-        if flow.get("guest_session"):
-            tx.delete(flow["guest_session"])
         response = _page("Signed in", "Taking you back to LabClear.", flow["next"], go=True)
         business.set_session(tx, response, user["id"])
     response.delete_cookie(STATE_COOKIE, path="/api/business/auth/google")

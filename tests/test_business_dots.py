@@ -25,7 +25,7 @@ def script(monkeypatch, plan: dict, reply: str = "Here is what that means [nlm-x
         stage = len(calls)
         if stage == 1:
             return json.dumps(plan)
-        if stage == 2:
+        if messages[0]['content'] == business_agent.ANSWER:
             return json.dumps({"reply": reply, "evidence_ids": list(evidence_ids), "observations": [], "followups": []})
         return json.dumps({"supported": True, "values_preserved": True, "within_scope": True})
 

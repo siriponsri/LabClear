@@ -7,7 +7,10 @@
 </div>
 <div class="wrap prose stack">
   <section class="card stack-sm"><h2 class="h3">Use synthetic data only</h2><p>{{ policies.privacy_policy }}</p></section>
-  <section class="card stack-sm"><h2 class="h3">What is stored</h2>
+  <section class="card stack-sm"><h2 class="h3">Without signing in</h2>
+    <p>Your messages and images are temporary and are not saved in the application database or browser storage. Refreshing, leaving or closing the page clears your access to them. Signing in or creating an account discards the temporary chat.</p>
+    <p>Temporary server memory is cleared when the page sends its close request. If the browser closes without sending it, the data expires after 20 minutes without a request. AI providers still receive the content needed to answer or read a report, under their own retention settings.</p></section>
+  <section class="card stack-sm"><h2 class="h3">What is stored for signed-in accounts</h2>
     <ul class="plain small">
       <li>Account email and a salted password hash. Sessions use an HTTP-only cookie.</li>
       <li>Conversations, reports you upload, appointments, quotations, test payments and notifications, encrypted in the application database.</li>
@@ -17,6 +20,6 @@
     <p>Your reports and conversations are private to your account. Staff see a conversation when you ask for the team or when an organization request needs coordination. Organizations never receive individual results.</p>
     <p>When an AI provider is connected, the minimum text needed for a reply is sent to that provider. Reports are never added to the shared knowledge base.</p></section>
   <section class="card stack-sm"><h2 class="h3">Your controls</h2>
-    <p>Delete a report from My reports; this also clears conversation history that may contain its values. Sign out from your account menu. Email verification and account recovery are not available in this coursework release.</p></section>
+    <p>Delete a report from My reports; this also clears conversation history that may contain its values. Sign out from your account menu. Password-account email verification and account recovery are not available in this coursework release.</p></section>
 </div>
 {% endblock %}

@@ -9,6 +9,7 @@ from contextlib import contextmanager
 from pathlib import Path
 from cryptography.fernet import Fernet
 from services.conversation_transport import ConversationError
+from services import guest_memory as gm
 
 ROOT=Path(__file__).resolve().parents[1]
 
@@ -30,9 +31,13 @@ def cipher():
     except Exception:raise ConversationError('storage_setup','BUSINESS_DATA_KEY must be a valid Fernet key.') from None
 
 class Tx:
-    def __init__(self,c,pg):self.c,self.pg=c,pg;self.crypto=cipher()
+    def __init__(self,c,pg):
+        self.c,self.pg=c,pg;self.crypto=cipher();self.temporary={};self.revoked=set()
     def sql(self,q,args=()):return self.c.execute(q.replace('?', '%s') if self.pg else q,args)
     def get(self,id):
+        row=self.temporary.get(id) if id in self.temporary else gm.ROWS.get(id)
+        if id in self.temporary or row:
+            return gm.copy(row) if row and row['owner'] not in self.revoked and gm.active(row['owner']) else None
         r=self.sql('SELECT * FROM rs_entities WHERE id=?',(id,)).fetchone()
         if not r:return None
         d=dict(r)
@@ -40,21 +45,61 @@ class Tx:
         del d['payload']
         return d
     def find(self,kind,owner=None,state=None):
+        if owner and owner.startswith('guest_'):
+            rows={**gm.ROWS,**self.temporary}
+            return [gm.copy(r) for r in rows.values() if r and r['owner']==owner and r['kind']==kind and (state is None or r['state']==state) and owner not in self.revoked and gm.active(owner)]
         q='SELECT id FROM rs_entities WHERE kind=?';a=[kind]
         if owner is not None:q+=' AND owner=?';a.append(owner)
         if state is not None:q+=' AND state=?';a.append(state)
         return [self.get(r['id']) for r in self.sql(q+' ORDER BY created',a).fetchall()]
     def put(self,id,kind,owner,data,state='',branch=''):
+        if owner.startswith('guest_'):
+            if owner in self.revoked or not gm.active(owner):
+                raise ConversationError('login_required','Temporary chat expired. Reload to start a new one.',401)
+            old=self.get(id)
+            self.temporary[id]={'id':id,'kind':kind,'owner':owner,'data':gm.copy(data),'state':state,'branch':branch,'created':old['created'] if old else time.time()}
+            gm.check_capacity(self.temporary)
+            return self.get(id)
         raw=self.crypto.encrypt(json.dumps(data,ensure_ascii=False).encode()).decode()
         self.sql('INSERT INTO rs_entities(id,kind,owner,state,branch,payload,created) VALUES(?,?,?,?,?,?,?) ON CONFLICT(id) DO UPDATE SET owner=excluded.owner,state=excluded.state,branch=excluded.branch,payload=excluded.payload',(id,kind,owner,state,branch,raw,time.time()))
         return self.get(id)
-    def delete(self,id):self.sql('DELETE FROM rs_entities WHERE id=?',(id,))
+    def delete(self,id):
+        if id in self.temporary or id in gm.ROWS:self.temporary[id]=None
+        else:self.sql('DELETE FROM rs_entities WHERE id=?',(id,))
+    def forget_guest(self,owner):
+        if owner.startswith('guest_'):self.revoked.add(owner)
+    def touch_guest(self,owner):
+        if owner.startswith('guest_') and gm.active(owner):gm.OWNERS[owner]=time.time()+gm.TTL
+    def commit_guest(self):
+        for owner in self.revoked:gm.revoke(owner)
+        for key,row in self.temporary.items():
+            if row and row['owner'] not in self.revoked and gm.active(row['owner']):gm.ROWS[key]=row
+            else:gm.ROWS.pop(key,None)
     def own(self,id,owner,kind=None):
         r=self.get(id)
         if not r or r['owner']!=owner or (kind and r['kind']!=kind):raise ConversationError('not_found','This record is unavailable.',404)
         return r
     def audit(self,actor,action,object_id):
         self.put('audit_'+secrets.token_hex(12),'audit',actor,{'action':action,'object_id':object_id})
+
+_PURGED=set()
+
+def _purge_legacy_guests(tx):
+    # Old website guests were durable customer_* rows. Preserve every signed-in
+    # account and channel identity. Remove guest attachments/history and notices.
+    marker='migration_guest_privacy_302'
+    if tx.get(marker):return
+    guests=[u for u in tx.find('user') if u['id'].startswith('customer_') and not u['data'].get('password') and not u['data'].get('line_verified') and not tx.find('line_identity',u['id'])]
+    removed=set()
+    for u in guests:
+        ids=[r['id'] for r in tx.sql('SELECT id FROM rs_entities WHERE owner=?',(u['id'],)).fetchall()]
+        removed.update(ids)
+        tx.sql('DELETE FROM rs_entities WHERE owner=?',(u['id'],))
+    if removed:
+        for kind in ('notification','audit'):
+            for row in tx.find(kind):
+                if row['data'].get('object_id') in removed or row['data'].get('ref') in removed:tx.delete(row['id'])
+    tx.put(marker,'migration','system',{'legacy_guests_removed':len(guests),'at':time.time()})
 
 @contextmanager
 def transaction():
@@ -79,8 +124,15 @@ def transaction():
         c.commit()
         if pg:c.execute('SELECT id FROM rs_mutex WHERE id=1 FOR UPDATE')
         else:c.execute('BEGIN IMMEDIATE')
-        yield Tx(c,pg)
-        c.commit()
+        with gm.LOCK:
+            gm.prune()
+            tx=Tx(c,pg)
+            identity=url or str(p)
+            if identity not in _PURGED:_purge_legacy_guests(tx)
+            yield tx
+            c.commit()
+            tx.commit_guest()
+            _PURGED.add(identity)
     except Exception:
         c.rollback();raise
     finally:c.close()

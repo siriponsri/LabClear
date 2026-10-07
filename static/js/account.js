@@ -58,7 +58,7 @@
     pass.i.minLength = 4;
     const actions = make('div', null, 'form-actions'), signIn = make('button', 'Sign in', 'btn primary'), create = make('a', 'Create an account', 'btn');
     signIn.type = 'submit'; create.href = '/app'; actions.append(signIn, create);
-    form.onsubmit = async e => { e.preventDefault(); err.hidden = true; try { after((await send('/login', { email: email.i.value, password: pass.i.value })).user); } catch (x2) { fail(x2); } };
+    form.onsubmit = async e => { e.preventDefault(); err.hidden = true; try { after((await RS.auth('login', email.i.value, pass.i.value)).user); } catch (x2) { fail(x2); } };
     form.append(email.w, pass.w, err, actions, make('p', 'New here? Create an account from the sign-in button inside the app. You can also use LabClear without an account.', 'tiny muted'));
     if (me.google) {
       const g = make('a', 'Continue with Google', 'btn google-btn'); g.href = '/api/business/auth/google/start?next=' + encodeURIComponent(location.pathname === '/' ? '/app' : location.pathname);

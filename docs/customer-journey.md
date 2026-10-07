@@ -39,7 +39,7 @@ Demo accounts (password `1234`) are on for local runs and off on a hosted site u
 
 ## Chats and projects
 
-The chat list on the left of `/app` works like Claude or ChatGPT: **New chat**, open an earlier chat, rename it, move it to a project or delete it from the ⋯ menu. Projects group chats, for example "Annual check-up 2026"; deleting a project keeps its chats. Deleting a report also clears the chats that used it.
+After signing in, the chat list on the left of `/app` works like Claude or ChatGPT: **New chat**, open an earlier chat, rename it, move it to a project or delete it from the ⋯ menu. Projects group chats, for example "Annual check-up 2026"; deleting a project keeps its chats. Deleting a report also clears the chats that used it.
 
 ## What staff do
 
@@ -50,3 +50,5 @@ The chat list on the left of `/app` works like Claude or ChatGPT: **New chat**, 
 | Organization request | Issue a quotation; the customer accepts the latest version |
 | Payment at the center | Record it; approve refunds |
 | Prices, centers, assistant roles, AI providers, budget | Managers only |
+
+Without signing in, a chat and its uploaded images last only within the current page. Refreshing, full navigation, tab close, or signing in discards them. New chat clears the current temporary reports too. Internal workspace tabs keep the same temporary conversation. Team requests, projects and printable reports require an account; temporary values can still be reviewed in the current page.

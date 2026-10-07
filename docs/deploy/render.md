@@ -92,4 +92,10 @@ Customers can sign in with a Google account when an OAuth client is set. Staff a
 3. Under **Authorized redirect URIs** add `https://<your-service>/api/business/auth/google/callback` (for a local run also `http://localhost:8000/api/business/auth/google/callback`, and set `GOOGLE_REDIRECT_URI` to it).
 4. Copy the client ID and secret into the host's environment as `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` (never into Git), and redeploy.
 
-The sign-in dialogs then show **Continue with Google**. LabClear asks only for `openid email profile`, checks the state, PKCE verifier, nonce, audience, issuer, expiry and verified email, and creates a customer account for a new email (keeping the chats made before signing in).
+The sign-in dialogs then show **Continue with Google**. LabClear asks only for `openid email profile`, checks the state, PKCE verifier, nonce, audience, issuer, expiry and verified email, and creates a customer account for a new email (without importing the temporary guest chat).
+
+### Guest privacy in 3.0.2
+
+Use the supplied single-process entrypoint for this pilot. Guest rows live only in bounded process memory (100 page sessions, 64 MiB total, 20-minute inactivity expiry). They never enter PostgreSQL/SQLite. Multiple workers without affinity may return 401 for a guest page; do not add workers until the temporary-session architecture has been reviewed. Registered accounts remain in encrypted durable storage.
+
+The first store transaction runs an idempotent migration that deletes old unregistered website guests and their owned rows, plus linked notifications/audits. Password/Google accounts and verified LINE identities are preserved. Historical deployment/database backups follow the owner's existing retention policy. New guest sessions use a page-memory header token, never a cookie or local/session storage. Page close sends a best-effort revocation; the expiry sweep covers an unclean browser exit.

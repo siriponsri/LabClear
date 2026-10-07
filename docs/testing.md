@@ -72,7 +72,7 @@ Five synthetic reports from [`examples/thai_lab_reference_v3`](../examples), sen
 | `test_model_output.py` | Reading loose model JSON, the corrective retry, package lists with many sources, observations without a report, links and HTML removed, citations and report values still strict |
 | `test_chat_features.py` | Chats and projects, demo accounts (not listed by the API), streaming steps, report in the chat, document safety question, report routing |
 | `test_answer_checks.py` | Test names found in Thai questions, amounts checked against the catalog with one rewrite, critical-flag advice, printed ranges in common shapes |
-| `test_google_sign_in.py` | Google sign-in: off until configured, state and PKCE, ID-token claims, customers only, guest chats kept |
+| `test_google_sign_in.py` | Google sign-in: off until configured, state and PKCE, ID-token claims, customers only, guest chats not imported |
 | `test_cost_ledger.py` | THB budget |
 
 ## Browser scenarios

@@ -3,7 +3,7 @@
     python scripts/course_eval.py --base https://labclear.onrender.com
 
 Test sets (Week 12 / Final Project): 10 customer questions, 5 report images, 5 safety cases.
-Every request goes through the public website API exactly as the browser does (session cookie,
+Every request goes through the public website API exactly as the browser does (page-memory guest token (or account cookie),
 CSRF header, optional demo access code). The script records the reply, its sources, the
 answering role, the checks the server reports, any error and the time taken, and writes
 `course_eval_results.json`. Nothing is judged by a model here: simple automatic checks are
@@ -15,7 +15,7 @@ Each one goes through the same path as a customer in the chat: it is sent with a
 (the answer key never goes to the server), confirmed in one click (/chat/report/confirm) and
 explained by the Report Explainer.
 
-Cost: about 120 provider calls in total, inside the server's own call cap and THB ledger.
+Cost: about 120 provider calls before any bounded answer rewrites, inside the server's own call cap and THB ledger.
 The access code (if the site has one) is asked for interactively or read from LABCLEAR_ACCESS_CODE; it is never saved.
 """
 from __future__ import annotations
@@ -86,10 +86,11 @@ class Site:
         self.base = base.rstrip("/")
         self.c = httpx.Client(timeout=httpx.Timeout(260.0, connect=60.0), follow_redirects=False)
         self.csrf = ""
+        self.guest_token = ""
         self.code = code
 
     def headers(self) -> dict:
-        h = {"X-Business-CSRF": self.csrf}
+        h = {"X-Business-CSRF": self.csrf, "X-LabClear-Guest": self.guest_token}
         if self.code:
             h["X-LabClear-Access"] = self.code
         return h
@@ -112,6 +113,7 @@ class Site:
         if s != 200:
             raise SystemExit(f"Session failed: {s} {b}")
         self.csrf = b["csrf"]
+        self.guest_token = b.get("guest_token", "")
         return b
 
     def new_chat(self):
@@ -261,7 +263,9 @@ def main(argv=None) -> int:
             print(f"{t['id']} {r['status']} {r['ms']} ms {'blocked: ' + str(r.get('error')) if r['blocked'] else 'answered'}")
 
     results['completed_at']=datetime.now(timezone.utc).isoformat()
-    save();site.c.close()
+    save()
+    if site.guest_token:site.call("POST", "/guest/close", json={"guest_token":site.guest_token,"csrf":site.csrf})
+    site.c.close()
     print("Saved", args.out)
     return 0
 

@@ -4,6 +4,7 @@ import logging
 from pathlib import Path
 
 from starlette.exceptions import HTTPException as StarletteHTTPException
+from starlette.formparsers import MultiPartParser
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -27,6 +28,10 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s %(levelname)s %(name)s: %(message)s",
 )
+
+# Business upload requests are capped at 10 MiB before parsing below. Keep
+# their temporary multipart files in memory as well, including guest images.
+MultiPartParser.spool_max_size = 10 * 1024 * 1024
 
 app = FastAPI(
     title=settings.APP_NAME,
@@ -100,7 +105,7 @@ async def request_boundary(request: Request, call_next):
     response.headers["X-Robots-Tag"] = "noindex, nofollow"
     html_page = not request.url.path.startswith(("/static", "/api", "/docs", "/redoc", "/openapi.json"))
     if html_page or request.url.path.startswith("/api/business"):
-        response.headers["Content-Security-Policy"] = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self'; frame-src 'self' https://www.google.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
+        response.headers["Content-Security-Policy"] = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; frame-src 'self' https://www.google.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
     return response
 
 

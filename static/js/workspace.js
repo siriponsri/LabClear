@@ -6,7 +6,7 @@
   const $ = id => document.getElementById(id);
   const STAFF_MODE = document.body.dataset.staff === 'true';
   const STAFF_ROLES = ['staff', 'manager', 'clinical'];
-  let csrf = '', user = null, state = null, accessCode = '', busy = false, controller = null;
+  let guestToken = '', csrf = '', user = null, state = null, accessCode = '', busy = false, controller = null;
   let view = STAFF_MODE ? 'overview' : 'chat', lastMessages = '', activeTicket = '', ticketFilter = 'open', opsFilter = 'requested';
   let modes = null, catalogCache = null, branchCache = null, googleSignIn = false, chatList = null, lastChats = '';
 
@@ -20,11 +20,25 @@
   const isManager = () => user?.role === 'manager';
   function notice(text, tone) { const n = $('notice'); n.textContent = text; n.className = 'toast' + (tone === 'bad' ? ' bad' : ''); n.hidden = false; clearTimeout(notice.t); notice.t = setTimeout(() => { n.hidden = true; }, 7000); }
   async function request(path, options = {}, accept = 'application/json') {
-    const headers = { 'X-Business-CSRF': csrf, Accept: accept, ...(accessCode ? { 'X-LabClear-Access': accessCode } : {}), ...options.headers };
+    const headers = { 'X-Business-CSRF': csrf, ...(guestToken ? { 'X-LabClear-Guest': guestToken } : {}), Accept: accept, ...(accessCode ? { 'X-LabClear-Access': accessCode } : {}), ...options.headers };
     if (options.body && !(options.body instanceof FormData)) headers['Content-Type'] = 'application/json';
     try { return await fetch('/api/business' + path, { credentials: 'same-origin', ...options, headers }); }
     catch (e) { if (e.name === 'AbortError') throw e; throw Object.assign(Error('You appear to be offline. Check your connection and try again.'), { code: 'network' }); }
   }
+  const sourceImages = new Map();
+  function clearSources() { sourceImages.forEach(p => p.then(u => URL.revokeObjectURL(u)).catch(() => {})); sourceImages.clear(); }
+  async function loadImage(img, src) {
+    if (!guestToken || !src.startsWith('/api/business/reports/')) { img.src = src; return; }
+    try {
+      if (!sourceImages.has(src)) sourceImages.set(src, request(src.slice('/api/business'.length)).then(async r => { if (!r.ok) throw Error('Image unavailable'); return URL.createObjectURL(await r.blob()); }));
+      img.src = await sourceImages.get(src);
+    } catch { sourceImages.delete(src); img.alt = 'Source image unavailable. Please reopen the report.'; }
+  }
+  addEventListener('pagehide', () => {
+    if (guestToken) navigator.sendBeacon('/api/business/guest/close', new Blob([JSON.stringify({ guest_token: guestToken, csrf })], { type: 'application/json' }));
+    guestToken = ''; clearSources(); controller?.abort();
+  });
+  addEventListener('pageshow', e => { if (e.persisted) location.reload(); });
   async function readJson(r) {
     let d; try { d = await r.json(); } catch { throw Error('The server response could not be read.'); }
     if (!r.ok) {
@@ -141,17 +155,18 @@
   function account() {
     if (user?.registered) { accountMenu(); return; }
     const box = el('div', null, 'stack');
+    box.append(el('p', 'Signing in or creating an account discards this temporary chat and its images.', 'small muted'));
     {
       const form = el('form', null, 'form-grid'), email = field('Email or username', 'text'), pass = field('Password', 'password', '', 'New accounts need at least 12 characters.');
       email.input.required = true; email.input.autocomplete = 'username'; email.input.spellcheck = false; pass.input.minLength = 4; pass.input.required = true; pass.input.autocomplete = 'current-password';
       const err = el('p', '', 'field-error'); err.setAttribute('role', 'alert'); err.hidden = true;
       async function signedIn(r, kind) {
-        csrf = r.csrf; updateUser(r.user); closeModal(); lastMessages = ''; lastChats = '';
+        guestToken = ''; clearSources(); controller?.abort(); draft.files = []; draft.sample = null; renderDraft(); csrf = r.csrf; updateUser(r.user); closeModal(); lastMessages = ''; lastChats = '';
         // Staff and managers work in the service desk; signing in on /app takes them there.
         if (!STAFF_MODE && STAFF_ROLES.includes(r.user.role)) { location.href = '/staff'; return; }
         if (STAFF_MODE) { location.reload(); return; }
         await refresh(); notice(kind === 'login' ? 'Signed in as ' + r.user.email + '.' : 'Account created.');
-        await navigate(view, false); await checkLink();
+        if (view !== 'book') await navigate(view, false, Object.fromEntries(new URLSearchParams(location.search))); await checkLink();
       }
       async function auth(kind) {
         err.hidden = true;
@@ -211,11 +226,11 @@
   }
   function messageNode(m, interactive = true, last = false) {
     return RSTurns.render(m, interactive
-      ? { interactive: true, last, onRetry: retry, onShortcut: shortcut, onAction: actionCard, onStaff: () => requestStaff(), onFollowup: q => send(q), onReportCard: reportCard, onCardRetry: cardRetry, onImage: openImage, onFollowupCheck: () => send(followupQuestion()) }
+      ? { interactive: true, last, onRetry: retry, onShortcut: shortcut, onAction: actionCard, onStaff: () => requestStaff(), onFollowup: q => send(q), onReportCard: reportCard, onCardRetry: cardRetry, onImage: openImage, loadImage, onFollowupCheck: () => send(followupQuestion()) }
       : STAFF_MODE
         // Staff see that a report was shared, not its image or values (those stay with the customer).
         ? { privateFiles: true, onReportCard: () => el('p', 'The customer added a lab report here. Its values stay private to the customer.', 'small muted') }
-        : { onReportCard: x => reportCard(x, false, false), onImage: openImage });
+        : { onReportCard: x => reportCard(x, false, false), onImage: openImage, loadImage });
   }
   function shortcut(cmd) {
     // Whitelisted page shortcuts proposed by the assistant: navigate, prefill or show; never confirm.
@@ -415,6 +430,7 @@
     head.append(el('strong', m.state === 'discarded' ? 'Report discarded' : 'Values read from your report'),
       m.state === 'confirmed' ? badge('Confirmed by you', 'ok') : m.state === 'discarded' ? badge('Not used', 'neutral') : badge('Please check', 'warn'));
     c.append(head);
+    if (m.critical_note) c.append(el('p', m.critical_note, 'callout warn'));
     if (m.state === 'discarded') { c.append(el('p', 'These values were not saved or used.', 'small muted')); return c; }
     if (m.sample) c.append(el('p', 'Synthetic sample, not a patient record.', 'tiny muted'));
     const wrap = el('div', null, 'table-wrap'), t = el('table', null, 'data rc-table'), hr = el('tr');
@@ -474,6 +490,10 @@
     const key = JSON.stringify([list, [...projectOpen]]); if (key === lastChats) return; lastChats = key;
     const top = el('div', null, 'cl-top'), nb = button('New chat', () => newChat(''), 'btn sm cl-new');
     nb.prepend(RSTurns.icon('plus')); top.append(nb);
+    if (!user?.registered) {
+      top.append(el('p', 'Temporary chat: refreshing, leaving or closing this page clears messages and images. Sign in to start a saved chat; this chat will be discarded.', 'tiny muted'), button('Open account options', account, 'btn sm'));
+      side.replaceChildren(top); return;
+    }
     const pg = el('section', null, 'cl-group'), ph = el('div', null, 'cl-head'), add = el('button', null, 'icon-btn cl-add');
     add.type = 'button'; add.setAttribute('aria-label', 'New project'); add.append(RSTurns.icon('plus')); add.onclick = () => projectDialog();
     ph.append(el('h2', 'Projects'), add); pg.append(ph);
@@ -503,7 +523,7 @@
     catch (e) { notice(e.message, 'bad'); }
   }
   const openChat = id => chatAction(() => post('/chats/' + encodeURIComponent(id) + '/open'));
-  const newChat = projectId => chatAction(() => post('/chats', { project_id: projectId || '' }).then(() => { draft.files = []; draft.sample = null; renderDraft(); $('message').focus(); }));
+  const newChat = projectId => chatAction(() => post('/chats', { project_id: projectId || '' }).then(() => { clearSources(); draft.files = []; draft.sample = null; renderDraft(); $('message').focus(); }));
   function chatDialog(c) {
     const form = el('form', null, 'form-grid'), name = field('Chat name', 'text', c.title), proj = field('Project', 'select');
     name.input.maxLength = 80; name.input.required = true;
@@ -560,6 +580,7 @@
   }
   document.addEventListener('click', e => { const b = e.target.closest('[data-prompt]'); if (b) send(b.dataset.prompt); });
   function requestStaff(prefill = '') {
+    if (!user?.registered) return requireAccount('Sign in to send a request to our team. This temporary chat will be discarded.');
     const form = el('form', null, 'form-grid'), f = field('How can our team help?', 'textarea', typeof prefill === 'string' ? prefill : '');
     f.input.required = true; f.input.maxLength = 1000;
     form.append(f.wrap, el('p', 'Your conversation is shared with the service team and the assistant pauses until they reply or hand it back. Urgent health concerns should not wait in this queue.', 'small muted'),
@@ -790,7 +811,7 @@
     const box = el('div'); box.append(intro('My reports', 'Check every extracted value before it is used. Choose a previous report for comparison only when it belongs to the same person.'));
     box.append(planStrip());
     const actions = el('div', null, 'toolbar');
-    actions.append(button('Add a report', () => { if (!planOf().can_read) return upgradeDialog('Your free AI report reading has been used. Synthetic samples stay free.'); $('report-file').click(); }, 'btn primary sm'), button('Try a synthetic sample', demoPicker),
+    actions.append(button('Add a report', () => { if (!planOf().can_read) return upgradeDialog('Your free AI report reading has been used. Synthetic samples stay free.'); fileTarget = 'reports'; $('report-file').click(); }, 'btn primary sm'), button('Try a synthetic sample', demoPicker),
       button('Clear report context', async () => { await post('/reports/select', { report_id: '' }); await post('/reports/compare', { report_id: '' }); await refresh(); notice('Report context cleared.'); }, 'btn ghost sm'));
     box.append(actions);
     if (!state.reports.length) { box.append(empty('No reports yet', 'Upload a JPEG, PNG or PDF up to 3 MB, or read one of the synthetic samples.')); return box; }
@@ -802,13 +823,13 @@
       if (state.conversation.compare_report_id === r.id) h.append(badge('Previous report', 'neutral'));
       c.append(h, el('p', (r.date ? longDate(r.date) : 'Collection date not entered') + (r.pages > 1 ? ' · ' + r.pages + ' pages' : '') + (r.sample ? ' · Synthetic sample' : ''), 'small muted'));
       const a = el('div', null, 'record-actions');
-      if (r.confirmed) a.append(link('Lab Report', '/lab-report/' + encodeURIComponent(r.id), 'btn sm primary'));
+      if (r.confirmed) a.append(user?.registered ? link('Lab Report', '/lab-report/' + encodeURIComponent(r.id), 'btn sm primary') : button('Lab Report', () => requireAccount('Printable reports need an account. You can review the temporary values here; signing in discards this report.'), 'btn sm'));
       a.append(button(r.confirmed ? 'View fields' : 'Review fields', async () => reviewReport(await api('/reports/' + r.id))));
       if (r.confirmed) a.append(button('Use in conversation', async () => { await post('/reports/select', { report_id: r.id }); await refresh(); await navigate('chat'); notice('Report selected. Ask about it now.'); }),
         button('Use as previous report', async () => { await post('/reports/compare', { report_id: r.id }); await navigate('reports', false); notice('Previous report selected for comparison.'); }));
       a.append(button('Delete', () => {
         const n = el('div', null, 'stack'); n.append(el('p', 'This removes the report and clears conversation history so its values cannot reappear. This cannot be undone.'),
-          button('Delete report and history', async () => { await api('/reports/' + r.id, { method: 'DELETE' }); closeModal(); lastMessages = ''; notice('Report deleted.'); await navigate('reports', false); }, 'btn danger'));
+          button('Delete report and history', async () => { await api('/reports/' + r.id, { method: 'DELETE' }); clearSources(); closeModal(); lastMessages = ''; notice('Report deleted.'); await navigate('reports', false); }, 'btn danger'));
         modal('Delete report', n);
       }, 'btn sm danger'));
       c.append(a); list.append(c);
@@ -817,10 +838,11 @@
   }
   function reviewReport(r, highlight = '', opts = {}) {
     const d = r.data, form = el('form', null, 'form-grid'), label = field('Report label', 'text', d.label && d.label !== 'Unconfirmed report' ? d.label : '', 'For example: Annual check, September 2026'), date = field('Collection date if known', 'date', d.collected_date || '');
+    if (r.data.critical_note) form.append(el('p', r.data.critical_note, 'callout warn'));
     form.append(el('p', 'Compare every value with the source image. Leave missing values empty. Synthetic samples are not patient records.', 'small muted'), label.wrap, date.wrap);
     if (d.warnings?.length) form.append(el('p', d.warnings.join(' · '), 'callout warn small'));
     const pages = d.pages || 1, previews = el('div', null, pages > 1 ? 'report-pages' : '');
-    for (let i = 1; i <= pages; i++) { const img = el('img', null, 'report-preview'); img.src = '/api/business/reports/' + encodeURIComponent(r.id) + '/source?page=' + i; img.alt = `Source report, page ${i} of ${pages}, for comparison`; img.loading = 'lazy'; previews.append(img); }
+    for (let i = 1; i <= pages; i++) { const img = el('img', null, 'report-preview'); loadImage(img, '/api/business/reports/' + encodeURIComponent(r.id) + '/source?page=' + i); img.alt = `Source report, page ${i} of ${pages}, for comparison`; img.loading = 'lazy'; previews.append(img); }
     form.append(previews);
     const wrap = el('div', null, 'table-wrap'), table = el('table', null, 'data report-table'), head = el('tr');
     ['Test', 'Result', 'Unit', 'Reference', 'Flag', 'Edit'].forEach(x => head.append(el('th', x))); table.append(head);
@@ -970,7 +992,7 @@
     const latest = confirmed.slice().sort((a, b) => (a.date || '').localeCompare(b.date || ''))[confirmed.length - 1];
     const lab = await api('/reports/' + latest.id + '/lab-report');
     const sum = el('section', null, 'card stack-sm lab-latest'), head = el('div', null, 'record-head');
-    head.append(el('h3', 'Latest: ' + lab.label), el('span', lab.date ? longDate(lab.date) : '', 'small muted'), link('Open Lab Report', '/lab-report/' + encodeURIComponent(lab.id), 'btn sm primary'));
+    head.append(el('h3', 'Latest: ' + lab.label), el('span', lab.date ? longDate(lab.date) : '', 'small muted'), user?.registered ? link('Open Lab Report', '/lab-report/' + encodeURIComponent(lab.id), 'btn sm primary') : button('View fields', async () => reviewReport(await api('/reports/' + lab.id)), 'btn sm'));
     const kpis = el('div', null, 'kpi-grid four');
     [['within', 'Within range'], ['high', 'Above range'], ['low', 'Below range'], ['unknown', 'No printed range']].forEach(([k, label]) => kpis.append(tile(label, String(lab.counts[k] || 0), k === 'within' ? 'of ' + lab.rows.length + (lab.rows.length === 1 ? ' test' : ' tests') : '')));
     sum.append(head, kpis);
@@ -1032,7 +1054,7 @@
     d.notifications.forEach(n => {
       const item = el('article', null, 'notice-item' + (n.state === 'unread' ? ' unread' : ''));
       item.append(el('strong', n.title), el('span', n.body, 'small'), el('time', when(n.at)));
-      if (n.link) { const go = el('button', 'Open', 'link-btn small'); go.type = 'button'; go.onclick = async () => { await post(noticePath() + '/read', { ids: [n.id] }); const u = new URL(n.link, location.origin); if (u.pathname === location.pathname) navigate(u.searchParams.get('view') || (STAFF_MODE ? 'overview' : 'chat')); else location.href = u.href; }; item.append(go); }
+      if (n.link) { const go = el('button', 'Open', 'link-btn small'); go.type = 'button'; go.onclick = async () => { await post(noticePath() + '/read', { ids: [n.id] }); const u = new URL(n.link, location.origin); if (u.origin !== location.origin || !['/app', '/staff'].includes(u.pathname)) { notice('This notification link is unavailable.', 'bad'); return; } if (u.pathname === location.pathname) await navigate(u.searchParams.get('view') || (STAFF_MODE ? 'overview' : 'chat'), true, Object.fromEntries(u.searchParams)); else location.href = u.href; }; item.append(go); }
       list.append(item);
     });
     box.append(list); setBell(d.unread); return box;
@@ -1549,10 +1571,13 @@
   /* ------------------------------------------------------------ navigation */
   const TITLES = { customers: 'Customers', payments: 'Payments', chat: 'Conversation', packages: 'Health checks', book: 'Request an appointment', bookings: 'My appointments', reports: 'My reports', labs: 'Lab dashboard', plan: 'Plan', history: 'Past conversations', notifications: 'Notifications', overview: 'Overview', staff: 'Inbox', operations: 'Appointments', 'catalog-admin': 'Catalog', centers: 'Centers', roles: 'Assistant roles', ai: 'AI providers', channels: 'Channels and budget', audit: 'Audit log' };
   const FACTORIES = { customers: customersView, payments: paymentsView, packages, book: bookView, bookings, reports, labs: labsView, plan: planView, history: historyView, notifications, overview, staff: staffView, operations: operationsView, 'catalog-admin': catalogAdmin, centers: centersAdmin, roles: rolesAdmin, ai: aiProviders, channels, audit: auditView };
-  const STAFF_ONLY = ['customers', 'payments', 'overview', 'operations', 'catalog-admin', 'centers', 'roles', 'ai', 'channels', 'audit'];
+  const STAFF_ONLY = ['staff', 'customers', 'payments', 'overview', 'operations', 'catalog-admin', 'centers', 'roles', 'ai', 'channels', 'audit'];
   const mobile = matchMedia(STAFF_MODE ? '(max-width:860px)' : '(max-width:1100px)');
   function setMenu(open) { $('sidebar').classList.toggle('open', open); $('sidebar').inert = mobile.matches && !open; $('menu-toggle').setAttribute('aria-expanded', String(open)); $('menu-toggle').setAttribute('aria-label', open ? 'Close navigation' : 'Open navigation'); }
+  let navigationId = 0;
   async function navigate(next, push = true, params = {}) {
+    const id = ++navigationId;
+    if (!STAFF_MODE && next === 'staff' && isStaff()) { location.href = '/staff?view=staff'; return; }
     if (next === 'history' && !STAFF_MODE) { next = 'chat'; setTimeout(() => setChats(true), 0); }
     if (!TITLES[next] || (STAFF_MODE && next === 'chat') || (!STAFF_MODE && STAFF_ONLY.includes(next))) next = STAFF_MODE ? 'overview' : 'chat';
     view = next; $('view-title').textContent = TITLES[next]; document.title = TITLES[next] + ' | LabClear';
@@ -1563,9 +1588,9 @@
     $('content-view').hidden = next === 'chat';
     if (next === 'chat') { toBottom(); $('message').focus({ preventScroll: true }); return; }
     const content = $('content'); content.replaceChildren(el('div', null, 'skeleton')); content.setAttribute('aria-busy', 'true');
-    try { content.replaceChildren(await FACTORIES[next](params)); }
-    catch (e) { content.replaceChildren(empty('This view could not be loaded', e.message, button('Try again', () => navigate(next, false, params), 'btn sm'))); }
-    finally { content.removeAttribute('aria-busy'); navCounts(); }
+    try { const node = await FACTORIES[next](params); if (id === navigationId) content.replaceChildren(node); }
+    catch (e) { if (id === navigationId) content.replaceChildren(empty('This view could not be loaded', e.message, button('Try again', () => navigate(next, false, params), 'btn sm'))); }
+    finally { if (id === navigationId) { content.removeAttribute('aria-busy'); navCounts(); } }
   }
   document.querySelectorAll('.nav-item[data-view]').forEach(b => { b.onclick = () => navigate(b.dataset.view); });
   $('menu-toggle').onclick = () => setMenu(!$('sidebar').classList.contains('open'));
@@ -1607,6 +1632,7 @@
     if (p.has('compare')) { await loadBusiness(); const ids = p.get('compare').split(',').slice(0, 3); $('message').value = `Please compare ${ids.map(i => `${pkgName(i)} (${i})`).join(' and ')} for me. What is different and which fits a general check-up?`; }
     if (p.get('topic') === 'organization') $('message').value = 'I would like to arrange health checks for my organization.';
     if (p.get('team') === '1') requestStaff();
+    if (p.get('attach') === '1') { $('attach-menu').hidden = false; $('attach').setAttribute('aria-expanded', 'true'); $('attach-menu').querySelector('button')?.focus(); }
     if (p.get('payment') === 'return') notice('Returned from checkout. Payment status updates when the provider confirms it.');
     if (p.has('q') && p.get('q').trim()) {
       const q = p.get('q').slice(0, 2000); window.history.replaceState({}, '', '/app'); // a reload must not resend
@@ -1619,7 +1645,7 @@
     if (!STAFF_MODE && matchMedia('(max-width:640px)').matches) $('message').placeholder = 'Ask a question';
     const p = new URLSearchParams(location.search);
     try {
-      const s = await api('/session'); csrf = s.csrf; googleSignIn = !!s.google; updateUser(s.user);
+      const s = await api('/session'); guestToken = s.guest_token || ''; csrf = s.csrf; googleSignIn = !!s.google; updateUser(s.user);
       if (!STAFF_MODE) { await loadBusiness().catch(() => {}); await refresh(); syncFileInput(); } else setBell(0);
       await navigate(p.get('view') || view, false, Object.fromEntries(p));
       await checkLink(); await applyDeepLinks(p);

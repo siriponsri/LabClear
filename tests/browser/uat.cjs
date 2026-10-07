@@ -305,7 +305,7 @@ async function signUp(page, email) {
     });
     await check('UI-30', 'Report in the chat: thumbnail before and after sending, live steps, values card, one-click confirm answers the question', async () => {
       const rctx = await browser.newContext({ viewport: { width: 1440, height: 1000 } }); const r = await rctx.newPage(); watch(r, 'chat-report');
-      await r.goto(base + '/app', { waitUntil: 'networkidle' });
+      await r.goto(base + '/app', { waitUntil: 'networkidle' }); await signUp(r, 'report-ui@example.invalid');
       await r.locator('#attach').click(); await r.locator('#add-report').click();
       await r.locator('#report-file').setInputFiles(path.join(root, 'examples/thai_lab_reference_v3/png/04_B_Glucose_Urine.png'));
       await r.locator('#attachments .draft-file img').waitFor(); await r.locator('#message').fill('UI_TEST_REPORT_QUESTION');
@@ -322,7 +322,7 @@ async function signUp(page, email) {
     });
     await check('UI-31', 'Chats and projects: new chat, project, rename, switch back, drawer on mobile', async () => {
       const pctx = await browser.newContext({ viewport: { width: 1440, height: 1000 } }); const p = await pctx.newPage(); watch(p, 'chats');
-      await p.goto(base + '/app', { waitUntil: 'networkidle' }); await p.locator('#message').fill('UI_TEST_FIRST_CHAT'); await p.locator('#send').click();
+      await p.goto(base + '/app', { waitUntil: 'networkidle' }); await signUp(p, 'projects-ui@example.invalid'); await p.locator('#message').fill('UI_TEST_FIRST_CHAT'); await p.locator('#send').click();
       await p.locator('.cl-item.active', { hasText: 'UI_TEST_FIRST_CHAT' }).waitFor();
       await p.getByRole('button', { name: 'New project' }).click(); await p.getByLabel('Project name').fill('Annual check-up'); await p.getByRole('button', { name: 'Create project' }).click();
       await p.getByRole('button', { name: 'New chat in Annual check-up' }).click(); await p.locator('#chat-project', { hasText: 'Annual check-up' }).waitFor();
@@ -354,6 +354,55 @@ async function signUp(page, email) {
       assert(await h.locator('.agents-card .agent-row').count() === 4, 'four agents');
       await h.getByLabel('Model for the Reviewer').selectOption('own'); await h.locator('.agents-card .ai-form').last().waitFor({ state: 'visible' });
       await shot(h, 'ai-agents-1440'); await hctx.close();
+    });
+    await check('UI-33', 'Guest: upload/image preview, no persisted token, reload revokes chat and image, no history after signup', async () => {
+      const ctx = await browser.newContext({ viewport: { width: 1440, height: 1000 } }); const p = await ctx.newPage(); watch(p, 'guest-privacy');
+      let session;
+      p.on('response', async r => { if (r.url().endsWith('/api/business/session') && r.ok()) session = await r.json(); });
+      await p.goto(base + '/app?attach=1', { waitUntil: 'networkidle' });
+      await p.locator('#attach-menu').waitFor({ state: 'visible' }); await p.locator('#add-report').click();
+      await p.locator('#report-file').setInputFiles(path.join(root, 'examples/thai_lab_reference_v3/png/04_B_Glucose_Urine.png'));
+      await p.locator('#message').fill('PRIVATE_GUEST_302'); await p.locator('#send').click(); await p.locator('.report-card.draft').waitFor();
+      await p.locator('.turn.user .thumb img').last().evaluate(img => img.decode());
+      assert(await p.locator('.turn.user .thumb img').last().evaluate(img => img.naturalWidth > 0 && img.src.startsWith('blob:')), 'guest image requires a private blob');
+      await p.getByRole('button', { name: 'Edit values', exact: true }).click(); await p.locator('.report-preview').evaluate(img => img.decode());
+      await p.locator('#modal-close').click();
+      const old = session, headers = { 'X-LabClear-Guest': old.guest_token };
+      const workspace = await (await p.request.get(base + '/api/business/workspace', { headers })).json();
+      const report = workspace.reports[0].id;
+      assert(!(await ctx.cookies()).some(x => x.name === 'labclear_session'), 'guest auth cookie saved');
+      const stores = await p.evaluate(() => JSON.stringify([Object.entries(localStorage), Object.entries(sessionStorage)]));
+      assert(!stores.includes('PRIVATE_GUEST_302') && !stores.includes(old.guest_token), 'guest data persisted in Web Storage');
+      assert(workspace.chats.chats.length === 0 && workspace.chats.projects.length === 0, 'guest history listed');
+      await shot(p, 'guest-temporary-1440');
+      await p.reload({ waitUntil: 'networkidle' });
+      assert(await p.locator('#messages').getByText('PRIVATE_GUEST_302').count() === 0, 'chat survived reload');
+      assert((await p.request.get(base + '/api/business/workspace', { headers })).status() === 401, 'close beacon did not revoke old token');
+      assert((await p.request.get(base + '/api/business/reports/' + report + '/source', { headers })).status() === 401, 'old report source survived');
+      await p.locator('#message').fill('PRIVATE_BEFORE_SIGNUP'); await p.locator('#send').click(); await p.getByText('Offline UI test double: your question was received.').last().waitFor();
+      await signUp(p, 'guest-converted@example.invalid');
+      assert(await p.locator('#messages').getByText('PRIVATE_BEFORE_SIGNUP').count() === 0, 'guest chat imported');
+      assert((await (await p.request.get(base + '/api/business/workspace')).json()).conversation.messages.length === 0, 'guest history stored under account');
+      await ctx.close();
+    });
+    await check('UI-34', 'Navigation: delayed view cannot overwrite latest click; booking fields survive sign-in; customer staff URL stays private', async () => {
+      const ctx = await browser.newContext({ viewport: { width: 1440, height: 1000 } }); const p = await ctx.newPage(); watch(p, 'navigation');
+      await p.goto(base + '/app', { waitUntil: 'networkidle' });
+      let release; const delayed = new Promise(resolve => { release = resolve; });
+      await p.route('**/api/business/plans', async route => { await delayed; await route.continue(); });
+      const started = p.waitForRequest('**/api/business/plans'); await p.locator('[data-view=plan]').click(); await started;
+      await p.locator('[data-view=book]').click(); await p.getByLabel('Health check', { exact: true }).waitFor(); release();
+      await p.waitForResponse('**/api/business/plans'); await wait(300);
+      assert(await p.getByLabel('Health check', { exact: true }).isVisible(), 'old view overwrote booking');
+      await p.getByLabel('Health check', { exact: true }).selectOption('P03'); await p.getByLabel('Center').selectOption('BKK01');
+      await p.getByLabel('Date', { exact: true }).fill(day1); await p.getByLabel('Date', { exact: true }).dispatchEvent('change');
+      await p.getByRole('button', { name: /^11:00/ }).click();
+      await signUp(p, 'nav-preserve@example.invalid');
+      assert(await p.getByLabel('Health check', { exact: true }).inputValue() === 'P03', 'package lost at sign-in');
+      assert(await p.getByLabel('Date', { exact: true }).inputValue() === day1, 'date lost at sign-in');
+      assert(await p.getByRole('button', { name: /^11:00/ }).getAttribute('aria-pressed') === 'true', 'slot lost at sign-in');
+      await p.goto(base + '/app?view=staff', { waitUntil: 'networkidle' });
+      assert(await p.locator('#chat-view').isVisible(), 'customer routed to staff inbox'); await ctx.close();
     });
     for (const [w, h, label] of [[768, 1024, 'tablet'], [390, 844, 'mobile']]) {
       await check('UI-21-' + label, label + ': pages without horizontal overflow, navigation drawer, filters toggle, reduced motion', async () => {

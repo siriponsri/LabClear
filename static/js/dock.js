@@ -59,7 +59,7 @@
     panel = make('section', null, 'dock'); panel.setAttribute('role', 'dialog'); panel.setAttribute('aria-modal', 'false'); panel.setAttribute('aria-labelledby', 'dock-title'); panel.hidden = true;
     const head = make('div', null, 'dock-head'), top = make('div', null, 'row'), h = make('h2'); h.id = 'dock-title';
     const d2 = make('span', null, 'speaker-dot'); d2.setAttribute('aria-hidden', 'true'); h.append(d2, document.createTextNode('Ask LabClear'));
-    const tools = make('div', null, 'row'), full = make('a', 'Open full conversation'); full.href = '/app';
+    const tools = make('div', null, 'row'), full = make('a', 'Open workspace'); full.href = '/app';
     const close = make('button', '×', 'icon-btn'); close.type = 'button'; close.setAttribute('aria-label', 'Close'); close.onclick = () => toggle(false);
     tools.append(full, close); top.append(h, tools);
     head.append(top, make('p', contextLine(), 'dock-context'));
@@ -95,7 +95,9 @@
   async function refresh(scroll) {
     try {
       if (!RS.user) await RS.session();
-      const w = await RS.call('/workspace'); const msgs = w.conversation.messages.slice(-10);
+      const w = await RS.call('/workspace');
+      panel.querySelector('.dock-context').textContent = contextLine() + (w.user.registered ? '' : ' Temporary chat: refreshing, leaving or closing this page clears it.');
+      const msgs = w.conversation.messages.slice(-10);
       const key = JSON.stringify(msgs) + w.conversation.mode; if (key === lastKey) return; lastKey = key;
       list.replaceChildren(...(msgs.length ? msgs.map((m, i) => render(m, { ...opts(), last: i === msgs.length - 1 })) : [empty()]));
       if (w.conversation.mode !== 'bot') list.append(make('p', w.conversation.mode === 'waiting' ? 'Your message is with our team. AI answers are paused until they reply.' : 'A person from our team is replying. AI answers are paused.', 'callout'));

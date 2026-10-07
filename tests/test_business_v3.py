@@ -12,6 +12,8 @@ from routers import business
 
 @pytest.fixture(autouse=True)
 def isolated(tmp_path,monkeypatch):
+    with db.gm.LOCK:db.gm.ROWS.clear();db.gm.OWNERS.clear()
+    db._PURGED.clear()
     for name in ['DATABASE_URL','RENDER','APP_ENV']:monkeypatch.delenv(name,raising=False)
     monkeypatch.setenv('BUSINESS_DB_PATH',str(tmp_path/'business.db'))
     monkeypatch.setenv('BUSINESS_DATA_KEY',Fernet.generate_key().decode())
@@ -25,6 +27,7 @@ def isolated(tmp_path,monkeypatch):
 
 def client(register=True,email=None):
     c=TestClient(app);r=c.get('/api/business/session');assert r.status_code==200,r.text
+    c.headers['X-LabClear-Guest']=r.json().get('guest_token','')
     c.headers['X-Business-CSRF']=r.json()['csrf']
     if register:
         r=c.post('/api/business/register',json={'email':email or secrets.token_hex(4)+'@test.invalid','password':'coursework-test-password'})

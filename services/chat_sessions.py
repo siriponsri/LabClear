@@ -58,6 +58,8 @@ def _summary(data: dict, created: float, active: bool) -> dict:
 
 def listing(tx, owner: str) -> dict:
     current = conversation(tx, owner)
+    if owner.startswith("guest_"):
+        return {"active": current["data"]["chat_id"], "active_project": "", "chats": [], "projects": []}
     chats = [_summary(r["data"], r["created"], False) for r in _archives(tx, owner)]
     if current["data"]["messages"]:  # an empty new chat is listed once it has a message
         chats.append(_summary(current["data"], current["created"], True))
@@ -75,7 +77,7 @@ def _idle(current: dict) -> None:
 
 
 def _stash(tx, owner: str, current: dict) -> None:
-    if current["data"]["messages"]:
+    if not owner.startswith("guest_") and current["data"]["messages"]:
         tx.put("archive_" + current["data"]["chat_id"], "archive", owner, current["data"])
 
 
@@ -89,6 +91,10 @@ def new_chat(tx, owner: str, project_id: str = "") -> dict:
     current = conversation(tx, owner)
     _idle(current)
     check_project(tx, owner, project_id)
+    if owner.startswith("guest_"):
+        for kind in ("report", "action", "archive", "audit"):
+            for row in tx.find(kind, owner):tx.delete(row["id"])
+        return tx.put(current["id"], "conversation", owner, new_chat_data(version=current["data"]["version"] + 1))
     if not current["data"]["messages"]:
         current["data"]["project_id"] = project_id
         current["data"]["updated"] = time.time()
@@ -144,6 +150,8 @@ def delete_chat(tx, owner: str, chat_id: str) -> None:
 
 
 def create_project(tx, owner: str, name: str) -> dict:
+    if owner.startswith("guest_"):
+        raise ConversationError("account_required", "Sign in to keep projects and chat history.", 409)
     if len(tx.find("project", owner)) >= MAX_PROJECTS:
         raise ConversationError("project_limit", f"You can keep up to {MAX_PROJECTS} projects.", 409)
     row = tx.put("project_" + secrets.token_hex(8), "project", owner, {"name": " ".join(name.split())[:60]})

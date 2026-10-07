@@ -180,3 +180,7 @@ presentation/        reveal.js slides
 [คำสั่งนำเข้า bundle, ทดสอบ, deploy และสถานะข้อจำกัด](docs/release-3.0.1.md) · [รายงานภาษาไทย Word](docs/report/LabClear_Report_TH_3_0_1.docx) · [PDF](docs/report/LabClear_Report_TH_3_0_1.pdf)
 
 ผล local: pytest 205/205 และ UAT 34/34 (ใช้ model doubles) ส่วนคุณภาพโมเดลจริงหลังแก้รอทดสอบรอบ 3
+
+## ชุดแก้ไข 3.0.2
+
+[รายละเอียดและวิธีนำเข้า bundle](docs/release-3.0.2.md): Guest ใช้แชต/ภาพชั่วคราวเฉพาะหน้าปัจจุบัน ไม่บันทึกประวัติถาวร; ลดการบล็อกคำตอบเรื่องบริการผิดด้วยการปรับ routing และแก้คำตอบได้หนึ่งครั้งโดยตรวจ guardrail ครบ; แก้เมนูและฟอร์มจองที่เปลี่ยนหน้าผิด ผลโมเดลจริงรอบ 3 อยู่ใน `docs/evidence/round3/` ส่วนรอบ 4 ต้องรันหลัง deploy รุ่นนี้ด้วย `scripts/Run-LabClearEval.ps1`

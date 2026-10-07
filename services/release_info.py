@@ -5,7 +5,7 @@ from functools import lru_cache
 from pathlib import Path
 import subprocess
 
-VERSION = '3.0.1'
+VERSION = '3.0.2'
 
 @lru_cache(maxsize=1)
 def build_commit():

@@ -51,7 +51,7 @@ def test_off_until_configured():
     assert r.status_code == 200 and "not set up" in r.text
 
 
-def test_a_customer_signs_in_and_keeps_their_guest_chat(google):
+def test_a_customer_signs_in_without_importing_their_guest_chat(google):
     c = client(False)
     assert c.get(API + "/session").json()["google"] is True
     guest = c.get(API + "/session").json()["user"]["id"]
@@ -59,11 +59,14 @@ def test_a_customer_signs_in_and_keeps_their_guest_chat(google):
     r = c.get(API + f"/auth/google/callback?state={state}&code=good-code")
     assert r.status_code == 200 and 'http-equiv="refresh"' in r.text and "labclear_session" in r.headers["set-cookie"]
     me = c.get(API + "/me").json()["user"]
-    assert me["email"] == "patient@example.com" and me["registered"] and me["verified_email"] and me["id"] == guest
+    assert me["email"] == "patient@example.com" and me["registered"] and me["verified_email"] and me["id"] != guest
+    assert c.get(API + '/workspace').json()['conversation']['messages'] == []
+    with db.transaction() as tx:
+        assert tx.find('archive', me['id']) == []
     # The same Google account later signs in to the same LabClear account; a password never works for it.
     other = client(False)
     other.get(API + f"/auth/google/callback?state={start(other)}&code=good-code")
-    assert other.get(API + "/me").json()["user"]["id"] == guest
+    assert other.get(API + "/me").json()["user"]["id"] == me["id"]
     assert client(False).post(API + "/login", json={"email": "patient@example.com", "password": "!google"}).status_code == 401
 
 

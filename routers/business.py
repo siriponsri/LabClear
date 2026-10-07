@@ -1,6 +1,7 @@
 """Business API. Explicit confirmations, ownership, encrypted storage and sandbox payments."""
 from __future__ import annotations
 from services.release_info import VERSION
+from services.answer_checks import critical_note
 import asyncio,base64,hmac,json,logging,os,re,secrets,time
 from datetime import datetime,timedelta
 from zoneinfo import ZoneInfo
@@ -46,6 +47,9 @@ class ConfirmReport(Strict):
     same_person_confirmed:bool=False
 class ReportSelection(Strict):report_id:str
 class TicketInput(Strict):summary:str=Field(min_length=1,max_length=1000)
+class GuestClose(Strict):
+    guest_token:str=Field(min_length=20,max_length=100)
+    csrf:str=Field(min_length=20,max_length=100)
 class StaffMessage(Strict):message:str=Field(min_length=1,max_length=4000)
 class TicketChange(Strict):state:str=Field(pattern='^(staff|bot|closed)$')
 class LinkInput(Strict):token:str=Field(min_length=20,max_length=100);consent:bool
@@ -58,13 +62,26 @@ def origin(request):
         raise ConversationError('origin_rejected','Use this website to continue.',403)
     if not request_rate_limiter.allow(request):raise ConversationError('rate_limited','Please wait before trying again.',429)
 
+def request_session(tx,request):
+    # Registered cookie wins over a stale page token after signing in.
+    for token,temporary in ((request.cookies.get(COOKIE,''),False),(request.headers.get('X-LabClear-Guest',''),True)):
+        r=tx.get('session_'+db.digest(token)) if token else None
+        if r and r['owner'].startswith('guest_')==temporary and r['data']['expires']>time.time() and tx.get(r['owner']):return r
+    return None
+
+def forget_page_guest(tx,request):
+    token=request.headers.get('X-LabClear-Guest','')
+    s=tx.get('session_'+db.digest(token)) if token else None
+    if s:tx.forget_guest(s['owner'])
+
 def session_row(tx,request,mutation=True):
     origin(request)
-    token=request.cookies.get(COOKIE,'');r=tx.get('session_'+db.digest(token)) if token else None
+    r=request_session(tx,request)
     if not r or r['data']['expires']<time.time():raise ConversationError('login_required','Your session expired. Reload or sign in.',401)
     if mutation and not hmac.compare_digest(request.headers.get('X-Business-CSRF',''),r['data']['csrf']):raise ConversationError('csrf_rejected','Reload this page before continuing.',403)
     u=tx.get(r['owner'])
     if not u or demo.blocked(u):raise ConversationError('login_required','Please sign in.',401)
+    tx.touch_guest(u['id'])
     return u,r
 
 def set_session(tx,response,user_id):
@@ -118,6 +135,7 @@ def booking_create(tx,owner,payload):
     return row
 
 def ticket_create(tx,owner,summary,pause_bot=True,extra=None):
+    if owner.startswith('guest_'):raise ConversationError('account_required','Sign in before sending a request to our team.',409)
     c=conversation(tx,owner);existing=next((x for x in tx.find('ticket',owner) if x['state']!='closed'),None)
     latest=tx.find('booking',owner)
     branch=(extra or {}).get('branch_id') or (latest[-1]['branch'] if latest else '')
@@ -140,12 +158,29 @@ async def get_policies():return db.policies()
 async def get_session(request:Request,response:Response):
     origin(request)
     with db.transaction() as tx:
-        token=request.cookies.get(COOKIE,'');s=tx.get('session_'+db.digest(token)) if token else None
-        if s and s['data']['expires']>time.time():u=tx.get(s['owner']);csrf=s['data']['csrf']
+        s=request_session(tx,request);guest_token=''
+        if s and s['data']['expires']>time.time():
+            u=tx.get(s['owner']);csrf=s['data']['csrf']
+            if demo.blocked(u):raise ConversationError('login_required','Please sign in.',401)
+            if u['id'].startswith('guest_'):guest_token=request.headers.get('X-LabClear-Guest','');tx.touch_guest(u['id'])
         else:
-            id='customer_'+secrets.token_hex(12);u=tx.put(id,'user',id,{'role':'customer','email':'','password':''});csrf=set_session(tx,response,id)
+            id='guest_'+secrets.token_hex(16);db.gm.start(id)
+            u=tx.put(id,'user',id,{'role':'customer','email':'','password':''})
+            guest_token=secrets.token_urlsafe(32);csrf=secrets.token_urlsafe(24)
+            tx.put('session_'+db.digest(guest_token),'session',id,{'csrf':csrf,'expires':time.time()+86400,'auth_at':0})
+            if request.cookies.get(COOKIE):response.delete_cookie(COOKIE,path='/')
         c=conversation(tx,u['id'])
-        return {'user':db.user_public(u),'csrf':csrf,'conversation':c['data'],'simulation':True,'version':VERSION,'ocr_provider':'typhoon','external_business_enabled':os.getenv('BUSINESS_EXTERNAL_ENABLED')=='true','google':google_sign_in()}
+        return {'user':db.user_public(u),'csrf':csrf,'guest_token':guest_token,'conversation':c['data'],'simulation':True,'version':VERSION,'ocr_provider':'typhoon','external_business_enabled':os.getenv('BUSINESS_EXTERNAL_ENABLED')=='true','google':google_sign_in()}
+
+@router.post('/guest/close')
+async def close_guest(body:GuestClose,request:Request):
+    origin(request)
+    with db.transaction() as tx:
+        s=tx.get('session_'+db.digest(body.guest_token))
+        if s and s['owner'].startswith('guest_'):
+            if not hmac.compare_digest(body.csrf,s['data']['csrf']):raise ConversationError('csrf_rejected','Invalid temporary session.',403)
+            tx.forget_guest(s['owner'])
+    return {'ok':True}
 
 @router.get('/me')
 async def me(request:Request):
@@ -166,10 +201,11 @@ async def register(body:Credentials,request:Request,response:Response):
         if u['data'].get('password'):raise ConversationError('account_exists','This session already has an account.',409)
         index='email_'+db.digest(email)
         if tx.get(index):raise ConversationError('registration_unavailable','Registration is unavailable for these details. Try sign in.',409)
-        d={**u['data'],'email':email,'password':db.password_hash(body.password)}
-        tx.put(u['id'],'user',u['id'],d);tx.put(index,'email',u['id'],{})
-        tx.delete(s['id']);csrf=set_session(tx,response,u['id'])
-        return {'user':db.user_public(tx.get(u['id'])),'csrf':csrf}
+        uid='customer_'+secrets.token_hex(12)
+        tx.put(uid,'user',uid,{'role':'customer','email':email,'password':db.password_hash(body.password)})
+        tx.put(index,'email',uid,{})
+        tx.forget_guest(u['id']);tx.delete(s['id']);csrf=set_session(tx,response,uid)
+        return {'user':db.user_public(tx.get(uid)),'csrf':csrf}
 
 @router.post('/login')
 async def login(body:LoginInput,request:Request,response:Response):
@@ -185,11 +221,12 @@ async def login(body:LoginInput,request:Request,response:Response):
         if not u or demo.blocked(u) or not db.verify_password(body.password,u['data'].get('password','')):raise ConversationError('login_invalid','Email or password is incorrect.',401)
         old=request.cookies.get(COOKIE,'')
         if old:tx.delete('session_'+db.digest(old))
+        forget_page_guest(tx,request)
         csrf=set_session(tx,response,u['id']);return {'user':db.user_public(u),'csrf':csrf}
 
 @router.post('/logout')
 async def logout(request:Request,response:Response):
-    with db.transaction() as tx:u,s=session_row(tx,request);tx.delete(s['id'])
+    with db.transaction() as tx:u,s=session_row(tx,request);tx.delete(s['id']);tx.forget_guest(u['id'])
     response.delete_cookie(COOKIE);return {'ok':True}
 
 @router.get('/workspace')
@@ -201,7 +238,7 @@ async def workspace(request:Request):
         unread=sum(1 for _ in tx.find('notification',owner,'unread'))
         return {'conversation':c['data'],'bookings':tx.find('booking',owner),'tickets':tx.find('ticket',owner),'quotes':tx.find('corporate_quote',owner),'reports':reports,'user':db.user_public(u),'payments':payments,'unread_notifications':unread,'inquiries':tx.find('org_inquiry',owner),'plan':plans.entitlement(tx,owner),'chats':chats.listing(tx,owner),'line_linked':bool(tx.find('line_identity',owner))}
 
-RETRYABLE={'service_unavailable','price_invalid','provider_response_invalid','answer_invalid','citation_invalid','review_failed','guard_invalid','provider_rejected','storage_unavailable'}
+RETRYABLE={'service_unavailable','price_invalid','provider_response_invalid','answer_invalid','observation_invalid','citation_invalid','review_failed','evidence_review_failed','role_violation','guard_invalid','provider_rejected','storage_unavailable'}
 async def turn(owner,message,retry_id='',page=None,emit=None,reply_to=''):
     """One assistant turn on the active chat.
 
@@ -243,6 +280,7 @@ async def turn(owner,message,retry_id='',page=None,emit=None,reply_to=''):
     try:
         async with asyncio.timeout(220):result=await business_agent.run(message,context,**({'emit':emit} if emit else {}))
         with db.transaction() as tx:
+            if not tx.get(owner):return {'reply':None,'discarded':True}
             c=conversation(tx,owner);d=c['data']
             if d['version']!=version or d['mode']!='bot' or d.get('turn_id')!=turn_id:return {'reply':None,'queued_for_staff':True}
             if result.get('action'):
@@ -255,16 +293,16 @@ async def turn(owner,message,retry_id='',page=None,emit=None,reply_to=''):
         return result
     except ConversationError as exc:
         with db.transaction() as tx:
-            c=conversation(tx,owner)
-            if c['data'].get('turn_id')==turn_id and c['data']['version']==version:
+            c=tx.get('conversation_'+owner)
+            if c and c['data'].get('turn_id')==turn_id and c['data']['version']==version:
                 for m in c['data']['messages']:
                     if m['id']==target_id:m['failed']=True;m['error']=exc.code;m['error_message']=exc.message[:300];m['retryable']=exc.code in RETRYABLE
                 tx.put(c['id'],'conversation',owner,c['data'])
         raise
     finally:
         with db.transaction() as tx:
-            c=conversation(tx,owner)
-            if c['data'].get('turn_id')==turn_id:c['data']['busy_until']=0;tx.put(c['id'],'conversation',owner,c['data'])
+            c=tx.get('conversation_'+owner)
+            if c and c['data'].get('turn_id')==turn_id:c['data']['busy_until']=0;tx.put(c['id'],'conversation',owner,c['data'])
 
 log=logging.getLogger('labclear.chat')
 _BACKGROUND=set()
@@ -424,7 +462,8 @@ async def get_lab_report(id:str,request:Request):
 @router.get('/reports/{id}')
 async def get_report(id:str,request:Request):
     with db.transaction() as tx:
-        u,_=session_row(tx,request,False);r=tx.own(id,u['id'],'report');r['data'].pop('original',None);r['data'].pop('extra_originals',None);return r
+        u,_=session_row(tx,request,False);r=tx.own(id,u['id'],'report');r['data'].pop('original',None);r['data'].pop('extra_originals',None)
+        r['data']['critical_note']=critical_note(r['data'],'','') if r['data'].get('confirmed') else '';return r
 
 async def save_read_report(owner,raw,sample=False,emit=None):
     """Read one file, or up to three (Plus). A reading is reserved before any provider call and
@@ -432,6 +471,7 @@ async def save_read_report(owner,raw,sample=False,emit=None):
     raws=raw if isinstance(raw,list) else [raw]
     images=all_images(raws)
     with db.transaction() as tx:
+        tx.own(owner,owner,'user')
         if len(tx.find('report',owner))>=20:raise ConversationError('report_limit','Remove an old report before adding another.',409)
         if not sample:plans.require_read(tx,owner,len(images));plans.count_read(tx,owner)
     try:report=await read_report(raws if len(raws)>1 else raws[0],**({'emit':emit} if emit else {}))
@@ -475,27 +515,39 @@ def _card(d,message_id):
 async def read_into_chat(owner,raws,names,question,sample,emit):
     """Read an uploaded report inside the conversation: the user's message shows the file, and
     the assistant posts the values it read. Nothing is explained until the customer confirms them."""
+    reading=secrets.token_hex(16)
     with db.transaction() as tx:
         c=conversation(tx,owner);d=c['data']
         if d['mode']!='bot':raise ConversationError('staff_active','Our team has this conversation. Add the report on My reports instead.',409)
         if d.get('busy_until',0)>time.time():raise ConversationError('busy','Please wait for the previous message.',409)
-    try:r=await save_read_report(owner,raws if len(raws)>1 else raws[0],sample,emit)
-    except ConversationError as exc:
+        version=d['version'];d.update(busy_until=time.time()+240,turn_id=reading);tx.put(c['id'],'conversation',owner,d)
+    try:
+        try:r=await save_read_report(owner,raws if len(raws)>1 else raws[0],sample,emit)
+        except ConversationError as exc:
+            with db.transaction() as tx:
+                c=tx.get('conversation_'+owner)
+                if not c or c['data'].get('turn_id')!=reading or c['data']['version']!=version:raise
+                d=c['data']
+                d['messages']=(d['messages']+[msg('user',question,attachments=[{'report_id':'','name':n,'kind':'file'} for n in names],failed=True,error=exc.code,error_message=exc.message[:300],retryable=False)])[-100:]
+                if not d.get('title'):d['title']=chats.title_from(question) or 'Lab report'
+                d['updated']=time.time();tx.put(c['id'],'conversation',owner,d)
+            raise
+        pages=r['data'].get('pages',1);fields=r['data'].get('fields',[])
         with db.transaction() as tx:
-            c=conversation(tx,owner);d=c['data']
-            d['messages']=(d['messages']+[msg('user',question,attachments=[{'report_id':'','name':n,'kind':'file'} for n in names],failed=True,error=exc.code,error_message=exc.message[:300],retryable=False)])[-100:]
-            if not d.get('title'):d['title']=chats.title_from(question) or 'Lab report'
-            d['updated']=time.time();tx.put(c['id'],'conversation',owner,d)
-        raise
-    pages=r['data'].get('pages',1);fields=r['data'].get('fields',[])
-    with db.transaction() as tx:
-        c=conversation(tx,owner);d=c['data']
-        upload=msg('user',question,attachments=[{'report_id':r['id'],'page':i+1,'name':names[min(i,len(names)-1)],'kind':'image','sample':sample} for i in range(pages)])
-        card=msg('assistant',f'I read {len(fields)} rows from the uploaded report. They are not used until you confirm them.',kind='report_read',dot={'id':'reader','name':'Report reader'},report_id=r['id'],fields=fields,warnings=r['data'].get('warnings',[]),state='draft',question=question,upload_id=upload['id'],sample=sample)
-        d['messages']=(d['messages']+[upload,card])[-100:];chats.use_report(d,r['id'])
-        if not d.get('title'):d['title']=chats.title_from(question) or ('Sample report' if sample else 'Lab report')
-        d['updated']=time.time();tx.put(c['id'],'conversation',owner,d);tx.audit(owner,'report.read_in_chat',r['id'])
-    return {'ok':True,'report_id':r['id'],'card_id':card['id'],'rows':len(fields),'entitlement':r.get('entitlement')}
+            c=tx.get('conversation_'+owner)
+            if not c or c['data'].get('turn_id')!=reading or c['data']['version']!=version:
+                tx.delete(r['id']);return {'ok':True,'discarded':True}
+            d=c['data']
+            upload=msg('user',question,attachments=[{'report_id':r['id'],'page':i+1,'name':names[min(i,len(names)-1)],'kind':'image','sample':sample} for i in range(pages)])
+            card=msg('assistant',f'I read {len(fields)} rows from the uploaded report. They are not used until you confirm them.',kind='report_read',dot={'id':'reader','name':'Report reader'},report_id=r['id'],fields=fields,warnings=r['data'].get('warnings',[]),state='draft',question=question,upload_id=upload['id'],sample=sample)
+            d['messages']=(d['messages']+[upload,card])[-100:];chats.use_report(d,r['id'])
+            if not d.get('title'):d['title']=chats.title_from(question) or ('Sample report' if sample else 'Lab report')
+            d['updated']=time.time();tx.put(c['id'],'conversation',owner,d);tx.audit(owner,'report.read_in_chat',r['id'])
+        return {'ok':True,'report_id':r['id'],'card_id':card['id'],'rows':len(fields),'entitlement':r.get('entitlement')}
+    finally:
+        with db.transaction() as tx:
+            c=tx.get('conversation_'+owner)
+            if c and c['data'].get('turn_id')==reading:c['data']['busy_until']=0;tx.put(c['id'],'conversation',owner,c['data'])
 
 @router.post('/chat/report')
 async def chat_report(request:Request,message:str=Form(default='',max_length=8000),demo_id:str=Form(default='',max_length=40),files:list[UploadFile]|None=File(None)):
@@ -523,7 +575,7 @@ async def chat_report_confirm(body:ReportCardConfirm,request:Request):
         if not fields:raise ConversationError('no_values','No values were read from this report. Try a clearer image.',422)
         r['data'].update(fields=fields,confirmed=True,same_person_confirmed=True,label='Sample report' if r['data'].get('sample') else 'Report from chat')
         tx.put(r['id'],'report',u['id'],r['data'],'confirmed')
-        card.update(state='confirmed',fields=fields,confirmed_at=time.time())
+        card.update(state='confirmed',fields=fields,confirmed_at=time.time(),critical_note=critical_note(r['data'],'',card.get('question','')))
         d['report_id']=r['id'];chats.use_report(d,r['id']);d['version']+=1;tx.put(c['id'],'conversation',u['id'],d)
         tx.audit(u['id'],'report.confirmed',r['id'])
     return await streamed(request,lambda emit:turn(u['id'],'Please explain this report.',emit=emit,reply_to=body.message_id))

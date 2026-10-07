@@ -107,8 +107,8 @@ window.RSTurns = (() => {
       const src = opts.privateFiles ? '' : a.preview || (a.report_id ? '/api/business/reports/' + encodeURIComponent(a.report_id) + '/source?page=' + (a.page || 1) : '');
       if (!src) { const f = make('span', null, 'file-chip'); f.append(icon('attach'), document.createTextNode(opts.privateFiles ? 'Lab report (private)' : (a.name || 'File'))); box.append(f); return; }
       const b = make('button', null, 'thumb'); b.type = 'button'; b.setAttribute('aria-label', 'Open ' + (a.name || 'image') + (a.page > 1 ? ', page ' + a.page : ''));
-      const img = make('img'); img.src = src; img.alt = ''; img.loading = 'lazy'; b.append(img);
-      b.onclick = () => (opts.onImage ? opts.onImage(src, a) : window.open(src, '_blank', 'noopener'));
+      const img = make('img'); if (opts.loadImage) opts.loadImage(img, src); else img.src = src; img.alt = ''; img.loading = 'lazy'; b.append(img);
+      b.onclick = () => { if (img.getAttribute('src')) return opts.onImage ? opts.onImage(img.src, a) : window.open(img.src, '_blank', 'noopener'); };
       box.append(b);
     });
     return box;

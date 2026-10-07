@@ -121,8 +121,11 @@ def content_issues(reply: str, evidence: list[dict], report: dict | None = None)
         ids = re.findall(r'\[([a-z0-9][a-z0-9_-]+)\]', line)
         business = [i for i in ids if sources.get(i, {}).get('data_class') == 'synthetic_business']
         words = re.sub(r'\[[^\]]+\]', '', line)
-        sales = re.search(r'ราคา|บาท|แพ็กเกจ|package|\bTHB\b|\bprice\b|นโยบาย|policy|booking|จอง|reviewed by staff|เจ้าหน้าที่', words, re.I)
-        if business and not sales and (medical_terms(words) or re.search(r'mg/dl|mmol|เกณฑ์|ค่าปกติ|ผลตรวจ', words, re.I)):
+        # A test word alone is not a medical claim: e.g. blood collection at
+        # home or viewing results online are service facts (live Q10).
+        clinical = re.search(r'หมายถึง|บ่งชี้|สะท้อน|วินิจฉัย|ทำให้|เกิดจาก|เสี่ยง|สูงกว่า|ต่ำกว่า|ค่าปกติ|เกณฑ์|ใช้(?:ดู|ประเมิน|วัด)|คือ|indicat|diagnos|caus|risk|reflect|measur|above|below|normal range', words, re.I)
+        measurement = re.search(r'\d\s*(?:mg/dl|mmol/l|g/dl)|เกณฑ์|ค่าปกติ', words, re.I)
+        if business and (measurement or (clinical and medical_terms(words))):
             issues.append('business_source_for_medical_claim')
         # Check the printed range for an explicitly named row on a line. Ambiguous
         # multi-row prose stays with the evidence reviewer, never guessed here.
