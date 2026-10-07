@@ -295,7 +295,7 @@ def architecture():
     for x, y, t, c in [
         (cx[0], mid12, "HTTPS", LINK),
         (cx[2], mid12, "HTTPS", LINK),
-        (cx[0], mid23, "POST /CHAT", ACCENT),
+        (cx[0], mid23, "/CHAT · /CHAT/REPORT", ACCENT),
         (cx[1], mid23, "/REPORTS/READ", MUTED),
         (cx[2], mid23, "/BOOKINGS · /PAY", MUTED),
         (cx[0], mid34, "SEARCH", MUTED),
@@ -307,15 +307,15 @@ def architecture():
 
     # nodes
     parts.append(node(C[0], r1, CW, NH, "input", "WEB", "Customers", "website · chat · reports"))
-    parts.append(node(C[2], r1, CW, NH, "input", "STAFF", "Clinic staff", "/staff · bookings · AI keys"))
+    parts.append(node(C[2], r1, CW, NH, "input", "STAFF", "Clinic staff", "/staff · bookings · AI models"))
     parts.append(node(C[0], r2, C[2] + CW - C[0], NH, "backend", "API", "FastAPI · Business API",
-                      "/api/business/* · session · CSRF · rate limit · access code"))
+                      "/api/business/* · session · CSRF · rate limit · streaming"))
     parts.append(node(C[0], r3, CW, NH, "focal", "CORE", "Chatbot pipeline", "guard·plan·answer·review"))
-    parts.append(node(C[1], r3, CW, NH, "backend", "OCR", "Report reader", "OCR → values → status"))
+    parts.append(node(C[1], r3, CW, NH, "backend", "OCR", "Report reader", "OCR → check → confirm"))
     parts.append(node(C[2], r3, CW, NH, "backend", "BIZ", "Booking · Payments", "packages · Plus · staff"))
     parts.append(node(C[0], r4, CW, NH, "store", "RAG", "Knowledge base", "BM25 · 58 sources · catalog"))
-    parts.append(node(C[1], r4, CW, NH, "external", "API", "AI providers", "LLM · OCR · SystemOne guard"))
-    parts.append(node(C[2], r4, CW, NH, "store", "DB", "PostgreSQL", "encrypted · keys · THB cap"))
+    parts.append(node(C[1], r4, CW, NH, "external", "API", "AI providers", "model per agent · OCR · guard"))
+    parts.append(node(C[2], r4, CW, NH, "store", "DB", "PostgreSQL", "encrypted · chats · THB cap"))
 
     leg, last_y = legend(r4 + NH + 48, 16, 784, [
         ("box", "focal", "Core"),
@@ -414,26 +414,26 @@ def sequence():
         return label(x, y - 13, t, c)[0]
 
     mid = lambda a, b: (LX[a] + LX[b]) / 2
-    parts.append(above(mid(0, 1), msgs_y["m1"], "POST /chat", LINK))
+    parts.append(above(mid(0, 1), msgs_y["m1"], "POST /chat (stream)", LINK))
     parts.append(above(mid(1, 2), msgs_y["m2"], "count + budget", MUTED))
     parts.append(above(mid(1, 2), msgs_y["m3"], "1/5 screen message", MUTED))
-    parts.append(above(mid(1, 2), msgs_y["m4"], "2/5 plan", MUTED))
+    parts.append(above(mid(1, 2), msgs_y["m4"], "2/5 plan · role", MUTED))
     sl1, w1 = label(0, 0, "BM25 + catalog", MUTED)
     parts.append(label(LX[1] + 48 + w1 / 2, msgs_y["m5"] + 16, "BM25 + catalog", MUTED)[0])
     parts.append(above(mid(1, 2), msgs_y["m6"], "3/5 draft answer", MUTED))
-    sl2, w2 = label(0, 0, "check prices", MUTED)
-    parts.append(label(LX[1] + 48 + w2 / 2, msgs_y["m7"] + 16, "check prices", MUTED)[0])
+    sl2, w2 = label(0, 0, "validate draft", MUTED)
+    parts.append(label(LX[1] + 48 + w2 / 2, msgs_y["m7"] + 16, "validate draft", MUTED)[0])
     parts.append(above(mid(1, 2), msgs_y["m8"], "4/5 review", MUTED))
     parts.append(above(mid(1, 2), msgs_y["m9"], "5/5 screen answer", MUTED))
     parts.append(above(mid(1, 2), msgs_y["m10"], "save chat · ledger", MUTED))
-    parts.append(above(mid(0, 1), m11, "answer + sources", ACCENT))
+    parts.append(above(mid(0, 1), m11, "steps, then answer", ACCENT))
     parts.append(above(mid(0, 1), m12, "failed · Retry", MUTED))
 
     # actors
     actors = [
         ("input", "WEB", "Customer", "browser"),
         ("focal", "API", "Business API", "FastAPI"),
-        ("external", "LLM", "Language model", "Typhoon by default"),
+        ("external", "LLM", "Language model", "one per agent"),
         ("external", "SAFE", "Safety check", "OpenThai-SystemOne"),
         ("store", "DB", "PostgreSQL", "cap · ledger · chat"),
     ]
