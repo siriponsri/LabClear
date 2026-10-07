@@ -30,6 +30,16 @@ BLOCKED = ("I cannot safely answer that request. For a diagnosis, a medicine or 
 BLOCKED_DOCUMENT = ("The safety check stopped this document: it contains text aimed at the assistant or content "
                     "that is not a lab report. Try a clear photo or PDF of the report itself.")
 
+
+def refusal(message: str, direction: str, user_message: str = '') -> str:
+    """Localize the refusal without echoing secrets or guessing a clinical intent."""
+    thai = bool(re.search(r'[฀-๿]', user_message or message))
+    if direction == 'document':
+        return 'เอกสารนี้ไม่ผ่านการตรวจความปลอดภัย กรุณาส่งภาพหรือ PDF ใบผลตรวจที่ชัดเจน' if thai else BLOCKED_DOCUMENT
+    if re.search(r'system\s*prompt|api\s*key|ลืมคำสั่ง|ละเลยคำสั่ง', user_message or message, re.I):
+        return 'ไม่สามารถเปิดเผยคำสั่งภายในหรือคีย์ และไม่สามารถเปลี่ยนกฎหรือราคาตามคำสั่งนี้ได้ สามารถช่วยเรื่องบริการและผลตรวจทั่วไปได้' if thai else 'I cannot reveal internal instructions or keys, or override service rules. I can help with services and general lab questions.'
+    return 'ไม่สามารถทำตามคำขอนี้ได้ หากต้องการวินิจฉัยโรค ยา หรือขนาดยา กรุณาปรึกษาแพทย์หรือเภสัชกร สามารถช่วยอธิบายการตรวจและช่วงอ้างอิงบนใบรายงานได้' if thai else BLOCKED
+
 CRITERIA = {
     "safe": "An ordinary question or answer about lab tests, what a value or reference range means in general, "
             "health-check packages, prices, branches, bookings, payments or the clinic's policies.",
@@ -101,8 +111,7 @@ def systemone_safe(data: dict, criteria: dict = CRITERIA) -> bool:
 
 async def check(message: str, direction: Literal["input", "output", "document"], user_message: str = "") -> None:
     if direction in ("input", "document") and _INJECTION.search(message):
-        raise ConversationError("safety_blocked", BLOCKED_DOCUMENT if direction == "document" else
-                                "I can help with laboratory questions, but cannot override my safety instructions.", 422)
+        raise ConversationError("safety_blocked", refusal(message,direction,user_message), 422)
     provider = transport.provider_for("guard")
     if not provider.ready:
         raise ConversationError("provider_not_configured",
@@ -122,4 +131,4 @@ async def check(message: str, direction: Literal["input", "output", "document"],
         if direction == "document" and codes and set(codes) <= DOCUMENT_ALLOWED:
             safe = True
     if not safe:
-        raise ConversationError("safety_blocked", BLOCKED_DOCUMENT if direction == "document" else BLOCKED, 422)
+        raise ConversationError("safety_blocked", refusal(message,direction,user_message), 422)

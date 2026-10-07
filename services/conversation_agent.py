@@ -219,11 +219,17 @@ def _same(a, b) -> bool:
 
 def validate_answer(answer: Answer, evidence: list[dict], report: dict | None) -> None:
     known = {r["id"] for r in evidence}
-    answer.reply = clean_reply(answer.reply, known)
+    def clean_citations(text: str) -> str:
+        text = clean_reply(text, known)
+        # Models also emit [id1, id2]; validate every ID in reply and suggestions.
+        return re.sub(r'\[([a-z0-9][a-z0-9_-]+(?:\s*,\s*[a-z0-9][a-z0-9_-]+)+)\]',
+                      lambda m: ' '.join('['+x.strip()+']' for x in m[1].split(',')), text)
+    answer.reply = clean_citations(answer.reply)
+    answer.followups = [clean_citations(x) for x in answer.followups]
     if not answer.reply:
         raise ConversationError("answer_invalid", "The answer was empty. Please try again.", 502)
     # The sources shown are exactly the ones cited in the text, in order of first citation.
-    inline = list(dict.fromkeys(_CITATION.findall(answer.reply)))
+    inline = list(dict.fromkeys(_CITATION.findall(answer.reply+'\n'+'\n'.join(answer.followups))))
     if not set(inline) <= known:
         log.warning("answer_rejected reason=unknown_citation")
         raise ConversationError("citation_invalid", "The answer cited an unavailable source. Please try again.", 502)

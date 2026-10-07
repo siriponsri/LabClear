@@ -111,7 +111,14 @@ async function signUp(page, email) {
       await c.locator('#report-file').setInputFiles(path.join(root, 'examples/thai_lab_reference_v3/png/04_B_Glucose_Urine.png'));
       await c.getByRole('heading', { name: 'Review report fields' }).waitFor(); await c.locator('.report-preview').evaluate(img => img.decode());
       assert(await c.locator('.report-preview').evaluate(img => img.naturalWidth > 0), 'no image');
-      await c.getByLabel('value for row 1', { exact: true }).fill('101'); await shot(c, 'report-review-1440');
+      await c.getByLabel('value for row 1', { exact: true }).fill('101');
+      const countBefore = await c.locator('#modal .report-table input[aria-label^="name for row"]').count();
+      await c.getByRole('button', {name:'Add missing test row',exact:true}).click();
+      assert(await c.locator('#modal .report-table input[aria-label^="name for row"]').count() === countBefore + 1, 'missing row not added');
+      await c.getByRole('button', {name:'Remove row '+(countBefore+1),exact:true}).click();
+      assert(await c.locator('#modal .report-table input[aria-label^="name for row"]').count() === countBefore, 'row not removed');
+      assert(await c.getByLabel('unit for row 1',{exact:true}).getAttribute('maxlength') === '60','unit length differs from API');
+      await shot(c, 'report-review-1440');
       await c.getByRole('button', { name: 'Confirm and use report' }).click(); assert(await c.locator('#modal').isVisible(), 'confirmed without checkbox');
       await c.locator('#modal input[type=checkbox]').check(); await c.getByRole('button', { name: 'Confirm and use report' }).click(); await c.locator('#modal').waitFor({ state: 'hidden' });
       await c.locator('#context-chips').getByText(/Report:/).waitFor(); await c.reload({ waitUntil: 'networkidle' }); await c.locator('#context-report').filter({ hasText: 'Report in use' }).waitFor();

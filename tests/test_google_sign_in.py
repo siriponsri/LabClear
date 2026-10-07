@@ -76,7 +76,7 @@ def test_state_is_single_use_and_must_match_the_cookie(google):
     assert "did not complete" in c.get(API + f"/auth/google/callback?state={state}&code=good-code").text
 
 
-@pytest.mark.parametrize("bad", [{"aud": "someone-else"}, {"iss": "https://evil.example"}, {"exp": 1}, {"email_verified": False}, {"nonce": "replayed"}])
+@pytest.mark.parametrize("bad", [{"aud": "someone-else"}, {"iss": "https://evil.example"}, {"exp": 1}, {"email_verified": False}, {"nonce": "replayed"}, {'exp':'not-a-number'}, {'exp':'nan'}, {'exp':None}, {'sub':''}, {'sub':None}])
 def test_id_token_claims_are_checked(google, bad):
     google.update(bad)
     c = client(False)
@@ -99,3 +99,20 @@ def test_next_never_leaves_the_site(google):
     with db.transaction() as tx:
         flows = tx.find("oauth", "")
     assert flows and all(f["data"]["next"] == "/app" for f in flows)
+
+@pytest.mark.parametrize('token',[None, '', 'x', 'a.W10.c', 'a.@@@@.c'])
+def test_malformed_token_claims_fail_closed(token):
+    assert google_auth._claims(token)=={}
+
+def test_google_subject_must_match_existing_account(google):
+    c=client(False)
+    c.get(API+f'/auth/google/callback?state={start(c)}&code=good-code')
+    google['sub']='different-google-user'
+    other=client(False)
+    r=other.get(API+f'/auth/google/callback?state={start(other)}&code=good-code')
+    assert 'did not complete' in r.text
+    assert other.get(API+'/me').json()['user'] is None
+
+@pytest.mark.parametrize('path',['/\t/evil.example','/\n/evil.example','//evil.example','/\\evil.example'])
+def test_next_rejects_control_characters(path):
+    assert google_auth._safe_next(path)=='/app'

@@ -71,6 +71,21 @@ def unknown_amounts(reply: str, catalog: dict, message: str = "", extra_prices=(
         value = _decimal(raw)
         if value is not None and value not in allowed and raw not in out:
             out.append(raw)
+    # Membership alone accepted a different package's valid catalog price.
+    # Bind a clearly named single package to its displayed unit price. Explicit
+    # totals/differences remain governed by the arithmetic allowance above.
+    for line in reply.splitlines():
+        named = [p for p in catalog.get('packages',[]) if p['name'].casefold() in line.casefold()]
+        if len(named) != 1:
+            continue
+        p = named[0]
+        tail = line[line.casefold().index(p['name'].casefold())+len(p['name']):]
+        match = _MONEY.search(tail)
+        if not match or re.search(r'รวม|total|เหลือ|remaining|ต่าง|difference',tail[:match.start()],re.I):
+            continue
+        raw=match.group(1) or match.group(2)
+        if _decimal(raw) != Decimal(str(p['price_thb'])) and raw not in out:
+            out.append(raw)
     return out
 
 
@@ -83,6 +98,42 @@ NOTE_EN = "This report marks a value as critical. Please contact a doctor or a m
 def critical_note(report: dict | None, reply: str, message: str = "") -> str:
     flags = [str(f.get("printed_flag") or "").strip() for f in (report or {}).get("fields", [])]
     critical = any(f.upper() in CRITICAL_FLAGS or "critical" in f.lower() or "วิกฤต" in f for f in flags if f)
-    if not critical or _URGENT.search(reply):
+    # A bare urgency keyword can occur in a conditional clause ("if symptoms...")
+    # or even a sales sentence. Only our full, unconditional note is idempotent.
+    if not critical or NOTE_TH in reply or NOTE_EN in reply:
         return ""
     return NOTE_TH if re.search(r"[฀-๿]", message + reply) else NOTE_EN
+
+
+def content_issues(reply: str, evidence: list[dict], report: dict | None = None) -> list[str]:
+    """Bounded regression checks, not a clinical classifier or proof of entailment.
+
+    Catch observed source-type and named-row range failures before model review.
+    Never substitute an external threshold or silently repair a patient's values.
+    """
+    issues = []
+    sources = {e['id']: e for e in evidence}
+    plain = re.sub(r'[*_`]', '', reply).replace('–', '-').replace('−', '-').replace('—', '-')
+    # Disease staging is outside the report explainer's remit, even when hedged.
+    if report and re.search(r'(?:ไตวาย|โรคไต|มะเร็ง)\s*(?:เรื้อรัง\s*)?ระยะ(?:ที่)?\s*\d|(?:kidney\s+(?:disease|failure)|cancer).{0,20}stage\s*\d|stage\s*\d.{0,20}(?:kidney|cancer)', plain, re.I):
+        issues.append('personal_disease_staging')
+    for line in plain.splitlines():
+        ids = re.findall(r'\[([a-z0-9][a-z0-9_-]+)\]', line)
+        business = [i for i in ids if sources.get(i, {}).get('data_class') == 'synthetic_business']
+        words = re.sub(r'\[[^\]]+\]', '', line)
+        sales = re.search(r'ราคา|บาท|แพ็กเกจ|package|\bTHB\b|\bprice\b|นโยบาย|policy|booking|จอง|reviewed by staff|เจ้าหน้าที่', words, re.I)
+        if business and not sales and (medical_terms(words) or re.search(r'mg/dl|mmol|เกณฑ์|ค่าปกติ|ผลตรวจ', words, re.I)):
+            issues.append('business_source_for_medical_claim')
+        # Check the printed range for an explicitly named row on a line. Ambiguous
+        # multi-row prose stays with the evidence reviewer, never guessed here.
+        rows = [f for f in (report or {}).get('fields', []) if re.search(r'(?<![A-Za-z])'+re.escape(f.get('name',''))+r'(?![A-Za-z])', line, re.I) and f.get('name')]
+        if rows:
+            # Longer names win only when the shorter match is part of that name.
+            rows = [f for f in rows if not any(f['name'].casefold() in g['name'].casefold() and len(g['name']) > len(f['name']) for g in rows)]
+        if len(rows) == 1:
+            row = rows[0]
+            ranges = re.findall(r'(?<![\w.])(?:\d+(?:\.\d+)?)\s*-\s*(?:\d+(?:\.\d+)?)', line)
+            compact = lambda s: re.sub(r'\s+', '', s).casefold()
+            if any(compact(r) not in compact(str(row.get('reference','')).replace('–','-').replace('−','-').replace('—','-')) for r in ranges):
+                issues.append('named_report_range_changed')
+    return list(dict.fromkeys(issues))

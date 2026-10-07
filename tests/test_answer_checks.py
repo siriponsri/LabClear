@@ -72,7 +72,8 @@ def test_a_wrong_price_is_rewritten_once_then_withheld(monkeypatch):
 def test_critical_flags_always_get_prompt_care_advice(monkeypatch):
     critical = {"fields": [{**REPORT["fields"][0], "printed_flag": "HH"}], "confirmed": True}
     assert answer_checks.critical_note(critical, "โพแทสเซียมสูง ควรปรึกษาแพทย์", "อธิบายผล") == answer_checks.NOTE_TH
-    assert answer_checks.critical_note(critical, "Please see a doctor promptly.", "Explain") == ""
+    assert answer_checks.critical_note(critical, "Please see a doctor promptly.", "Explain") == answer_checks.NOTE_EN
+    assert answer_checks.critical_note(critical, answer_checks.NOTE_EN, "Explain") == ""
     assert answer_checks.critical_note(REPORT, "Glucose is above the range.", "Explain") == ""
     script(monkeypatch, {"action": "answer", "query": "", "dot": "explainer"}, reply="Glucose is above the printed range [nlm-x].")
     out = asyncio.run(business_agent.run("Please explain this report.", {"report": critical, "explain_report": True}))

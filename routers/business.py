@@ -1,5 +1,6 @@
 """Business API. Explicit confirmations, ownership, encrypted storage and sandbox payments."""
 from __future__ import annotations
+from services.release_info import VERSION
 import asyncio,base64,hmac,json,logging,os,re,secrets,time
 from datetime import datetime,timedelta
 from zoneinfo import ZoneInfo
@@ -144,7 +145,7 @@ async def get_session(request:Request,response:Response):
         else:
             id='customer_'+secrets.token_hex(12);u=tx.put(id,'user',id,{'role':'customer','email':'','password':''});csrf=set_session(tx,response,id)
         c=conversation(tx,u['id'])
-        return {'user':db.user_public(u),'csrf':csrf,'conversation':c['data'],'simulation':True,'version':'3.0.0','ocr_provider':'typhoon','external_business_enabled':os.getenv('BUSINESS_EXTERNAL_ENABLED')=='true','google':google_sign_in()}
+        return {'user':db.user_public(u),'csrf':csrf,'conversation':c['data'],'simulation':True,'version':VERSION,'ocr_provider':'typhoon','external_business_enabled':os.getenv('BUSINESS_EXTERNAL_ENABLED')=='true','google':google_sign_in()}
 
 @router.get('/me')
 async def me(request:Request):

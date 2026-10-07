@@ -823,20 +823,26 @@
     for (let i = 1; i <= pages; i++) { const img = el('img', null, 'report-preview'); img.src = '/api/business/reports/' + encodeURIComponent(r.id) + '/source?page=' + i; img.alt = `Source report, page ${i} of ${pages}, for comparison`; img.loading = 'lazy'; previews.append(img); }
     form.append(previews);
     const wrap = el('div', null, 'table-wrap'), table = el('table', null, 'data report-table'), head = el('tr');
-    ['Test', 'Result', 'Unit', 'Reference', 'Flag'].forEach(x => head.append(el('th', x))); table.append(head);
+    ['Test', 'Result', 'Unit', 'Reference', 'Flag', 'Edit'].forEach(x => head.append(el('th', x))); table.append(head);
     const fields = [];
-    d.fields.forEach((row, i) => {
+    let nextRow = 0;
+    const addRow = row => {
+      if (fields.length >= 60) { notice('A report can contain up to 60 rows.', 'bad'); return; }
+      const i = nextRow++;
       const tr = el('tr'), cells = {};
-      ['name', 'value', 'unit', 'reference', 'printed_flag'].forEach(k => { const td = el('td'), input = el('input'); input.type = 'text'; input.value = row[k] || ''; input.setAttribute('aria-label', (k === 'printed_flag' ? 'flag' : k) + ' for row ' + (i + 1)); input.maxLength = k === 'name' ? 120 : 160; td.append(input); tr.append(td); cells[k] = input; });
+      ['name', 'value', 'unit', 'reference', 'printed_flag'].forEach(k => { const td = el('td'), input = el('input'); input.type = 'text'; input.value = row[k] || ''; input.setAttribute('aria-label', (k === 'printed_flag' ? 'flag' : k) + ' for row ' + (i + 1)); input.maxLength = ({name:100,value:150,unit:60,reference:150,printed_flag:25})[k]; input.required = k === 'name'; td.append(input); tr.append(td); cells[k] = input; });
       if (highlight && row.id === highlight) { tr.className = 'highlight flash'; setTimeout(() => tr.scrollIntoView({ block: 'center' }), 50); }
+      const remove = el('td'); remove.append(button('Remove row ' + (i + 1), () => { fields.splice(fields.indexOf(cells), 1); tr.remove(); }, 'btn sm')); tr.append(remove);
       fields.push(cells); table.append(tr);
-    });
+    };
+    d.fields.forEach(addRow);
     if (!d.fields.length) form.append(el('p', 'No values could be read. Delete this report or try a clearer image.', 'callout warn small'));
     wrap.append(table);
     const check = el('label', null, 'check'), cb = el('input'); cb.type = 'checkbox'; cb.required = true;
     check.append(cb, document.createTextNode('I checked the extracted values and confirm this report belongs to the person being discussed.'));
-    form.append(wrap, check, button('Confirm and use report', async () => {
+    form.append(wrap, button('Add missing test row', () => addRow({}), 'btn sm'), check, button('Confirm and use report', async () => {
       if (!form.reportValidity()) return;
+      if (!fields.length) { notice('Keep at least one test row before confirming.', 'bad'); return; }
       const values = fields.map(c => Object.fromEntries(Object.entries(c).map(([k, v]) => [k, v.value])));
       if (opts.onConfirm) return opts.onConfirm(values);
       await post('/reports/confirm', { report_id: r.id, fields: values, label: label.input.value.trim() || 'My report', collected_date: date.input.value, same_person_confirmed: cb.checked });

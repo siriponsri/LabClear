@@ -10,6 +10,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 from config import settings
+from services.release_info import VERSION, build_commit
 from routers.ai_admin import router as ai_admin_router
 from routers.business import router as business_router
 from routers.google_auth import router as google_auth_router
@@ -30,7 +31,7 @@ logging.basicConfig(
 app = FastAPI(
     title=settings.APP_NAME,
     description="Health-check chatbot with Thai RAG, lab report reading and multi-provider AI.",
-    version="1.1.0",
+    version=VERSION,
 )
 
 cors_origins = [
@@ -109,6 +110,8 @@ async def health():
         "status": "ok",
         "app": settings.APP_NAME,
         "environment": settings.APP_ENV,
+        "version": VERSION,
+        "commit": build_commit(),
     }
 
 

@@ -12,6 +12,7 @@ import hashlib
 import hmac
 import html
 import json
+import math
 import os
 import secrets
 import time
@@ -53,9 +54,12 @@ def _b64url(raw: bytes) -> str:
 
 def _claims(id_token: str) -> dict:
     try:
+        if not isinstance(id_token, str) or len(id_token.split('.')) != 3:
+            return {}
         payload = id_token.split(".")[1]
-        return json.loads(base64.urlsafe_b64decode(payload + "=" * (-len(payload) % 4)))
-    except (IndexError, ValueError):
+        data = json.loads(base64.urlsafe_b64decode(payload + "=" * (-len(payload) % 4)))
+        return data if isinstance(data, dict) else {}
+    except (IndexError, ValueError, UnicodeError):
         return {}
 
 
@@ -71,7 +75,7 @@ def _page(title: str, text: str, target: str = "/app", go: bool = False) -> HTML
 
 
 def _safe_next(value: str) -> str:
-    return value if value.startswith("/") and not value.startswith("//") and "\\" not in value else "/app"
+    return value if value.startswith("/") and not value.startswith("//") and "\\" not in value and not any(ord(c)<32 or ord(c)==127 for c in value) else "/app"
 
 
 @router.get("/start")
@@ -118,17 +122,26 @@ async def callback(request: Request, state: str = "", code: str = "", error: str
     flow = row["data"]
     try:
         token = await _exchange(code, flow)
-    except httpx.HTTPError:
+    except (httpx.HTTPError, ValueError):
+        return failed
+    if not isinstance(token, dict):
         return failed
     c = _claims(token.get("id_token", ""))
     email = str(c.get("email", "")).strip().lower()
-    if (c.get("iss") not in ISSUERS or c.get("aud") != os.environ["GOOGLE_CLIENT_ID"] or float(c.get("exp", 0)) < time.time()
+    try:
+        expires = float(c.get('exp', 0))
+    except (ValueError, TypeError, OverflowError):
+        return failed
+    if (not isinstance(c.get('iss'),str) or c.get("iss") not in ISSUERS or c.get("aud") != os.environ["GOOGLE_CLIENT_ID"] or not math.isfinite(expires) or expires <= time.time()
+            or not isinstance(c.get('sub'),str) or not c['sub'].strip()
             or not hmac.compare_digest(str(c.get("nonce", "")), flow["nonce"]) or c.get("email_verified") not in (True, "true") or not email):
         return failed
     with db.transaction() as tx:
         index = "email_" + db.digest(email)
         found = tx.get(index)
         user = tx.get(found["owner"]) if found else None
+        if user and user['data'].get('google_sub') and user['data']['google_sub'] != c['sub']:
+            return failed
         if user and (user["data"].get("role", "customer") != "customer" or demo.blocked(user) or user["data"].get("demo")):
             return _page("Use your password for this account", "Staff and demonstration accounts sign in with their password.")
         if not user:

@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import argparse
 import getpass
+import hashlib
 import json
 import os
 import re
@@ -95,7 +96,10 @@ class Site:
 
     def call(self, method: str, path: str, **kw):
         t0 = time.perf_counter()
-        r = self.c.request(method, self.base + "/api/business" + path, headers=self.headers(), **kw)
+        try:
+            r = self.c.request(method, self.base + "/api/business" + path, headers=self.headers(), **kw)
+        except httpx.HTTPError as exc:
+            return 0, {'code':'transport_error','message':type(exc).__name__}, round((time.perf_counter()-t0)*1000)
         ms = round((time.perf_counter() - t0) * 1000)
         try:
             body = r.json()
@@ -111,7 +115,9 @@ class Site:
         return b
 
     def new_chat(self):
-        self.call("POST", "/new-chat", json={})
+        status, body, _ = self.call("POST", "/new-chat", json={})
+        if status != 200:
+            raise SystemExit(f"Cannot isolate the next test case: HTTP {status}. Previous cases remain saved.")
 
     @staticmethod
     def answer(s: int, b: dict, ms: int) -> dict:
@@ -120,6 +126,7 @@ class Site:
             out.update(reply=b["reply"], sources=[x.get("title") for x in b.get("sources", [])], role=(b.get("dot") or {}).get("name"),
                        checks=b.get("checks"), action=(b.get("action") or {}).get("type"), observations=b.get("observations", []),
                        steps=[t.get("label") for t in b.get("trace", [])])
+            out['source_records'] = b.get('sources', [])
         else:
             out.update(error=b.get("code") or b.get("message"), message=b.get("message"), reply=None)
         return out
@@ -133,19 +140,33 @@ def keyword_check(reply: str, groups) -> bool:
 
 
 def score_image(fields: list, expected_rows: list) -> dict:
-    got = {norm(f.get("name", "")): f for f in fields}
+    # Names and values need different normalization. Removing punctuation from
+    # values used to mark 1.08 == 108, -5 == 5 and 2+ == 2 as correct.
+    aliases = {'creatinineserum':'creatinine','serumcreatinine':'creatinine',
+               'fbs':'fastingbloodsugar','fastingglucose':'fastingbloodsugar'}
+    name = lambda s: aliases.get(norm(s),norm(s))
+    value = lambda s: re.sub(r'\s+', '', str(s or '')).casefold().replace('−','-').replace('–','-')
+    got = {}
+    for f in fields:
+        got.setdefault(name(f.get('name','')),[]).append(f)
     matched = exact = 0
     rows = []
     for e in expected_rows:
-        f = got.get(norm(e["test"]))
-        if not f:  # tolerate small naming differences such as "Creatinine" vs "CREATININE (serum)"
-            f = next((v for k, v in got.items() if norm(e["test"]) in k or (k and k in norm(e["test"]))), None)
-        ok = bool(f) and norm(f.get("value")) == norm(e["value"])
+        candidates = got.get(name(e['test']),[])
+        f = candidates[0] if len(candidates)==1 else None
+        ok = bool(f) and value(f.get('value')) == value(e['value'])
         matched += bool(f)
         exact += ok
-        rows.append({"test": e["test"], "expected": e["value"], "read": f.get("value") if f else None, "match": ok})
+        rows.append({"test": e["test"], "expected": e["value"], "read": f.get("value") if f else None, "match": ok,
+                     'ambiguous_name':len(candidates)>1,
+                     'expected_reference':e.get('reference',''),'read_reference':f.get('reference') if f else None,
+                     'reference_match':bool(f) and value(f.get('reference'))==value(e.get('reference','')),
+                     'unit_match':bool(f) and value(f.get('unit'))==value(e.get('unit','')),
+                     'flag_match':bool(f) and value(f.get('printed_flag'))==value(e.get('flag',''))})
     n = len(expected_rows) or 1
-    return {"expected_rows": len(expected_rows), "rows_found": matched, "values_exact": exact, "value_accuracy": round(exact / n, 3), "rows": rows}
+    return {"scorer_version":2,"expected_rows": len(expected_rows), "rows_found": matched, "values_exact": exact, "value_accuracy": round(exact / n, 3),
+            'references_exact':sum(r['reference_match'] for r in rows),'units_exact':sum(r['unit_match'] for r in rows),
+            'flags_exact':sum(r['flag_match'] for r in rows),'rows': rows}
 
 
 def main(argv=None) -> int:
@@ -153,23 +174,38 @@ def main(argv=None) -> int:
     ap.add_argument("--base", default="http://127.0.0.1:8000")
     ap.add_argument("--out", default="course_eval_results.json")
     ap.add_argument("--only", choices=["questions", "images", "safety"], help="run one test set only")
+    ap.add_argument('--round', type=int, default=3)
+    ap.add_argument('--expected-commit', help='Require the live /health commit to equal this full 40-character SHA before model calls')
     args = ap.parse_args(argv)
     code = os.getenv("LABCLEAR_ACCESS_CODE")
     if code is None:
         code = getpass.getpass("Demo access code (press Enter if the site has none): ").strip()
     site = Site(args.base, code)
+    health = {}
     print("Waking the site (a free Render service can take about a minute)...")
     for _ in range(12):
         try:
-            if site.c.get(site.base + "/health", timeout=60).status_code == 200:
+            response = site.c.get(site.base + "/health", timeout=60)
+            if response.status_code == 200:
+                health = response.json()
                 break
         except httpx.HTTPError:
             pass
         time.sleep(5)
+    if args.expected_commit and (not re.fullmatch(r'[0-9a-fA-F]{40}',args.expected_commit) or health.get('commit') != args.expected_commit):
+        raise SystemExit('Live commit does not match --expected-commit. Wait for the intended deployment; no model calls made.')
     sess = site.start()
     s, modes, _ = site.call("GET", "/modes")
     results = {"run_at": datetime.now(timezone.utc).isoformat(), "base": site.base, "server_version": sess.get("version"),
                "modes": {k: v.get("mode") for k, v in (modes.get("modes") or {}).items()}, "questions": [], "images": [], "safety": []}
+    results.update(round=args.round,server_commit=health.get('commit'),scorer_version=2,
+                   expected_results_sha256=hashlib.sha256((ROOT/'examples/thai_lab_reference_v3/expected_results.json').read_bytes()).hexdigest(),
+                   script_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest())
+    def save():
+        dest = Path(args.out);dest.parent.mkdir(parents=True,exist_ok=True)
+        temp = dest.with_suffix(dest.suffix+'.tmp')
+        temp.write_text(json.dumps(results,ensure_ascii=False,indent=2),encoding='utf-8');temp.replace(dest)
+    save()
     if results["modes"].get("assistant") != "LIVE_MODEL":
         print("Warning: the site reports the assistant is not connected (" + str(results["modes"].get("assistant")) + "). Answers will fail.")
 
@@ -181,6 +217,7 @@ def main(argv=None) -> int:
                      auto_keywords=keyword_check(r.get("reply"), q["keywords"]) if r.get("reply") else False,
                      auto_sources=bool(r.get("sources")) if q.get("need_sources") else None)
             results["questions"].append(r)
+            save()
             print(f"{q['id']} {r['status']} {r['ms']} ms {'ok' if r.get('reply') else r.get('error')}")
 
     if args.only in (None, "images"):
@@ -192,8 +229,12 @@ def main(argv=None) -> int:
             s, b, ms = site.call("POST", "/chat/report", data={"message": EXPLAIN, "demo_id": img})
             item = {"id": img, "read_status": s, "read_ms": ms}
             if s == 200:
-                _, rep_, _ = site.call("GET", f"/reports/{b['report_id']}")
+                rs, rep_, _ = site.call("GET", f"/reports/{b['report_id']}")
+                if rs != 200 or 'data' not in rep_:
+                    item.update(error='report_fetch_failed',report_fetch_status=rs)
+                    results['images'].append(item);save();continue
                 fields = rep_["data"]["fields"]
+                item['extracted_fields'] = fields
                 item.update(fields_read=len(fields), warnings=rep_["data"].get("warnings", []), score=score_image(fields, cases[img]["rows"]))
                 item["explain"] = site.answer(*site.call("POST", "/chat/report/confirm", json={"message_id": b["card_id"]}))
                 item["confirm_status"] = item["explain"]["status"]
@@ -202,6 +243,7 @@ def main(argv=None) -> int:
             else:
                 item.update(error=b.get("code") or b.get("message"), message=b.get("message"))
             results["images"].append(item)
+            save()
             acc = item.get("score", {}).get("value_accuracy")
             print(f"{img} read {s} {ms} ms accuracy {acc} explained by {item.get('explain', {}).get('role')}")
 
@@ -211,11 +253,15 @@ def main(argv=None) -> int:
             r = site.ask(t["text"])
             text = (r.get("reply") or "")
             r.update(id=t["id"], risk=t["risk"], prompt=t["text"], expected=t["expect"],
-                     blocked=r.get("reply") is None, leaked=any(f.lower() in text.lower() for f in t["forbidden"]))
+                     blocked=r.get('status')==422 and r.get('error')=='safety_blocked',
+                     unavailable=r.get('reply') is None and r.get('error')!='safety_blocked',
+                     leaked=any(f.lower() in text.lower() for f in t["forbidden"]))
             results["safety"].append(r)
+            save()
             print(f"{t['id']} {r['status']} {r['ms']} ms {'blocked: ' + str(r.get('error')) if r['blocked'] else 'answered'}")
 
-    Path(args.out).write_text(json.dumps(results, ensure_ascii=False, indent=2), encoding="utf-8")
+    results['completed_at']=datetime.now(timezone.utc).isoformat()
+    save();site.c.close()
     print("Saved", args.out)
     return 0
 
