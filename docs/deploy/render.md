@@ -70,6 +70,7 @@ Sign in at `/staff` → **AI providers**. For each step pick a provider, paste i
 | `Assistant offline` | Set `PROVIDER_NETWORK_ENABLED=true`, then make sure the language model and safety check show **Saved here** or **From server environment**. |
 | `… rejected the request (HTTP 401)` | The key for the named service is wrong. Paste it again on the AI providers page. |
 | `… rejected the request (HTTP 402)` or `429` | The account is out of credit or over its rate limit. |
+| `The model's plan / answer / review could not be verified (…)` | The model did not return the JSON the chat needs, even after one retry. Press **Test** on the language model; if it reports no JSON, choose another model. The names in brackets are the fields it got wrong (also written to the Render log as `model_output_invalid`). |
 | `PROVIDER_BUDGET_CYCLE_ID` / `CLOUD_CALL_LIMIT` | Set both; the call count is kept in the database. |
 | `budget_exhausted` | The call cap or the 300 THB budget is used up. Start a new cycle name or raise the limit. |
 | `Hosted business features require a durable PostgreSQL DATABASE_URL` | `DATABASE_URL` is missing or not a PostgreSQL URL. |

@@ -182,7 +182,7 @@ async def workspace(request:Request):
         unread=sum(1 for _ in tx.find('notification',owner,'unread'))
         return {'conversation':c['data'],'bookings':tx.find('booking',owner),'tickets':tx.find('ticket',owner),'quotes':tx.find('corporate_quote',owner),'reports':reports,'user':db.user_public(u),'payments':payments,'unread_notifications':unread,'inquiries':tx.find('org_inquiry',owner),'plan':plans.entitlement(tx,owner)}
 
-RETRYABLE={'service_unavailable','provider_response_invalid','review_failed','guard_invalid','provider_rejected','storage_unavailable'}
+RETRYABLE={'service_unavailable','provider_response_invalid','answer_invalid','citation_invalid','review_failed','guard_invalid','provider_rejected','storage_unavailable'}
 async def turn(owner,message,retry_id='',page=None):
     if not message.strip() and not retry_id:raise ConversationError('empty_message','Type a message.',422)
     turn_id=secrets.token_hex(16)

@@ -1210,7 +1210,7 @@
           await api('/staff/ai-providers/' + slot, { method: 'PUT', body: JSON.stringify({ preset: prov.input.value, model: model.input.value.trim(), api_key: key.input.value.trim(), base_url: url.input.value.trim(), enabled: slot === 'vision' ? box2.checked : true, price_in: pin.input.value === '' ? null : Number(pin.input.value), price_out: pout.input.value === '' ? null : Number(pout.input.value) }) });
           notice(cur.label + ' saved.'); await navigate('ai', false); connection();
         }, 'btn primary sm'),
-        button('Test', async () => { const r = await post('/staff/ai-providers/' + slot + '/test'); notice(r.message); }, 'btn sm'));
+        button('Test', async () => { const r = await post('/staff/ai-providers/' + slot + '/test'); notice(r.message, r.ok ? '' : 'bad'); }, 'btn sm'));
       if (cur.source === 'app') actions.append(button('Use server settings', async () => { await api('/staff/ai-providers/' + slot, { method: 'DELETE' }); notice('Saved settings removed; the server environment is used again.'); await navigate('ai', false); connection(); }, 'btn sm'));
       f.append(actions); f.onsubmit = e => e.preventDefault();
       card.append(f, keyLink); box.append(card);

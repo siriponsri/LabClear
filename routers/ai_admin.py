@@ -75,9 +75,20 @@ async def test(slot: str, request: Request):
     slot = _slot(slot)
     from services import conversation_guard, conversation_transport as transport
     if slot == "llm":
-        reply = await transport.complete([{"role": "user", "content": "Reply with the single word OK."}],
-                                         slot="llm", max_tokens=20)
-        return {"ok": True, "message": f"The language model replied: {reply[:60]}"}
+        # The chat needs JSON replies, so test exactly that rather than free text.
+        from services.conversation_agent import extract_json
+        raw = await transport.complete([
+            {"role": "system", "content": "Return only a JSON object."},
+            {"role": "user", "content": 'Reply with {"ok": true, "language": "Thai"}.'}],
+            slot="llm", json_mode=True, max_tokens=300)
+        try:
+            ok = extract_json(raw).get("ok") in (True, "true")
+        except ValueError:
+            ok = False
+        if ok:
+            return {"ok": True, "message": "The language model replied with valid JSON. The chat can use it."}
+        return {"ok": False, "message": "The language model replied, but not with the JSON the chat needs. "
+                                        "Try another model for this provider."}
     if slot == "guard":
         await conversation_guard.check("What does an HbA1c test measure?", "input")
         return {"ok": True, "message": "The safety check classified a normal question as safe."}

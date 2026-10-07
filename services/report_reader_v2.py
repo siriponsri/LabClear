@@ -116,7 +116,7 @@ async def read_report(raw: bytes | list[bytes]) -> dict:
     if typhoon:
         raw_text = await complete([{"role": "system", "content": EXTRACT},
             {"role": "user", "content": json.dumps({"untrusted_transcription": raw_text}, ensure_ascii=False)}], json_mode=True, max_tokens=6500)
-    result = parse_model(raw_text, Extraction)
+    result = parse_model(raw_text, Extraction, "report reading")
     if result.document_type != "laboratory_report" or not result.fields:
         raise ConversationError("not_a_report", "I could not identify a readable laboratory test table. Try a clearer report image.", 422)
     if any(len(w) > 250 for w in result.warnings):

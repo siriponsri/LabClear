@@ -16,7 +16,7 @@
   <img src="https://img.shields.io/badge/FastAPI-009688?style=flat-square&logo=fastapi&logoColor=white" alt="FastAPI">
   <img src="https://img.shields.io/badge/RAG-58_Thai_sources-6539a9?style=flat-square" alt="RAG: 58 Thai sources">
   <img src="https://img.shields.io/badge/AI_providers-12-6539a9?style=flat-square" alt="12 AI providers">
-  <img src="https://img.shields.io/badge/tests-108_%2B_30_UAT-2ea44f?style=flat-square" alt="108 tests and 30 browser scenarios">
+  <img src="https://img.shields.io/badge/tests-116_%2B_30_UAT-2ea44f?style=flat-square" alt="116 tests and 30 browser scenarios">
 </p>
 
 <p>
@@ -129,7 +129,7 @@ One web service (FastAPI, Jinja, vanilla JavaScript) serves the website, the cus
 
 ```bash
 pip install -r requirements-dev.txt
-python -m pytest -q                                    # 108 tests, no real AI calls
+python -m pytest -q                                    # 116 tests, no real AI calls
 npm install && npx playwright install chromium
 TEST_PYTHON=.venv/bin/python npm run uat               # 30 browser scenarios
 python scripts/course_eval.py --base http://127.0.0.1:8000   # live evaluation (real AI)

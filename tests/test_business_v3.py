@@ -207,7 +207,7 @@ def test_cloud_requires_durable_database(monkeypatch):
 def test_business_planner_is_not_keyword_router():
     import inspect
     source=inspect.getsource(business.business_agent.run)
-    assert 'transport.complete' in source and 'guard.check' in source
+    assert 'complete_json' in source and 'guard.check' in source
     assert 'evidence_search.search' in source
 
 def promote(c,role='manager'):

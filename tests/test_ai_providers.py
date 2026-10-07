@@ -209,3 +209,19 @@ def test_system_one_call_goes_through_the_cap_and_ledger(monkeypatch):
     assert seen["headers"]["apikey"] == "key-abcdef"
     status = transport.durable_call_status()
     assert status["used"] == 1 and status["by_slot"] == {"guard": 1}
+
+
+def test_llm_test_button_checks_json_mode(monkeypatch):
+    c = manager()
+    sent = []
+    replies = iter(['```json\n{"ok": true, "language": "Thai"}\n```', "OK"])
+
+    async def complete(messages, **kw):
+        sent.append(kw)
+        return next(replies)
+
+    monkeypatch.setattr(transport, "complete", complete)
+    good = c.post("/api/business/staff/ai-providers/llm/test").json()
+    assert good["ok"] and sent[0]["json_mode"] is True
+    bad = c.post("/api/business/staff/ai-providers/llm/test").json()
+    assert not bad["ok"] and "JSON" in bad["message"]
