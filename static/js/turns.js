@@ -14,6 +14,8 @@ window.RSTurns = (() => {
     send: '<path d="M12 19V5M6 11l6-6 6 6"/>',
     check: '<path d="M12 3.5 5 6.5v5c0 4.2 3 7.6 7 9 4-1.4 7-4.8 7-9v-5z"/><path d="m9 12 2.2 2.2L15.5 10"/>',
     attach: '<path d="M8.5 12.5 14 7a3 3 0 0 1 4.2 4.2l-7 7a5 5 0 0 1-7-7L11 4.5"/>',
+    plus: '<path d="M12 5v14M5 12h14"/>',
+    folder: '<path d="M3.5 7a1 1 0 0 1 1-1h4.6l2 2.2h8.4a1 1 0 0 1 1 1V18a1 1 0 0 1-1 1h-15a1 1 0 0 1-1-1z"/>',
   };
   function icon(name) {
     const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -84,16 +86,44 @@ window.RSTurns = (() => {
     return row;
   }
   /* What actually ran before an answer was shown. Every step listed here passed; a failed step
-     withholds the answer instead (server: business_agent.run). */
+     withholds the answer instead (server: business_agent.run). Newer answers carry the full
+     step-by-step trace that was shown live while the assistant worked. */
   function receipt(c, m) {
     const ul = make('ul', null, 'receipt'); ul.hidden = true;
+    if (m.trace?.length) {
+      m.trace.forEach(x => { const li = make('li'), t = make('div'); t.append(make('span', x.label, 'step-label')); if (x.detail) t.append(make('span', x.detail, 'step-detail')); li.append(t); ul.append(li); });
+      return ul;
+    }
     const items = ['Safety check on your question', c.citations_validated ? 'Each claim matched to ' + c.citations_validated + (c.citations_validated === 1 ? ' cited source' : ' cited sources') : 'No source needed for this reply', 'Second review: supported, values unchanged, in scope', 'Safety check on the answer'];
     if (c.observations) items.splice(2, 0, c.observations + (c.observations === 1 ? ' report value' : ' report values') + ' matched exactly to your confirmed report');
     if (m.dot?.name) items.push('Answered by the ' + m.dot.name);
     items.forEach(t => ul.append(make('li', t)));
     return ul;
   }
-  /* opts: {interactive, onRetry(id), onShortcut(cmd) -> element|null, onAction(msg) -> element|null, onStaff(), onFollowup(q)} */
+  /* Files sent with a message: the report pages as thumbnails (served only to their owner). */
+  function attachments(m, opts) {
+    const box = make('div', null, 'attachments sent');
+    (m.attachments || []).forEach(a => {
+      const src = opts.privateFiles ? '' : a.preview || (a.report_id ? '/api/business/reports/' + encodeURIComponent(a.report_id) + '/source?page=' + (a.page || 1) : '');
+      if (!src) { const f = make('span', null, 'file-chip'); f.append(icon('attach'), document.createTextNode(opts.privateFiles ? 'Lab report (private)' : (a.name || 'File'))); box.append(f); return; }
+      const b = make('button', null, 'thumb'); b.type = 'button'; b.setAttribute('aria-label', 'Open ' + (a.name || 'image') + (a.page > 1 ? ', page ' + a.page : ''));
+      const img = make('img'); img.src = src; img.alt = ''; img.loading = 'lazy'; b.append(img);
+      b.onclick = () => (opts.onImage ? opts.onImage(src, a) : window.open(src, '_blank', 'noopener'));
+      box.append(b);
+    });
+    return box;
+  }
+  const FAILED = { safety_blocked: 'Not answered: the safety check blocked this request.' };
+  function failure(m, opts, onRetry) {
+    const text = m.retryable ? 'Not answered yet.' : (FAILED[m.error] || 'Not answered.');
+    const r = make('div', null, 'callout bad failure'); r.append(make('strong', text));
+    if (m.error_message) r.append(make('span', ' ' + m.error_message, 'small'));
+    else if (!m.retryable) r.append(make('span', ' Try rephrasing, or ask our team.', 'small'));
+    if (opts.interactive && m.retryable && onRetry) { const b = make('button', 'Retry', 'btn sm'); b.type = 'button'; b.onclick = () => onRetry(m.id); r.append(b); }
+    return r;
+  }
+  /* opts: {interactive, onRetry(id), onShortcut(cmd) -> element|null, onAction(msg) -> element|null, onStaff(), onFollowup(q),
+           onReportCard(msg, last) -> element, onCardRetry(id), onImage(src, attachment)} */
   function render(m, opts = {}) {
     const turn = make('article', null, 'turn ' + (m.role === 'user' ? 'user' : m.role === 'staff' ? 'staff' : 'ai'));
     const head = make('div', null, 'turn-head');
@@ -103,12 +133,14 @@ window.RSTurns = (() => {
     const t = make('time', time(m.at)); if (m.at) t.dateTime = new Date(m.at * 1000).toISOString(); head.append(t);
     turn.append(head);
     if (m.role === 'user') {
-      turn.append(make('div', m.content, 'text'));
-      if (m.failed) {
-        const r = make('p', m.retryable ? 'Not answered yet. You can retry without retyping.' : (m.error === 'safety_blocked' ? 'Not answered: the safety check blocked this request.' : 'Not answered. Try rephrasing, or ask our team.'), 'callout bad');
-        turn.append(r);
-        if (opts.interactive && m.retryable && opts.onRetry) { const b = make('button', 'Retry', 'btn sm'); b.type = 'button'; b.onclick = () => opts.onRetry(m.id); r.append(document.createTextNode(' '), b); }
-      }
+      if (m.attachments?.length) turn.append(attachments(m, opts));
+      if (m.content) turn.append(make('div', m.content, 'text'));
+      if (m.failed) turn.append(failure(m, opts, opts.onRetry));
+      return turn;
+    }
+    if (m.kind === 'report_read') {
+      turn.append(opts.onReportCard ? opts.onReportCard(m, opts.last) : make('p', m.content, 'small muted'));
+      if (m.failed) turn.append(failure(m, opts, opts.onCardRetry));
       return turn;
     }
     turn.append(body(m.content, m.sources || []));
@@ -130,5 +162,5 @@ window.RSTurns = (() => {
     if (extra.children.length) turn.append(extra);
     return turn;
   }
-  return { render, act, icon, make, parseRange };
+  return { render, act, icon, make, parseRange, receipt };
 })();

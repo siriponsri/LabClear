@@ -33,6 +33,7 @@ Project → **Settings → Environment Variables**:
 | `CLOUD_CALL_LIMIT` | Maximum AI calls, e.g. `500` (one message uses five) |
 | `PROJECT_BUDGET_PRIOR_SPEND_THB` | `0` for a new project |
 | `DEMO_ACCESS_CODE` | Optional. 12+ characters to require a code before using the AI |
+| `DEMO_ACCOUNTS` | Optional. `true` turns on the shared demo accounts `test-01`, `test-02` and `admin` (password `1234`); set it back to `false` after the demo |
 
 AI provider keys can be added here too (`LLM_PROVIDER`, `LLM_API_KEY`, `GUARD_PROVIDER`, `GUARD_API_KEY`, `VISION_ENABLED`, `VISION_API_KEY`), but the admin page in step 6 is easier.
 
@@ -40,7 +41,9 @@ Then **Deployments → Redeploy** so the new variables apply. Open `https://<you
 
 ## 5. Create a manager account
 
-From your computer, using the database connection string from **Storage → Neon → .env.local** and the same key:
+For a class demo you can set `DEMO_ACCOUNTS=true` and sign in as `admin` / `1234` instead; turn it off afterwards.
+
+Otherwise, from your computer, using the database connection string from **Storage → Neon → .env.local** and the same key:
 
 ```bash
 DATABASE_URL="<postgres connection string>" BUSINESS_DATA_KEY="<key>" \
@@ -60,6 +63,7 @@ Sign in at `/staff` → **AI providers**, pick a provider for each step, paste t
 | Cold start | Seconds | About a minute after 15 idle minutes |
 | Upload size | 4.5 MB per request (Vercel limit), so read one or two report pages at a time | 10 MB |
 | Rate limit | Kept per function instance | One instance |
+| Live steps in the chat | Shown if the function streams; otherwise they appear all at once with the answer | Shown as they happen |
 | LINE background worker | Not available; the simulator's "Run worker once" button still works | Available with `BUSINESS_WORKER_ENABLED=true` |
 
 Never commit `.env` or any key.

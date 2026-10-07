@@ -427,6 +427,16 @@ ul.plain{list-style:none;margin:0;padding:0;display:grid;gap:8px}
 .turn .sources a{color:var(--color-fg-muted);text-decoration:none;display:flex;align-items:baseline}
 .turn .sources a .cite{margin:0 8px 0 0}
 .turn .sources a:hover{color:var(--color-fg);text-decoration:underline}
+/* Files sent with a message and failed-turn notes (workspace and the page dock) */
+.failure{display:flex;flex-wrap:wrap;gap:4px 8px;align-items:center}
+.failure .btn{margin-left:auto}
+.attachments{display:flex;gap:8px;flex-wrap:wrap}
+.attachments.sent{justify-self:start}
+.thumb{display:block;padding:0;border:1px solid var(--color-border);border-radius:var(--radius-md);overflow:hidden;background:var(--color-surface);cursor:zoom-in;width:168px;height:120px}
+.thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.thumb:hover{border-color:var(--color-border-strong)}
+.file-chip{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border:1px solid var(--color-border);border-radius:var(--radius-md);font:400 12.5px var(--font-sans);color:var(--color-fg-muted)}
+.file-chip svg{width:14px;height:14px}
 a.cite:hover{background:var(--color-accent);color:var(--color-bg)}
 .send-btn{display:grid;place-items:center;width:36px;height:36px;border-radius:50%;border:0;background:var(--color-primary);color:var(--color-on-primary);cursor:pointer;flex:none;transition:background-color var(--dur-fast) var(--ease-out)}
 .send-btn:hover{background:var(--color-primary-hover)}

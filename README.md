@@ -16,7 +16,7 @@
   <img src="https://img.shields.io/badge/FastAPI-009688?style=flat-square&logo=fastapi&logoColor=white" alt="FastAPI">
   <img src="https://img.shields.io/badge/RAG-58_Thai_sources-6539a9?style=flat-square" alt="RAG: 58 Thai sources">
   <img src="https://img.shields.io/badge/AI_providers-12-6539a9?style=flat-square" alt="12 AI providers">
-  <img src="https://img.shields.io/badge/tests-116_%2B_30_UAT-2ea44f?style=flat-square" alt="116 tests and 30 browser scenarios">
+  <img src="https://img.shields.io/badge/tests-137_%2B_33_UAT-2ea44f?style=flat-square" alt="137 tests and 33 browser scenarios">
 </p>
 
 <p>
@@ -47,30 +47,30 @@
 </td>
 <td width="50%" valign="top">
 
-**Reads lab reports**<br>
-<sub>Upload a photo or PDF. OCR extracts every row, the customer confirms the values, and each one is compared with the range printed on the report.</sub>
+**Lab reports in the chat**<br>
+<sub>Attach a photo or PDF like in any chat app. LabClear reads every row, shows the values next to your image and explains them after one click to confirm.</sub>
 
 </td>
 </tr>
 <tr>
 <td valign="top">
 
-**Five checkpoints per message**<br>
-<sub>Safety screen → plan → answer → Python validation → review → safety screen. Anything that fails is shown as failed with a Retry button, never as a guess.</sub>
+**Shows its work**<br>
+<sub>While it answers you see each step: safety check, plan and role, sources found, draft, second review, safety check. The steps stay under "How this was checked".</sub>
 
 </td>
 <td valign="top">
 
-**Any AI provider**<br>
-<sub>Typhoon, OpenAI, Claude, Gemini, Hugging Face, OpenRouter, Grok, Kimi, Qwen, DeepSeek or any OpenAI-compatible endpoint. Pick them in an admin page.</sub>
+**Chats and projects**<br>
+<sub>A chat list like Claude or ChatGPT: switch, rename and delete chats, and group them into projects such as a yearly check-up.</sub>
 
 </td>
 </tr>
 <tr>
 <td valign="top">
 
-**Safety models**<br>
-<sub>Every message and answer is screened by iApp OpenThai-SystemOne, TypeSafe Jev or Llama Guard 4.</sub>
+**Any AI provider, any safety model**<br>
+<sub>Typhoon, OpenAI, Claude, Gemini, Hugging Face, OpenRouter, Grok, Kimi, Qwen, DeepSeek or any OpenAI-compatible API, screened by iApp OpenThai-SystemOne, TypeSafe Jev or Llama Guard 4.</sub>
 
 </td>
 <td valign="top">
@@ -81,6 +81,9 @@
 </td>
 </tr>
 </table>
+
+<p align="center"><img src="docs/assets/screenshots/chat.jpg" alt="A lab report confirmed in the chat, explained with cited sources and the steps that were checked" width="880"><br>
+<sub>Offline UI harness with a synthetic sample report</sub></p>
 
 ## Quick start
 
@@ -99,14 +102,22 @@ Open **<http://127.0.0.1:8000>**. On Windows you can simply double-click `START.
 
 The website, catalog, booking and staff desk work straight away, with data in an encrypted SQLite file under `data/`.
 
+### Demo accounts
+
+Local runs come with three shared accounts. Sign in from the button at the top right.
+
+| Username | Password | What it is |
+|---|---|---|
+| `test-01` | `1234` | Customer on the Free plan (one AI report reading) |
+| `test-02` | `1234` | Customer with LabClear Plus (simulated) |
+| `admin` | `1234` | Manager with full access; opens the service desk at `/staff` |
+
+They are off on Render and Vercel unless you set `DEMO_ACCOUNTS=true`.
+
 ### Turn on the AI
 
-```bash
-python scripts/create_staff.py --email you@example.com --role manager
-```
-
 1. Set `PROVIDER_NETWORK_ENABLED=true` in `.env` and restart.
-2. Sign in at **/staff** → **AI providers**.
+2. Sign in as `admin` → **AI providers** (or create your own manager with `python scripts/create_staff.py --email you@example.com --role manager`).
 3. Choose a provider for each step, paste its API key and press **Test**.
 
 | Step | Default | Also supported |
@@ -123,15 +134,15 @@ Keys are stored encrypted in the database and never shown again. Prefer environm
 
 <p align="center"><img src="docs/assets/architecture.png" alt="LabClear architecture" width="680"></p>
 
-One web service (FastAPI, Jinja, vanilla JavaScript) serves the website, the customer workspace at `/app` and the staff desk at `/staff`. The chatbot pipeline searches the knowledge base and makes five AI calls per message. Bookings, chats, provider settings and the spending cap live in PostgreSQL (SQLite locally), encrypted with Fernet. The full message flow is in [docs/assets/message-flow.png](docs/assets/message-flow.png).
+One web service (FastAPI, Jinja, vanilla JavaScript) serves the website, the customer workspace at `/app` and the staff desk at `/staff`. The chatbot pipeline searches the knowledge base and makes five AI calls per message, streaming each step to the page as it happens. Bookings, chats, provider settings and the spending cap live in PostgreSQL (SQLite locally), encrypted with Fernet. The full message flow is in [docs/assets/message-flow.png](docs/assets/message-flow.png).
 
 ## Tests
 
 ```bash
 pip install -r requirements-dev.txt
-python -m pytest -q                                    # 116 tests, no real AI calls
+python -m pytest -q                                    # 137 tests, no real AI calls
 npm install && npx playwright install chromium
-TEST_PYTHON=.venv/bin/python npm run uat               # 30 browser scenarios
+TEST_PYTHON=.venv/bin/python npm run uat               # 33 browser scenarios
 python scripts/course_eval.py --base http://127.0.0.1:8000   # live evaluation (real AI)
 ```
 
@@ -139,7 +150,7 @@ python scripts/course_eval.py --base http://127.0.0.1:8000   # live evaluation (
 
 ```text
 main.py              FastAPI app, security headers, pages
-routers/             business API, staff API, AI provider settings, website
+routers/             business API, chats and projects, staff API, AI provider settings, website
 services/            chatbot pipeline, safety check, providers, RAG search, report reader, storage
 templates/ static/   website and workspace UI (no build step)
 knowledge/           58-source evidence catalog

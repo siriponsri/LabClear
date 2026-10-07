@@ -35,12 +35,15 @@ Render → **New → Blueprint** → select your LabClear repository. Render rea
 | `GUARD_PROVIDER`, `GUARD_API_KEY` | Optional, as above (`iapp_systemone`, `typesafe_jev` or `llama_guard`) |
 | `VISION_ENABLED`, `VISION_API_KEY` | Optional, as above (`true` turns on report reading) |
 | `DEMO_ACCESS_CODE` | Optional. Set 12+ characters to require a code before using the AI; leave empty for open access |
+| `DEMO_ACCOUNTS` | Optional. `true` turns on the shared demo accounts `test-01`, `test-02` and `admin` (password `1234`). Anyone who knows them can sign in, `admin` included, so set it back to `false` after the demo |
 
 Press **Apply**. The first build takes a few minutes. Open `https://<your-service>.onrender.com/health`; it should return `"status": "ok"`.
 
 ## 4. Create a manager account
 
-Render's free plan has no shell, so run this from your computer against the Render database. Use the **External Database URL** (Postgres → Connect) and the same `BUSINESS_DATA_KEY`:
+**Quick option for a class demo:** set `DEMO_ACCOUNTS=true`, redeploy, and sign in as `admin` / `1234`. Signing in with a manager account on `/app` opens the service desk at `/staff`. Turn it off after the demo.
+
+**Your own account:** Render's free plan has no shell, so run this from your computer against the Render database. Use the **External Database URL** (Postgres → Connect) and the same `BUSINESS_DATA_KEY`:
 
 ```bash
 # macOS / Linux
@@ -73,6 +76,7 @@ Sign in at `/staff` → **AI providers**. For each step pick a provider, paste i
 | `The model's plan / answer / review could not be verified (…)` | The model did not return the JSON the chat needs, even after one retry. Press **Test** on the language model; if it reports no JSON, choose another model. The names in brackets are the fields it got wrong (also written to the Render log as `model_output_invalid`). |
 | `PROVIDER_BUDGET_CYCLE_ID` / `CLOUD_CALL_LIMIT` | Set both; the call count is kept in the database. |
 | `budget_exhausted` | The call cap or the 300 THB budget is used up. Start a new cycle name or raise the limit. |
+| A report sent in the chat is not read | `VISION_ENABLED=true` and a report reader must be set. The error under the image names the step that stopped (reading, safety check or rows). |
 | `Hosted business features require a durable PostgreSQL DATABASE_URL` | `DATABASE_URL` is missing or not a PostgreSQL URL. |
 
 Never commit `.env` or any key. Keys belong in the Render dashboard or the AI providers page.

@@ -21,7 +21,7 @@ function nextOpenDay(days) { const d = new Date(Date.now() + 7 * 3600e3 + days *
 function watch(page, label) { page.on('pageerror', e => errors.push(label + ': ' + e.message)); page.on('console', m => { if (m.type() === 'error' && !/status of (4\d\d|502)|net::ERR_FAILED/.test(m.text())) errors.push(label + ' console: ' + m.text()); }); }
 async function signUp(page, email) {
   await page.locator('#account-open').click();
-  await page.getByLabel('Email address').fill(email); await page.getByLabel('Password', { exact: true }).fill('ui-test-only-password');
+  await page.getByLabel('Email or username').fill(email); await page.getByLabel('Password', { exact: true }).fill('ui-test-only-password');
   await page.getByRole('button', { name: 'Create account', exact: true }).click(); await page.locator('#modal').waitFor({ state: 'hidden' });
 }
 (async () => {
@@ -126,7 +126,7 @@ async function signUp(page, email) {
 
     const sctx = await browser.newContext({ viewport: { width: 1440, height: 1000 }, acceptDownloads: true }); const s = await sctx.newPage(); watch(s, 'staff');
     await check('UI-11', 'Staff: separate session sign-in, inbox shows organization request with details', async () => {
-      await s.goto(base + '/staff', { waitUntil: 'networkidle' }); await s.getByLabel('Email address').fill('staff@example.invalid'); await s.getByLabel('Password', { exact: true }).fill('ui-test-only-password');
+      await s.goto(base + '/staff', { waitUntil: 'networkidle' }); await s.getByLabel('Email or username').fill('staff@example.invalid'); await s.getByLabel('Password', { exact: true }).fill('ui-test-only-password');
       await s.locator('#modal').getByRole('button', { name: 'Sign in', exact: true }).click(); await s.locator('#modal').waitFor({ state: 'hidden' });
       await s.locator('.kpi').first().waitFor(); await shot(s, 'staff-overview-1440');
       await s.locator('[data-view=staff]').click(); await s.getByRole('button', { name: /Organization inquiry: Example Logistics/ }).click(); await s.getByText('Organization request').waitFor(); await s.getByText('Onsite at their workplace').waitFor();
@@ -180,7 +180,7 @@ async function signUp(page, email) {
       await s.getByRole('row', { name: /Essential Check/ }).getByRole('button', { name: 'Save package' }).click(); await s.getByText(/Saved · now ฿1,250/).waitFor();
       await c.goto(base + '/packages/P01', { waitUntil: 'networkidle' }); assert((await c.locator('.buy-box .pkg-price strong').innerText()).includes('1,250'), 'price not propagated');
       const x = await (await browser.newContext()).newPage(); await x.goto(base + '/staff', { waitUntil: 'networkidle' });
-      await x.getByLabel('Email address').fill('cnx-staff@example.invalid'); await x.getByLabel('Password', { exact: true }).fill('ui-test-only-password');
+      await x.getByLabel('Email or username').fill('cnx-staff@example.invalid'); await x.getByLabel('Password', { exact: true }).fill('ui-test-only-password');
       await x.locator('#modal').getByRole('button', { name: 'Sign in', exact: true }).click(); await x.locator('#modal').waitFor({ state: 'hidden' });
       assert(await x.locator('[data-view=catalog-admin]').isHidden(), 'manager nav visible to staff');
       const r = await x.request.put(base + '/api/business/staff/catalog/P01', { data: { price_thb: 1, active: true }, headers: { 'X-Business-CSRF': 'x' } }); assert(r.status() === 403, 'branch staff edit not refused');
@@ -276,6 +276,50 @@ async function signUp(page, email) {
       await shot(w, 'search-dialog-1440'); await w.keyboard.press('Enter'); await w.waitForURL(/\/packages\/P\d+/);
       await w.goto(base + '/lab-reports', { waitUntil: 'networkidle' }); await w.getByRole('heading', { level: 1 }).waitFor(); assert(await w.getByText('฿355').count() > 0, 'Plus price missing'); await shot(w, 'lab-reports-1440', true);
       await wctx.close();
+    });
+    await check('UI-29', 'Sign-in: demo accounts (1234), admin goes to the service desk and AI providers, test-02 has Plus', async () => {
+      const dctx = await browser.newContext({ viewport: { width: 1440, height: 1000 } }); const d = await dctx.newPage(); watch(d, 'demo');
+      await d.goto(base + '/app', { waitUntil: 'networkidle' }); await d.getByRole('button', { name: 'Sign in' }).click();
+      await d.locator('.demo-pick').first().waitFor(); assert(await d.locator('.demo-pick').count() === 3, 'three demo accounts'); await wait(300); await shot(d, 'signin-1440');
+      await d.getByRole('button', { name: /Sign in as admin/ }).click(); await d.waitForURL(/\/staff/);
+      await d.locator('[data-view=ai]').click(); await d.locator('#content').getByRole('heading', { name: 'AI providers' }).waitFor();
+      await d.locator('#account-open').click(); await d.getByRole('button', { name: 'Sign out' }).click(); await d.locator('#modal-title', { hasText: 'Staff sign-in' }).waitFor();
+      await d.goto(base + '/app', { waitUntil: 'networkidle' }); await d.getByRole('button', { name: 'Sign in' }).click(); await d.getByRole('button', { name: /Sign in as test-02/ }).click();
+      await d.locator('#modal').waitFor({ state: 'hidden' }); await d.goto(base + '/app?view=plan', { waitUntil: 'networkidle' }); await d.locator('.plan-card.featured').getByText('Current plan').waitFor();
+      await dctx.close();
+    });
+    await check('UI-30', 'Report in the chat: thumbnail before and after sending, live steps, values card, one-click confirm answers the question', async () => {
+      const rctx = await browser.newContext({ viewport: { width: 1440, height: 1000 } }); const r = await rctx.newPage(); watch(r, 'chat-report');
+      await r.goto(base + '/app', { waitUntil: 'networkidle' });
+      await r.locator('#attach').click(); await r.locator('#add-report').click();
+      await r.locator('#report-file').setInputFiles(path.join(root, 'examples/thai_lab_reference_v3/png/04_B_Glucose_Urine.png'));
+      await r.locator('#attachments .draft-file img').waitFor(); await r.locator('#message').fill('UI_TEST_REPORT_QUESTION');
+      await r.locator('#send').click(); await r.locator('.turn.thinking .step').first().waitFor();
+      await r.locator('.report-card.draft').waitFor(); await r.locator('.turn.user .thumb img').last().evaluate(img => img.decode());
+      assert(await r.locator('.turn.user .thumb img').last().evaluate(img => img.naturalWidth > 0), 'thumbnail did not load');
+      let w = await (await r.request.get(base + '/api/business/workspace')).json(); assert(!w.conversation.report_id, 'report used before confirmation'); await shot(r, 'chat-report-card-1440');
+      await r.getByRole('button', { name: 'Values are correct, this is my report' }).click(); await r.locator('.report-card.confirmed').waitFor();
+      await r.getByText('Offline UI test double: your question was received.').last().waitFor();
+      w = await (await r.request.get(base + '/api/business/workspace')).json();
+      assert(w.conversation.report_id && w.conversation.messages.filter(m => m.content === 'UI_TEST_REPORT_QUESTION').length === 1, 'confirmation did not answer once');
+      await r.locator('.act', { hasText: 'How this was checked' }).last().click(); await r.locator('.receipt:not([hidden]) .step-label').first().waitFor(); await shot(r, 'chat-report-answer-1440');
+      await rctx.close();
+    });
+    await check('UI-31', 'Chats and projects: new chat, project, rename, switch back, drawer on mobile', async () => {
+      const pctx = await browser.newContext({ viewport: { width: 1440, height: 1000 } }); const p = await pctx.newPage(); watch(p, 'chats');
+      await p.goto(base + '/app', { waitUntil: 'networkidle' }); await p.locator('#message').fill('UI_TEST_FIRST_CHAT'); await p.locator('#send').click();
+      await p.locator('.cl-item.active', { hasText: 'UI_TEST_FIRST_CHAT' }).waitFor();
+      await p.getByRole('button', { name: 'New project' }).click(); await p.getByLabel('Project name').fill('Annual check-up'); await p.getByRole('button', { name: 'Create project' }).click();
+      await p.getByRole('button', { name: 'New chat in Annual check-up' }).click(); await p.locator('#chat-project', { hasText: 'Annual check-up' }).waitFor();
+      await p.locator('#message').fill('UI_TEST_PROJECT_CHAT'); await p.locator('#send').click(); await p.locator('.cl-children .cl-item.active').waitFor();
+      await p.getByRole('button', { name: 'Options for chat UI_TEST_PROJECT_CHAT' }).click(); await p.getByLabel('Chat name').fill('Lipids follow-up'); await p.locator('#modal').getByRole('button', { name: 'Save' }).click();
+      await p.locator('.cl-children .cl-name', { hasText: 'Lipids follow-up' }).waitFor(); await shot(p, 'chats-1440');
+      await p.locator('.cl-open', { hasText: 'UI_TEST_FIRST_CHAT' }).click(); await p.locator('#messages .turn.user', { hasText: 'UI_TEST_FIRST_CHAT' }).waitFor();
+      assert(await p.locator('#messages').getByText('UI_TEST_PROJECT_CHAT').count() === 0, 'switched chat still shows the other chat');
+      await p.setViewportSize({ width: 390, height: 844 }); await wait(200); assert(await p.locator('#chat-list').evaluate(e => e.inert), 'closed drawer should be inert');
+      await p.locator('#chats-toggle').click(); await p.locator('#chat-list.open').waitFor(); await wait(300); await shot(p, 'chats-390');
+      await p.keyboard.press('Escape'); assert(!(await p.locator('#chat-list').evaluate(e => e.classList.contains('open'))), 'drawer did not close');
+      assert(await noOverflow(p), 'mobile overflow'); await pctx.close();
     });
     for (const [w, h, label] of [[768, 1024, 'tablet'], [390, 844, 'mobile']]) {
       await check('UI-21-' + label, label + ': pages without horizontal overflow, navigation drawer, filters toggle, reduced motion', async () => {

@@ -4,6 +4,7 @@ MOCKED_TEST_ONLY: the LLM agent and OCR reader are explicit doubles so browser t
 exercise the real UI, HTTP routes, storage, permissions and state machines. Results from
 this server are UI/flow evidence, never model or OCR quality evidence.
 """
+import asyncio
 import os
 import sys
 from datetime import datetime, timedelta
@@ -30,8 +31,22 @@ def _next_open_day(days: int = 3) -> str:
     return day.strftime("%Y-%m-%d")
 
 
-async def agent(message, context):
+async def _steps(emit, *steps):
+    for sid, label, detail in steps:
+        if emit:
+            await emit({"type": "step", "id": sid, "state": "running", "label": label, "detail": ""})
+            await asyncio.sleep(0.15)
+            await emit({"type": "step", "id": sid, "state": "done", "label": label, "detail": detail})
+
+
+TRACE = [{"id": "safety_in", "label": "Your message passed the safety check", "detail": "UI test double"},
+         {"id": "plan", "label": "Plan: answer the question, as the Health-check Advisor", "detail": "UI test double"}]
+
+
+async def agent(message, context, emit=None):
     # Explicit test double, not product routing or an LLM quality evaluation.
+    await _steps(emit, ("safety_in", "Your message passed the safety check", "UI test double"),
+                 ("plan", "Plan: answer the question, as the Health-check Advisor", "UI test double: the steps stream live"))
     if message == "UI_TEST_BOOK":
         return {"reply": "Offline UI test double: please review your appointment request.", "sources": [],
                 "action": {"type": "book", "quote": db.quote(["P02"]), "branch_id": "BKK01", "date": _next_open_day(4), "time": "10:30"}}
@@ -47,13 +62,15 @@ async def agent(message, context):
                 "dot": {"id": "advisor", "name": "Health-check Advisor"},
                 "ui": [{"type": "prefill_booking", "args": {"package_id": "P02", "name": "Workday Check", "branch_id": "BKK01"}}]}
     return {"reply": "Offline UI test double: your question was received.", "sources": [], "action": None,
-            "dot": {"id": "advisor", "name": "Health-check Advisor"}}
+            "dot": {"id": "advisor", "name": "Health-check Advisor"}, "trace": TRACE,
+            "checks": {"input_safety": "passed", "citations_validated": 0, "observations": 0}}
 
 
 b.business_agent.run = agent
 
 
-async def read(raw):
+async def read(raw, emit=None):
+    await _steps(emit, ("read", "Report read", "UI test double"), ("doc_safety", "The document passed the safety check", "UI test double"))
     return {"fields": normalize([ReportField(name="Glucose", value="100", unit="mg/dL", reference="70–99", printed_flag="H")]),
             "warnings": ["OFFLINE UI TEST DOUBLE — not measured OCR output."], "confirmed": False}
 

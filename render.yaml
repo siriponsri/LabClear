@@ -46,3 +46,6 @@ services:
       # Optional access code for the AI features
       - key: DEMO_ACCESS_CODE
         sync: false
+      # Optional shared demo accounts (test-01, test-02, admin; password 1234). Off unless "true".
+      - key: DEMO_ACCOUNTS
+        sync: false

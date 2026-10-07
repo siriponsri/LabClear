@@ -8,7 +8,7 @@
   const STAFF_ROLES = ['staff', 'manager', 'clinical'];
   let csrf = '', user = null, state = null, accessCode = '', busy = false, controller = null;
   let view = STAFF_MODE ? 'overview' : 'chat', lastMessages = '', activeTicket = '', ticketFilter = 'open', opsFilter = 'requested';
-  let modes = null, catalogCache = null, branchCache = null;
+  let modes = null, catalogCache = null, branchCache = null, demoAccounts = [], chatList = null, lastChats = '';
 
   /* ------------------------------------------------------------ helpers */
   const money = n => '฿' + new Intl.NumberFormat('en-US').format(n);
@@ -19,12 +19,13 @@
   const isStaff = () => STAFF_ROLES.includes(user?.role);
   const isManager = () => user?.role === 'manager';
   function notice(text, tone) { const n = $('notice'); n.textContent = text; n.className = 'toast' + (tone === 'bad' ? ' bad' : ''); n.hidden = false; clearTimeout(notice.t); notice.t = setTimeout(() => { n.hidden = true; }, 7000); }
-  async function api(path, options = {}) {
-    const headers = { 'X-Business-CSRF': csrf, ...(accessCode ? { 'X-LabClear-Access': accessCode } : {}), ...options.headers };
+  async function request(path, options = {}, accept = 'application/json') {
+    const headers = { 'X-Business-CSRF': csrf, Accept: accept, ...(accessCode ? { 'X-LabClear-Access': accessCode } : {}), ...options.headers };
     if (options.body && !(options.body instanceof FormData)) headers['Content-Type'] = 'application/json';
-    let r;
-    try { r = await fetch('/api/business' + path, { credentials: 'same-origin', ...options, headers }); }
+    try { return await fetch('/api/business' + path, { credentials: 'same-origin', ...options, headers }); }
     catch (e) { if (e.name === 'AbortError') throw e; throw Object.assign(Error('You appear to be offline. Check your connection and try again.'), { code: 'network' }); }
+  }
+  async function readJson(r) {
     let d; try { d = await r.json(); } catch { throw Error('The server response could not be read.'); }
     if (!r.ok) {
       let message = d.message || 'The request could not be completed.';
@@ -32,6 +33,29 @@
       throw Object.assign(Error(message), { code: d.code, status: r.status });
     }
     return d;
+  }
+  async function api(path, options = {}) { return readJson(await request(path, options)); }
+  /* A turn whose steps stream as they happen (one JSON object per line). onStep receives each
+     step; the result (or the error) arrives last. */
+  async function stream(path, options, onStep) {
+    const r = await request(path, options, 'application/x-ndjson');
+    if (!(r.headers.get('content-type') || '').includes('ndjson')) return readJson(r);
+    const reader = r.body.getReader(), dec = new TextDecoder(); let buf = '', result = null, failure = null;
+    const line = text => {
+      if (!text.trim()) return; const ev = JSON.parse(text);
+      if (ev.type === 'step') onStep?.(ev);
+      else if (ev.type === 'done') result = ev.result;
+      else if (ev.type === 'error') failure = Object.assign(Error(ev.message), { code: ev.code, status: ev.status });
+    };
+    for (;;) {
+      const { value, done } = await reader.read(); if (done) break;
+      buf += dec.decode(value, { stream: true }); let i;
+      while ((i = buf.indexOf('\n')) >= 0) { line(buf.slice(0, i)); buf = buf.slice(i + 1); }
+    }
+    line(buf);
+    if (failure) throw failure;
+    if (!result) throw Object.assign(Error('The reply was interrupted. Please try again.'), { code: 'interrupted' });
+    return result;
   }
   const post = (path, data = {}) => api(path, { method: 'POST', body: JSON.stringify(data) });
   function button(text, run, cls = 'btn sm') {
@@ -83,8 +107,9 @@
   /* ------------------------------------------------------------ account */
   function updateUser(u) {
     user = u;
-    $('account-label').textContent = u.registered ? u.email : (STAFF_MODE ? 'Not signed in' : 'Guest');
+    $('account-label').textContent = u.registered ? u.email + (u.demo ? ' (demo)' : '') : (STAFF_MODE ? 'Not signed in' : 'Guest');
     $('avatar').textContent = u.registered ? u.email[0].toUpperCase() : '?';
+    if (!STAFF_MODE) { $('account-open').classList.toggle('guest', !u.registered); $('account-open').setAttribute('aria-label', u.registered ? 'Account: ' + u.email : 'Sign in'); }
     $('account-sub').textContent = isStaff() ? u.role + (u.branch ? ' · ' + u.branch : '') : u.registered ? 'Your personal workspace' : 'Sign in to keep your history';
     if ($('staff-nav')) $('staff-nav').hidden = !isStaff();
     document.querySelectorAll('[data-manager-only]').forEach(n => { n.hidden = !isManager(); });
@@ -99,25 +124,40 @@
       if (!STAFF_MODE) row.append(button('Unlink LINE', async () => { await post('/account/line/unlink'); notice('LINE unlinked. Pending LINE deliveries were cancelled.'); }, 'btn ghost'));
       box.append(row);
     } else {
-      const form = el('form', null, 'form-grid'), email = field('Email address', 'email'), pass = field('Password', 'password', '', 'At least 12 characters. Use a demonstration password.');
-      email.input.required = true; email.input.autocomplete = 'email'; pass.input.minLength = 12; pass.input.required = true; pass.input.autocomplete = 'current-password';
+      const form = el('form', null, 'form-grid'), email = field('Email or username', 'text'), pass = field('Password', 'password', '', 'New accounts need at least 12 characters.');
+      email.input.required = true; email.input.autocomplete = 'username'; email.input.spellcheck = false; pass.input.minLength = 4; pass.input.required = true; pass.input.autocomplete = 'current-password';
       const err = el('p', '', 'field-error'); err.setAttribute('role', 'alert'); err.hidden = true;
+      async function signedIn(r, kind) {
+        csrf = r.csrf; updateUser(r.user); closeModal(); lastMessages = ''; lastChats = '';
+        // Staff and managers work in the service desk; signing in on /app takes them there.
+        if (!STAFF_MODE && STAFF_ROLES.includes(r.user.role)) { location.href = '/staff'; return; }
+        if (STAFF_MODE) { location.reload(); return; }
+        await refresh(); notice(kind === 'login' ? 'Signed in as ' + r.user.email + '.' : 'Account created.');
+        await navigate(view, false); await checkLink();
+      }
       async function auth(kind) {
         err.hidden = true;
         if (!form.reportValidity()) return;
-        try {
-          const r = await post('/' + kind, { email: email.input.value, password: pass.input.value });
-          csrf = r.csrf; updateUser(r.user); closeModal(); lastMessages = '';
-          await refresh(); notice(kind === 'login' ? 'Signed in.' : 'Account created.');
-          await navigate(view, false); await checkLink();
-        } catch (e) { err.textContent = e.message; err.hidden = false; }
+        try { await signedIn(await post('/' + kind, { email: email.input.value, password: pass.input.value }), kind); }
+        catch (e) { err.textContent = e.message; err.hidden = false; }
+      }
+      const demos = demoAccounts.filter(a => !STAFF_MODE || a.username === 'admin');
+      if (demos.length) {
+        const d = el('div', null, 'demo-accounts'); d.append(el('p', 'Demo accounts, password 1234', 'small strong'));
+        const row = el('div', null, 'demo-grid');
+        demos.forEach(a => {
+          const b = button('', async () => { err.hidden = true; try { await signedIn(await post('/login', { email: a.username, password: '1234' }), 'login'); } catch (e) { err.textContent = e.message; err.hidden = false; } }, 'demo-pick');
+          b.append(el('strong', a.username), el('span', a.label, 'tiny muted')); b.setAttribute('aria-label', 'Sign in as ' + a.username + ', ' + a.label); row.append(b);
+        });
+        d.append(row, el('p', 'Shared demonstration accounts: anyone can sign in with them, so do not keep personal data there.', 'tiny muted'));
+        box.append(d);
       }
       const actions = el('div', null, 'form-actions');
       actions.append(button('Sign in', () => auth('login'), 'btn primary'));
       if (!STAFF_MODE) actions.append(button('Create account', () => auth('register'), 'btn'));
       form.addEventListener('submit', e => { e.preventDefault(); auth('login'); });
       form.append(email.wrap, pass.wrap, err, actions);
-      if (STAFF_MODE) form.append(el('p', 'Staff accounts are created by the deployment owner with scripts/create_staff.py.', 'tiny muted'));
+      if (STAFF_MODE) form.append(el('p', 'Staff accounts are created by the deployment owner with scripts/create_staff.py' + (demos.length ? ', or use the demo admin account above.' : '.'), 'tiny muted'));
       box.append(form);
     }
     modal(user?.registered ? 'Your account' : (STAFF_MODE ? 'Staff sign-in' : 'Sign in or create an account'), box);
@@ -159,7 +199,12 @@
     return c;
   }
   function messageNode(m, interactive = true, last = false) {
-    return RSTurns.render(m, interactive ? { interactive: true, last, onRetry: retry, onShortcut: shortcut, onAction: actionCard, onStaff: () => requestStaff(), onFollowup: q => send(q) } : {});
+    return RSTurns.render(m, interactive
+      ? { interactive: true, last, onRetry: retry, onShortcut: shortcut, onAction: actionCard, onStaff: () => requestStaff(), onFollowup: q => send(q), onReportCard: reportCard, onCardRetry: cardRetry, onImage: openImage }
+      : STAFF_MODE
+        // Staff see that a report was shared, not its image or values (those stay with the customer).
+        ? { privateFiles: true, onReportCard: () => el('p', 'The customer added a lab report here. Its values stay private to the customer.', 'small muted') }
+        : { onReportCard: x => reportCard(x, false, false), onImage: openImage });
   }
   function shortcut(cmd) {
     // Whitelisted page shortcuts proposed by the assistant: navigate, prefill or show; never confirm.
@@ -221,7 +266,7 @@
     if (open.length) {
       const b = open[0], a = el('button', (b.state === 'requested' ? 'Requested: ' : 'Next visit: ') + new Date(b.data.date + 'T00:00:00').toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' }) + ', ' + b.data.time, 'link-btn');
       a.type = 'button'; a.onclick = () => navigate('bookings'); next.append(a, bookingBadges(b)[0]);
-    } else next.append(el('span', mode === 'bot' ? 'Answers come with their sources. Our team confirms every appointment.' : 'Our team has this conversation.'));
+    } else if (mode !== 'bot') next.append(el('span', 'Our team has this conversation.'));
     const chips = $('context-chips'); chips.replaceChildren();
     if (r) { const c = el('button', null, 'chip active'); c.type = 'button'; c.append(document.createTextNode('Report: ' + (r.label || 'My report') + ' '), el('span', '×', 'x')); c.setAttribute('aria-label', 'Stop using report ' + (r.label || 'My report')); c.onclick = async () => { await post('/reports/select', { report_id: '' }); await refresh(); notice('The report is no longer used in this conversation.'); }; chips.append(c); }
   }
@@ -230,35 +275,254 @@
     updateUser(state.user);
     renderMessages(state.conversation);
     renderContext();
+    renderChats(state.chats);
     setBell(state.unread_notifications);
   }
+
+  /* ------------------------------------------------------------ live steps while the assistant works */
+  /* Shown while a reply is being prepared and removed when it arrives. The finished steps stay
+     with the answer under "How this was checked". */
+  function thinking() {
+    const turn = el('article', null, 'turn ai thinking'), head = el('div', null, 'turn-head');
+    const dot = el('span', null, 'speaker-dot'); dot.setAttribute('aria-hidden', 'true');
+    const status = el('span', 'Thinking', 'role');
+    head.append(dot, el('span', 'LabClear', 'who ai'), status);
+    const list = el('ol', null, 'live-steps'); turn.append(head, list);
+    const rows = new Map();
+    const set = ev => {
+      let li = rows.get(ev.id);
+      if (!li) { li = el('li'); li.append(el('span', null, 'step-icon'), el('div', null, 'step-text')); rows.set(ev.id, li); list.append(li); }
+      li.className = 'step ' + ev.state;
+      const t = li.lastChild; t.replaceChildren(el('span', ev.label, 'step-label')); if (ev.detail) t.append(el('span', ev.detail, 'step-detail'));
+      toBottom();
+    };
+    set({ id: 'send', state: 'running', label: 'Sending' });
+    return {
+      node: turn,
+      step: ev => { const s = rows.get('send'); if (s) { s.remove(); rows.delete('send'); } set(ev); },
+      fail: message => { rows.forEach(li => { if (li.classList.contains('running')) li.className = 'step failed'; }); status.textContent = 'Stopped'; if (message) list.append(el('li', message, 'step-note')); toBottom(); },
+    };
+  }
+
+  /* ------------------------------------------------------------ files attached to the next message */
+  const draft = { files: [], sample: null };
+  let fileTarget = 'reports';
+  const DEFAULT_PLACEHOLDER = 'Ask about lab results, packages or booking';
+  function renderDraft() {
+    const box = $('attachments'); if (!box) return;
+    box.replaceChildren(); box.hidden = !draft.files.length && !draft.sample;
+    const chip = (src, name, remove) => {
+      const c = el('div', null, 'draft-file');
+      if (src) { const i = el('img'); i.src = src; i.alt = ''; c.append(i); } else c.append(RSTurns.icon('source'));
+      c.append(el('span', name, 'name'));
+      const x = el('button', '×', 'remove'); x.type = 'button'; x.setAttribute('aria-label', 'Remove ' + name); x.onclick = () => { remove(); $('message').focus(); }; c.append(x);
+      return c;
+    };
+    draft.files.forEach((f, i) => box.append(chip(f.preview, f.name, () => { draft.files.splice(i, 1); renderDraft(); })));
+    if (draft.sample) box.append(chip(draft.sample.preview, draft.sample.title, () => { draft.sample = null; renderDraft(); }));
+    $('message').placeholder = box.hidden ? DEFAULT_PLACEHOLDER : 'Add a question about this report (optional)';
+  }
+  const readPreview = file => new Promise(done => {
+    if (!file.type.startsWith('image/')) return done('');
+    const r = new FileReader(); r.onload = () => done(r.result); r.onerror = () => done(''); r.readAsDataURL(file);
+  });
+  async function attachFiles(files) {
+    const limit = planOf().images_per_read || 1;
+    if (draft.files.length + files.length > limit) { upgradeDialog(limit === 1 ? 'The Free plan reads one image at a time. LabClear Plus reads up to three pages or images together.' : 'Attach up to three files.'); return; }
+    for (const file of files) {
+      if (file.size > 3 * 1024 * 1024) throw Error('Choose files under 3 MB each.');
+      if (!/\.(pdf|png|jpe?g)$/i.test(file.name)) throw Error('Use PDF, PNG or JPEG files.');
+    }
+    for (const file of files) draft.files.push({ file, name: file.name, preview: await readPreview(file) });
+    draft.sample = null; renderDraft(); $('message').focus();
+  }
+  function openImage(src) {
+    const img = el('img', null, 'lightbox-img'); img.src = src; img.alt = 'Report image';
+    const box = el('div', null, 'stack'); box.append(img, link('Open in a new tab', src, 'btn sm'));
+    box.lastChild.target = '_blank'; box.lastChild.rel = 'noopener';
+    modal('Report image', box);
+  }
+
+  /* ------------------------------------------------------------ sending */
+  const defaultQuestion = () => (navigator.language || '').toLowerCase().startsWith('th') ? 'ช่วยอ่านและอธิบายผลแล็บนี้ให้หน่อย' : 'Please read this report and explain it.';
+  async function finishTurn() {
+    busy = false; $('send').disabled = false; $('stop').hidden = true; $('chat-status').textContent = ''; controller = null;
+    lastMessages = ''; await refresh().catch(() => {}); $('message').focus({ preventScroll: true });
+  }
   async function send(text) {
-    if (busy || !text.trim()) return;
+    text = (text || '').trim();
+    const files = draft.files.slice(), sample = draft.sample, withReport = files.length > 0 || !!sample;
+    if (busy || (!text && !withReport)) return;
     if (view !== 'chat') await navigate('chat');
+    const human = state && state.conversation.mode !== 'bot';
+    if (withReport && human) { notice('Our team has this conversation. Add the report on My reports instead.', 'bad'); return; }
     busy = true; $('send').disabled = true; $('stop').hidden = false;
-    $('chat-status').textContent = state?.conversation.mode === 'bot' ? 'Checking your request, sources and safety before replying…' : 'Sending to our team…';
     controller = new AbortController(); $('message').value = ''; window.rsGrow?.();
-    try { await api('/chat', { method: 'POST', body: JSON.stringify({ message: text, page: { path: '/app', view } }), signal: controller.signal }); }
-    catch (e) { if (e.name !== 'AbortError') notice(e.message, 'bad'); }
-    finally { busy = false; $('send').disabled = false; $('stop').hidden = true; $('chat-status').textContent = ''; controller = null; await refresh().catch(() => {}); $('message').focus(); }
+    const question = text || (withReport ? defaultQuestion() : '');
+    const box = $('messages'); box.querySelector('.welcome, .state-box')?.remove();
+    const att = files.map(f => ({ preview: f.preview, name: f.name })).concat(sample ? [{ preview: sample.preview, name: sample.title }] : []);
+    box.append(messageNode({ role: 'user', content: question, at: Date.now() / 1000, attachments: att }, false));
+    const live = human ? null : thinking();
+    if (live) box.append(live.node); else $('chat-status').textContent = 'Sending to our team…';
+    toBottom();
+    if (withReport) { draft.files = []; draft.sample = null; renderDraft(); }
+    try {
+      if (withReport) {
+        const form = new FormData(); files.forEach(f => form.append('files', f.file)); form.append('message', question); if (sample) form.append('demo_id', sample.id);
+        const r = await stream('/chat/report', { method: 'POST', body: form, signal: controller.signal }, live?.step);
+        if (r.entitlement && state) { state.plan = r.entitlement; syncFileInput(); }
+      } else await stream('/chat', { method: 'POST', body: JSON.stringify({ message: question, page: { path: '/app', view } }), signal: controller.signal }, live?.step);
+    } catch (e) {
+      if (e.name !== 'AbortError') { live?.fail(e.message); if (e.code === 'subscription_required') upgradeDialog(e.message); else notice(e.message, 'bad'); }
+    } finally { await finishTurn(); }
   }
-  async function retry(id) {
+  /* Retries and report confirmations: no new user message, the live steps follow the last turn. */
+  async function runTurn(path, body) {
     if (busy) return;
-    busy = true; $('chat-status').textContent = 'Retrying your last message…'; $('stop').hidden = false; controller = new AbortController();
-    try { await api('/chat/retry', { method: 'POST', body: JSON.stringify({ message_id: id }), signal: controller.signal }); }
-    catch (e) { if (e.name !== 'AbortError') notice(e.message, 'bad'); }
-    finally { busy = false; $('chat-status').textContent = ''; $('stop').hidden = true; controller = null; lastMessages = ''; await refresh().catch(() => {}); }
+    busy = true; $('send').disabled = true; $('stop').hidden = false; controller = new AbortController();
+    const live = thinking(); $('messages').append(live.node); toBottom();
+    try { await stream(path, { method: 'POST', body: JSON.stringify(body), signal: controller.signal }, live.step); }
+    catch (e) { if (e.name !== 'AbortError') { live.fail(e.message); notice(e.message, 'bad'); } }
+    finally { await finishTurn(); }
   }
+  const retry = id => runTurn('/chat/retry', { message_id: id });
+  const cardRetry = id => runTurn('/chat/report/answer', { message_id: id });
+  const confirmCard = (id, fields) => runTurn('/chat/report/confirm', fields ? { message_id: id, fields } : { message_id: id });
+
+  /* The values read from a report sent in the chat. One click confirms them; nothing is
+     explained or added to the dashboard before that. */
+  function reportCard(m, last, interactive = true) {
+    const c = el('div', null, 'report-card ' + (m.state || 'draft')), head = el('div', null, 'rc-head');
+    head.append(el('strong', m.state === 'discarded' ? 'Report discarded' : 'Values read from your report'),
+      m.state === 'confirmed' ? badge('Confirmed by you', 'ok') : m.state === 'discarded' ? badge('Not used', 'neutral') : badge('Please check', 'warn'));
+    c.append(head);
+    if (m.state === 'discarded') { c.append(el('p', 'These values were not saved or used.', 'small muted')); return c; }
+    if (m.sample) c.append(el('p', 'Synthetic sample, not a patient record.', 'tiny muted'));
+    const wrap = el('div', null, 'table-wrap'), t = el('table', null, 'data rc-table'), hr = el('tr');
+    ['Test', 'Result', 'Printed range', 'Compared with range'].forEach(x => hr.append(el('th', x))); t.append(hr);
+    const STATUS_TEXT = { high: ['Above', 'warn'], low: ['Below', 'warn'], within: ['Within', 'ok'] };
+    (m.fields || []).forEach(f => {
+      const tr = el('tr'), st = STATUS_TEXT[f.status], td = el('td');
+      tr.append(el('td', f.name), el('td', (f.value + ' ' + (f.unit || '')).trim(), 'num'), el('td', f.reference || 'None printed', f.reference ? '' : 'muted'));
+      if (st) td.append(badge(st[0], st[1])); else td.append(el('span', 'Not compared', 'tiny muted'));
+      if (f.printed_flag) td.append(el('span', ' flag ' + f.printed_flag, 'tiny muted'));
+      tr.append(td); t.append(tr);
+    });
+    wrap.append(t); c.append(wrap);
+    if (m.warnings?.length) c.append(el('p', m.warnings.join(' · '), 'callout warn small'));
+    if (m.state === 'draft' && interactive) {
+      c.append(el('p', 'Compare them with your image. Nothing is explained or saved to your dashboard until you confirm.', 'small muted'));
+      const row = el('div', null, 'row rc-actions');
+      // Show the confirmation at once; the answer follows with its live steps.
+      const confirmed = () => { row.previousSibling?.remove(); row.replaceWith(el('p', 'Confirmed. Explaining it now.', 'small muted')); head.lastChild.replaceWith(badge('Confirmed by you', 'ok')); };
+      row.append(button('Values are correct, this is my report', () => { if (busy) return; confirmed(); return confirmCard(m.id); }, 'btn primary sm'),
+        button('Edit values', async () => reviewReport(await api('/reports/' + m.report_id), '', { onConfirm: fields => { closeModal(); confirmed(); return confirmCard(m.id, fields); } }), 'btn sm'),
+        button('Discard', async () => { await post('/chat/report/discard', { message_id: m.id }); lastMessages = ''; await refresh(); }, 'btn ghost sm'));
+      c.append(row);
+    } else if (m.state === 'confirmed') c.append(el('p', 'Used in this chat. It is also in My reports and the Lab dashboard.', 'tiny muted'));
+    return c;
+  }
+
+  /* ------------------------------------------------------------ chats and projects */
+  const projectOpen = new Map();
+  const chatDrawer = matchMedia('(max-width:980px)');
+  const setChats = open => {
+    const s = $('chat-list'); if (!s) return;
+    s.classList.toggle('open', open); s.inert = chatDrawer.matches && !open; $('chat-list-scrim').hidden = !open || !chatDrawer.matches;
+    $('chats-toggle').setAttribute('aria-expanded', String(open)); $('chats-toggle').setAttribute('aria-label', open ? 'Hide chats' : 'Show chats');
+    if (open && chatDrawer.matches) s.querySelector('button')?.focus();
+  };
+  if ($('chat-list')) { setChats(false); chatDrawer.addEventListener('change', () => setChats(false)); }
+  function moreButton(label, run) {
+    const m = el('button', null, 'icon-btn cl-more'); m.type = 'button'; m.setAttribute('aria-label', label);
+    m.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="6" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="18" cy="12" r="1.5"/></svg>';
+    m.onclick = run; return m;
+  }
+  function chatRow(c) {
+    const row = el('div', null, 'cl-item' + (c.active ? ' active' : '')), b = el('button', null, 'cl-open'); b.type = 'button';
+    if (c.active) b.setAttribute('aria-current', 'true');
+    b.append(el('span', c.title, 'cl-name'), el('span', ago(c.updated), 'cl-time'));
+    b.onclick = () => (c.active ? (setChats(false), navigate('chat', view !== 'chat')) : openChat(c.id));
+    row.append(b, moreButton('Options for chat ' + c.title, () => chatDialog(c)));
+    return row;
+  }
+  function renderChats(list) {
+    const side = $('chat-list'); if (!side || !list) return;
+    chatList = list;
+    const active = list.chats.find(c => c.active), proj = list.projects.find(p => p.id === list.active_project);
+    $('chat-title').textContent = active ? active.title : 'New chat';
+    $('chat-project').hidden = !proj; $('chat-project').textContent = proj ? proj.name : '';
+    const key = JSON.stringify([list, [...projectOpen]]); if (key === lastChats) return; lastChats = key;
+    const top = el('div', null, 'cl-top'), nb = button('New chat', () => newChat(''), 'btn sm cl-new');
+    nb.prepend(RSTurns.icon('plus')); top.append(nb);
+    const pg = el('section', null, 'cl-group'), ph = el('div', null, 'cl-head'), add = el('button', null, 'icon-btn cl-add');
+    add.type = 'button'; add.setAttribute('aria-label', 'New project'); add.append(RSTurns.icon('plus')); add.onclick = () => projectDialog();
+    ph.append(el('h2', 'Projects'), add); pg.append(ph);
+    if (!list.projects.length) pg.append(el('p', 'Group chats by topic, for example a yearly check-up.', 'tiny muted cl-empty'));
+    list.projects.forEach(p => {
+      const chats = list.chats.filter(c => c.project_id === p.id), open = projectOpen.has(p.id) ? projectOpen.get(p.id) : list.active_project === p.id;
+      const wrap = el('div', null, 'cl-project' + (open ? ' open' : '')), row = el('div', null, 'cl-item'), b = el('button', null, 'cl-open'); b.type = 'button';
+      b.setAttribute('aria-expanded', String(open)); b.append(RSTurns.icon('folder'), el('span', p.name, 'cl-name'), el('span', String(chats.length), 'cl-count'));
+      b.onclick = () => { projectOpen.set(p.id, !open); renderChats(chatList); };
+      row.append(b, moreButton('Options for project ' + p.name, () => projectDialog(p))); wrap.append(row);
+      if (open) {
+        const kids = el('div', null, 'cl-children'); chats.forEach(c => kids.append(chatRow(c)));
+        const n = el('button', null, 'cl-sub'); n.type = 'button'; n.append(RSTurns.icon('plus'), document.createTextNode('New chat in ' + p.name)); n.onclick = () => newChat(p.id); kids.append(n);
+        wrap.append(kids);
+      }
+      pg.append(wrap);
+    });
+    const cg = el('section', null, 'cl-group'), ch = el('div', null, 'cl-head'); ch.append(el('h2', 'Chats')); cg.append(ch);
+    const loose = list.chats.filter(c => !c.project_id || !list.projects.some(p => p.id === c.project_id));
+    if (!loose.length) cg.append(el('p', 'Your chats appear here.', 'tiny muted cl-empty'));
+    loose.forEach(c => cg.append(chatRow(c)));
+    side.replaceChildren(top, pg, cg);
+  }
+  async function chatAction(run, done) {
+    if (busy) { notice('Wait for the current reply first.', 'bad'); return; }
+    try { await run(); lastMessages = ''; lastChats = ''; closeModal(); setChats(false); await refresh(); if (view !== 'chat') await navigate('chat'); if (done) notice(done); }
+    catch (e) { notice(e.message, 'bad'); }
+  }
+  const openChat = id => chatAction(() => post('/chats/' + encodeURIComponent(id) + '/open'));
+  const newChat = projectId => chatAction(() => post('/chats', { project_id: projectId || '' }).then(() => { draft.files = []; draft.sample = null; renderDraft(); $('message').focus(); }));
+  function chatDialog(c) {
+    const form = el('form', null, 'form-grid'), name = field('Chat name', 'text', c.title), proj = field('Project', 'select');
+    name.input.maxLength = 80; name.input.required = true;
+    proj.input.append(new Option('No project', '')); chatList.projects.forEach(p => proj.input.append(new Option(p.name, p.id))); proj.input.value = c.project_id || '';
+    const actions = el('div', null, 'form-actions');
+    actions.append(button('Save', () => form.reportValidity() && chatAction(() => api('/chats/' + encodeURIComponent(c.id), { method: 'PATCH', body: JSON.stringify({ title: name.input.value.trim(), project_id: proj.input.value }) }), 'Chat updated.'), 'btn primary'),
+      button('Delete chat', () => {
+        const n = el('div', null, 'stack'); n.append(el('p', 'Delete "' + c.title + '"? Its messages are removed. Reports stay in My reports.'),
+          button('Delete chat', () => chatAction(() => api('/chats/' + encodeURIComponent(c.id), { method: 'DELETE' }), 'Chat deleted.'), 'btn danger'));
+        modal('Delete chat', n);
+      }, 'btn danger'));
+    form.onsubmit = e => e.preventDefault(); form.append(name.wrap, proj.wrap, actions);
+    modal('Chat', form);
+  }
+  function projectDialog(p) {
+    const form = el('form', null, 'form-grid'), name = field('Project name', 'text', p ? p.name : '', 'For example: Annual check-up 2026');
+    name.input.maxLength = 60; name.input.required = true;
+    const actions = el('div', null, 'form-actions');
+    actions.append(button(p ? 'Save' : 'Create project', () => form.reportValidity() && chatAction(async () => {
+      if (p) await api('/projects/' + encodeURIComponent(p.id), { method: 'PATCH', body: JSON.stringify({ name: name.input.value.trim() }) });
+      else { const r = await post('/projects', { name: name.input.value.trim() }); projectOpen.set(r.project.id, true); }
+    }, p ? 'Project renamed.' : 'Project created. Start a chat in it from the list.'), 'btn primary'));
+    if (p) actions.append(button('Delete project', () => chatAction(() => api('/projects/' + encodeURIComponent(p.id), { method: 'DELETE' }), 'Project deleted. Its chats moved to Chats.'), 'btn danger'));
+    form.onsubmit = e => e.preventDefault(); form.append(name.wrap, actions);
+    if (p) form.append(el('p', 'Deleting a project keeps its chats; they move to Chats.', 'tiny muted'));
+    modal(p ? 'Project' : 'New project', form); name.input.focus();
+  }
+
   if (!STAFF_MODE) {
     $('chat-form').addEventListener('submit', e => { e.preventDefault(); send($('message').value); });
     $('message').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); $('chat-form').requestSubmit(); } });
     const grow = () => { const m = $('message'), n = m.value.length, c = $('char-count'); m.style.height = 'auto'; m.style.height = Math.min(m.scrollHeight, 200) + 'px'; c.hidden = n < 6000; c.textContent = new Intl.NumberFormat('en-US').format(n) + ' / 8,000'; c.classList.toggle('near', n > 7600); };
     $('message').addEventListener('input', grow); window.rsGrow = grow;
     $('stop').onclick = async () => { controller?.abort(); try { await post('/stop'); notice('Stopped. A late answer will not be added.'); } catch (e) { notice(e.message, 'bad'); } };
-    $('new-chat').onclick = async () => {
-      try { await post('/new-chat'); lastMessages = ''; await refresh(); await navigate('chat'); notice('Previous conversation saved in Past conversations.'); }
-      catch (e) { notice(e.message, 'bad'); }
-    };
+    $('new-chat').onclick = () => newChat('');
+    $('chats-toggle').onclick = () => setChats(!$('chat-list').classList.contains('open'));
+    $('chat-list-scrim').onclick = () => setChats(false);
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && $('chat-list').classList.contains('open')) { setChats(false); $('chats-toggle').focus(); } });
     $('staff-request').onclick = () => requestStaff();
     document.querySelectorAll('[data-goto]').forEach(b => { b.onclick = () => navigate(b.dataset.goto); });
     const attach = $('attach'), menu = $('attach-menu');
@@ -268,6 +532,12 @@
     document.addEventListener('click', e => { if (!menu.hidden && !e.target.closest('.attach-wrap')) setAttach(false); });
     menu.querySelectorAll('button').forEach(b => b.addEventListener('click', () => setAttach(false)));
     document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('canvas').hidden) { $('canvas').hidden = true; $('chat-view').classList.remove('with-canvas'); } });
+    // Drop or paste an image onto the composer to attach it.
+    const composer = $('chat-form');
+    composer.addEventListener('dragover', e => { if ([...e.dataTransfer.types].includes('Files')) { e.preventDefault(); composer.classList.add('drop'); } });
+    composer.addEventListener('dragleave', () => composer.classList.remove('drop'));
+    composer.addEventListener('drop', e => { e.preventDefault(); composer.classList.remove('drop'); const f = [...e.dataTransfer.files]; if (f.length) { if (!planOf().can_read) return upgradeDialog('Your free AI report reading has been used. Synthetic samples stay free.'); attachFiles(f).catch(x => notice(x.message, 'bad')); } });
+    $('message').addEventListener('paste', e => { const f = [...(e.clipboardData?.files || [])].filter(x => x.type.startsWith('image/')); if (f.length) { e.preventDefault(); if (!planOf().can_read) return upgradeDialog('Your free AI report reading has been used. Synthetic samples stay free.'); attachFiles(f).catch(x => notice(x.message, 'bad')); } });
   }
   document.addEventListener('click', e => { const b = e.target.closest('[data-prompt]'); if (b) send(b.dataset.prompt); });
   function requestStaff(prefill = '') {
@@ -522,7 +792,7 @@
     });
     box.append(list); return box;
   }
-  function reviewReport(r, highlight = '') {
+  function reviewReport(r, highlight = '', opts = {}) {
     const d = r.data, form = el('form', null, 'form-grid'), label = field('Report label', 'text', d.label && d.label !== 'Unconfirmed report' ? d.label : '', 'For example: Annual check, September 2026'), date = field('Collection date if known', 'date', d.collected_date || '');
     form.append(el('p', 'Compare every value with the source image. Leave missing values empty. Synthetic samples are not patient records.', 'small muted'), label.wrap, date.wrap);
     if (d.warnings?.length) form.append(el('p', d.warnings.join(' · '), 'callout warn small'));
@@ -544,29 +814,33 @@
     check.append(cb, document.createTextNode('I checked the extracted values and confirm this report belongs to the person being discussed.'));
     form.append(wrap, check, button('Confirm and use report', async () => {
       if (!form.reportValidity()) return;
-      await post('/reports/confirm', { report_id: r.id, fields: fields.map(c => Object.fromEntries(Object.entries(c).map(([k, v]) => [k, v.value]))), label: label.input.value.trim() || 'My report', collected_date: date.input.value, same_person_confirmed: cb.checked });
+      const values = fields.map(c => Object.fromEntries(Object.entries(c).map(([k, v]) => [k, v.value])));
+      if (opts.onConfirm) return opts.onConfirm(values);
+      await post('/reports/confirm', { report_id: r.id, fields: values, label: label.input.value.trim() || 'My report', collected_date: date.input.value, same_person_confirmed: cb.checked });
       closeModal(); await refresh(); await navigate('chat'); notice('Report confirmed. You can ask about it now.');
     }, 'btn primary'));
     form.onsubmit = e => e.preventDefault();
     modal('Review report fields', form);
   }
-  async function demoPicker() {
+  async function demoPicker(opts = {}) {
     const d = await api('/demos'), box = el('div', null, 'stack');
     box.append(el('p', 'Six synthetic laboratory documents for testing the reader. Their values and printed ranges are not medical reference knowledge.', 'small muted'));
     d.demos.forEach(x => {
       const row = el('div', null, 'record'); row.append(el('h3', x.title), el('p', x.description, 'small muted'));
       const a = el('a', 'View source image', 'small'); a.href = '/api/samples/' + x.id + '/png'; a.target = '_blank'; a.rel = 'noopener';
-      row.append(a, button('Read this sample', async () => { notice('Reading the document. This uses the configured OCR provider.'); reviewReport(await post('/demos/' + x.id + '/read')); }, 'btn sm'));
+      if (opts.chat) row.append(a, button('Attach to my message', () => { draft.files = []; draft.sample = { id: x.id, title: x.title, preview: '/api/samples/' + x.id + '/png' }; renderDraft(); closeModal(); $('message').focus(); }, 'btn sm'));
+      else row.append(a, button('Read this sample', async () => { notice('Reading the document. This uses the configured OCR provider.'); reviewReport(await post('/demos/' + x.id + '/read')); }, 'btn sm'));
       box.append(row);
     });
     modal('Try a sample report', box);
   }
   if (!STAFF_MODE) {
-    $('add-report').onclick = () => { if (!planOf().can_read) return upgradeDialog('Your free AI report reading has been used. Synthetic samples stay free.'); $('report-file').click(); };
-    $('demo-open').onclick = () => demoPicker().catch(e => notice(e.message, 'bad'));
+    $('add-report').onclick = () => { if (!planOf().can_read) return upgradeDialog('Your free AI report reading has been used. Synthetic samples stay free.'); fileTarget = 'chat'; $('report-file').click(); };
+    $('demo-open').onclick = () => demoPicker({ chat: true }).catch(e => notice(e.message, 'bad'));
   }
   $('report-file').onchange = async () => {
-    const files = [...$('report-file').files]; if (!files.length) return;
+    const files = [...$('report-file').files], target = fileTarget; fileTarget = 'reports'; if (!files.length) return;
+    if (target === 'chat') { try { await attachFiles(files); } catch (e) { notice(e.message, 'bad'); } finally { $('report-file').value = ''; } return; }
     try {
       const limit = planOf().images_per_read || 1;
       if (files.length > limit) { upgradeDialog(limit === 1 ? 'The Free plan reads one image at a time. LabClear Plus reads up to three pages or images together.' : 'Choose up to three files.'); return; }
@@ -1226,6 +1500,7 @@
   const mobile = matchMedia(STAFF_MODE ? '(max-width:860px)' : '(max-width:1100px)');
   function setMenu(open) { $('sidebar').classList.toggle('open', open); $('sidebar').inert = mobile.matches && !open; $('menu-toggle').setAttribute('aria-expanded', String(open)); $('menu-toggle').setAttribute('aria-label', open ? 'Close navigation' : 'Open navigation'); }
   async function navigate(next, push = true, params = {}) {
+    if (next === 'history' && !STAFF_MODE) { next = 'chat'; setTimeout(() => setChats(true), 0); }
     if (!TITLES[next] || (STAFF_MODE && next === 'chat') || (!STAFF_MODE && STAFF_ONLY.includes(next))) next = STAFF_MODE ? 'overview' : 'chat';
     view = next; $('view-title').textContent = TITLES[next]; document.title = TITLES[next] + ' | LabClear';
     document.querySelectorAll('.nav-item').forEach(b => { const on = b.dataset.view === next; b.classList.toggle('active', on); if (on) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); });
@@ -1291,7 +1566,7 @@
     if (!STAFF_MODE && matchMedia('(max-width:640px)').matches) $('message').placeholder = 'Ask a question';
     const p = new URLSearchParams(location.search);
     try {
-      const s = await api('/session'); csrf = s.csrf; updateUser(s.user);
+      const s = await api('/session'); csrf = s.csrf; demoAccounts = s.demo_accounts || []; updateUser(s.user);
       if (!STAFF_MODE) { await loadBusiness().catch(() => {}); await refresh(); syncFileInput(); } else setBell(0);
       await navigate(p.get('view') || view, false, Object.fromEntries(p));
       await checkLink(); await applyDeepLinks(p);

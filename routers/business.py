@@ -1,11 +1,13 @@
 """Business API. Explicit confirmations, ownership, encrypted storage and sandbox payments."""
 from __future__ import annotations
-import asyncio,base64,hmac,json,os,re,secrets,time
+import asyncio,base64,hmac,json,logging,os,re,secrets,time
 from datetime import datetime,timedelta
 from zoneinfo import ZoneInfo
-from fastapi import APIRouter,Request,Response,UploadFile,File
+from fastapi import APIRouter,Request,Response,UploadFile,File,Form
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel,ConfigDict,Field
-from services import business_store as db,business_agent,business_ops as ops,business_plans as plans
+from services import business_store as db,business_agent,business_ops as ops,business_plans as plans,demo_accounts as demo,chat_sessions as chats
+from services.chat_sessions import conversation
 from services.conversation_transport import ConversationError
 from services.request_limits import request_rate_limiter
 from services.lab_fields_v2 import ReportField,normalize
@@ -17,6 +19,10 @@ class Strict(BaseModel):model_config=ConfigDict(extra='forbid')
 class Credentials(Strict):
     email:str=Field(min_length=5,max_length=180)
     password:str=Field(min_length=12,max_length=200)
+class LoginInput(Strict):
+    # Email, or the username of a demonstration account (test-01, test-02, admin).
+    email:str=Field(min_length=3,max_length=180)
+    password:str=Field(min_length=4,max_length=200)
 class PageContext(Strict):
     path:str=Field(default='',max_length=120,pattern=r'^[A-Za-z0-9/_\-]*$')
     package_id:str=Field(default='',max_length=10,pattern=r'^[A-Z0-9]*$')
@@ -57,7 +63,7 @@ def session_row(tx,request,mutation=True):
     if not r or r['data']['expires']<time.time():raise ConversationError('login_required','Your session expired. Reload or sign in.',401)
     if mutation and not hmac.compare_digest(request.headers.get('X-Business-CSRF',''),r['data']['csrf']):raise ConversationError('csrf_rejected','Reload this page before continuing.',403)
     u=tx.get(r['owner'])
-    if not u:raise ConversationError('login_required','Please sign in.',401)
+    if not u or demo.blocked(u):raise ConversationError('login_required','Please sign in.',401)
     return u,r
 
 def set_session(tx,response,user_id):
@@ -75,9 +81,6 @@ def staff_ticket(tx,request,id):
     u=staff(tx,request);t=tx.get(id)
     if not t or t['kind']!='ticket' or (u['data'].get('role')!='manager' and t['branch'] not in ['',u['data'].get('branch')]):raise ConversationError('not_found','This ticket is unavailable.',404)
     return u,t
-
-def conversation(tx,owner):
-    return tx.get('conversation_'+owner) or tx.put('conversation_'+owner,'conversation',owner,{'messages':[],'report_id':'','mode':'bot','version':0})
 
 def msg(role,text,**kw):return {'id':secrets.token_hex(12),'role':role,'content':text,'at':time.time(),**kw}
 
@@ -137,7 +140,7 @@ async def get_session(request:Request,response:Response):
         else:
             id='customer_'+secrets.token_hex(12);u=tx.put(id,'user',id,{'role':'customer','email':'','password':''});csrf=set_session(tx,response,id)
         c=conversation(tx,u['id'])
-        return {'user':db.user_public(u),'csrf':csrf,'conversation':c['data'],'simulation':True,'version':'3.0.0','ocr_provider':'typhoon','external_business_enabled':os.getenv('BUSINESS_EXTERNAL_ENABLED')=='true'}
+        return {'user':db.user_public(u),'csrf':csrf,'conversation':c['data'],'simulation':True,'version':'3.0.0','ocr_provider':'typhoon','external_business_enabled':os.getenv('BUSINESS_EXTERNAL_ENABLED')=='true','demo_accounts':demo.public()}
 
 @router.post('/register')
 async def register(body:Credentials,request:Request,response:Response):
@@ -154,7 +157,7 @@ async def register(body:Credentials,request:Request,response:Response):
         return {'user':db.user_public(tx.get(u['id'])),'csrf':csrf}
 
 @router.post('/login')
-async def login(body:Credentials,request:Request,response:Response):
+async def login(body:LoginInput,request:Request,response:Response):
     origin(request)
     with db.transaction() as tx:
         bucket='auth_'+db.digest(request.client.host if request.client else 'unknown');rate=tx.get(bucket)
@@ -162,8 +165,9 @@ async def login(body:Credentials,request:Request,response:Response):
         if d['attempts']>=8:raise ConversationError('rate_limited','Too many sign-in attempts. Try later.',429)
         d['attempts']+=1;tx.put(bucket,'auth_rate','',d)
     with db.transaction() as tx:
+        if demo.is_demo_name(body.email):demo.ensure(tx)
         idx=tx.get('email_'+db.digest(body.email.strip().lower()));u=tx.get(idx['owner']) if idx else None
-        if not u or not db.verify_password(body.password,u['data'].get('password','')):raise ConversationError('login_invalid','Email or password is incorrect.',401)
+        if not u or demo.blocked(u) or not db.verify_password(body.password,u['data'].get('password','')):raise ConversationError('login_invalid','Email or password is incorrect.',401)
         old=request.cookies.get(COOKIE,'')
         if old:tx.delete('session_'+db.digest(old))
         csrf=set_session(tx,response,u['id']);return {'user':db.user_public(u),'csrf':csrf}
@@ -180,34 +184,49 @@ async def workspace(request:Request):
         reports=[{'id':r['id'],'label':r['data'].get('label','Report'),'date':r['data'].get('collected_date',''),'confirmed':r['data'].get('confirmed',False),'pages':r['data'].get('pages',1),'sample':r['data'].get('sample',False)} for r in tx.find('report',owner)]
         payments=[ops.sim_view(tx,t) for t in tx.find('payment_txn',owner)]
         unread=sum(1 for _ in tx.find('notification',owner,'unread'))
-        return {'conversation':c['data'],'bookings':tx.find('booking',owner),'tickets':tx.find('ticket',owner),'quotes':tx.find('corporate_quote',owner),'reports':reports,'user':db.user_public(u),'payments':payments,'unread_notifications':unread,'inquiries':tx.find('org_inquiry',owner),'plan':plans.entitlement(tx,owner)}
+        return {'conversation':c['data'],'bookings':tx.find('booking',owner),'tickets':tx.find('ticket',owner),'quotes':tx.find('corporate_quote',owner),'reports':reports,'user':db.user_public(u),'payments':payments,'unread_notifications':unread,'inquiries':tx.find('org_inquiry',owner),'plan':plans.entitlement(tx,owner),'chats':chats.listing(tx,owner)}
 
 RETRYABLE={'service_unavailable','provider_response_invalid','answer_invalid','citation_invalid','review_failed','guard_invalid','provider_rejected','storage_unavailable'}
-async def turn(owner,message,retry_id='',page=None):
-    if not message.strip() and not retry_id:raise ConversationError('empty_message','Type a message.',422)
+async def turn(owner,message,retry_id='',page=None,emit=None,reply_to=''):
+    """One assistant turn on the active chat.
+
+    retry_id: re-run the last failed user message. reply_to: answer the question that came with
+    an uploaded report, right after the customer confirmed its values (no new user message)."""
+    if not message.strip() and not retry_id and not reply_to:raise ConversationError('empty_message','Type a message.',422)
     turn_id=secrets.token_hex(16)
     with db.transaction() as tx:
         c=conversation(tx,owner);d=c['data']
         if d.get('busy_until',0)>time.time():raise ConversationError('busy','Please wait for the previous message.',409)
-        if retry_id:
+        last=d['messages'][-1] if d['messages'] else None
+        if reply_to:
+            card=last if last and last['id']==reply_to and last.get('kind')=='report_read' else None
+            if not card or card.get('state')!='confirmed':raise ConversationError('retry_unavailable','Confirm the report values first, or ask a new question.',409)
+            for k in ('failed','error','error_message'):card.pop(k,None)
+            message=card.get('question') or message
+            target_id=reply_to;earlier=[x for x in d['messages'] if x['id'] not in (reply_to,card.get('upload_id'))]
+        elif retry_id:
             # Retry re-runs the last failed user message; it is never appended twice.
-            last=d['messages'][-1] if d['messages'] else None
             if not last or last['id']!=retry_id or last['role']!='user' or not last.get('failed') or not last.get('retryable'):raise ConversationError('retry_unavailable','Only the latest unanswered message can be retried.',409)
-            last.pop('failed',None);last.pop('error',None);message=last['content']
-        else:d['messages']=(d['messages']+[msg('user',message)])[-100:]
-        user_message_id=d['messages'][-1]['id']
+            for k in ('failed','error','error_message'):last.pop(k,None)
+            message=last['content'];target_id=retry_id;earlier=d['messages'][:-1]
+        else:
+            d['messages']=(d['messages']+[msg('user',message)])[-100:]
+            if not d.get('title'):d['title']=chats.title_from(message)
+            target_id=d['messages'][-1]['id'];earlier=d['messages'][:-1]
+        d['updated']=time.time()
         if d['mode']!='bot':tx.put(c['id'],'conversation',owner,d);return {'reply':None,'queued_for_staff':True}
         version=d['version'];d['busy_until']=time.time()+240;d['turn_id']=turn_id;tx.put(c['id'],'conversation',owner,d)
         report=tx.own(d['report_id'],owner,'report')['data'] if d.get('report_id') else None
-        context={'history':[{'role':'assistant' if x['role']=='staff' else x['role'],'content':x['content']} for x in d['messages'][:-1][-12:]],'report':report if report and report.get('confirmed') else None,'previous_reports':[], 'customer_state':{'bookings':[{'id':b['id'],**b['data'],'status':b['state']} for b in tx.find('booking',owner)[-5:]]},'page':page or {}}
+        history=[{'role':'assistant' if x['role']=='staff' else x['role'],'content':x['content']} for x in earlier if x.get('content') and x.get('kind')!='report_read'][-12:]
+        context={'history':history,'report':report if report and report.get('confirmed') else None,'previous_reports':[], 'customer_state':{'bookings':[{'id':b['id'],**b['data'],'status':b['state']} for b in tx.find('booking',owner)[-5:]]},'page':page or {}}
         # Reports stay private, only explicitly selected comparison context is sent.
         other=d.get('compare_report_id')
         if other and other!=d.get('report_id'):
             r=tx.own(other,owner,'report')['data']
-            if r.get('confirmed') and r.get('same_person_confirmed'):context['previous_reports']=[{k:v for k,v in r.items() if k not in ['original','media_type']}]
-        if context['report']:context['report']={k:v for k,v in context['report'].items() if k not in ['original','media_type']}
+            if r.get('confirmed') and r.get('same_person_confirmed'):context['previous_reports']=[{k:v for k,v in r.items() if k not in ['original','extra_originals','media_type']}]
+        if context['report']:context['report']={k:v for k,v in context['report'].items() if k not in ['original','extra_originals','media_type']}
     try:
-        async with asyncio.timeout(220):result=await business_agent.run(message,context)
+        async with asyncio.timeout(220):result=await business_agent.run(message,context,**({'emit':emit} if emit else {}))
         with db.transaction() as tx:
             c=conversation(tx,owner);d=c['data']
             if d['version']!=version or d['mode']!='bot' or d.get('turn_id')!=turn_id:return {'reply':None,'queued_for_staff':True}
@@ -216,15 +235,15 @@ async def turn(owner,message,retry_id='',page=None):
             # Observations were matched exactly against the confirmed report by validate_answer; keep them with the turn.
             rows={f.get('id'):f for f in ((context.get('report') or {}).get('fields') or [])}
             observations=[{**o,'name':rows.get(o.get('field_id'),{}).get('name','')} for o in (result.get('observations') or [])]
-            d['messages']=(d['messages']+[msg('assistant',result['reply'],sources=result['sources'],observations=observations,action=result.get('action'),action_id=result.get('action_id'),followups=result.get('followups',[]),dot=result.get('dot'),ui=result.get('ui',[]),checks=result.get('checks'))])[-100:]
-            d['busy_until']=0;tx.put(c['id'],'conversation',owner,d)
+            d['messages']=(d['messages']+[msg('assistant',result['reply'],sources=result['sources'],observations=observations,action=result.get('action'),action_id=result.get('action_id'),followups=result.get('followups',[]),dot=result.get('dot'),ui=result.get('ui',[]),checks=result.get('checks'),trace=result.get('trace',[]))])[-100:]
+            d['busy_until']=0;d['updated']=time.time();tx.put(c['id'],'conversation',owner,d)
         return result
     except ConversationError as exc:
         with db.transaction() as tx:
             c=conversation(tx,owner)
             if c['data'].get('turn_id')==turn_id and c['data']['version']==version:
                 for m in c['data']['messages']:
-                    if m['id']==user_message_id:m['failed']=True;m['error']=exc.code;m['retryable']=exc.code in RETRYABLE
+                    if m['id']==target_id:m['failed']=True;m['error']=exc.code;m['error_message']=exc.message[:300];m['retryable']=exc.code in RETRYABLE
                 tx.put(c['id'],'conversation',owner,c['data'])
         raise
     finally:
@@ -232,19 +251,44 @@ async def turn(owner,message,retry_id='',page=None):
             c=conversation(tx,owner)
             if c['data'].get('turn_id')==turn_id:c['data']['busy_until']=0;tx.put(c['id'],'conversation',owner,c['data'])
 
+log=logging.getLogger('labclear.chat')
+_BACKGROUND=set()
+
+def streamed(request,run):
+    """Run a turn. With Accept: application/x-ndjson the steps stream as they happen (one JSON
+    object per line) and the result or error arrives last; otherwise the plain JSON result."""
+    if 'application/x-ndjson' not in request.headers.get('accept',''):return run(None)
+    queue=asyncio.Queue()
+    async def emit(event):await queue.put(event)
+    async def work():
+        try:await queue.put({'type':'done','result':await run(emit)})
+        except ConversationError as exc:await queue.put({'type':'error','code':exc.code,'message':exc.message,'status':exc.status})
+        except Exception:
+            log.exception('streamed_turn_failed')
+            await queue.put({'type':'error','code':'server_error','message':'Something went wrong on our side. Please try again.','status':500})
+        finally:await queue.put(None)
+    async def lines():
+        # The work keeps running if the browser disconnects; Stop bumps the chat version so a
+        # late answer is not added.
+        task=asyncio.create_task(work());_BACKGROUND.add(task);task.add_done_callback(_BACKGROUND.discard)
+        while (item:=await queue.get()) is not None:yield json.dumps(item,ensure_ascii=False)+'\n'
+    async def response():
+        return StreamingResponse(lines(),media_type='application/x-ndjson',headers={'Cache-Control':'no-store','X-Accel-Buffering':'no'})
+    return response()
+
 @router.post('/chat')
 async def chat(body:Chat,request:Request):
     provider_authorize(request)
     with db.transaction() as tx:u,_=session_row(tx,request)
     page=body.page.model_dump() if body.page else None
     if page:page['compare_ids']=[i for i in page['compare_ids'] if re.fullmatch(r'P\d{2}',i)]
-    return await turn(u['id'],body.message,page=page)
+    return await streamed(request,lambda emit:turn(u['id'],body.message,page=page,emit=emit))
 
 @router.post('/chat/retry')
 async def chat_retry(body:RetryChat,request:Request):
     provider_authorize(request)
     with db.transaction() as tx:u,_=session_row(tx,request)
-    return await turn(u['id'],'',body.message_id)
+    return await streamed(request,lambda emit:turn(u['id'],'',body.message_id,emit=emit))
 
 @router.post('/stop')
 async def stop(request:Request):
@@ -254,11 +298,7 @@ async def stop(request:Request):
 
 @router.post('/new-chat')
 async def new_chat(request:Request):
-    with db.transaction() as tx:
-        u,_=session_row(tx,request);c=conversation(tx,u['id'])
-        if c['data']['mode']!='bot':raise ConversationError('staff_active','Finish the staff conversation before starting a new one.',409)
-        tx.put('archive_'+secrets.token_hex(12),'archive',u['id'],c['data'])
-        tx.put(c['id'],'conversation',u['id'],{'messages':[],'mode':'bot','version':c['data']['version']+1,'report_id':''})
+    with db.transaction() as tx:u,_=session_row(tx,request);chats.new_chat(tx,u['id'])
     return {'ok':True}
 
 @router.get('/history')
@@ -371,7 +411,7 @@ async def get_report(id:str,request:Request):
     with db.transaction() as tx:
         u,_=session_row(tx,request,False);r=tx.own(id,u['id'],'report');r['data'].pop('original',None);r['data'].pop('extra_originals',None);return r
 
-async def save_read_report(owner,raw,sample=False):
+async def save_read_report(owner,raw,sample=False,emit=None):
     """Read one file, or up to three (Plus). A reading is reserved before any provider call and
     returned if the reader fails. Synthetic samples are free and never count."""
     raws=raw if isinstance(raw,list) else [raw]
@@ -379,7 +419,7 @@ async def save_read_report(owner,raw,sample=False):
     with db.transaction() as tx:
         if len(tx.find('report',owner))>=20:raise ConversationError('report_limit','Remove an old report before adding another.',409)
         if not sample:plans.require_read(tx,owner,len(images));plans.count_read(tx,owner)
-    try:report=await read_report(raws if len(raws)>1 else raws[0])
+    try:report=await read_report(raws if len(raws)>1 else raws[0],**({'emit':emit} if emit else {}))
     except BaseException:
         if not sample:
             with db.transaction() as tx:plans.uncount_read(tx,owner)
@@ -408,6 +448,88 @@ async def read_demo(id:str,request:Request):
     with db.transaction() as tx:u,_=session_row(tx,request)
     return await save_read_report(u['id'],(DEMO_ROOT/'png'/f'{id}.png').read_bytes(),sample=True)
 
+# ------------------------------------------------------------ reports sent in the chat
+class ReportCard(Strict):message_id:str=Field(min_length=8,max_length=40)
+class ReportCardConfirm(ReportCard):fields:list[ReportField]|None=Field(default=None,min_length=1,max_length=60)
+
+def _card(d,message_id):
+    card=next((m for m in d['messages'] if m['id']==message_id and m.get('kind')=='report_read'),None)
+    if not card:raise ConversationError('not_found','This report card is unavailable.',404)
+    return card
+
+async def read_into_chat(owner,raws,names,question,sample,emit):
+    """Read an uploaded report inside the conversation: the user's message shows the file, and
+    the assistant posts the values it read. Nothing is explained until the customer confirms them."""
+    with db.transaction() as tx:
+        c=conversation(tx,owner);d=c['data']
+        if d['mode']!='bot':raise ConversationError('staff_active','Our team has this conversation. Add the report on My reports instead.',409)
+        if d.get('busy_until',0)>time.time():raise ConversationError('busy','Please wait for the previous message.',409)
+    try:r=await save_read_report(owner,raws if len(raws)>1 else raws[0],sample,emit)
+    except ConversationError as exc:
+        with db.transaction() as tx:
+            c=conversation(tx,owner);d=c['data']
+            d['messages']=(d['messages']+[msg('user',question,attachments=[{'report_id':'','name':n,'kind':'file'} for n in names],failed=True,error=exc.code,error_message=exc.message[:300],retryable=False)])[-100:]
+            if not d.get('title'):d['title']=chats.title_from(question) or 'Lab report'
+            d['updated']=time.time();tx.put(c['id'],'conversation',owner,d)
+        raise
+    pages=r['data'].get('pages',1);fields=r['data'].get('fields',[])
+    with db.transaction() as tx:
+        c=conversation(tx,owner);d=c['data']
+        upload=msg('user',question,attachments=[{'report_id':r['id'],'page':i+1,'name':names[min(i,len(names)-1)],'kind':'image','sample':sample} for i in range(pages)])
+        card=msg('assistant',f'I read {len(fields)} rows from the uploaded report. They are not used until you confirm them.',kind='report_read',dot={'id':'reader','name':'Report reader'},report_id=r['id'],fields=fields,warnings=r['data'].get('warnings',[]),state='draft',question=question,upload_id=upload['id'],sample=sample)
+        d['messages']=(d['messages']+[upload,card])[-100:];chats.use_report(d,r['id'])
+        if not d.get('title'):d['title']=chats.title_from(question) or ('Sample report' if sample else 'Lab report')
+        d['updated']=time.time();tx.put(c['id'],'conversation',owner,d);tx.audit(owner,'report.read_in_chat',r['id'])
+    return {'ok':True,'report_id':r['id'],'card_id':card['id'],'rows':len(fields),'entitlement':r.get('entitlement')}
+
+@router.post('/chat/report')
+async def chat_report(request:Request,message:str=Form(default='',max_length=8000),demo_id:str=Form(default='',max_length=40),files:list[UploadFile]|None=File(None)):
+    provider_authorize(request)
+    uploads=list(files or [])
+    if demo_id:
+        found=next((d for d in DEMOS if d[0]==demo_id),None)
+        if not found or uploads:raise ConversationError('not_found','Unknown sample.',404)
+    elif not 1<=len(uploads)<=3:raise ConversationError('file_count','Choose one to three files.',422)
+    with db.transaction() as tx:u,_=session_row(tx,request)
+    if demo_id:raws,names=[(DEMO_ROOT/'png'/f'{demo_id}.png').read_bytes()],[found[1]]
+    else:raws,names=[await f.read(3*1024*1024+1) for f in uploads],[re.sub(r'[^\w .()-]','',f.filename or 'report')[:80] or 'report' for f in uploads]
+    return await streamed(request,lambda emit:read_into_chat(u['id'],raws,names,message.strip(),bool(demo_id),emit))
+
+@router.post('/chat/report/confirm')
+async def chat_report_confirm(body:ReportCardConfirm,request:Request):
+    """One click: the values are right and the report belongs to this customer. Then answer."""
+    provider_authorize(request)
+    with db.transaction() as tx:
+        u,_=session_row(tx,request);c=conversation(tx,u['id']);d=c['data'];card=_card(d,body.message_id)
+        if card.get('state')!='draft':raise ConversationError('already_confirmed','This report was already confirmed.',409)
+        if d.get('busy_until',0)>time.time():raise ConversationError('busy','Please wait for the previous message.',409)
+        r=tx.own(card['report_id'],u['id'],'report')
+        fields=normalize(body.fields) if body.fields else r['data'].get('fields',[])
+        if not fields:raise ConversationError('no_values','No values were read from this report. Try a clearer image.',422)
+        r['data'].update(fields=fields,confirmed=True,same_person_confirmed=True,label='Sample report' if r['data'].get('sample') else 'Report from chat')
+        tx.put(r['id'],'report',u['id'],r['data'],'confirmed')
+        card.update(state='confirmed',fields=fields,confirmed_at=time.time())
+        d['report_id']=r['id'];chats.use_report(d,r['id']);d['version']+=1;tx.put(c['id'],'conversation',u['id'],d)
+        tx.audit(u['id'],'report.confirmed',r['id'])
+    return await streamed(request,lambda emit:turn(u['id'],'Please explain this report.',emit=emit,reply_to=body.message_id))
+
+@router.post('/chat/report/answer')
+async def chat_report_answer(body:ReportCard,request:Request):
+    """Retry the answer for a confirmed report card after a failed reply."""
+    provider_authorize(request)
+    with db.transaction() as tx:u,_=session_row(tx,request)
+    return await streamed(request,lambda emit:turn(u['id'],'Please explain this report.',emit=emit,reply_to=body.message_id))
+
+@router.post('/chat/report/discard')
+async def chat_report_discard(body:ReportCard,request:Request):
+    with db.transaction() as tx:
+        u,_=session_row(tx,request);c=conversation(tx,u['id']);d=c['data'];card=_card(d,body.message_id)
+        if card.get('state')!='draft':raise ConversationError('already_confirmed','Confirmed reports are removed on My reports.',409)
+        r=tx.get(card['report_id'])
+        if r and r['owner']==u['id'] and not r['data'].get('confirmed'):tx.delete(r['id'])
+        card.update(state='discarded',fields=[]);tx.put(c['id'],'conversation',u['id'],d);tx.audit(u['id'],'report.discarded',card['report_id'])
+    return {'ok':True}
+
 @router.post('/reports/confirm')
 async def confirm_report(body:ConfirmReport,request:Request):
     with db.transaction() as tx:
@@ -417,7 +539,7 @@ async def confirm_report(body:ConfirmReport,request:Request):
             try:datetime.strptime(body.collected_date,'%Y-%m-%d')
             except ValueError:raise ConversationError('date_invalid','Use YYYY-MM-DD.',422) from None
         r['data'].update(fields=normalize(body.fields),confirmed=True,label=body.label,collected_date=body.collected_date,same_person_confirmed=True)
-        tx.put(r['id'],'report',u['id'],r['data'],'confirmed');c=conversation(tx,u['id']);c['data']['report_id']=r['id'];c['data']['version']+=1;tx.put(c['id'],'conversation',u['id'],c['data']);tx.audit(u['id'],'report.confirmed',r['id'])
+        tx.put(r['id'],'report',u['id'],r['data'],'confirmed');c=conversation(tx,u['id']);c['data']['report_id']=r['id'];chats.use_report(c['data'],r['id']);c['data']['version']+=1;tx.put(c['id'],'conversation',u['id'],c['data']);tx.audit(u['id'],'report.confirmed',r['id'])
     return {'ok':True}
 
 @router.post('/reports/select')
@@ -427,7 +549,7 @@ async def select_report(body:ReportSelection,request:Request):
         if body.report_id:
             r=tx.own(body.report_id,u['id'],'report')
             if not r['data'].get('confirmed'):raise ConversationError('unconfirmed','Confirm report fields first.',409)
-        c=conversation(tx,u['id']);c['data']['report_id']=body.report_id;c['data']['version']+=1;tx.put(c['id'],'conversation',u['id'],c['data'])
+        c=conversation(tx,u['id']);c['data']['report_id']=body.report_id;chats.use_report(c['data'],body.report_id);c['data']['version']+=1;tx.put(c['id'],'conversation',u['id'],c['data'])
     return {'ok':True}
 
 @router.post('/reports/compare')
@@ -437,20 +559,17 @@ async def compare_report(body:ReportSelection,request:Request):
         if body.report_id:
             r=tx.own(body.report_id,u['id'],'report')
             if not r['data'].get('confirmed'):raise ConversationError('unconfirmed','Confirm report fields first.',409)
-        c=conversation(tx,u['id']);c['data']['compare_report_id']=body.report_id;c['data']['version']+=1;tx.put(c['id'],'conversation',u['id'],c['data'])
+        c=conversation(tx,u['id']);c['data']['compare_report_id']=body.report_id;chats.use_report(c['data'],body.report_id);c['data']['version']+=1;tx.put(c['id'],'conversation',u['id'],c['data'])
     return {'ok':True}
 
 @router.delete('/reports/{id}')
 async def delete_report(id:str,request:Request):
     with db.transaction() as tx:
-        u,_=session_row(tx,request);tx.own(id,u['id'],'report');tx.delete(id);c=conversation(tx,u['id'])
-        # Remove report-bearing conversation history to prevent stale private facts reentering context.
-        for key in ['report_id','compare_report_id']:
-            if c['data'].get(key)==id:c['data'][key]=''
-        c['data']['messages']=[];c['data']['version']+=1;tx.put(c['id'],'conversation',u['id'],c['data'])
-        for old in tx.find('archive',u['id']):tx.delete(old['id'])
+        u,_=session_row(tx,request);tx.own(id,u['id'],'report');tx.delete(id)
+        # Chats that used this report are cleared so its values cannot reenter a conversation.
+        cleared=chats.forget_report(tx,u['id'],id)
         tx.audit(u['id'],'report.deleted',id)
-    return {'ok':True,'message':'Report and conversation history removed. Encrypted backup retention is managed by the deployment owner.'}
+    return {'ok':True,'chats_cleared':cleared,'message':'Report removed, together with the chats that used it. Encrypted backup retention is managed by the deployment owner.'}
 
 @router.get('/staff/inbox')
 async def inbox(request:Request):

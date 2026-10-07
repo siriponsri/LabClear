@@ -12,6 +12,7 @@ from fastapi.templating import Jinja2Templates
 from config import settings
 from routers.ai_admin import router as ai_admin_router
 from routers.business import router as business_router
+from routers.chats import router as chats_router
 from routers.business_ops import router as business_ops_router
 from routers.samples import router as samples_router
 from routers.site import router as site_router
@@ -50,6 +51,7 @@ templates = Jinja2Templates(directory=BASE_DIR / "templates")
 app.include_router(samples_router)
 app.include_router(ai_admin_router)
 app.include_router(business_router)
+app.include_router(chats_router)
 app.include_router(business_ops_router)
 app.include_router(site_router)
 
@@ -71,7 +73,7 @@ async def business_error(request: Request, exc: ConversationError):
 async def request_boundary(request: Request, call_next):
     if request.url.path.startswith("/api/business") and request.method in {"POST", "PUT", "PATCH"}:
         # Report reading accepts up to three files of 3 MB each; everything else stays at 4 MB.
-        mb = 10 if request.url.path == "/api/business/reports/read" else 4
+        mb = 10 if request.url.path in {"/api/business/reports/read", "/api/business/chat/report"} else 4
         limit = mb * 1024 * 1024
         too_large = JSONResponse({"message": f"The request exceeds the {mb} MB limit."}, status_code=413)
         try:

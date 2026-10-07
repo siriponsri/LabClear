@@ -6,10 +6,10 @@ from __future__ import annotations
 import base64
 import json
 from io import BytesIO
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from config import settings
-from services.conversation_agent import parse_model
+from services.conversation_agent import complete_json, parse_model
 from services.conversation_transport import ConversationError, complete, provider_for
 from services.conversation_guard import check
 from services.image_validation import validate_image_bytes, ImageValidationError
@@ -17,10 +17,33 @@ from services.lab_fields_v2 import ReportField, normalize
 
 
 class Extraction(BaseModel):
-    model_config = ConfigDict(extra="forbid")
+    """The reader's reply. Models add keys, use null or numbers and vary the document type
+    wording; only the five printed columns of each row are kept, as text."""
+    model_config = ConfigDict(extra="ignore")
     document_type: str = Field(max_length=30)
     fields: list[ReportField] = Field(default_factory=list, max_length=60)
     warnings: list[str] = Field(default_factory=list, max_length=10)
+
+    @model_validator(mode="before")
+    @classmethod
+    def tolerant(cls, data):
+        if not isinstance(data, dict):
+            return data
+        rows = data.get("fields") or []
+        keep = ("name", "value", "unit", "reference", "printed_flag")
+        clean = []
+        for row in rows if isinstance(rows, list) else []:
+            if not isinstance(row, dict):
+                continue
+            row = {k: "" if row.get(k) is None else str(row.get(k)).strip() for k in keep}
+            if row["name"]:
+                clean.append({k: v[:150] if k != "name" else v[:100] for k, v in row.items()})
+        kind = str(data.get("document_type") or "").strip().lower().replace(" ", "_")
+        if "lab" in kind or (clean and kind not in {"other", "not_a_report"}):
+            kind = "laboratory_report"
+        warnings = data.get("warnings") or []
+        warnings = [str(w).strip()[:250] for w in (warnings if isinstance(warnings, list) else [warnings]) if str(w).strip()][:10]
+        return {"document_type": kind[:30] or "other", "fields": clean[:60], "warnings": warnings}
 
 
 EXTRACT = """Read the laboratory report. Transcribe only visible test rows. Do not
@@ -87,7 +110,10 @@ def all_images(raw: bytes | list[bytes]) -> list[tuple[bytes, str]]:
     return images
 
 
-async def read_report(raw: bytes | list[bytes]) -> dict:
+async def read_report(raw: bytes | list[bytes], emit=None) -> dict:
+    async def step(id, state, label, detail=""):
+        if emit:
+            await emit({"type": "step", "id": id, "state": state, "label": label, "detail": detail})
     provider = provider_for("vision")
     if not provider.enabled or not provider.ready:
         raise ConversationError("vision_not_connected", "Report reading is not connected. You can still type your laboratory question in the chat.")
@@ -98,10 +124,12 @@ async def read_report(raw: bytes | list[bytes]) -> dict:
         return [{"type": "text", "text": instruction}] + [
             {"type": "image_url", "image_url": {"url": f"data:{media_type};base64,{base64.b64encode(data).decode()}"}}
             for data, media_type in page_images]
+    reader = provider.label + (" · " + provider.model if provider.model else "")
     if typhoon:
         # The OCR document contract is one image per call; never silently drop PDF pages.
         pages = []
         for index, page_image in enumerate(images, 1):
+            await step("read", "running", f"Reading page {index} of {len(images)}" if len(images) > 1 else "Reading the report image", reader)
             transcription = await complete([{"role": "user", "content": page_content([page_image])}],
                 slot="vision", max_tokens=6500)
             pages.append(f"Page {index}\n{transcription}")
@@ -109,19 +137,27 @@ async def read_report(raw: bytes | list[bytes]) -> dict:
         if len(raw_text) > 50000:
             raise ConversationError("extraction_too_large", "The transcription is too large. Read fewer pages at a time.", 422)
     else:
+        await step("read", "running", "Reading the report image" + (f"s ({len(images)} pages)" if len(images) > 1 else ""), reader)
         raw_text = await complete([{"role": "user", "content": page_content(images)}],
             slot="vision", json_mode=True, max_tokens=6500)
-    # Screen extracted document text before it enters the planner or context.
-    await check(raw_text, "input")
+    await step("read", "done", "Report read" + (f", {len(images)} pages" if len(images) > 1 else ""), reader)
+    # Screen extracted document text before it enters the planner or context. A lab report holds
+    # the customer's own health data, so this looks for hidden instructions and harmful content.
+    guard_label = provider_for("guard").label
+    await step("doc_safety", "running", "Checking the document for hidden instructions", guard_label)
+    await check(raw_text, "document")
+    await step("doc_safety", "done", "The document passed the safety check", guard_label)
     if typhoon:
-        raw_text = await complete([{"role": "system", "content": EXTRACT},
-            {"role": "user", "content": json.dumps({"untrusted_transcription": raw_text}, ensure_ascii=False)}], json_mode=True, max_tokens=6500)
-    result = parse_model(raw_text, Extraction, "report reading")
+        await step("rows", "running", "Turning the transcription into rows", provider_for("llm").label)
+        result = await complete_json([{"role": "system", "content": EXTRACT},
+            {"role": "user", "content": json.dumps({"untrusted_transcription": raw_text}, ensure_ascii=False)}],
+            Extraction, step="report reading", max_tokens=6500)
+    else:
+        result = parse_model(raw_text, Extraction, "report reading")
     if result.document_type != "laboratory_report" or not result.fields:
-        raise ConversationError("not_a_report", "I could not identify a readable laboratory test table. Try a clearer report image.", 422)
-    if any(len(w) > 250 for w in result.warnings):
-        raise ConversationError("extraction_invalid", "The document reader returned invalid warnings.", 502)
-    # Screen structured rows/warnings too, including the structuring model output.
-    await check(result.model_dump_json(), "output", "Transcribe the laboratory table for educational review; no diagnosis or treatment.")
+        raise ConversationError("not_a_report", "I could not find a readable table of lab results. Try a clearer, straight photo or the PDF.", 422)
+    # Screen the structured rows too, including the structuring model's output.
+    await check(result.model_dump_json(), "document")
+    await step("rows", "done", f"{len(result.fields)} test rows ready for you to check", "values, units and printed ranges exactly as read")
     # The schema excludes identity fields and the original filename.
     return {"fields": normalize(result.fields), "warnings": result.warnings, "confirmed": False}

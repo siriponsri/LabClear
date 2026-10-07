@@ -21,9 +21,12 @@ class ReportField(BaseModel):
 _N = r"[+-]?(?:\d+(?:\.\d+)?|\.\d+)"
 
 
-def status(value: str, reference: str) -> str:
+def status(value: str, reference: str, unit: str = "") -> str:
     value = value.strip()
     ref = reference.strip().replace("−", "-").replace("–", "-").replace("—", "-").replace("≤", "<=").replace("≥", ">=")
+    # Reports often repeat the row's unit after the range ("70 - 99 mg/dL"); only that exact unit is removed.
+    if unit.strip() and ref.lower().endswith(unit.strip().lower()):
+        ref = ref[: -len(unit.strip())].strip()
     # A comparator result (<5), comma-decimal ambiguity, or reference containing
     # multiple populations is left unknown, rather than guessed.
     if not re.fullmatch(_N, value):
@@ -44,4 +47,4 @@ def status(value: str, reference: str) -> str:
 
 
 def normalize(fields: list[ReportField]) -> list[dict]:
-    return [{"id": f"r{i+1}", **field.model_dump(), "status": status(field.value, field.reference)} for i, field in enumerate(fields)]
+    return [{"id": f"r{i+1}", **field.model_dump(), "status": status(field.value, field.reference, field.unit)} for i, field in enumerate(fields)]

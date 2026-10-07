@@ -246,7 +246,26 @@ table.t td{border-bottom:1px solid var(--line);padding:9px 10px;vertical-align:t
 
 <!-- 10 -->
 <section>
-  <p class="eyebrow">09 · Product</p>
+  <p class="eyebrow">09 · Chat</p>
+  <h2>A chat that shows its work</h2>
+  <div class="grid" style="grid-template-columns:1fr 1.25fr;gap:28px;align-items:center">
+    <div style="font-size:.72em">
+      <ul>
+        <li><strong>Reports in the chat:</strong> attach a photo or PDF, see it in the conversation, confirm the values in one click</li>
+        <li><strong>Live steps:</strong> safety check, plan and role, sources found, draft, second review, safety check</li>
+        <li><strong>Chats and projects</strong> like Claude or ChatGPT</li>
+        <li><strong>Demo accounts</strong> <code>test-01</code>, <code>test-02</code>, <code>admin</code> · password <code>1234</code></li>
+      </ul>
+      <p class="small">Nothing from a report is explained before the customer confirms it. Lab reports get their own safety question: hidden instructions are blocked, the customer's own health data is expected.</p>
+    </div>
+    <div class="shot" style="height:440px"><img src="../docs/assets/screenshots/chat.jpg" alt="A lab report confirmed in the chat and explained with sources"></div>
+  </div>
+  <aside class="notes">The steps stream from the server while the answer is prepared and disappear when it arrives; the same steps stay under "How this was checked".</aside>
+</section>
+
+<!-- 11 -->
+<section>
+  <p class="eyebrow">10 · Product</p>
   <h2>Website and customer workspace</h2>
   <div class="grid g2" style="gap:18px 26px">
     <div><div class="shot" style="height:215px"><img src="../docs/assets/screenshots/home.jpg" alt="Home page"></div><p class="cap">Home</p></div>
@@ -259,13 +278,13 @@ table.t td{border-bottom:1px solid var(--line);padding:9px 10px;vertical-align:t
 
 <!-- 11 -->
 <section>
-  <p class="eyebrow">10 · Live demo · 3 min</p>
+  <p class="eyebrow">11 · Live demo · 3 min</p>
   <h2>Demo on labclear.onrender.com</h2>
   <div class="grid" style="grid-template-columns:1.4fr 1fr;align-items:start">
     <ol class="steps" style="font-size:.72em">
       <li>“Which package fits 1,500 baht?” → real catalog prices</li>
       <li>“What is HbA1c?” → Thai answer with numbered sources</li>
-      <li>Open a sample report → check the values → confirm → ask for an explanation</li>
+      <li>Attach a sample report in the chat → confirm the values in one click → watch the steps → read the explanation</li>
       <li>Try to talk it into a 50% discount → refused by policy</li>
       <li>Request a time → staff confirm it in <code>/staff</code></li>
     </ol>
@@ -276,7 +295,7 @@ table.t td{border-bottom:1px solid var(--line);padding:9px 10px;vertical-align:t
 
 <!-- 12 -->
 <section>
-  <p class="eyebrow">11 · Testing</p>
+  <p class="eyebrow">12 · Testing</p>
   <h2>Assignment tests and automated tests</h2>
   <div class="grid g3" style="margin:14px 0 22px">
     <div class="card"><div class="stat">10</div><div class="stat-label">business and health questions (keywords + sources)</div></div>
@@ -285,8 +304,8 @@ table.t td{border-bottom:1px solid var(--line);padding:9px 10px;vertical-align:t
   </div>
   <table class="t">
     <tr><th>Automated suite</th><th>Result</th><th>Covers</th></tr>
-    <tr><td>pytest</td><td class="ok">116 passed</td><td>Business rules, bookings, payments, permissions, ledger, call cap, AI providers, safety guards</td></tr>
-    <tr><td>Browser UAT (Playwright)</td><td class="ok">30 / 30</td><td>Customer → booking → staff confirmation → payment → AI Lab Report → AI providers page</td></tr>
+    <tr><td>pytest</td><td class="ok">137 passed</td><td>Business rules, bookings, payments, permissions, ledger, call cap, AI providers, safety guards</td></tr>
+    <tr><td>Browser UAT (Playwright)</td><td class="ok">33 / 33</td><td>Customer → booking → staff confirmation → payment → AI Lab Report → report in the chat → chats and projects → demo sign-in → AI providers page</td></tr>
   </table>
   <p class="small" style="margin-top:14px">The 10 / 5 / 5 sets run against the live site with <code>scripts/course_eval.py</code>; results are in the report.</p>
   <aside class="notes">Automated suites use model doubles, so they prove flows and screens; answer quality is measured by the live evaluation.</aside>
@@ -294,7 +313,7 @@ table.t td{border-bottom:1px solid var(--line);padding:9px 10px;vertical-align:t
 
 <!-- 13 -->
 <section>
-  <p class="eyebrow">12 · Improvements</p>
+  <p class="eyebrow">13 · Improvements</p>
   <h2>Before → after</h2>
   <table class="t" style="font-size:.6em">
     <tr><th style="width:24%">Area</th><th>Before</th><th>After</th></tr>
@@ -307,7 +326,7 @@ table.t td{border-bottom:1px solid var(--line);padding:9px 10px;vertical-align:t
 
 <!-- 14 -->
 <section>
-  <p class="eyebrow">13 · Cost &amp; limits</p>
+  <p class="eyebrow">14 · Cost &amp; limits</p>
   <h2>Useful, on a controlled budget</h2>
   <div class="grid g2">
     <div class="card"><h3>Cost</h3><ul>
