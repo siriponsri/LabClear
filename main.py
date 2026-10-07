@@ -12,6 +12,7 @@ from fastapi.templating import Jinja2Templates
 from config import settings
 from routers.ai_admin import router as ai_admin_router
 from routers.business import router as business_router
+from routers.google_auth import router as google_auth_router
 from routers.chats import router as chats_router
 from routers.business_ops import router as business_ops_router
 from routers.samples import router as samples_router
@@ -50,6 +51,7 @@ app.mount("/static", StaticFiles(directory=BASE_DIR / "static"), name="static")
 templates = Jinja2Templates(directory=BASE_DIR / "templates")
 app.include_router(samples_router)
 app.include_router(ai_admin_router)
+app.include_router(google_auth_router)
 app.include_router(business_router)
 app.include_router(chats_router)
 app.include_router(business_ops_router)

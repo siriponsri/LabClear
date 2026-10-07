@@ -109,7 +109,8 @@ def test_cannot_switch_chats_while_our_team_has_the_conversation(monkeypatch):
 def test_demo_accounts_sign_in_with_1234(monkeypatch):
     monkeypatch.setenv("DEMO_ACCOUNTS", "true")
     c = client(False)
-    assert [a["username"] for a in c.get(API + "/session").json()["demo_accounts"]] == ["test-01", "test-02", "admin"]
+    # The accounts are documented, not advertised on the site.
+    assert "demo_accounts" not in c.get(API + "/session").json() and "demo_accounts" not in c.get(API + "/me").json()
     r = c.post(API + "/login", json={"email": "admin", "password": "1234"})
     assert r.status_code == 200 and r.json()["user"]["role"] == "manager" and r.json()["user"]["demo"]
     c.headers["X-Business-CSRF"] = r.json()["csrf"]

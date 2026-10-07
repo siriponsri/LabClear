@@ -33,7 +33,7 @@ Project → **Settings → Environment Variables**:
 | `CLOUD_CALL_LIMIT` | Maximum AI calls, e.g. `500` (one message uses five) |
 | `PROJECT_BUDGET_PRIOR_SPEND_THB` | `0` for a new project |
 | `DEMO_ACCESS_CODE` | Optional. 12+ characters to require a code before using the AI |
-| `DEMO_ACCOUNTS` | Optional. `true` turns on the shared demo accounts `test-01`, `test-02` and `admin` (password `1234`); set it back to `false` after the demo |
+| `DEMO_ACCOUNTS` | Optional. `true` turns on the shared demo accounts `test-01`, `test-02` and `admin` (password `1234`); they are typed in the sign-in dialog, not listed; set it back to `false` after the demo |
 
 AI provider keys can be added here too (`LLM_PROVIDER`, `LLM_API_KEY`, `GUARD_PROVIDER`, `GUARD_API_KEY`, `VISION_ENABLED`, `VISION_API_KEY`), but the admin page in step 6 is easier.
 
@@ -67,3 +67,16 @@ Sign in at `/staff` → **AI providers**, pick a provider for each step, paste t
 | LINE background worker | Not available; the simulator's "Run worker once" button still works | Available with `BUSINESS_WORKER_ENABLED=true` |
 
 Never commit `.env` or any key.
+
+## Sign in with Google (optional)
+
+The same as on Render; the redirect address is `https://<your-project>.vercel.app/api/business/auth/google/callback`.
+
+Customers can sign in with a Google account when an OAuth client is set. Staff and managers keep their password.
+
+1. In [Google Cloud Console](https://console.cloud.google.com/) create or pick a project, then **APIs & Services → OAuth consent screen**: user type **External**, app name LabClear, your email as support and developer contact. While the app is in **Testing**, add the Google accounts that may sign in under **Test users**.
+2. **APIs & Services → Credentials → Create credentials → OAuth client ID**, application type **Web application**.
+3. Under **Authorized redirect URIs** add `https://<your-service>/api/business/auth/google/callback` (for a local run also `http://localhost:8000/api/business/auth/google/callback`, and set `GOOGLE_REDIRECT_URI` to it).
+4. Copy the client ID and secret into the host's environment as `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` (never into Git), and redeploy.
+
+The sign-in dialogs then show **Continue with Google**. LabClear asks only for `openid email profile`, checks the state, PKCE verifier, nonce, audience, issuer, expiry and verified email, and creates a customer account for a new email (keeping the chats made before signing in).

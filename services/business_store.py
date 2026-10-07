@@ -123,4 +123,4 @@ def quote(ids,tx=None):
     return {'package_ids':ids,'items':[{'id':p['id'],'name':p['name'],'price_thb':p['price_thb'],'price_unit':p['price_unit']} for p in selected], 'total_thb':sum(p['price_thb'] for p in selected),'currency':'THB','catalog_version':catalog(tx)['version'],'is_demo':True,'staff_review_required':any(p['staff_review_required'] for p in selected)}
 
 def user_public(row):
-    d=row['data'];return {'id':row['id'],'email':d.get('email',''),'role':d.get('role','customer'),'branch':d.get('branch',''),'registered':bool(d.get('password')),'verified_email':False,'demo':bool(d.get('demo'))}
+    d=row['data'];return {'id':row['id'],'email':d.get('email',''),'role':d.get('role','customer'),'branch':d.get('branch',''),'registered':bool(d.get('password')),'verified_email':bool(d.get('google_sub')),'demo':bool(d.get('demo'))}

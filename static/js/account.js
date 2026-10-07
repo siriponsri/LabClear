@@ -4,7 +4,7 @@
 (() => {
   const slot = document.querySelector('[data-account]'); if (!slot) return;
   const make = (tag, text, cls) => { const e = document.createElement(tag); if (text != null) e.textContent = text; if (cls) e.className = cls; return e; };
-  let me = { user: null, csrf: '', demo_accounts: [] };
+  let me = { user: null, csrf: '', google: false };
   const STAFF = ['staff', 'manager', 'clinical'];
 
   async function load() {
@@ -52,17 +52,6 @@
     x.type = 'button'; x.setAttribute('aria-label', 'Close'); x.onclick = () => dlg.close(); head.append(title, x);
     const body = make('div', null, 'dialog-body stack'), err = make('p', '', 'field-error'); err.setAttribute('role', 'alert'); err.hidden = true;
     const fail = e => { err.textContent = e.message; err.hidden = false; };
-    if (me.demo_accounts?.length) {
-      const d = make('div', null, 'demo-accounts'), grid = make('div', null, 'demo-grid');
-      d.append(make('p', 'Demo accounts, password 1234', 'small strong'));
-      me.demo_accounts.forEach(a => {
-        const b = make('button', null, 'demo-pick'); b.type = 'button'; b.setAttribute('aria-label', 'Sign in as ' + a.username + ', ' + a.label);
-        b.append(make('strong', a.username), make('span', a.label, 'tiny muted'));
-        b.onclick = async () => { try { after((await send('/login', { email: a.username, password: '1234' })).user); } catch (e) { fail(e); } };
-        grid.append(b);
-      });
-      d.append(grid, make('p', 'Shared demonstration accounts: anyone can sign in with them.', 'tiny muted')); body.append(d);
-    }
     const form = make('form', null, 'form-grid');
     const field = (label, type, auto) => { const w = make('div', null, 'field'), id = 'si-' + type, l = make('label', label), i = make('input', null, 'input'); l.htmlFor = id; i.id = id; i.type = type; i.required = true; i.autocomplete = auto; w.append(l, i); return { w, i }; };
     const email = field('Email or username', 'text', 'username'), pass = field('Password', 'password', 'current-password');
@@ -71,7 +60,11 @@
     signIn.type = 'submit'; create.href = '/app'; actions.append(signIn, create);
     form.onsubmit = async e => { e.preventDefault(); err.hidden = true; try { after((await send('/login', { email: email.i.value, password: pass.i.value })).user); } catch (x2) { fail(x2); } };
     form.append(email.w, pass.w, err, actions, make('p', 'New here? Create an account from the sign-in button inside the app. You can also use LabClear without an account.', 'tiny muted'));
-    body.append(form); dlg.replaceChildren(head, body); dlg.showModal(); (body.querySelector('.demo-pick') || email.i).focus();
+    if (me.google) {
+      const g = make('a', 'Continue with Google', 'btn google-btn'); g.href = '/api/business/auth/google/start?next=' + encodeURIComponent(location.pathname === '/' ? '/app' : location.pathname);
+      body.append(g, make('p', 'or sign in with your email', 'tiny muted or-line'));
+    }
+    body.append(form); dlg.replaceChildren(head, body); dlg.showModal(); email.i.focus();
   }
   load();
 })();

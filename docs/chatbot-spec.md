@@ -29,13 +29,13 @@ All agents share one language model unless a manager gives one its own provider 
 
 | # | Rule | How it is enforced |
 |---|---|---|
-| 1 | Answer only from the catalog, the policies and the 58 reviewed sources, and show the sources | Prompt; inline citations must exist in the retrieved evidence (`validate_answer`); the reviewer checks support |
+| 1 | Answer only from the catalog, the policies and the 58 reviewed sources, and show the sources | Prompt; a question that names a test is always searched; inline citations must exist in the retrieved evidence (`validate_answer`); the reviewer checks support |
 | 2 | Reply in the customer's language (Thai or English) | Prompt; the planner records the language |
 | 3 | Ask back when details are missing (center, date, time, budget) | Prompt; a booking preview without a valid center, date and time becomes a clarifying question (code) |
 | 4 | Show bookings, quotations, payments and hand-offs as previews the customer confirms | Code: actions are stored as previews that expire after 10 minutes and run only on `POST /confirm` |
 | 5 | Keep every report value, unit and range exactly as printed | Code: every report value an answer points to must match the confirmed row as printed (spacing aside) or the answer is withheld; the value cards always show the server's row |
 | 6 | Compare a value only with the range printed on the same report | Code: the status (within, above, below) is computed in Python, never by the model |
-| 7 | Advise prompt professional care for critical values or severe symptoms | Prompt (`urgent` action); allowed by the reviewer |
+| 7 | Advise prompt professional care for critical values or severe symptoms | Prompt (`urgent` action); code adds a fixed advice line when the report prints a critical flag (HH, LL) and the answer lacks one |
 | 8 | Hand over to staff on request or when out of scope | `handoff` action; "Ask our team" on every answer |
 | 9 | Explain a report only after the customer confirms the values | Code: unconfirmed reports never enter the context; one click confirms in the chat |
 | 10 | Show what was checked | The steps stream live and stay under "How this was checked" |
@@ -44,7 +44,7 @@ All agents share one language model unless a manager gives one its own provider 
 
 | # | Rule | How it is enforced |
 |---|---|---|
-| 1 | Invent prices, packages, policies, result times or preparation rules | Prompt; business data comes only from the JSON files; the reviewer checks exact prices |
+| 1 | Invent prices, packages, policies, result times or preparation rules | Prompt; business data comes only from the JSON files; code checks every amount against catalog and plan prices, asks the writer to fix it once, then withholds the answer |
 | 2 | Diagnose, prescribe, give a dose or change a treatment | Prompt; safety check (`medical_advice` label); reviewer scope check |
 | 3 | Grant a discount or a refund | Policy text; quotes are recomputed by the server from the catalog; refunds are staff actions |
 | 4 | Book or charge before the customer confirms | Code: previews only; staff confirm every appointment |

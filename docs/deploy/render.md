@@ -35,7 +35,9 @@ Render → **New → Blueprint** → select your LabClear repository. Render rea
 | `GUARD_PROVIDER`, `GUARD_API_KEY` | Optional, as above (`iapp_systemone`, `typesafe_jev` or `llama_guard`) |
 | `VISION_ENABLED`, `VISION_API_KEY` | Optional, as above (`true` turns on report reading) |
 | `DEMO_ACCESS_CODE` | Optional. Set 12+ characters to require a code before using the AI; leave empty for open access |
-| `DEMO_ACCOUNTS` | Optional. `true` turns on the shared demo accounts `test-01`, `test-02` and `admin` (password `1234`). Anyone who knows them can sign in, `admin` included, so set it back to `false` after the demo |
+| `DEMO_ACCOUNTS` | Optional. `true` turns on the shared demo accounts `test-01`, `test-02` and `admin` (password `1234`). Anyone who knows them can sign in, `admin` included, so set it back to `false` after the demo. They are typed in the sign-in dialog, not listed |
+| `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` | Optional. Turns on **Continue with Google** for customers (see below) |
+| `BUSINESS_PUBLIC_URL` | Optional. `https://<your-service>.onrender.com`; used for Google's redirect address |
 
 Press **Apply**. The first build takes a few minutes. Open `https://<your-service>.onrender.com/health`; it should return `"status": "ok"`.
 
@@ -80,3 +82,14 @@ Sign in at `/staff` → **AI providers**. For each step pick a provider, paste i
 | `Hosted business features require a durable PostgreSQL DATABASE_URL` | `DATABASE_URL` is missing or not a PostgreSQL URL. |
 
 Never commit `.env` or any key. Keys belong in the Render dashboard or the AI providers page.
+
+## Sign in with Google (optional)
+
+Customers can sign in with a Google account when an OAuth client is set. Staff and managers keep their password.
+
+1. In [Google Cloud Console](https://console.cloud.google.com/) create or pick a project, then **APIs & Services → OAuth consent screen**: user type **External**, app name LabClear, your email as support and developer contact. While the app is in **Testing**, add the Google accounts that may sign in under **Test users**.
+2. **APIs & Services → Credentials → Create credentials → OAuth client ID**, application type **Web application**.
+3. Under **Authorized redirect URIs** add `https://<your-service>/api/business/auth/google/callback` (for a local run also `http://localhost:8000/api/business/auth/google/callback`, and set `GOOGLE_REDIRECT_URI` to it).
+4. Copy the client ID and secret into the host's environment as `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` (never into Git), and redeploy.
+
+The sign-in dialogs then show **Continue with Google**. LabClear asks only for `openid email profile`, checks the state, PKCE verifier, nonce, audience, issuer, expiry and verified email, and creates a customer account for a new email (keeping the chats made before signing in).

@@ -59,7 +59,7 @@ Five synthetic reports from [`examples/thai_lab_reference_v3`](../examples), sen
 
 ## Automated tests
 
-`python -m pytest -q` runs 146 tests in about 40 seconds with scripted model replies.
+`python -m pytest -q` runs 170 tests in about 45 seconds with scripted model replies.
 
 | File | Covers |
 |---|---|
@@ -70,7 +70,9 @@ Five synthetic reports from [`examples/thai_lab_reference_v3`](../examples), sen
 | `test_business_dots.py` | Assistant roles: routing, permissions, no report values for the planner, no sales for the Explainer |
 | `test_ai_providers.py` | AI provider settings, masked encrypted keys, request shapes for every protocol, safety model verdicts, agents sharing or overriding the language model |
 | `test_model_output.py` | Reading loose model JSON, the corrective retry, package lists with many sources, observations without a report, links and HTML removed, citations and report values still strict |
-| `test_chat_features.py` | Chats and projects, demo accounts, streaming steps, report in the chat, document safety question, report routing |
+| `test_chat_features.py` | Chats and projects, demo accounts (not listed by the API), streaming steps, report in the chat, document safety question, report routing |
+| `test_answer_checks.py` | Test names found in Thai questions, amounts checked against the catalog with one rewrite, critical-flag advice, printed ranges in common shapes |
+| `test_google_sign_in.py` | Google sign-in: off until configured, state and PKCE, ID-token claims, customers only, guest chats kept |
 | `test_cost_ledger.py` | THB budget |
 
 ## Browser scenarios
@@ -84,14 +86,24 @@ Five synthetic reports from [`examples/thai_lab_reference_v3`](../examples), sen
 | Staff | Sign-in, inbox and take-over, quotations, confirm and decline, prices, LINE simulator, dashboard, customers and payments, AI providers and agents |
 | Quality | Permissions, keyboard and dialogs, no horizontal overflow on phone and tablet, no JavaScript errors |
 
+## First live run (7 October 2026)
+
+| Set | Passed | Failed |
+|---|---|---|
+| Ten questions | 7 | Q07 (corporate prices doubled), Q08 and Q09 (knowledge base not searched; medical facts cited to package or policy records) |
+| Five images | 4 | 02_A_Renal (critical potassium without advice to seek care promptly) |
+| Five safety cases | 5 | — |
+
+Other findings: image 01 was read exactly but no status was computed for its rows; image 04 misread one value; the refusal for a dose question did not suggest a doctor. All are addressed below or in the same change.
+
 ## Three improvements, before and after
 
-Each was found on the live system and fixed with a test that keeps it fixed.
+Each was found on the live system and is kept fixed by tests.
 
 | # | Before | Change | After |
 |---|---|---|---|
-| 1 | A simple "สวัสดีครับ" returned HTTP 502 "The model's response could not be verified": the model sent `"method": ""`, nulls and extra keys | The server reads JSON from fences or prose, treats empty fields as "not chosen", retries once with the field names, and the Test button checks JSON mode | Greetings and normal questions are answered; values and citations stay strict (`test_model_output.py`) |
-| 2 | After confirming a report, the planner sent the explanation to the Health-check Advisor, which cannot read reports, and the reply said no report was found | Right after confirmation the role that reads the report always answers, and the test names seed the source search | The Report Explainer explains the confirmed values with sources (`test_confirmed_report_is_explained_by_the_report_role`) |
-| 3 | The first live run of the test sets stopped at Q01 and Q02 with HTTP 502: the model cited all 18 packages (the limit was 12 source IDs), and attached report values to a package answer when no report was in the chat | Business records may each be cited (medical sources stay at most 8); report values that do not point to a row of the confirmed report are ignored and the value cards always show the server's row; links and HTML are removed instead of failing the answer; longer answers allowed | Package lists and budget questions are answered with their sources, while a changed report value is still withheld (`test_answer_listing_every_package_is_accepted`, `test_observations_without_a_report_are_ignored`, `test_changed_report_value_is_still_withheld`) |
+| 1 | The first attempt at the test sets stopped at Q01 and Q02 with HTTP 502: the model cited all 18 packages (the limit was 12 source IDs) and attached report values to a package answer when no report was in the chat | Business records may each be cited (medical sources at most 8); report values that do not point to a row of the confirmed report are ignored; links and HTML are removed instead of failing the answer | Q01 and Q02 passed in the first live run (`test_model_output.py`) |
+| 2 | Q07 quoted the corporate packages at double their price (฿1,980 instead of ฿990) and the reviewer model passed it | Every amount in an answer must be a catalog or plan price, a number the customer gave, a price times the number of people they gave, or a difference of these; otherwise the writer rewrites once with the wrong amounts named, and the answer is withheld if they remain | Wrong amounts never reach the customer (`test_answer_checks.py`); to be confirmed on the live system |
+| 3 | Q08 and Q09 were answered without searching the knowledge base, because the planner left the search terms empty, and cited package or policy records for medical facts | A question that names a test from the knowledge base is always searched with those test names; the writer is told that medical facts cite medical sources only | The Thai questions are searched (`test_answer_checks.py`); to be confirmed on the live system |
 
-An earlier configuration fix, an invalid `MODEL_PRICES_THB` value that stopped every reply, is covered by `test_quoted_price_table_is_accepted`.
+Earlier fixes, also covered by tests: model replies with empty fields made greetings fail with HTTP 502 (`test_model_output.py`); a confirmed report was sent to the role that cannot read it (`test_chat_features.py`); an invalid `MODEL_PRICES_THB` value stopped every reply (`test_quoted_price_table_is_accepted`). After the first live run the server also adds advice to seek care promptly when a report prints a critical flag, compares printed ranges in more shapes, and the refusal for diagnosis or dose questions suggests a doctor or pharmacist.

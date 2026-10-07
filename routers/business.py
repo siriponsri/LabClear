@@ -72,6 +72,10 @@ def set_session(tx,response,user_id):
     response.set_cookie(COOKIE,token,httponly=True,secure=db.cloud(),samesite='strict',max_age=86400,path='/')
     return csrf
 
+def google_sign_in():
+    """Sign in with Google is offered when its OAuth client is configured (routers/google_auth.py)."""
+    return bool(os.getenv('GOOGLE_CLIENT_ID') and os.getenv('GOOGLE_CLIENT_SECRET'))
+
 def staff(tx,request):
     u,_=session_row(tx,request,request.method!='GET')
     if u['data'].get('role') not in ['staff','manager','clinical']:raise ConversationError('forbidden','Staff access required.',403)
@@ -140,7 +144,7 @@ async def get_session(request:Request,response:Response):
         else:
             id='customer_'+secrets.token_hex(12);u=tx.put(id,'user',id,{'role':'customer','email':'','password':''});csrf=set_session(tx,response,id)
         c=conversation(tx,u['id'])
-        return {'user':db.user_public(u),'csrf':csrf,'conversation':c['data'],'simulation':True,'version':'3.0.0','ocr_provider':'typhoon','external_business_enabled':os.getenv('BUSINESS_EXTERNAL_ENABLED')=='true','demo_accounts':demo.public()}
+        return {'user':db.user_public(u),'csrf':csrf,'conversation':c['data'],'simulation':True,'version':'3.0.0','ocr_provider':'typhoon','external_business_enabled':os.getenv('BUSINESS_EXTERNAL_ENABLED')=='true','google':google_sign_in()}
 
 @router.get('/me')
 async def me(request:Request):
@@ -150,7 +154,7 @@ async def me(request:Request):
         token=request.cookies.get(COOKIE,'');s=tx.get('session_'+db.digest(token)) if token else None
         u=tx.get(s['owner']) if s and s['data']['expires']>time.time() else None
         signed=bool(u and u['data'].get('password') and not demo.blocked(u))
-        return {'user':db.user_public(u) if signed else None,'csrf':s['data']['csrf'] if signed else '','demo_accounts':demo.public()}
+        return {'user':db.user_public(u) if signed else None,'csrf':s['data']['csrf'] if signed else '','google':google_sign_in()}
 
 @router.post('/register')
 async def register(body:Credentials,request:Request,response:Response):
@@ -196,7 +200,7 @@ async def workspace(request:Request):
         unread=sum(1 for _ in tx.find('notification',owner,'unread'))
         return {'conversation':c['data'],'bookings':tx.find('booking',owner),'tickets':tx.find('ticket',owner),'quotes':tx.find('corporate_quote',owner),'reports':reports,'user':db.user_public(u),'payments':payments,'unread_notifications':unread,'inquiries':tx.find('org_inquiry',owner),'plan':plans.entitlement(tx,owner),'chats':chats.listing(tx,owner),'line_linked':bool(tx.find('line_identity',owner))}
 
-RETRYABLE={'service_unavailable','provider_response_invalid','answer_invalid','citation_invalid','review_failed','guard_invalid','provider_rejected','storage_unavailable'}
+RETRYABLE={'service_unavailable','price_invalid','provider_response_invalid','answer_invalid','citation_invalid','review_failed','guard_invalid','provider_rejected','storage_unavailable'}
 async def turn(owner,message,retry_id='',page=None,emit=None,reply_to=''):
     """One assistant turn on the active chat.
 

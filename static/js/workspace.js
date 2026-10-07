@@ -8,7 +8,7 @@
   const STAFF_ROLES = ['staff', 'manager', 'clinical'];
   let csrf = '', user = null, state = null, accessCode = '', busy = false, controller = null;
   let view = STAFF_MODE ? 'overview' : 'chat', lastMessages = '', activeTicket = '', ticketFilter = 'open', opsFilter = 'requested';
-  let modes = null, catalogCache = null, branchCache = null, demoAccounts = [], chatList = null, lastChats = '';
+  let modes = null, catalogCache = null, branchCache = null, googleSignIn = false, chatList = null, lastChats = '';
 
   /* ------------------------------------------------------------ helpers */
   const money = n => '฿' + new Intl.NumberFormat('en-US').format(n);
@@ -159,23 +159,16 @@
         try { await signedIn(await post('/' + kind, { email: email.input.value, password: pass.input.value }), kind); }
         catch (e) { err.textContent = e.message; err.hidden = false; }
       }
-      const demos = demoAccounts.filter(a => !STAFF_MODE || a.username === 'admin');
-      if (demos.length) {
-        const d = el('div', null, 'demo-accounts'); d.append(el('p', 'Demo accounts, password 1234', 'small strong'));
-        const row = el('div', null, 'demo-grid');
-        demos.forEach(a => {
-          const b = button('', async () => { err.hidden = true; try { await signedIn(await post('/login', { email: a.username, password: '1234' }), 'login'); } catch (e) { err.textContent = e.message; err.hidden = false; } }, 'demo-pick');
-          b.append(el('strong', a.username), el('span', a.label, 'tiny muted')); b.setAttribute('aria-label', 'Sign in as ' + a.username + ', ' + a.label); row.append(b);
-        });
-        d.append(row, el('p', 'Shared demonstration accounts: anyone can sign in with them, so do not keep personal data there.', 'tiny muted'));
-        box.append(d);
+      if (googleSignIn && !STAFF_MODE) {
+        const g = el('a', 'Continue with Google', 'btn google-btn'); g.href = '/api/business/auth/google/start?next=' + encodeURIComponent(location.pathname + location.search);
+        box.append(g, el('p', 'or use your email', 'tiny muted or-line'));
       }
       const actions = el('div', null, 'form-actions');
       actions.append(button('Sign in', () => auth('login'), 'btn primary'));
       if (!STAFF_MODE) actions.append(button('Create account', () => auth('register'), 'btn'));
       form.addEventListener('submit', e => { e.preventDefault(); auth('login'); });
       form.append(email.wrap, pass.wrap, err, actions);
-      if (STAFF_MODE) form.append(el('p', 'Staff accounts are created by the deployment owner with scripts/create_staff.py' + (demos.length ? ', or use the demo admin account above.' : '.'), 'tiny muted'));
+      if (STAFF_MODE) form.append(el('p', 'Staff accounts are created by the deployment owner with scripts/create_staff.py.', 'tiny muted'));
       box.append(form);
     }
     modal(STAFF_MODE ? 'Staff sign-in' : 'Sign in or create an account', box);
@@ -1620,7 +1613,7 @@
     if (!STAFF_MODE && matchMedia('(max-width:640px)').matches) $('message').placeholder = 'Ask a question';
     const p = new URLSearchParams(location.search);
     try {
-      const s = await api('/session'); csrf = s.csrf; demoAccounts = s.demo_accounts || []; updateUser(s.user);
+      const s = await api('/session'); csrf = s.csrf; googleSignIn = !!s.google; updateUser(s.user);
       if (!STAFF_MODE) { await loadBusiness().catch(() => {}); await refresh(); syncFileInput(); } else setBell(0);
       await navigate(p.get('view') || view, false, Object.fromEntries(p));
       await checkLink(); await applyDeepLinks(p);

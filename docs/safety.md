@@ -7,11 +7,11 @@ LabClear combines the three guardrail types taught in the course (rules, a class
 | # | Layer | Type | What it stops |
 |---|---|---|---|
 | 1 | Message length (8,000 characters), upload limits (3 files, 3 MB each, 10 MB per request), rate limit (120 requests per minute per client) | Rule | Unbounded input and consumption |
-| 2 | Session cookie (HttpOnly, SameSite=Strict), CSRF token, same-origin check, optional demo access code | Rule | Cross-site requests, anonymous abuse |
+| 2 | Session cookie (HttpOnly, SameSite=Strict), CSRF token, same-origin check, optional demo access code; Google sign-in with state, PKCE and nonce, customers only | Rule | Cross-site requests, anonymous abuse, account takeover through sign-in |
 | 3 | Thai and English pattern check for instruction overrides ("ignore previous instructions", "ลืมคำสั่ง") on messages and documents | Rule | Plain prompt injection, before any model call |
 | 4 | Safety model on every message, every answer and every uploaded report | Classifier | Unsafe requests and answers, hidden instructions in images |
 | 5 | Planner sees only test names from a report, never values | Design | Sales driven by abnormal results |
-| 6 | Answer validation in Python: cited IDs must be retrieved sources (at most 8 medical sources), report values must match the confirmed rows, links and HTML are removed, the Explainer may not name or price packages | Framework-style | Invented sources, changed values, unsafe output, role misuse |
+| 6 | Answer validation in Python: cited IDs must be retrieved sources (at most 8 medical sources), report values must match the confirmed rows, every amount must be a catalog price, links and HTML are removed, the Explainer may not name or price packages, a critical printed flag adds advice to seek care promptly | Framework-style | Invented sources, changed values, unsafe output, role misuse |
 | 7 | Reviewer model: supported, values preserved, within scope | Classifier | Unsupported claims, diagnosis, invented transactions |
 | 8 | Previews and confirmation: bookings, quotes, payments and hand-offs run only after the customer confirms; staff confirm every appointment | Design | The model acting on its own |
 | 9 | Status computed in Python from the printed range | Design | The model labelling values |

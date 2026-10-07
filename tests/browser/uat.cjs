@@ -279,14 +279,20 @@ async function signUp(page, email) {
       await w.goto(base + '/lab-reports', { waitUntil: 'networkidle' }); await w.getByRole('heading', { level: 1 }).waitFor(); assert(await w.getByText('฿355').count() > 0, 'Plus price missing'); await shot(w, 'lab-reports-1440', true);
       await wctx.close();
     });
-    await check('UI-29', 'Sign-in: demo accounts (1234), admin goes to the service desk and AI providers, test-02 has Plus', async () => {
+    await check('UI-29', 'Sign-in: demo accounts by typing (not listed), admin goes to the service desk and AI providers, test-02 has Plus', async () => {
       const dctx = await browser.newContext({ viewport: { width: 1440, height: 1000 } }); const d = await dctx.newPage(); watch(d, 'demo');
+      const appSignIn = async (who) => {
+        await d.getByRole('button', { name: 'Sign in' }).click(); const m = d.locator('#modal');
+        await m.getByLabel('Email or username').fill(who); await m.getByLabel('Password', { exact: true }).fill('1234');
+        await m.getByRole('button', { name: 'Sign in', exact: true }).click();
+      };
       await d.goto(base + '/app', { waitUntil: 'networkidle' }); await d.getByRole('button', { name: 'Sign in' }).click();
-      await d.locator('.demo-pick').first().waitFor(); assert(await d.locator('.demo-pick').count() === 3, 'three demo accounts'); await wait(300); await shot(d, 'signin-1440');
-      await d.getByRole('button', { name: /Sign in as admin/ }).click(); await d.waitForURL(/\/staff/);
+      await d.locator('#modal').getByLabel('Email or username').waitFor(); assert(await d.locator('.demo-pick').count() === 0, 'demo accounts are not listed'); await wait(300); await shot(d, 'signin-1440');
+      const m0 = d.locator('#modal'); await m0.getByLabel('Email or username').fill('admin'); await m0.getByLabel('Password', { exact: true }).fill('1234');
+      await m0.getByRole('button', { name: 'Sign in', exact: true }).click(); await d.waitForURL(/\/staff/);
       await d.locator('[data-view=ai]').click(); await d.locator('#content').getByRole('heading', { name: 'AI providers' }).waitFor();
       await d.locator('#account-open').click(); await d.getByRole('menuitem', { name: 'Sign out' }).click(); await d.locator('#modal-title', { hasText: 'Staff sign-in' }).waitFor();
-      await d.goto(base + '/app', { waitUntil: 'networkidle' }); await d.getByRole('button', { name: 'Sign in' }).click(); await d.getByRole('button', { name: /Sign in as test-02/ }).click();
+      await d.goto(base + '/app', { waitUntil: 'networkidle' }); await appSignIn('test-02');
       await d.locator('#modal').waitFor({ state: 'hidden' }); await d.goto(base + '/app?view=plan', { waitUntil: 'networkidle' }); await d.locator('.plan-card.featured').getByText('Current plan').waitFor();
       await dctx.close();
     });
@@ -323,16 +329,20 @@ async function signUp(page, email) {
       await p.keyboard.press('Escape'); assert(!(await p.locator('#chat-list').evaluate(e => e.classList.contains('open'))), 'drawer did not close');
       assert(await noOverflow(p), 'mobile overflow'); await pctx.close();
     });
-    await check('UI-32', 'Website: sign in from the header with a demo account, account menu, sign out; journey section; agents on AI providers', async () => {
+    await check('UI-32', 'Website: sign in from the header with a typed demo account, account menu, sign out; journey section; agents on AI providers', async () => {
       const hctx = await browser.newContext({ viewport: { width: 1440, height: 1000 } }); const h = await hctx.newPage(); watch(h, 'header');
       await h.goto(base + '/', { waitUntil: 'networkidle' }); await h.locator('#journey-title').waitFor();
       assert(await h.locator('.journey-steps li').count() === 5, 'journey has five steps');
-      await h.locator('[data-account]').getByRole('button', { name: 'Sign in' }).click(); await h.locator('#signin-dialog .demo-pick').first().waitFor();
-      await h.getByRole('button', { name: /Sign in as test-01/ }).click(); await h.waitForURL(/\/app/);
+      const siteSignIn = async (who) => {
+        await h.locator('[data-account]').getByRole('button', { name: 'Sign in' }).click(); const g = h.locator('#signin-dialog');
+        await g.getByLabel('Email or username').fill(who); await g.getByLabel('Password', { exact: true }).fill('1234');
+        await g.getByRole('button', { name: 'Sign in', exact: true }).click();
+      };
+      await siteSignIn('test-01'); await h.waitForURL(/\/app/);
       await h.goto(base + '/packages', { waitUntil: 'networkidle' }); await h.locator('.nav-avatar').click();
       await h.getByRole('menuitem', { name: 'My appointments' }).waitFor(); await shot(h, 'header-menu-1440');
       await h.getByRole('menuitem', { name: 'Sign out' }).click(); await h.locator('[data-account]').getByRole('button', { name: 'Sign in' }).waitFor();
-      await h.locator('[data-account]').getByRole('button', { name: 'Sign in' }).click(); await h.getByRole('button', { name: /Sign in as admin/ }).click(); await h.waitForURL(/\/staff/);
+      await siteSignIn('admin'); await h.waitForURL(/\/staff/);
       await h.locator('[data-view=ai]').click(); await h.locator('.agents-card .agent-row').first().waitFor();
       assert(await h.locator('.agents-card .agent-row').count() === 4, 'four agents');
       await h.getByLabel('Model for the Reviewer').selectOption('own'); await h.locator('.agents-card .ai-form').last().waitFor({ state: 'visible' });

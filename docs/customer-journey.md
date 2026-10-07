@@ -25,11 +25,11 @@ Step 4 is always the customer's choice: the assistant never offers a package bec
 
 | Where | How |
 |---|---|
-| Any website page | **Sign in** in the header opens a sign-in dialog; once signed in, the avatar menu links to the chat, appointments, results, the service desk (staff) and **Sign out** |
+| Any website page | **Sign in** in the header opens a sign-in dialog (email and password, or **Continue with Google** when it is set up); once signed in, the avatar menu links to the chat, appointments, results, the service desk (staff) and **Sign out** |
 | `/app` | **Sign in** at the top right; when signed in, the avatar opens a menu with My appointments, My reports, Plan, Service desk (staff), Website and **Sign out** |
 | `/staff` | The sign-in dialog opens automatically; staff and managers who sign in on `/app` are taken to `/staff` |
 
-Demo accounts (password `1234`) are on for local runs and off on a hosted site unless `DEMO_ACCOUNTS=true`:
+Demo accounts (password `1234`) are on for local runs and off on a hosted site unless `DEMO_ACCOUNTS=true`. They are not listed in the sign-in dialog; type the username:
 
 | Username | Account |
 |---|---|

@@ -16,7 +16,7 @@
   <img src="https://img.shields.io/badge/FastAPI-009688?style=flat-square&logo=fastapi&logoColor=white" alt="FastAPI">
   <img src="https://img.shields.io/badge/RAG-58_Thai_sources-6539a9?style=flat-square" alt="RAG: 58 Thai sources">
   <img src="https://img.shields.io/badge/AI_providers-12-6539a9?style=flat-square" alt="12 AI providers">
-  <img src="https://img.shields.io/badge/tests-146_%2B_34_UAT-2ea44f?style=flat-square" alt="146 tests and 34 browser scenarios">
+  <img src="https://img.shields.io/badge/tests-170_%2B_34_UAT-2ea44f?style=flat-square" alt="170 tests and 34 browser scenarios">
 </p>
 
 <p>
@@ -104,7 +104,7 @@ The website, catalog, booking and staff desk work straight away, with data in an
 
 ### Demo accounts
 
-Local runs come with three shared accounts. Sign in from the button at the top right.
+Local runs come with three shared accounts. They are not listed on the site: type the username and password in the sign-in dialog (top right).
 
 | Username | Password | What it is |
 |---|---|---|
@@ -112,7 +112,7 @@ Local runs come with three shared accounts. Sign in from the button at the top r
 | `test-02` | `1234` | Customer with LabClear Plus (simulated) |
 | `admin` | `1234` | Manager with full access; opens the service desk at `/staff` |
 
-They are off on Render and Vercel unless you set `DEMO_ACCOUNTS=true`.
+They are off on Render and Vercel unless you set `DEMO_ACCOUNTS=true`. Customers can also use **Continue with Google** once `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` are set (see [docs/deploy/render.md](docs/deploy/render.md#sign-in-with-google-optional)).
 
 ### Turn on the AI
 
@@ -140,7 +140,7 @@ One web service (FastAPI, Jinja, vanilla JavaScript) serves the website, the cus
 
 ```bash
 pip install -r requirements-dev.txt
-python -m pytest -q                                    # 146 tests, no real AI calls
+python -m pytest -q                                    # 170 tests, no real AI calls
 npm install && npx playwright install chromium
 TEST_PYTHON=.venv/bin/python npm run uat               # 34 browser scenarios
 python scripts/course_eval.py --base http://127.0.0.1:8000   # live evaluation (real AI)

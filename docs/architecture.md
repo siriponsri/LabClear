@@ -47,9 +47,9 @@ The full endpoint list is in [api.md](api.md).
 | 3. The call cap and the THB budget are checked before every model call | `conversation_transport.post_json` | — | — |
 | 4. Pattern check, then the safety model screens the message | `conversation_guard.check(direction="input")` | 1 | "Your message passed the safety check" |
 | 5. The planner chooses action, role, search terms and a reason | `business_agent.run` | 2 | "Plan: …, as the …" with the reason |
-| 6. BM25 searches the knowledge base; the role's business data is loaded | `evidence_search.search` | — | "Found n medical sources …" |
+| 6. BM25 searches the knowledge base (with the test names in the message when the planner gives no terms); the role's business data is loaded | `evidence_search.search` | — | "Found n medical sources …" |
 | 7. The writer drafts the answer with inline source IDs | `complete_json(Answer)` | 3 | "Writing the answer" |
-| 8. Python removes links and HTML, then checks citations, report values and the role's limits | `validate_answer`, `assert_no_sales` | — | "Draft written and checked" |
+| 8. Python removes links and HTML, then checks citations, report values, amounts against the catalog and the role's limits; a critical printed flag adds advice | `validate_answer`, `assert_no_sales` | — | "Draft written and checked" |
 | 9. The reviewer checks support, values and scope | `complete_json(EvidenceReview)` | 4 | "Second review passed" |
 | 10. The safety model screens the answer | `conversation_guard.check(direction="output")` | 5 | "The answer passed the safety check" |
 | 11. The answer, its sources, any preview and the steps are saved; the result is streamed last | `turn()` | — | The answer replaces the steps |

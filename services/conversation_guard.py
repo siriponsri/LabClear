@@ -24,8 +24,8 @@ from services.conversation_transport import ConversationError
 
 _INJECTION = re.compile(r"ignore\s+(all\s+)?(previous|system)\s+(instructions|prompts)|reveal\s+(the\s+)?system\s+prompt|ลืมคำสั่ง|ละเลยคำสั่ง", re.I)
 
-BLOCKED = ("I cannot safely answer that request. Ask about the report's tests, wording or reference ranges, "
-           "without requesting a diagnosis or treatment.")
+BLOCKED = ("I cannot safely answer that request. For a diagnosis, a medicine or a dose, please talk to a doctor "
+           "or pharmacist. I can explain what a test measures and what the ranges on your report mean.")
 
 BLOCKED_DOCUMENT = ("The safety check stopped this document: it contains text aimed at the assistant or content "
                     "that is not a lab report. Try a clear photo or PDF of the report itself.")

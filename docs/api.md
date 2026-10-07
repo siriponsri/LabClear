@@ -6,11 +6,12 @@ All endpoints are under `/api/business` unless noted. Requests that change state
 
 | Method | Path | Purpose |
 |---|---|---|
-| GET | `/session` | Read or create the session; returns the user, CSRF token, active chat and demo accounts |
+| GET | `/session` | Read or create the session; returns the user, CSRF token, active chat and whether Google sign-in is on |
 | GET | `/me` | Who is signed in, for the website header (never creates a session) |
 | POST | `/register` | Create an account on the current session (password 12+ characters) |
 | POST | `/login` | Sign in with an email or a demo username |
 | POST | `/logout` | End the session |
+| GET | `/auth/google/start`, `/auth/google/callback` | Sign in with Google (customers; OAuth code flow with PKCE, state and nonce) |
 | GET | `/workspace` | Everything the workspace shows: chat, chats and projects, bookings, reports, plan, notifications |
 
 ## Chat
