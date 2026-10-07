@@ -6,6 +6,10 @@ LabClear uses three model slots:
 * ``vision`` — the model that reads a lab report image (OCR)
 * ``guard``  — the safety check run on every customer message and every answer
 
+Each agent that writes with the language model (planner, the two assistant roles and the reviewer)
+shares the ``llm`` slot by default. A manager can give any of them its own provider, model and key
+(slot ``agent_<id>``), for example a different model family for a more independent review.
+
 A manager picks the provider, model and API key for each slot on /staff → AI providers.
 The choice is stored encrypted in the business database (the same Fernet store as customer
 data). When nothing is saved for a slot, environment variables are used instead
@@ -29,6 +33,31 @@ SLOTS = {
     "vision": "Report reading (OCR)",
     "guard": "Safety check",
 }
+
+# Agents that use the language model. Each shares the "llm" slot unless it has its own setting.
+AGENTS = {
+    "plan": ("Planner", "Reads each message and chooses the action, the search and the assistant role."),
+    "advisor": ("Health-check Advisor", "Writes answers about packages, booking and payment."),
+    "explainer": ("Report Explainer", "Writes explanations of the values in a confirmed lab report."),
+    "review": ("Reviewer", "Checks every draft against its sources before it is shown. A different model family makes this check more independent."),
+}
+
+
+def agent_slot(agent: str) -> str:
+    return "agent_" + agent
+
+
+def is_agent(slot: str) -> bool:
+    return slot.startswith("agent_") and slot[6:] in AGENTS
+
+
+def kind_of(slot: str) -> str:
+    """The provider capability a slot needs: agents need a language model."""
+    return "llm" if is_agent(slot) else slot
+
+
+def slot_name(slot: str) -> str:
+    return AGENTS[slot[6:]][0] + " model" if is_agent(slot) else SLOTS.get(slot, slot).lower()
 
 
 @dataclass(frozen=True)
@@ -169,11 +198,17 @@ def _env_price(model: str) -> dict | None:
 
 
 def runtime(slot: str, tx=None) -> RuntimeProvider:
-    if slot not in SLOTS:
+    if slot not in SLOTS and not is_agent(slot):
         raise ProviderSetupError(f"Unknown AI slot: {slot}")
     saved = _read_saved(tx).get(slot)
+    if is_agent(slot) and not saved:
+        # Shared: the agent uses the language model settings.
+        shared = runtime("llm", tx)
+        return RuntimeProvider(slot, shared.preset, shared.label, shared.protocol, shared.base_url, shared.model,
+                               shared.api_key, shared.timeout_seconds, shared.enabled, shared.price, "shared")
+    kind = kind_of(slot)
     row, source = (saved, "app") if saved else (_env(slot), "environment")
-    preset = PRESETS.get(row.get("preset") or DEFAULTS[slot]) or PRESETS[DEFAULTS[slot]]
+    preset = PRESETS.get(row.get("preset") or DEFAULTS[kind]) or PRESETS[DEFAULTS[kind]]
     model = (row.get("model") or (preset.vision_model if slot == "vision" else "") or preset.default_model).strip()
     base_url = (row.get("base_url") or "").strip() if preset.id == "custom" else preset.base_url
     price = None
@@ -181,7 +216,7 @@ def runtime(slot: str, tx=None) -> RuntimeProvider:
         price = {"input_per_mtok": float(row["price_in"]), "output_per_mtok": float(row["price_out"])}
     price = price or _env_price(model) or {"input_per_mtok": preset.price_in, "output_per_mtok": preset.price_out}
     timeout = {"llm": settings.LLM_TIMEOUT_SECONDS, "vision": settings.VISION_TIMEOUT_SECONDS,
-               "guard": settings.GUARD_TIMEOUT_SECONDS}[slot]
+               "guard": settings.GUARD_TIMEOUT_SECONDS}[kind]
     return RuntimeProvider(slot, preset.id, preset.label, preset.protocol, base_url, model,
                            (row.get("api_key") or "").strip(), timeout, bool(row.get("enabled", True)), price, source)
 
@@ -192,20 +227,21 @@ def _mask(key: str) -> str:
     return ("•••• " + key[-4:]) if len(key) >= 8 else ("set" if key else "")
 
 
-def public_view(tx) -> dict:
-    slots = {}
-    for slot, label in SLOTS.items():
-        p = runtime(slot, tx)
-        slots[slot] = {
-            "label": label, "source": p.source, "preset": p.preset, "model": p.model,
+def _view(p: RuntimeProvider, label: str) -> dict:
+    return {"label": label, "source": p.source, "preset": p.preset, "provider_label": p.label, "model": p.model,
             "base_url": p.base_url if p.preset == "custom" else "", "enabled": p.enabled,
             "key": _mask(p.api_key), "ready": p.ready,
-            "price_in": p.price["input_per_mtok"], "price_out": p.price["output_per_mtok"],
-        }
+            "price_in": p.price["input_per_mtok"], "price_out": p.price["output_per_mtok"]}
+
+
+def public_view(tx) -> dict:
+    slots = {slot: _view(runtime(slot, tx), label) for slot, label in SLOTS.items()}
+    agents = {agent: {**_view(runtime(agent_slot(agent), tx), label), "slot": agent_slot(agent), "help": help_text}
+              for agent, (label, help_text) in AGENTS.items()}
     presets = [{"id": x.id, "label": x.label, "slots": list(x.slots), "default_model": x.default_model,
                 "vision_model": x.vision_model, "price_in": x.price_in, "price_out": x.price_out,
                 "key_url": x.key_url} for x in PRESETS.values()]
-    return {"slots": slots, "presets": presets, "network_enabled": settings.PROVIDER_NETWORK_ENABLED}
+    return {"slots": slots, "agents": agents, "presets": presets, "network_enabled": settings.PROVIDER_NETWORK_ENABLED}
 
 
 def _check_custom_url(url: str) -> str:
@@ -227,10 +263,10 @@ def _check_custom_url(url: str) -> str:
 
 def save(tx, slot: str, preset_id: str, model: str, api_key: str | None, base_url: str,
          enabled: bool, price_in: float | None, price_out: float | None) -> None:
-    if slot not in SLOTS:
+    if slot not in SLOTS and not is_agent(slot):
         raise ProviderSetupError("Unknown AI slot.")
     preset = PRESETS.get(preset_id)
-    if not preset or slot not in preset.slots:
+    if not preset or kind_of(slot) not in preset.slots:
         raise ProviderSetupError("This provider cannot be used for this slot.")
     data = dict(_read_saved(tx))
     previous = data.get(slot) or {}

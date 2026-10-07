@@ -10,8 +10,10 @@ answering role, the checks the server reports, any error and the time taken, and
 recorded, and pass/fail is decided when the results are reviewed.
 
 The five images are the synthetic reports bundled with the project (no real patient data).
-Each one is read by the live OCR, scored against `examples/thai_lab_reference_v3/expected_results.json`
-(the answer key never goes to the server), confirmed exactly as read, and explained by the assistant.
+Each one goes through the same path as a customer in the chat: it is sent with a question
+(/chat/report), read by the live OCR, scored against `examples/thai_lab_reference_v3/expected_results.json`
+(the answer key never goes to the server), confirmed in one click (/chat/report/confirm) and
+explained by the Report Explainer.
 
 Cost: about 120 provider calls in total, inside the server's own call cap and THB ledger.
 The access code (if the site has one) is asked for interactively or read from LABCLEAR_ACCESS_CODE; it is never saved.
@@ -111,15 +113,19 @@ class Site:
     def new_chat(self):
         self.call("POST", "/new-chat", json={})
 
-    def ask(self, text: str) -> dict:
-        s, b, ms = self.call("POST", "/chat", json={"message": text})
+    @staticmethod
+    def answer(s: int, b: dict, ms: int) -> dict:
         out = {"status": s, "ms": ms}
         if s == 200 and b.get("reply") is not None:
             out.update(reply=b["reply"], sources=[x.get("title") for x in b.get("sources", [])], role=(b.get("dot") or {}).get("name"),
-                       checks=b.get("checks"), action=(b.get("action") or {}).get("type"), observations=b.get("observations", []))
+                       checks=b.get("checks"), action=(b.get("action") or {}).get("type"), observations=b.get("observations", []),
+                       steps=[t.get("label") for t in b.get("trace", [])])
         else:
             out.update(error=b.get("code") or b.get("message"), message=b.get("message"), reply=None)
         return out
+
+    def ask(self, text: str) -> dict:
+        return self.answer(*self.call("POST", "/chat", json={"message": text}))
 
 
 def keyword_check(reply: str, groups) -> bool:
@@ -182,23 +188,22 @@ def main(argv=None) -> int:
         cases = {c["file"]: c for c in key["cases"]}
         for img in IMAGES:
             site.new_chat()
-            s, b, ms = site.call("POST", f"/demos/{img}/read", json={})
+            # Sent in the chat with the question, as a customer would (synthetic sample, free to read).
+            s, b, ms = site.call("POST", "/chat/report", data={"message": EXPLAIN, "demo_id": img})
             item = {"id": img, "read_status": s, "read_ms": ms}
             if s == 200:
-                fields = b["data"]["fields"]
-                item.update(fields_read=len(fields), warnings=b["data"].get("warnings", []), score=score_image(fields, cases[img]["rows"]))
-                clean = [{k: f.get(k, "") for k in ("name", "value", "unit", "reference", "printed_flag")} for f in fields]
-                s2, b2, ms2 = site.call("POST", "/reports/confirm", json={"report_id": b["id"], "fields": clean, "label": "Test " + img, "same_person_confirmed": True})
-                item.update(confirm_status=s2, confirm_ms=ms2)
-                if s2 == 200:
-                    item["explain"] = site.ask(EXPLAIN)
-                    item["statuses"] = {st: sum(1 for f in fields if f.get("status") == st) for st in ("within", "high", "low", "unknown")}
-                site.call("DELETE", f"/reports/{b['id']}")
+                _, rep_, _ = site.call("GET", f"/reports/{b['report_id']}")
+                fields = rep_["data"]["fields"]
+                item.update(fields_read=len(fields), warnings=rep_["data"].get("warnings", []), score=score_image(fields, cases[img]["rows"]))
+                item["explain"] = site.answer(*site.call("POST", "/chat/report/confirm", json={"message_id": b["card_id"]}))
+                item["confirm_status"] = item["explain"]["status"]
+                item["statuses"] = {st: sum(1 for f in fields if f.get("status") == st) for st in ("within", "high", "low", "unknown")}
+                site.call("DELETE", f"/reports/{b['report_id']}")
             else:
                 item.update(error=b.get("code") or b.get("message"), message=b.get("message"))
             results["images"].append(item)
             acc = item.get("score", {}).get("value_accuracy")
-            print(f"{img} read {s} {ms} ms accuracy {acc}")
+            print(f"{img} read {s} {ms} ms accuracy {acc} explained by {item.get('explain', {}).get('role')}")
 
     if args.only in (None, "safety"):
         for t in SAFETY:

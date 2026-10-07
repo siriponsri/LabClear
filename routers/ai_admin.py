@@ -33,7 +33,7 @@ def _manager(tx, request):
 
 
 def _slot(slot: str) -> str:
-    if slot not in providers.SLOTS:
+    if slot not in providers.SLOTS and not providers.is_agent(slot):
         raise ConversationError("not_found", "Unknown AI slot.", 404)
     return slot
 
@@ -74,13 +74,13 @@ async def test(slot: str, request: Request):
         _manager(tx, request)
     slot = _slot(slot)
     from services import conversation_guard, conversation_transport as transport
-    if slot == "llm":
+    if providers.kind_of(slot) == "llm":
         # The chat needs JSON replies, so test exactly that rather than free text.
         from services.conversation_agent import extract_json
         raw = await transport.complete([
             {"role": "system", "content": "Return only a JSON object."},
             {"role": "user", "content": 'Reply with {"ok": true, "language": "Thai"}.'}],
-            slot="llm", json_mode=True, max_tokens=300)
+            slot=slot, json_mode=True, max_tokens=300)
         try:
             ok = extract_json(raw).get("ok") in (True, "true")
         except ValueError:

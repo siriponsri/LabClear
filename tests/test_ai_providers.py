@@ -225,3 +225,37 @@ def test_llm_test_button_checks_json_mode(monkeypatch):
     assert good["ok"] and sent[0]["json_mode"] is True
     bad = c.post("/api/business/staff/ai-providers/llm/test").json()
     assert not bad["ok"] and "JSON" in bad["message"]
+
+
+
+def test_agents_share_the_language_model_until_given_their_own(monkeypatch):
+    c = manager()
+    assert save(c).status_code == 200  # shared language model: OpenAI
+    view = c.get("/api/business/staff/ai-providers").json()
+    assert set(view["agents"]) == {"plan", "advisor", "explainer", "review"}
+    assert view["agents"]["review"]["source"] == "shared" and view["agents"]["review"]["preset"] == "openai"
+    assert providers.runtime("agent_review").api_key == KEY
+    r = save(c, "agent_review", preset="anthropic", api_key="sk-ant-review-0123456789")
+    assert r.status_code == 200, r.text
+    review = r.json()["agents"]["review"]
+    assert review["source"] == "app" and review["preset"] == "anthropic" and "0123456789" not in json.dumps(r.json())
+    assert providers.runtime("agent_review").protocol == "anthropic_messages"
+    assert providers.runtime("agent_plan").preset == "openai"  # others still share
+    assert save(c, "agent_plan", preset="typhoon_ocr").status_code == 422  # agents need a language model
+    assert c.delete("/api/business/staff/ai-providers/agent_review").json()["agents"]["review"]["source"] == "shared"
+
+
+def test_each_agent_calls_its_own_slot(monkeypatch):
+    from services import business_agent
+    from tests.test_business_dots import script
+    calls = []
+    script(monkeypatch, {"action": "answer", "query": "glucose", "dot": "advisor"})
+    original = business_agent.transport.complete
+
+    async def spy(messages, **kw):
+        calls.append(kw.get("slot"))
+        return await original(messages, **kw)
+    monkeypatch.setattr(business_agent.transport, "complete", spy)
+    monkeypatch.setattr(providers, "AGENTS", {**providers.AGENTS})
+    asyncio.run(business_agent.run("What is glucose?", {}))
+    assert calls == ["agent_plan", "agent_advisor", "agent_review"]

@@ -9,7 +9,7 @@ body.workspace.staff{display:grid;grid-template-columns:240px minmax(0,1fr)}
 .workspace-header h1{font-size:var(--text-lg);flex:1;min-width:0}
 /* Staff: the view's own heading names the page; the header keeps it for screen readers only */
 body.staff .workspace-header h1{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-.header-actions{display:flex;gap:8px;align-items:center;margin-left:auto}
+.header-actions{display:flex;gap:8px;align-items:center;margin-left:auto;position:relative}
 main#workspace-main{flex:1;min-width:0;display:flex;flex-direction:column}
 main#workspace-main:focus{outline:none}
 
@@ -91,6 +91,10 @@ main#workspace-main:focus{outline:none}
 .welcome p{max-width:58ch}
 .welcome .row{gap:8px}
 .welcome .chip{min-height:36px;padding:8px 16px;font-size:var(--text-sm)}
+.welcome-steps{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px 20px;font:400 var(--text-sm) var(--font-sans);color:var(--color-fg-muted)}
+.welcome-steps li{display:flex;align-items:center;gap:8px}
+.welcome-steps span{display:grid;place-items:center;width:22px;height:22px;border-radius:50%;border:1px solid var(--color-border-strong);font:600 11.5px var(--font-sans);color:var(--color-fg)}
+.welcome-steps li:first-child span{background:var(--color-fg);border-color:var(--color-fg);color:var(--color-bg)}
 .turn .message-body table{border-collapse:collapse;font:400 var(--text-sm) var(--font-sans);margin-top:8px}
 .turn .message-body th,.turn .message-body td{border-bottom:1px solid var(--color-border);padding:8px 8px 8px 0;text-align:left}
 .turn .callout{margin-top:4px}
@@ -141,11 +145,6 @@ main#workspace-main:focus{outline:none}
 .rc-actions{gap:8px}
 
 /* Sign-in: demo accounts */
-.demo-accounts{display:grid;gap:8px;padding-bottom:16px;margin-bottom:4px;border-bottom:1px solid var(--color-border)}
-.demo-accounts .strong{font-weight:600}
-.demo-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
-.demo-pick{display:grid;gap:2px;justify-items:start;text-align:left;padding:10px 12px;border:1px solid var(--color-border);border-radius:var(--radius-md);background:var(--color-surface);cursor:pointer;font:500 var(--text-sm) var(--font-sans);color:var(--color-fg)}
-.demo-pick:hover{border-color:var(--color-border-strong);background:var(--color-surface-2)}
 .avatar-button .signin-text{display:none}
 .avatar-button.guest{width:auto;padding:0 14px;border-radius:var(--radius-pill);font:500 var(--text-sm) var(--font-sans);color:var(--color-fg)}
 .avatar-button.guest .avatar{display:none}
@@ -437,4 +436,14 @@ table.data td .sub{display:block;font-size:12px;color:var(--color-fg-muted)}
 /* AI providers (manager) */
 .ai-form{display:grid;grid-template-columns:1fr 1fr;gap:12px 20px;align-items:start}
 .ai-form .wide{grid-column:1/-1}
+.agents-card{gap:0}
+.agent-row{display:grid;gap:8px;padding:16px 0;border-top:1px solid var(--color-border)}
+.agent-row:first-of-type{border-top:0}
+.agent-row .record-head{align-items:center}
+.agent-row .field{max-width:360px}
 @media (max-width:700px){.ai-form{grid-template-columns:1fr}}
+
+/* Account menu (avatar) */
+.sidebar-bottom{position:relative}
+.account-menu{position:absolute;right:0;top:calc(100% + 8px);z-index:60;display:grid;min-width:232px;padding:6px;background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-lg);box-shadow:var(--shadow-float);font-family:var(--font-sans);animation:pop var(--dur-base) var(--ease-out)}
+.sidebar .account-menu{top:auto;bottom:calc(100% + 8px);left:0;right:auto;width:100%}

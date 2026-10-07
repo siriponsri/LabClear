@@ -20,6 +20,11 @@ from services.providers import RuntimeProvider
 log = logging.getLogger("labclear.provider")
 
 _SLOT_NAMES = {"guard": "safety check", "llm": "language model", "vision": "report reader"}
+
+
+def _name(slot: str) -> str:
+    from services.providers import is_agent, slot_name
+    return slot_name(slot) if is_agent(slot) else _SLOT_NAMES.get(slot, slot)
 _STATUS_HINTS = {400: "request not accepted", 401: "API key not accepted", 402: "no credit left on the account",
                  403: "key not allowed to use this model", 404: "model name or URL not found",
                  413: "request too large", 422: "request not accepted", 429: "rate or usage limit reached"}
@@ -28,7 +33,7 @@ _SECRETISH = re.compile(r"(sk-[A-Za-z0-9_-]{6,}|Bearer\s+\S+|[A-Za-z0-9_-]{32,})
 
 def rejection_error(slot: str, status: int, detail: str = "", label: str = "") -> "ConversationError":
     """Name the service and HTTP status so the owner can fix the right setting; never echo secrets."""
-    name = f"The {_SLOT_NAMES.get(slot, slot)}" + (f" ({label})" if label else "")
+    name = f"The {_name(slot)}" + (f" ({label})" if label else "")
     hint = _STATUS_HINTS.get(status, "server error" if status >= 500 else "request refused")
     snippet = _SECRETISH.sub("[redacted]", " ".join(detail.split()))[:300]
     log.warning("provider_rejected slot=%s status=%s detail=%s", slot, status, snippet)
@@ -140,7 +145,7 @@ async def complete(messages: list[dict], *, slot: str = "llm", json_mode: bool =
     provider = provider_for(slot)
     if not provider.ready:
         raise ConversationError("provider_not_configured",
-            f"The {_SLOT_NAMES.get(slot, slot)} is not set up. A manager can add it on /staff → AI providers.")
+            f"The {_name(slot)} is not set up. A manager can add it on /staff → AI providers.")
     if provider.protocol not in {"openai_chat", "anthropic_messages", "typhoon_ocr"}:
         raise ConversationError("provider_not_configured", f"{provider.label} cannot be used for this step.")
     headers = {"Authorization": f"Bearer {provider.api_key}", "Content-Type": "application/json"}

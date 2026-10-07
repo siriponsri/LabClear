@@ -114,16 +114,34 @@
     if ($('staff-nav')) $('staff-nav').hidden = !isStaff();
     document.querySelectorAll('[data-manager-only]').forEach(n => { n.hidden = !isManager(); });
   }
+  /* Signed in: the avatar opens a small menu (who you are, where to go, Sign out). */
+  function accountMenu() {
+    let m = $('account-menu');
+    if (m && !m.hidden) { closeAccountMenu(); return; }
+    if (!m) { m = el('div', null, 'account-menu'); m.id = 'account-menu'; m.setAttribute('role', 'menu'); m.setAttribute('aria-label', 'Account'); $('account-open').after(m); }
+    const item = (label, run, cls = '') => { const b = el('button', label, 'menu-item ' + cls); b.type = 'button'; b.setAttribute('role', 'menuitem'); b.onclick = async () => { closeAccountMenu(); try { await run(); } catch (e) { notice(e.message, 'bad'); } }; return b; };
+    const head = el('div', null, 'menu-head'); head.append(el('strong', user.email + (user.demo ? ' (demo)' : '')), el('span', isStaff() ? (user.role === 'manager' ? 'Manager' : 'Staff') + (user.branch ? ' · ' + user.branch : '') : (planOf().plan === 'plus' ? 'LabClear Plus' : 'Free plan'), 'tiny muted'));
+    const items = [];
+    if (!STAFF_MODE) items.push(item('My appointments', () => navigate('bookings')), item('My reports', () => navigate('reports')), item('Plan', () => navigate('plan')));
+    if (!STAFF_MODE && isStaff()) items.push(item('Service desk', () => { location.href = '/staff'; }));
+    if (STAFF_MODE) items.push(item('Customer app', () => { location.href = '/app'; }));
+    items.push(item('Website', () => { location.href = '/'; }));
+    if (!STAFF_MODE && state?.line_linked) items.push(item('Unlink LINE', async () => { await post('/account/line/unlink'); notice('LINE unlinked. Pending LINE deliveries were cancelled.'); }));
+    items.push(item('Sign out', async () => { await post('/logout'); location.href = STAFF_MODE ? '/staff' : '/'; }, 'danger'));
+    m.replaceChildren(head, ...items); m.hidden = false; $('account-open').setAttribute('aria-expanded', 'true');
+    items[0].focus();
+  }
+  function closeAccountMenu() { const m = $('account-menu'); if (m && !m.hidden) { m.hidden = true; $('account-open').setAttribute('aria-expanded', 'false'); } }
+  document.addEventListener('click', e => { if (!e.target.closest('#account-menu, #account-open')) closeAccountMenu(); });
+  document.addEventListener('keydown', e => {
+    const m = $('account-menu'); if (!m || m.hidden) return;
+    if (e.key === 'Escape') { closeAccountMenu(); $('account-open').focus(); }
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); const list = [...m.querySelectorAll('[role=menuitem]')], i = list.indexOf(document.activeElement); list[(i + (e.key === 'ArrowDown' ? 1 : -1) + list.length) % list.length].focus(); }
+  });
   function account() {
+    if (user?.registered) { accountMenu(); return; }
     const box = el('div', null, 'stack');
-    if (user?.registered) {
-      box.append(el('p', 'Signed in as ' + user.email + (isStaff() ? ' (' + user.role + ')' : '')),
-        el('p', 'Your reports and conversations are private to this account. Email verification and password recovery are not available in this coursework release.', 'small muted'));
-      const row = el('div', null, 'row');
-      row.append(button('Sign out', async () => { await post('/logout'); location.href = STAFF_MODE ? '/staff' : '/app'; }, 'btn'));
-      if (!STAFF_MODE) row.append(button('Unlink LINE', async () => { await post('/account/line/unlink'); notice('LINE unlinked. Pending LINE deliveries were cancelled.'); }, 'btn ghost'));
-      box.append(row);
-    } else {
+    {
       const form = el('form', null, 'form-grid'), email = field('Email or username', 'text'), pass = field('Password', 'password', '', 'New accounts need at least 12 characters.');
       email.input.required = true; email.input.autocomplete = 'username'; email.input.spellcheck = false; pass.input.minLength = 4; pass.input.required = true; pass.input.autocomplete = 'current-password';
       const err = el('p', '', 'field-error'); err.setAttribute('role', 'alert'); err.hidden = true;
@@ -160,7 +178,7 @@
       if (STAFF_MODE) form.append(el('p', 'Staff accounts are created by the deployment owner with scripts/create_staff.py' + (demos.length ? ', or use the demo admin account above.' : '.'), 'tiny muted'));
       box.append(form);
     }
-    modal(user?.registered ? 'Your account' : (STAFF_MODE ? 'Staff sign-in' : 'Sign in or create an account'), box);
+    modal(STAFF_MODE ? 'Staff sign-in' : 'Sign in or create an account', box);
   }
   $('account-open').onclick = account;
 
@@ -200,7 +218,7 @@
   }
   function messageNode(m, interactive = true, last = false) {
     return RSTurns.render(m, interactive
-      ? { interactive: true, last, onRetry: retry, onShortcut: shortcut, onAction: actionCard, onStaff: () => requestStaff(), onFollowup: q => send(q), onReportCard: reportCard, onCardRetry: cardRetry, onImage: openImage }
+      ? { interactive: true, last, onRetry: retry, onShortcut: shortcut, onAction: actionCard, onStaff: () => requestStaff(), onFollowup: q => send(q), onReportCard: reportCard, onCardRetry: cardRetry, onImage: openImage, onFollowupCheck: () => send(followupQuestion()) }
       : STAFF_MODE
         // Staff see that a report was shared, not its image or values (those stay with the customer).
         ? { privateFiles: true, onReportCard: () => el('p', 'The customer added a lab report here. Its values stay private to the customer.', 'small muted') }
@@ -241,13 +259,21 @@
       $('chat-view').classList.add('with-canvas'); close.focus();
     } catch (e) { canvas.replaceChildren(el('p', e.message, 'callout bad')); }
   }
+  // The first-visit guide (the lab-report-first journey) comes back for every new chat.
+  const WELCOME = document.querySelector('#messages .welcome')?.cloneNode(true) || el('div', null, 'welcome');
+  function attachReport() { if (!planOf().can_read) return upgradeDialog('Your free AI report reading has been used. Synthetic samples stay free.'); fileTarget = 'chat'; $('report-file').click(); }
+  document.addEventListener('click', e => {
+    if (e.target.closest('[data-attach-report]')) attachReport();
+    else if (e.target.closest('[data-try-sample]')) demoPicker({ chat: true }).catch(x => notice(x.message, 'bad'));
+  });
+  const followupQuestion = () => (navigator.language || '').toLowerCase().startsWith('th') ? 'มีแพ็กเกจตรวจติดตามสำหรับรายการในรายงานนี้ไหม' : 'Which follow-up checks are available for the tests in my report?';
   function renderMessages(c) {
     if (STAFF_MODE) return;
     const key = JSON.stringify(c.messages);
     if (key === lastMessages) return;
     lastMessages = key;
     if (!c.messages.length) {
-      if (!$('messages').querySelector('.welcome')) $('messages').replaceChildren(empty('A fresh conversation', 'Ask about a health check, a report or an appointment.'));
+      if (!$('messages').querySelector('.welcome')) $('messages').replaceChildren(WELCOME.cloneNode(true));
       return;
     }
     $('messages').replaceChildren(...c.messages.map((m, i) => messageNode(m, true, i === c.messages.length - 1)));
@@ -597,16 +623,20 @@
   function slotPicker(branchSel, dateInput, onPick) {
     const wrap = el('div', null, 'stack-sm'), grid = el('div', null, 'slot-grid'), msg = el('p', 'Choose a center and date to see available times.', 'small muted');
     grid.setAttribute('role', 'group'); grid.setAttribute('aria-label', 'Available times'); msg.setAttribute('aria-live', 'polite');
-    let chosen = '';
+    let chosen = '', seq = 0;
     async function load() {
+      // Only the latest request draws the times (two quick changes must not add the slots twice).
+      const mine = ++seq;
       chosen = ''; onPick('');
       if (!branchSel.value || !dateInput.value) { grid.replaceChildren(); msg.textContent = 'Choose a center and date to see available times.'; return; }
       msg.textContent = 'Loading times…'; grid.replaceChildren();
       try {
         const d = await api('/slots?' + new URLSearchParams({ branch_id: branchSel.value, date: dateInput.value }));
+        if (mine !== seq) return;
         if (!d.slots.length) { msg.textContent = new Date(dateInput.value + 'T00:00:00').getDay() === 0 ? 'Centers are closed on Sundays. Choose Monday to Saturday.' : 'No times are open on this date (past, or more than 30 days ahead). Choose another date.'; return; }
         const open = d.slots.filter(s => s.available > 0).length;
         msg.textContent = open ? open + ' of ' + d.slots.length + ' times available.' : 'This date is fully booked. Try another date or center.';
+        grid.replaceChildren();
         d.slots.forEach(s => {
           const b = el('button', null, 'slot'); b.type = 'button'; b.disabled = s.available < 1; b.setAttribute('aria-pressed', 'false');
           b.append(el('span', s.time), el('small', s.available < 1 ? 'Full' : s.available + ' left'));
@@ -614,7 +644,7 @@
           b.onclick = () => { grid.querySelectorAll('.slot').forEach(x => x.setAttribute('aria-pressed', String(x === b))); chosen = s.time; onPick(s.time); };
           grid.append(b);
         });
-      } catch (e) { msg.textContent = e.message; grid.replaceChildren(button('Try again', load)); }
+      } catch (e) { if (mine === seq) { msg.textContent = e.message; grid.replaceChildren(button('Try again', load)); } }
     }
     branchSel.addEventListener('change', load); dateInput.addEventListener('change', load);
     wrap.append(msg, grid); return { wrap, load, get value() { return chosen; } };
@@ -835,7 +865,7 @@
     modal('Try a sample report', box);
   }
   if (!STAFF_MODE) {
-    $('add-report').onclick = () => { if (!planOf().can_read) return upgradeDialog('Your free AI report reading has been used. Synthetic samples stay free.'); fileTarget = 'chat'; $('report-file').click(); };
+    $('add-report').onclick = attachReport;
     $('demo-open').onclick = () => demoPicker({ chat: true }).catch(e => notice(e.message, 'bad'));
   }
   $('report-file').onchange = async () => {
@@ -1444,51 +1474,75 @@
   }
 
   /* ------------------------------------------------------------ staff: AI providers (manager) */
+  /* One provider form: provider, model, key, prices, Save / Test / reset. Used for the three
+     model slots and for agents that have their own model. */
+  function providerForm(d, slot, cur, kind) {
+    const f = el('form', null, 'ai-form');
+    const prov = field('Provider', 'select'), options = d.presets.filter(p => p.slots.includes(kind));
+    options.forEach(p => { const o = el('option', p.label); o.value = p.id; prov.input.append(o); });
+    prov.input.value = options.some(p => p.id === cur.preset) ? cur.preset : options[0].id;
+    const model = field('Model', 'text', cur.source === 'shared' ? '' : cur.model, 'Leave empty to use the provider default.');
+    const key = field('API key', 'password', '', cur.key && cur.source !== 'shared' ? 'Saved key: ' + cur.key + '. Leave empty to keep it.' : 'Paste the key from the provider console.');
+    key.input.autocomplete = 'off'; key.input.spellcheck = false;
+    const url = field('Endpoint URL', 'url', cur.base_url, 'OpenAI-compatible base URL, for example https://api.example.com/v1');
+    const pin = field('Input price (THB per 1M tokens)', 'number', cur.price_in), pout = field('Output price (THB per 1M tokens)', 'number', cur.price_out);
+    [pin, pout].forEach(x => { x.input.min = '0'; x.input.step = 'any'; });
+    const on = el('label', null, 'check'); const box2 = el('input'); box2.type = 'checkbox'; box2.checked = cur.enabled; on.append(box2, el('span', ' Report reading is on'));
+    const keyLink = el('a', '', 'small'); keyLink.target = '_blank'; keyLink.rel = 'noopener';
+    const sync = reset => {
+      const p = d.presets.find(x => x.id === prov.input.value);
+      url.wrap.hidden = p.id !== 'custom';
+      model.input.placeholder = (kind === 'vision' && p.vision_model) || p.default_model || 'model name';
+      if (reset) { model.input.value = ''; pin.input.value = p.price_in; pout.input.value = p.price_out; key.input.value = ''; }
+      keyLink.textContent = p.key_url ? 'Get a key from ' + p.label + ' ↗' : ''; keyLink.href = p.key_url || '#'; keyLink.hidden = !p.key_url;
+    };
+    prov.input.onchange = () => sync(true); sync(cur.source === 'shared');
+    key.wrap.classList.add('wide'); url.wrap.classList.add('wide'); on.classList.add('wide');
+    f.append(prov.wrap, model.wrap, key.wrap, url.wrap, pin.wrap, pout.wrap);
+    if (kind === 'vision') f.append(on);
+    const actions = el('div', null, 'form-actions wide');
+    actions.append(
+      button('Save', async () => {
+        await api('/staff/ai-providers/' + slot, { method: 'PUT', body: JSON.stringify({ preset: prov.input.value, model: model.input.value.trim(), api_key: key.input.value.trim(), base_url: url.input.value.trim(), enabled: kind === 'vision' ? box2.checked : true, price_in: pin.input.value === '' ? null : Number(pin.input.value), price_out: pout.input.value === '' ? null : Number(pout.input.value) }) });
+        notice(cur.label + ' saved.'); await navigate('ai', false); connection();
+      }, 'btn primary sm'),
+      button('Test', async () => { const r = await post('/staff/ai-providers/' + slot + '/test'); notice(r.message, r.ok ? '' : 'bad'); }, 'btn sm'));
+    if (cur.source === 'app') actions.append(button(slot.startsWith('agent_') ? 'Use the shared language model' : 'Use server settings', async () => {
+      await api('/staff/ai-providers/' + slot, { method: 'DELETE' });
+      notice(slot.startsWith('agent_') ? cur.label + ' uses the shared language model again.' : 'Saved settings removed; the server environment is used again.');
+      await navigate('ai', false); connection();
+    }, 'btn sm'));
+    f.append(actions); f.onsubmit = e => e.preventDefault();
+    const wrap = el('div', null, 'stack'); wrap.append(f, keyLink); return wrap;
+  }
   async function aiProviders() {
     const box = el('div'); box.append(intro('AI providers', 'Choose the provider, model and API key for each AI step. Keys are stored encrypted on the server and never shown again; leave the key empty to keep the saved one.'));
     if (!isManager()) { box.append(empty('Manager access required', '')); return box; }
     const d = await api('/staff/ai-providers');
     if (!d.network_enabled) box.append(el('p', 'AI calls are switched off on this server (PROVIDER_NETWORK_ENABLED is not true). You can still save providers now.', 'callout warn small'));
-    const ORDER = ['llm', 'guard', 'vision'];
-    const HELP = { llm: 'Plans, writes and reviews every answer. Must follow JSON instructions well.', guard: 'Screens every customer message and every answer before it is shown. Anything not clearly safe is blocked.', vision: 'Reads lab report photos and PDFs. Typhoon OCR is tuned for Thai reports.' };
-    ORDER.forEach(slot => {
+    const HELP = { llm: 'The shared model every agent below uses unless it has its own. Must follow JSON instructions well.', guard: 'Screens every customer message, every answer and every report before it is used. Anything not clearly safe is blocked.', vision: 'Reads lab report photos and PDFs. Typhoon OCR is tuned for Thai reports.' };
+    ['llm', 'guard', 'vision'].forEach(slot => {
       const cur = d.slots[slot], card = el('section', null, 'card stack'), head = el('div', null, 'record-head');
       head.append(el('h3', cur.label), badge(cur.ready ? (cur.source === 'app' ? 'Saved here' : 'From server environment') : 'Not set up', cur.ready ? 'ok' : 'warn'));
-      card.append(head, el('p', HELP[slot], 'small muted'));
-      const f = el('form', null, 'ai-form');
-      const prov = field('Provider', 'select'), options = d.presets.filter(p => p.slots.includes(slot));
-      options.forEach(p => { const o = el('option', p.label); o.value = p.id; prov.input.append(o); });
-      prov.input.value = cur.preset;
-      const model = field('Model', 'text', cur.model, 'Leave empty to use the provider default.');
-      const key = field('API key', 'password', '', cur.key ? 'Saved key: ' + cur.key + '. Leave empty to keep it.' : 'Paste the key from the provider console.');
-      key.input.autocomplete = 'off'; key.input.spellcheck = false;
-      const url = field('Endpoint URL', 'url', cur.base_url, 'OpenAI-compatible base URL, for example https://api.example.com/v1');
-      const pin = field('Input price (THB per 1M tokens)', 'number', cur.price_in), pout = field('Output price (THB per 1M tokens)', 'number', cur.price_out);
-      [pin, pout].forEach(x => { x.input.min = '0'; x.input.step = 'any'; });
-      const on = el('label', null, 'check'); const box2 = el('input'); box2.type = 'checkbox'; box2.checked = cur.enabled; on.append(box2, el('span', ' Report reading is on'));
-      const keyLink = el('a', '', 'small'); keyLink.target = '_blank'; keyLink.rel = 'noopener';
-      const sync = (reset) => {
-        const p = d.presets.find(x => x.id === prov.input.value);
-        url.wrap.hidden = p.id !== 'custom';
-        model.input.placeholder = (slot === 'vision' && p.vision_model) || p.default_model || 'model name';
-        if (reset) { model.input.value = ''; pin.input.value = p.price_in; pout.input.value = p.price_out; key.input.value = ''; }
-        keyLink.textContent = p.key_url ? 'Get a key from ' + p.label + ' ↗' : ''; keyLink.href = p.key_url || '#'; keyLink.hidden = !p.key_url;
-      };
-      prov.input.onchange = () => sync(true); sync(false);
-      key.wrap.classList.add('wide'); url.wrap.classList.add('wide'); on.classList.add('wide');
-      f.append(prov.wrap, model.wrap, key.wrap, url.wrap, pin.wrap, pout.wrap);
-      if (slot === 'vision') f.append(on);
-      const actions = el('div', null, 'form-actions wide');
-      actions.append(
-        button('Save', async () => {
-          await api('/staff/ai-providers/' + slot, { method: 'PUT', body: JSON.stringify({ preset: prov.input.value, model: model.input.value.trim(), api_key: key.input.value.trim(), base_url: url.input.value.trim(), enabled: slot === 'vision' ? box2.checked : true, price_in: pin.input.value === '' ? null : Number(pin.input.value), price_out: pout.input.value === '' ? null : Number(pout.input.value) }) });
-          notice(cur.label + ' saved.'); await navigate('ai', false); connection();
-        }, 'btn primary sm'),
-        button('Test', async () => { const r = await post('/staff/ai-providers/' + slot + '/test'); notice(r.message, r.ok ? '' : 'bad'); }, 'btn sm'));
-      if (cur.source === 'app') actions.append(button('Use server settings', async () => { await api('/staff/ai-providers/' + slot, { method: 'DELETE' }); notice('Saved settings removed; the server environment is used again.'); await navigate('ai', false); connection(); }, 'btn sm'));
-      f.append(actions); f.onsubmit = e => e.preventDefault();
-      card.append(f, keyLink); box.append(card);
+      card.append(head, el('p', HELP[slot], 'small muted'), providerForm(d, slot, cur, slot)); box.append(card);
     });
+    // Agents share the language model unless one is given its own provider.
+    const agents = el('section', null, 'card stack agents-card');
+    agents.append(el('h3', 'Agents'), el('p', 'Each agent uses the language model above unless you give it its own provider, model and key. A different model for the Reviewer makes its check more independent.', 'small muted'));
+    Object.entries(d.agents).forEach(([id, cur]) => {
+      const row = el('div', null, 'agent-row'), head = el('div', null, 'record-head'), own = cur.source === 'app';
+      head.append(el('strong', cur.label), badge((own ? 'Own: ' : 'Shared: ') + cur.provider_label + ' · ' + cur.model, own ? 'ok' : 'neutral'));
+      const choice = field('Model for the ' + cur.label, 'select');
+      choice.input.append(new Option('Shared language model', 'shared'), new Option('Its own provider', 'own')); choice.input.value = own ? 'own' : 'shared';
+      const form = providerForm(d, cur.slot, cur, 'llm'); form.hidden = !own;
+      choice.input.onchange = async () => {
+        if (choice.input.value === 'own') { form.hidden = false; return; }
+        form.hidden = true;
+        if (own) { await api('/staff/ai-providers/' + cur.slot, { method: 'DELETE' }); notice(cur.label + ' uses the shared language model again.'); await navigate('ai', false); }
+      };
+      row.append(head, el('p', cur.help, 'small muted'), choice.wrap, form); agents.append(row);
+    });
+    box.append(agents);
     box.append(el('p', 'Each test makes one real call, counted in the call cap and the THB budget shown under Channels and budget. Prices are estimates used only for that budget; set them to your provider\'s real prices.', 'small muted'));
     return box;
   }

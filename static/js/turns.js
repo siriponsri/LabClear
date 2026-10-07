@@ -156,6 +156,8 @@ window.RSTurns = (() => {
     if (m.checks) { const r = receipt(m.checks, m); const b = act('How this was checked', 'check', () => { r.hidden = !r.hidden; b.setAttribute('aria-expanded', String(!r.hidden)); }); b.setAttribute('aria-expanded', 'false'); actions.append(b); extra.append(r); }
     (m.ui || []).forEach(c => { const el = opts.onShortcut && opts.onShortcut(c); if (el) actions.append(el); });
     if (opts.onAction && m.action && m.action_id) { const el = opts.onAction(m); if (el) extra.append(el); }
+    // Step 4 of the journey, always the customer's choice: never offered automatically by the Explainer.
+    if (opts.onFollowupCheck && opts.last && m.dot?.id === 'explainer') actions.append(act('Find a follow-up check', 'calendar', opts.onFollowupCheck));
     if (opts.onStaff && opts.last && m.role !== 'staff') actions.append(act('Ask our team', 'staff', opts.onStaff));
     if (m.followups?.length && opts.onFollowup) { const f = make('div', null, 'row'); m.followups.slice(0, 3).forEach(q => { const c = make('button', q, 'chip'); c.type = 'button'; c.onclick = () => opts.onFollowup(q); f.append(c); }); extra.append(f); }
     if (actions.children.length) turn.append(actions);

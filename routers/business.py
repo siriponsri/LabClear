@@ -142,6 +142,16 @@ async def get_session(request:Request,response:Response):
         c=conversation(tx,u['id'])
         return {'user':db.user_public(u),'csrf':csrf,'conversation':c['data'],'simulation':True,'version':'3.0.0','ocr_provider':'typhoon','external_business_enabled':os.getenv('BUSINESS_EXTERNAL_ENABLED')=='true','demo_accounts':demo.public()}
 
+@router.get('/me')
+async def me(request:Request):
+    """Who is signed in, for the website header. Unlike /session it never creates a guest session."""
+    origin(request)
+    with db.transaction() as tx:
+        token=request.cookies.get(COOKIE,'');s=tx.get('session_'+db.digest(token)) if token else None
+        u=tx.get(s['owner']) if s and s['data']['expires']>time.time() else None
+        signed=bool(u and u['data'].get('password') and not demo.blocked(u))
+        return {'user':db.user_public(u) if signed else None,'csrf':s['data']['csrf'] if signed else '','demo_accounts':demo.public()}
+
 @router.post('/register')
 async def register(body:Credentials,request:Request,response:Response):
     with db.transaction() as tx:
@@ -184,7 +194,7 @@ async def workspace(request:Request):
         reports=[{'id':r['id'],'label':r['data'].get('label','Report'),'date':r['data'].get('collected_date',''),'confirmed':r['data'].get('confirmed',False),'pages':r['data'].get('pages',1),'sample':r['data'].get('sample',False)} for r in tx.find('report',owner)]
         payments=[ops.sim_view(tx,t) for t in tx.find('payment_txn',owner)]
         unread=sum(1 for _ in tx.find('notification',owner,'unread'))
-        return {'conversation':c['data'],'bookings':tx.find('booking',owner),'tickets':tx.find('ticket',owner),'quotes':tx.find('corporate_quote',owner),'reports':reports,'user':db.user_public(u),'payments':payments,'unread_notifications':unread,'inquiries':tx.find('org_inquiry',owner),'plan':plans.entitlement(tx,owner),'chats':chats.listing(tx,owner)}
+        return {'conversation':c['data'],'bookings':tx.find('booking',owner),'tickets':tx.find('ticket',owner),'quotes':tx.find('corporate_quote',owner),'reports':reports,'user':db.user_public(u),'payments':payments,'unread_notifications':unread,'inquiries':tx.find('org_inquiry',owner),'plan':plans.entitlement(tx,owner),'chats':chats.listing(tx,owner),'line_linked':bool(tx.find('line_identity',owner))}
 
 RETRYABLE={'service_unavailable','provider_response_invalid','answer_invalid','citation_invalid','review_failed','guard_invalid','provider_rejected','storage_unavailable'}
 async def turn(owner,message,retry_id='',page=None,emit=None,reply_to=''):
@@ -218,7 +228,7 @@ async def turn(owner,message,retry_id='',page=None,emit=None,reply_to=''):
         version=d['version'];d['busy_until']=time.time()+240;d['turn_id']=turn_id;tx.put(c['id'],'conversation',owner,d)
         report=tx.own(d['report_id'],owner,'report')['data'] if d.get('report_id') else None
         history=[{'role':'assistant' if x['role']=='staff' else x['role'],'content':x['content']} for x in earlier if x.get('content') and x.get('kind')!='report_read'][-12:]
-        context={'history':history,'report':report if report and report.get('confirmed') else None,'previous_reports':[], 'customer_state':{'bookings':[{'id':b['id'],**b['data'],'status':b['state']} for b in tx.find('booking',owner)[-5:]]},'page':page or {}}
+        context={'history':history,'report':report if report and report.get('confirmed') else None,'previous_reports':[], 'customer_state':{'bookings':[{'id':b['id'],**b['data'],'status':b['state']} for b in tx.find('booking',owner)[-5:]]},'page':page or {},'explain_report':bool(reply_to)}
         # Reports stay private, only explicitly selected comparison context is sent.
         other=d.get('compare_report_id')
         if other and other!=d.get('report_id'):

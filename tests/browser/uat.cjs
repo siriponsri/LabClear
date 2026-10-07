@@ -170,7 +170,8 @@ async function signUp(page, email) {
       await s.locator('[data-view=staff]').click(); await s.getByRole('button', { name: /UI UAT live help request|Organization inquiry/ }).first().click();
       await s.getByRole('heading', { name: /Organization inquiry|UI UAT live help request/ }).waitFor();
       const btnTake = s.getByRole('button', { name: 'Take over' }); if (await btnTake.count()) await Promise.all([s.waitForResponse(r => r.url().endsWith('/state')), btnTake.click()]);
-      await s.getByLabel('Staff reply').fill('A staff member is reviewing your request.');
+      // The ticket view re-renders after Take over; fill once the reply box has settled.
+      const reply = s.getByLabel('Staff reply'); for (let i = 0; i < 6; i++) { await reply.fill('A staff member is reviewing your request.'); await wait(400); if (await reply.inputValue() === 'A staff member is reviewing your request.') break; }
       await Promise.all([s.waitForResponse(r => r.url().endsWith('/messages') && r.request().method() === 'POST'), s.getByRole('button', { name: 'Send reply' }).click()]);
       await c.getByText('A staff member is reviewing your request.').waitFor({ timeout: 12000 }); await c.locator('#handoff-state').filter({ hasText: 'paused' }).waitFor();
       await shot(s, 'staff-inbox-1440');
@@ -193,7 +194,7 @@ async function signUp(page, email) {
     });
     await check('UI-28', 'Manager: AI providers page saves a provider, masks the key, never returns it', async () => {
       await s.locator('[data-view=ai]').click(); await s.getByRole('heading', { name: 'Language model' }).waitFor();
-      assert(await s.locator('#content section.card').count() === 3, 'three AI slots expected');
+      assert(await s.locator('#content section.card:not(.agents-card)').count() === 3, 'three AI slots expected');
       const card = s.locator('#content section.card').filter({ has: s.getByRole('heading', { name: 'Language model' }) });
       await card.getByLabel('Provider').selectOption('anthropic'); await card.getByLabel('API key').fill('sk-ant-uat-0123456789wxyz');
       await card.getByRole('button', { name: 'Save' }).click(); await s.locator('#notice').filter({ hasText: 'saved' }).waitFor();
@@ -241,7 +242,8 @@ async function signUp(page, email) {
     });
     await check('UI-20', 'Keyboard and dialogs: visible focus, Escape closes dialog', async () => {
       await c.goto(base + '/app', { waitUntil: 'networkidle' }); await c.keyboard.press('Tab'); assert(await c.evaluate(() => document.activeElement && document.activeElement !== document.body), 'no focus');
-      await c.locator('#account-open').click(); await c.locator('#modal').waitFor(); await c.keyboard.press('Escape'); await c.locator('#modal').waitFor({ state: 'hidden' });
+      await c.locator('#account-open').click(); await c.locator('#account-menu [role=menuitem]').first().waitFor(); await c.keyboard.press('Escape'); await c.locator('#account-menu').waitFor({ state: 'hidden' });
+      await c.locator('#staff-request').click(); await c.locator('#modal').waitFor(); await c.keyboard.press('Escape'); await c.locator('#modal').waitFor({ state: 'hidden' });
       assert(await noOverflow(c), 'desktop overflow');
     });
     await check('UI-26', 'AI Lab Report: free reading, upgrade prompt, Plus via signed test payment, multi-image reading, lab dashboard over time, printable Lab Report', async () => {
@@ -283,7 +285,7 @@ async function signUp(page, email) {
       await d.locator('.demo-pick').first().waitFor(); assert(await d.locator('.demo-pick').count() === 3, 'three demo accounts'); await wait(300); await shot(d, 'signin-1440');
       await d.getByRole('button', { name: /Sign in as admin/ }).click(); await d.waitForURL(/\/staff/);
       await d.locator('[data-view=ai]').click(); await d.locator('#content').getByRole('heading', { name: 'AI providers' }).waitFor();
-      await d.locator('#account-open').click(); await d.getByRole('button', { name: 'Sign out' }).click(); await d.locator('#modal-title', { hasText: 'Staff sign-in' }).waitFor();
+      await d.locator('#account-open').click(); await d.getByRole('menuitem', { name: 'Sign out' }).click(); await d.locator('#modal-title', { hasText: 'Staff sign-in' }).waitFor();
       await d.goto(base + '/app', { waitUntil: 'networkidle' }); await d.getByRole('button', { name: 'Sign in' }).click(); await d.getByRole('button', { name: /Sign in as test-02/ }).click();
       await d.locator('#modal').waitFor({ state: 'hidden' }); await d.goto(base + '/app?view=plan', { waitUntil: 'networkidle' }); await d.locator('.plan-card.featured').getByText('Current plan').waitFor();
       await dctx.close();
@@ -320,6 +322,21 @@ async function signUp(page, email) {
       await p.locator('#chats-toggle').click(); await p.locator('#chat-list.open').waitFor(); await wait(300); await shot(p, 'chats-390');
       await p.keyboard.press('Escape'); assert(!(await p.locator('#chat-list').evaluate(e => e.classList.contains('open'))), 'drawer did not close');
       assert(await noOverflow(p), 'mobile overflow'); await pctx.close();
+    });
+    await check('UI-32', 'Website: sign in from the header with a demo account, account menu, sign out; journey section; agents on AI providers', async () => {
+      const hctx = await browser.newContext({ viewport: { width: 1440, height: 1000 } }); const h = await hctx.newPage(); watch(h, 'header');
+      await h.goto(base + '/', { waitUntil: 'networkidle' }); await h.locator('#journey-title').waitFor();
+      assert(await h.locator('.journey-steps li').count() === 5, 'journey has five steps');
+      await h.locator('[data-account]').getByRole('button', { name: 'Sign in' }).click(); await h.locator('#signin-dialog .demo-pick').first().waitFor();
+      await h.getByRole('button', { name: /Sign in as test-01/ }).click(); await h.waitForURL(/\/app/);
+      await h.goto(base + '/packages', { waitUntil: 'networkidle' }); await h.locator('.nav-avatar').click();
+      await h.getByRole('menuitem', { name: 'My appointments' }).waitFor(); await shot(h, 'header-menu-1440');
+      await h.getByRole('menuitem', { name: 'Sign out' }).click(); await h.locator('[data-account]').getByRole('button', { name: 'Sign in' }).waitFor();
+      await h.locator('[data-account]').getByRole('button', { name: 'Sign in' }).click(); await h.getByRole('button', { name: /Sign in as admin/ }).click(); await h.waitForURL(/\/staff/);
+      await h.locator('[data-view=ai]').click(); await h.locator('.agents-card .agent-row').first().waitFor();
+      assert(await h.locator('.agents-card .agent-row').count() === 4, 'four agents');
+      await h.getByLabel('Model for the Reviewer').selectOption('own'); await h.locator('.agents-card .ai-form').last().waitFor({ state: 'visible' });
+      await shot(h, 'ai-agents-1440'); await hctx.close();
     });
     for (const [w, h, label] of [[768, 1024, 'tablet'], [390, 844, 'mobile']]) {
       await check('UI-21-' + label, label + ': pages without horizontal overflow, navigation drawer, filters toggle, reduced motion', async () => {

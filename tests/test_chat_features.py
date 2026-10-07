@@ -332,3 +332,22 @@ def test_ranges_that_repeat_the_unit_are_still_compared():
                       ReportField(name="ACR", value="121", unit="mg/g Cr", reference="< 30 mg/g Cr"),
                       ReportField(name="Odd", value="5", unit="mg/dL", reference="70 - 99 mmol/L")])
     assert [r["status"] for r in rows] == ["high", "high", "unknown"]
+
+
+def test_confirmed_report_is_explained_by_the_report_role(monkeypatch):
+    """Planner picked the Advisor (as a live model did); the confirmed report still goes to the Explainer."""
+    from tests.test_business_dots import REPORT, payload
+    calls = script(monkeypatch, {"action": "answer", "query": "", "dot": "advisor"})
+    out = asyncio.run(business_agent.run("Please explain this report.", {"report": REPORT, "explain_report": True}))
+    assert out["dot"]["id"] == "explainer"
+    assert payload(calls, 2)["REPORT"]["fields"][0]["value"] == "101"  # the explainer received the values
+    assert payload(calls, 2)["decision"]["query"] == "Glucose"  # sources searched by test name, never by value
+    # Without the confirmation step the planner's choice stands.
+    script(monkeypatch, {"action": "answer", "query": "glucose", "dot": "advisor"})
+    assert asyncio.run(business_agent.run("Which package?", {"report": REPORT}))["dot"]["id"] == "advisor"
+
+
+def test_placeholder_warnings_are_dropped():
+    e = Extraction.model_validate({"document_type": "laboratory_report", "fields": [{"name": "ALT", "value": "40"}],
+                                   "warnings": ["uncertain readings", "HbA1c value is blurred"]})
+    assert e.warnings == ["HbA1c value is blurred"]
