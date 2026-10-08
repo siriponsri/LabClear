@@ -1,357 +1,461 @@
 <!doctype html>
-<html lang="en">
+<html lang="th">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>LabClear · Final Project</title>
-<link rel="icon" href="../static/img/favicon.svg">
+<title>LabClear 4.0.0 · นำเสนอ Final Project</title>
+<link rel="icon" href="../web/public/img/favicon.svg">
 <link rel="stylesheet" href="vendor/reveal.js-5.2.1/reset.css">
 <link rel="stylesheet" href="vendor/reveal.js-5.2.1/reveal.css">
 <style>
-/* LabClear slides (reveal.js 5). Fonts ship with the repository; nothing is loaded from the internet. */
-@font-face{font-family:"Geist";src:url(../static/fonts/geist-variable.woff2) format("woff2");font-weight:100 900}
-@font-face{font-family:"Geist Mono";src:url(../static/fonts/geist-mono-variable.woff2) format("woff2");font-weight:100 900}
-@font-face{font-family:"Noto Sans Thai";src:url(../static/fonts/NotoSansThai.ttf) format("truetype");font-weight:100 900}
-@font-face{font-family:"Source Serif 4";src:url(../static/fonts/source-serif-4-opsz.woff2) format("woff2");font-weight:200 900}
+/* LabClear 4.0.0 slides (reveal.js 5.2.1). Fonts ship with the repository (web/public/fonts); nothing loads from the internet.
+   Present: open this file in a browser, press S for speaker notes. PDF: node scripts/build_docs_pdf.mjs slides */
+@font-face{font-family:"Noto Sans Thai";src:url(../web/public/fonts/noto-sans-thai-400.woff2) format("woff2");font-weight:400;font-display:block}
+@font-face{font-family:"Noto Sans Thai";src:url(../web/public/fonts/noto-sans-thai-500.woff2) format("woff2");font-weight:500;font-display:block}
+@font-face{font-family:"Noto Sans Thai";src:url(../web/public/fonts/noto-sans-thai-600.woff2) format("woff2");font-weight:600 700;font-display:block}
+@font-face{font-family:"Noto Serif Thai";src:url(../web/public/fonts/noto-serif-thai-600.woff2) format("woff2");font-weight:600;font-display:block}
+@font-face{font-family:"Geist";src:url(../web/public/fonts/geist-variable.woff2) format("woff2");font-weight:100 900;font-display:block}
+@font-face{font-family:"Geist Mono";src:url(../web/public/fonts/geist-mono-variable.woff2) format("woff2");font-weight:100 900;font-display:block}
 
 :root{
-  --paper:#f8f8ff; --surface:#ffffff; --ink:#21172f; --muted:#61586f; --soft:#8d819d;
-  --line:#e5dfec; --tint:#f1ebfc; --accent:#8a2be2; --primary:#4b0082;
-  --green:#367566; --red:#a62e4a; --amber:#8a521d;
+  --paper:#fbfaff; --surface:#ffffff; --ink:#1f1830; --muted:#5d5470; --soft:#8a809a;
+  --line:#e3dcee; --tint:#f1ebfa; --accent:#6539a9; --accent-ink:#4a2680;
+  --night:#1b1328; --night-2:#271c3a; --on-night:#f4f0fb; --on-night-muted:#c9bfdc;
+  --ok:#2f6f5e; --warn:#8a4b12;
   --sans:"Geist","Noto Sans Thai",system-ui,sans-serif;
-  --thai:"Noto Sans Thai","Geist",system-ui,sans-serif;
+  --serif:"Noto Serif Thai","Geist",Georgia,serif;
   --mono:"Geist Mono","Noto Sans Thai",ui-monospace,monospace;
-  --serif:"Source Serif 4","Noto Sans Thai",Georgia,serif;
 }
 html,body{background:var(--paper)}
-.reveal{font-family:var(--sans);font-size:30px;color:var(--ink);line-height:1.55}
+.reveal{font-family:var(--sans);font-size:24px;color:var(--ink);line-height:1.5}
 .reveal .slides{text-align:left}
-.reveal .slides section{padding:0 8px}
-.reveal h1,.reveal h2,.reveal h3{font-family:var(--sans);color:var(--ink);font-weight:600;letter-spacing:-.01em;line-height:1.25;margin:0 0 .5em}
-.reveal h1{font-size:2.3em}
-.reveal h2{font-size:1.45em}
-.reveal h3{font-size:1em;margin-bottom:.3em}
-.reveal p{margin:0 0 .6em}
-.reveal ul{margin:0 0 0 1.1em;padding:0}
-.reveal li{margin:.18em 0}
-.reveal li::marker{color:var(--accent)}
-.reveal a{color:var(--primary);text-decoration:underline;text-underline-offset:.15em}
-.reveal code{font-family:var(--mono);font-size:.82em;background:var(--tint);color:var(--primary);padding:.05em .35em;border-radius:4px}
-.reveal strong{color:var(--ink);font-weight:600}
-.reveal img{margin:0;border:0;box-shadow:none;max-width:100%}
-.eyebrow{font-family:var(--mono);font-size:.5em;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin-bottom:.6em!important}
-.lead{font-size:.86em;color:var(--muted);max-width:38em}
-.small{font-size:.66em;color:var(--muted)}
+.reveal .slides section{height:100%;padding:0;box-sizing:border-box}
+.reveal h1,.reveal h2,.reveal h3{font-family:var(--sans);color:var(--ink);font-weight:600;letter-spacing:0;line-height:1.3;margin:0;text-transform:none}
+.reveal h2{font-size:42px;margin-bottom:32px;max-width:1000px}
+.reveal h3{font-size:24px;margin-bottom:10px}
+.reveal p{margin:0 0 10px}
+.reveal ul,.reveal ol{margin:0;padding:0}
+.reveal li{list-style:none}
+.reveal strong{font-weight:600}
+.reveal code{white-space:nowrap;font-family:var(--mono);font-size:.84em;background:var(--tint);color:var(--accent-ink);padding:1px 6px;border-radius:4px}
+.reveal img{margin:0;border:0;max-width:100%}
+.frame{position:relative;height:720px;box-sizing:border-box;padding:44px 60px 40px}
 .muted{color:var(--muted)}
-.grid{display:grid;gap:22px}
-.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}
-.g-55{grid-template-columns:1.25fr 1fr;align-items:center}
-.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:22px 24px;font-size:.76em;line-height:1.55}
-.card h3{font-size:1.15em}
-.card.focal{background:var(--tint);border-color:#cdb4f2}
-.tag{display:inline-block;font-family:var(--mono);font-size:.62em;letter-spacing:.08em;text-transform:uppercase;border:1px solid currentColor;border-radius:4px;padding:.05em .45em;color:var(--muted);margin-bottom:.6em}
-.focal .tag{color:var(--accent)}
-.stat{font-family:var(--sans);font-size:2.1em;font-weight:600;line-height:1;color:var(--ink);letter-spacing:-.02em}
-.stat small{font-size:.38em;font-weight:500;color:var(--muted);letter-spacing:0}
-.stat-label{font-size:.62em;color:var(--muted);margin-top:.4em}
-table.t{width:100%;border-collapse:collapse;font-size:.6em;line-height:1.4}
-table.t th{font-family:var(--mono);font-size:.82em;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:500;text-align:left;border-bottom:1.5px solid var(--ink);padding:8px 10px}
-table.t td{border-bottom:1px solid var(--line);padding:9px 10px;vertical-align:top}
-.ok{color:var(--green);font-weight:600}.no{color:var(--red);font-weight:600}
-.shot{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff;box-shadow:0 18px 40px -24px rgba(33,23,47,.35)}
-.shot img{display:block;width:100%;height:100%;object-fit:cover;object-position:top}
-.cap{font-size:.5em;color:var(--muted);margin-top:.5em;text-align:center}
-.figure{display:flex;justify-content:center}
-.figure img{max-height:600px;width:auto}
-.steps{counter-reset:s;list-style:none;margin:0!important}
-.steps li{counter-increment:s;position:relative;padding-left:2.2em;margin:.35em 0}
-.steps li::before{content:counter(s);position:absolute;left:0;top:.1em;width:1.5em;height:1.5em;border-radius:50%;background:var(--ink);color:#fff;font-family:var(--mono);font-size:.7em;display:grid;place-items:center}
-.pill{display:inline-block;font-size:.6em;padding:.25em .8em;border-radius:99px;background:var(--tint);color:var(--primary);margin:0 .3em .4em 0}
-.rule{height:1px;background:var(--line);margin:18px 0}
-.reveal .title-slide h1{font-family:var(--serif);font-size:3.4em;letter-spacing:-.03em;margin-bottom:.15em}
-.title-slide .sub{font-size:1.05em;color:var(--ink);max-width:22em}
-.brand{display:flex;align-items:center;gap:.4em;font-family:var(--sans);font-weight:600;font-size:.7em}
-.brand img{width:1.6em;height:1.6em;display:block}
+.small{font-size:18px;color:var(--muted)}
+.num{font-family:"Geist",var(--sans);font-variant-numeric:tabular-nums}
+
+/* CEO marker: ties each detail slide back to the comment it answers */
+.ceo{position:absolute;top:40px;right:60px;display:flex;align-items:center;gap:10px;font-size:16px;color:var(--muted)}
+.ceo b{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--accent);color:#fff;font-family:"Geist";font-weight:600;font-size:17px}
+
+/* dark ground for the opening and closing */
+.night{background:var(--night);color:var(--on-night)}
+.reveal .night h1,.reveal .night h2{color:var(--on-night)}
+.dots{position:absolute;inset:0;background-image:radial-gradient(rgba(176,140,230,.28) 1.4px,transparent 1.6px);background-size:26px 26px;-webkit-mask-image:linear-gradient(100deg,transparent 35%,#000 95%);mask-image:linear-gradient(100deg,transparent 35%,#000 95%)}
+.brand{display:flex;align-items:center;gap:12px;font-weight:600;font-size:24px}
+.brand img{width:40px;height:40px}
+.reveal .hero{font-family:var(--serif);font-weight:600;font-size:74px;line-height:1.38;margin:34px 0 18px}
+.lede{font-size:26px;color:var(--on-night-muted);max-width:820px}
+.people{position:absolute;left:60px;bottom:44px;font-size:18px;color:var(--on-night-muted);line-height:1.6}
+
+/* tables */
+table.t{width:100%;border-collapse:collapse;font-size:22px;line-height:1.42}
+table.t th{font-weight:600;font-size:16px;color:var(--muted);text-align:left;border-bottom:2px solid var(--ink);padding:8px 12px}
+table.t td{border-bottom:1px solid var(--line);padding:13px 12px;vertical-align:top}
+table.t td.k{font-family:"Geist";font-weight:600;color:var(--accent);width:36px}
+table.t tr.lead td{background:var(--tint)}
+
+/* screenshots */
+.shot{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff;box-shadow:0 18px 40px -26px rgba(31,24,48,.45)}
+.shot img{display:block;width:100%;height:100%;object-fit:cover;object-position:top left}
+.cap{font-size:16px;color:var(--muted);margin-top:10px}
+
+/* numbered steps */
+.steps{counter-reset:s}
+.steps li{counter-increment:s;position:relative;padding-left:52px;margin:0 0 22px;font-size:24px;line-height:1.4}
+.steps li::before{content:counter(s);position:absolute;left:0;top:0;width:34px;height:34px;border-radius:50%;background:var(--ink);color:#fff;font-family:"Geist";font-weight:600;font-size:16px;display:grid;place-items:center}
+.steps li span{display:block;font-size:19px;color:var(--muted);margin-top:2px}
+
+/* horizontal process */
+.flow{display:grid;gap:0;counter-reset:f}
+.flow>div{counter-increment:f;position:relative;padding:20px 20px 18px;border-top:3px solid var(--accent);background:var(--surface);font-size:21px;line-height:1.4}
+.flow>div+div{border-left:1px solid var(--line)}
+.flow>div::before{content:counter(f);display:block;font-family:"Geist";font-weight:600;color:var(--accent);font-size:18px;margin-bottom:6px}
+.flow>div small{display:block;color:var(--muted);font-size:17px;margin-top:8px}
+.flow code{font-size:14px;white-space:nowrap}
+
+/* side notes */
+.notes-list li{padding:15px 0;border-bottom:1px solid var(--line);font-size:21px;line-height:1.45}
+.notes-list li:first-child{padding-top:0}
+.notes-list li b{display:block;font-weight:600;font-size:22px;margin-bottom:2px}
+
+/* bars */
+.bars li{display:grid;grid-template-columns:250px 1fr 56px;align-items:center;gap:16px;margin:0 0 20px;font-size:22px}
+.bars .bar{height:32px;background:var(--tint);border-radius:4px;overflow:hidden}
+.bars .bar i{display:block;height:100%;background:var(--accent);border-radius:4px}
+.bars .v{font-family:"Geist";font-weight:600;text-align:right}
+
+/* stat row */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);border-top:2px solid var(--ink);border-bottom:1px solid var(--line)}
+.stats>div{padding:24px 20px 22px}
+.stats>div+div{border-left:1px solid var(--line)}
+.stats .n{font-family:"Geist";font-weight:600;font-size:58px;line-height:1.1;letter-spacing:-.01em}
+.stats .l{font-size:19px;color:var(--muted);margin-top:8px;line-height:1.38}
+.stats .warn .n{color:var(--warn)}
+
+.pill{display:inline-block;font-size:16px;padding:4px 12px;border-radius:99px;background:var(--tint);color:var(--accent-ink)}
+.pill.warn{background:#fbefe2;color:var(--warn)}
+.hero-num{font-family:"Geist";font-weight:600;font-size:88px;line-height:1;color:var(--accent);letter-spacing:-.02em}
+.split{display:grid;gap:40px}
+.frame.tall{display:grid;grid-template-columns:1fr 610px;gap:36px;padding:40px 40px 34px 60px}
+.frame.tall figure{margin:0;height:646px;display:flex;justify-content:center;align-items:flex-start}
+.frame.tall figure img{height:100%;width:auto;max-width:100%;object-fit:contain;border-radius:10px}
+.frame.tall h2{margin-top:6px}
+.ceo.inline{position:static;margin-bottom:14px}
 .reveal .progress{color:var(--accent);height:4px}
 .reveal .controls{color:var(--accent)}
-.reveal .slide-number{background:transparent;color:var(--soft);font-family:var(--mono);font-size:14px}
-.footer{position:fixed;left:28px;bottom:18px;font-family:var(--mono);font-size:13px;letter-spacing:.12em;color:var(--soft);text-transform:uppercase;z-index:10}
-@media print{.footer{display:none}}
+.reveal .slide-number{background:transparent;color:var(--soft);font-family:"Geist";font-size:14px;left:22px;right:auto;bottom:14px}
 </style>
 </head>
 <body>
-<div class="footer">LabClear · Final Project</div>
 <div class="reveal"><div class="slides">
 
-<!-- 1 -->
-<section class="title-slide">
-  <div class="brand"><img src="../static/img/mark.svg" alt="">LabClear</div>
-  <div class="rule" style="width:120px"></div>
-  <p class="eyebrow">Final Project · Intelligent Chatbot Development</p>
-  <h1>Book the check.<br>Understand the result.</h1>
-  <p class="sub">A Thai health-check assistant that recommends packages, books appointments and explains lab reports with sources.</p>
-  <p class="small" style="margin-top:1.4em">[Developer name] · [Student ID]<br>
-  Live <a href="https://labclear.onrender.com">labclear.onrender.com</a> · Code <a href="https://github.com/siriponsri/LabClear">github.com/siriponsri/LabClear</a></p>
-  <aside class="notes">Introduce LabClear: a simulated health-check clinic whose front door is a chatbot. It helps customers choose a package, book a time and understand their lab report.</aside>
-</section>
-
-<!-- 2 -->
-<section>
-  <p class="eyebrow">01 · Problem</p>
-  <h2>The same questions, every check-up</h2>
-  <div class="grid g3" style="margin-top:28px">
-    <div class="card"><span class="tag">Before</span><h3>Which package?</h3>What fits a 1,500 THB budget, what is the difference between packages, what does it cost.</div>
-    <div class="card"><span class="tag">Booking</span><h3>When and where?</h3>Which branch, opening hours, fasting rules, how to cancel or reschedule.</div>
-    <div class="card focal"><span class="tag">After</span><h3>What do my results mean?</h3>Which values are outside the printed range and what that means, without a diagnosis.</div>
+<!-- 1 · Title -->
+<section class="night" data-background-color="#1b1328">
+  <div class="dots"></div>
+  <div class="frame">
+    <div class="brand"><img src="../web/public/img/mark.svg" alt="">LabClear 4.0.0</div>
+    <h1 class="hero">จองตรวจสุขภาพ<br>เข้าใจผลตรวจ</h1>
+    <p class="lede">แชตบอตภาษาไทยของคลินิกตรวจสุขภาพจำลอง แนะนำแพ็กเกจ รับนัด และอธิบายใบผลแล็บพร้อมแหล่งอ้างอิง รุ่นนี้ทำตามความเห็น CEO ครบ 5 ข้อ</p>
+    <div class="people">นายวัชรินทร์ บัวสอน 68076055 · นายศิริพล ศรีเฮงไพบูลย์ 68076060<br>06048308 Intelligent Chatbot Development · ตุลาคม 2569</div>
   </div>
-  <p class="lead" style="margin-top:28px">Staff answer the same questions all day and rarely have time to explain results. The chatbot handles the routine questions; people keep the decisions that need judgement.</p>
-  <aside class="notes">Three moments in the customer journey. The chatbot never replaces a doctor.</aside>
+  <aside class="notes">[0:00–0:10] สวัสดีครับ เราคือทีม LabClear แชตบอตของคลินิกตรวจสุขภาพจำลอง วันนี้เล่ารุ่น 4.0.0 ที่แก้ตามความเห็น CEO ทั้ง 5 ข้อครับ</aside>
 </section>
 
-<!-- 3 -->
+<!-- 2 · Problem and business -->
 <section>
-  <p class="eyebrow">02 · Business (simulated)</p>
-  <h2>Two products, three branches</h2>
-  <div class="grid g2" style="margin-top:20px">
-    <div class="card">
-      <span class="tag">Product 1</span><h3>18 health-check packages</h3>
-      <ul>
-        <li>4 book-now packages, e.g. Essential Check ฿1,190, Workday Check ฿1,690</li>
-        <li>11 follow-up tests, ฿290–฿990, reviewed by staff first</li>
-        <li>3 corporate packages for 20+ people</li>
-      </ul>
+  <div class="frame">
+    <h2>ลูกค้าถามเรื่องเดิมทุกครั้งที่ตรวจสุขภาพ</h2>
+    <div class="split" style="grid-template-columns:1.25fr 1fr;align-items:start">
+      <table class="t" style="font-size:23px">
+        <tr><th style="width:150px">ช่วงเวลา</th><th>คำถามที่ได้ยินทุกวัน</th></tr>
+        <tr><td><strong>ก่อนตรวจ</strong></td><td>มีงบ 1,500 บาท ควรเลือกแพ็กเกจไหน</td></tr>
+        <tr><td><strong>นัดหมาย</strong></td><td>ศูนย์ไหนว่าง ต้องงดอาหารไหม เลื่อนนัดได้ไหม</td></tr>
+        <tr class="lead"><td><strong>ได้ผลแล้ว</strong></td><td>HbA1c บนใบผลบอกอะไร ค่าไหนอยู่นอกช่วง</td></tr>
+      </table>
+      <div style="border:1px solid var(--line);border-radius:14px;background:var(--surface);padding:24px 26px">
+        <h3>LabClear (ธุรกิจจำลอง)</h3>
+        <ul class="notes-list" style="margin-top:12px">
+          <li><b class="num">18 แพ็กเกจ</b>เริ่ม ฿1,190 · ตรวจติดตามต้องให้ทีมงานพิจารณาก่อน</li>
+          <li><b class="num">3 ศูนย์</b>กรุงเทพฯ เชียงใหม่ ขอนแก่น · จ.–ส. 07:00–16:00</li>
+          <li style="border-bottom:0"><b>AI Lab Report</b>ฟรี 1 รายงาน · Plus ฿355 ต่อ 30 วัน</li>
+        </ul>
+      </div>
     </div>
-    <div class="card focal">
-      <span class="tag">Product 2</span><h3>AI Lab Report</h3>
-      <ul>
-        <li><strong>Free</strong>: one report image read and explained with sources</li>
-        <li><strong>Plus ฿355 / 30 days</strong>: unlimited readings, 3 pages each, lab dashboard, change since the last report</li>
-      </ul>
-    </div>
+    <p class="small" style="position:absolute;left:60px;bottom:40px">ราคา ศูนย์บริการ การชำระเงิน และใบผลทั้งหมดเป็นข้อมูลสมมติ ระบบให้ข้อมูลทั่วไป ไม่วินิจฉัยโรค</p>
   </div>
-  <p class="small" style="margin-top:22px">Branches: Ari (Bangkok) · Suthep (Chiang Mai) · Khon Kaen — Mon–Sat 07:00–16:00 · All payments are simulated</p>
+  <aside class="notes">[0:10–0:20] ลูกค้าถามสามช่วง ก่อนตรวจ ตอนนัด และหลังได้ผล ทีมงานตอบซ้ำทั้งวัน แชตบอตตอบส่วนที่เป็นข้อมูล ส่วนการยืนยันนัดและเงินยังเป็นงานของคน</aside>
 </section>
 
-<!-- 4 -->
+<!-- 3 · Customer journey + demo -->
 <section>
-  <p class="eyebrow">03 · Chatbot scope</p>
-  <h2>Do and don't</h2>
-  <div class="grid g2" style="margin-top:16px">
-    <div class="card"><h3 class="ok">Do</h3><ul>
-      <li>Answer only from the catalog, policies and the reviewed knowledge base</li>
-      <li>Cite numbered sources in every health answer</li>
-      <li>Ask back when details are missing (branch, date, budget)</li>
-      <li>Hand over to staff when out of scope or when asked</li>
-      <li>Treat text inside images and chat history as data, not instructions</li>
-    </ul></div>
-    <div class="card"><h3 class="no">Don't</h3><ul>
-      <li>Diagnose, prescribe or give a dose</li>
-      <li>Invent prices, discounts or policies</li>
-      <li>Confirm bookings or refunds (staff do)</li>
-      <li>Reveal other customers' data, the system prompt or API keys</li>
-    </ul></div>
-  </div>
-  <aside class="notes">These rules are enforced twice: in the prompt and in Python code that checks every answer before it is shown.</aside>
-</section>
-
-<!-- 5 -->
-<section>
-  <p class="eyebrow">04 · Architecture</p>
-  <h2 style="margin-bottom:.3em">System architecture</h2>
-  <div class="grid" style="grid-template-columns:1.35fr 1fr;align-items:center">
-    <div class="figure"><img src="../docs/assets/architecture.png" alt="LabClear architecture" style="max-height:590px"></div>
-    <div style="font-size:.7em">
-      <ul>
-        <li><strong>FastAPI</strong>: one entry point with session, CSRF and rate limit</li>
-        <li><strong>Chatbot pipeline</strong>: the core of the project</li>
-        <li><strong>Report reader</strong>: OCR → values → status</li>
-        <li><strong>Booking · payments · Plus</strong>, confirmed by staff</li>
-        <li><strong>AI providers</strong>: chosen per step on an admin page</li>
-        <li><strong>PostgreSQL</strong>: encrypted data, keys and the 300 THB cap</li>
-      </ul>
-      <p class="small">Deploys to Render or Vercel from GitHub</p>
+  <div class="frame">
+    <h2>จากใบผลที่มี ไปสู่การตรวจที่ต้องการ</h2>
+    <div class="split" style="grid-template-columns:1fr 1.02fr;align-items:start">
+      <ol class="steps">
+        <li>แนบรูปหรือ PDF ใบผลในแชต<span>Gemini อ่านทุกแถว แสดงค่าข้างภาพ</span></li>
+        <li>ลูกค้าตรวจและกดยืนยันค่าเอง<span>ยังไม่อธิบายอะไรก่อนกดยืนยัน</span></li>
+        <li>อ่านคำอธิบายพร้อมแหล่งอ้างอิง<span>เทียบกับช่วงที่พิมพ์บนใบผลเดียวกัน ไม่วินิจฉัย</span></li>
+        <li>ถามหาการตรวจติดตาม ถ้าต้องการ<span>ลูกค้าเป็นคนเลือก ระบบไม่ขายเพราะค่าผิดปกติ</span></li>
+        <li>ขอเวลานัด ทีมงานยืนยัน แล้วจึงชำระ</li>
+      </ol>
+      <div>
+        <div class="shot" style="height:476px"><img src="img/chat-guest.png" alt="แชตผู้เยี่ยมชม: คำตอบเรื่อง HbA1c พร้อมแหล่งอ้างอิง 2 รายการ และแถบโหมดผู้เยี่ยมชม"></div>
+        <p class="cap">แชตผู้เยี่ยมชมบนเว็บ 4.0.0 · ภาพจากโหมดพัฒนา คำตอบมาจาก AI จำลอง</p>
+      </div>
     </div>
   </div>
+  <aside class="notes">[0:20–1:10] สาธิต 50 วินาที บนเว็บที่ deploy แล้ว (ถ้ายังไม่มี ใช้คลิปสาธิต): ถาม "HbA1c คืออะไร" แล้วเปิดแหล่งอ้างอิง → แนบใบผลตัวอย่าง ดูขั้นตอนอ่าน แล้วกด "ค่าถูกต้อง นี่คือรายงานของฉัน" → อ่านคำอธิบาย → กดรีเฟรชให้เห็นว่าแชตผู้เยี่ยมชมหาย พูดระหว่างรอ: ลูกค้ายืนยันค่าก่อนเสมอ และทุกคำตอบบอกแหล่งที่มา</aside>
 </section>
 
-<!-- 6 -->
+<!-- 4 · CEO overview -->
 <section>
-  <p class="eyebrow">05 · Data flow</p>
-  <h2 style="margin-bottom:.3em">One message, five model checkpoints</h2>
-  <div class="grid" style="grid-template-columns:1fr 1.05fr;align-items:center">
-    <div class="figure"><img src="../docs/assets/message-flow.png" alt="How one message is processed" style="max-height:600px"></div>
-    <ol class="steps" style="font-size:.66em">
-      <li>Count the call and check the budget first</li>
-      <li>Safety check screens the message</li>
-      <li>Language model plans and writes search terms</li>
-      <li>BM25 searches the knowledge base and catalog</li>
-      <li>Language model drafts a Thai answer with sources</li>
-      <li>Python checks prices, policies and citations</li>
-      <li>Language model reviews; safety check screens the answer</li>
-      <li>All pass → answer · otherwise → failed + Retry</li>
-    </ol>
+  <div class="frame">
+    <h2>ความเห็น CEO 5 ข้อ และสิ่งที่เปลี่ยน</h2>
+    <table class="t" style="font-size:22px">
+      <tr><th style="width:36px">ข้อ</th><th style="width:44%">CEO บอกว่า</th><th>เราเปลี่ยนเป็น</th></tr>
+      <tr><td class="k">1</td><td>แหล่งอ้างอิงน้อยและเจาะจงบางโรงพยาบาล อยากให้ลูกค้าองค์กรอัปโหลดเอกสารเอง</td><td>135 แหล่งจาก 24 ผู้เผยแพร่ และเอกสารขององค์กรที่เจ้าหน้าที่ตรวจก่อนใช้</td></tr>
+      <tr><td class="k">2</td><td>ไม่ได้เข้าสู่ระบบ ประวัติแชตหายเมื่อรีเฟรช</td><td>คงการลบไว้เพื่อความเป็นส่วนตัว บอกผู้ใช้ชัด ๆ และเลือกเก็บแชตตอนเข้าสู่ระบบได้</td></tr>
+      <tr><td class="k">3</td><td>ย้ายจาก Render ไป Cloudflare บนโดเมนที่ซื้อไว้</td><td>Worker หน้าเว็บ + Worker API ที่รัน FastAPI ใน Container</td></tr>
+      <tr><td class="k">4</td><td>ใช้ OpenRouter key ของทีม โมเดลถูก ดี เร็ว งบ USD 10</td><td>คีย์เดียว 4 โมเดล ประมาณ USD 0.008 ต่อคำตอบ ระบบหยุดที่ 360 บาท</td></tr>
+      <tr><td class="k">5</td><td>เว็บเน้นภาษาไทย ใช้ Next/React/Three ให้เด่นและเข้าใจง่าย</td><td>Next.js 16 + React 19 + React Three Fiber ภาษาไทยเป็นค่าเริ่มต้น</td></tr>
+    </table>
   </div>
-  <aside class="notes">Fail closed: if any step fails, the customer sees the status and a Retry button instead of an unchecked answer.</aside>
+  <aside class="notes">[1:10–1:20] นี่คือความเห็นห้าข้อของ CEO กับสิ่งที่เราเปลี่ยน สไลด์ถัดไปเล่าทีละข้อ วงกลมมุมขวาบนบอกว่ากำลังตอบข้อไหน</aside>
 </section>
 
-<!-- 7 -->
+<!-- 5 · CEO 5: Thai-first Next.js website -->
 <section>
-  <p class="eyebrow">06 · RAG</p>
-  <h2>Thai knowledge base with citations</h2>
-  <div class="grid g4" style="margin:18px 0 26px">
-    <div><div class="stat">58</div><div class="stat-label">reviewed medical sources</div></div>
-    <div><div class="stat">46</div><div class="stat-label">Siriraj Hospital and Faculty of Medicine</div></div>
-    <div><div class="stat">9</div><div class="stat-label">MedlinePlus</div></div>
-    <div><div class="stat">3</div><div class="stat-label">Srinagarind Hospital, KKU</div></div>
-  </div>
-  <div class="grid g2">
-    <div class="card"><h3>How it searches</h3>BM25 over text checked by SHA-256 on every load. Every source has Thai aliases, e.g. “น้ำตาลในเลือด” → glucose, HbA1c. The planner turns the question into search terms first.</div>
-    <div class="card"><h3>Why no vector database</h3>58 sources and exact test names: BM25 finds them precisely, is easy to audit and needs no embeddings or extra database.</div>
-  </div>
-  <aside class="notes">Prices, branches and policies come from the same files the website uses, so the chat always matches the site.</aside>
-</section>
-
-<!-- 8 -->
-<section>
-  <p class="eyebrow">07 · Safety</p>
-  <h2>Layered safety</h2>
-  <div class="grid g3" style="margin-top:14px">
-    <div class="card"><span class="tag">Model</span><h3>Safety check</h3>OpenThai-SystemOne (or Jev, Llama Guard) screens every message and answer. No verdict means blocked.</div>
-    <div class="card"><span class="tag">Code</span><h3>Validator</h3>Prices must match the catalog, sources must exist, lab values must match the report.</div>
-    <div class="card"><span class="tag">Model</span><h3>Reviewer</h3>A second pass checks the answer stays within the evidence and does not diagnose.</div>
-    <div class="card"><span class="tag">Business</span><h3>People confirm</h3>Bookings, payments and refunds go through staff.</div>
-    <div class="card"><span class="tag">Data</span><h3>Encryption</h3>Customer data and API keys are encrypted; each session sees only its own records.</div>
-    <div class="card focal"><span class="tag">Cost</span><h3>Spending cap</h3>Calls counted in the database plus a 300 THB budget; AI stops when either is reached.</div>
-  </div>
-</section>
-
-<!-- 9 -->
-<section>
-  <p class="eyebrow">08 · AI providers</p>
-  <h2>Any provider, chosen on an admin page</h2>
-  <div class="grid" style="grid-template-columns:1fr 1.1fr;gap:28px;align-items:center">
-    <div style="font-size:.72em">
-      <p><span class="pill">Typhoon</span><span class="pill">OpenAI</span><span class="pill">Claude</span><span class="pill">Gemini</span><span class="pill">Hugging Face</span><span class="pill">OpenRouter</span><span class="pill">Grok</span><span class="pill">Kimi</span><span class="pill">Qwen</span><span class="pill">DeepSeek</span><span class="pill">Custom</span></p>
-      <p><strong>Safety check:</strong> <span class="pill">OpenThai-SystemOne</span><span class="pill">Jev</span><span class="pill">Llama Guard 4</span></p>
-      <ul>
-        <li>Managers pick a provider, model and key for each step</li>
-        <li>Keys are encrypted and never shown again</li>
-        <li>Every change is audit-logged; <em>Test</em> makes one real call</li>
+  <div class="frame">
+    <div class="ceo">ความเห็น CEO <b>5</b></div>
+    <h2>เว็บใหม่ ภาษาไทยเป็นหลัก</h2>
+    <div class="split" style="grid-template-columns:1.45fr 1fr;align-items:start">
+      <div><div class="shot" style="height:420px"><img src="img/home.png" alt="หน้าแรกภาษาไทย: จองตรวจสุขภาพ เข้าใจผลตรวจ พร้อม DNA helix จากอนุภาค"></div></div>
+      <ul class="notes-list">
+        <li><b>Next.js 16 · React 19 · React Three Fiber</b>ย้ายทุกหน้า: เว็บ แชต และหน้าเจ้าหน้าที่</li>
+        <li><b>ไทยก่อน สลับ EN ได้</b>คำแปลไทยมากกว่า 2,000 รายการ ตรวจครบด้วย <code>i18n:check</code></li>
+        <li><b>DNA helix 3 มิติจากอนุภาค</b>แสดงแบบนิ่งเมื่อผู้ใช้ตั้ง reduced motion</li>
+        <li style="border-bottom:0"><b>หน้าตาเดิมที่เจ้าของชอบ</b>สีม่วง ฟอนต์ Noto Sans/Serif Thai และการ์ดชุดเดิม</li>
       </ul>
     </div>
-    <div class="shot" style="height:420px"><img src="../docs/assets/screenshots/ai-providers.jpg" alt="AI providers admin page"></div>
   </div>
-  <aside class="notes">System One models are decision models: one call returns a calibrated label such as safe or medical_advice, with no generated text.</aside>
+  <aside class="notes">[1:20–1:28] ทั้งเว็บย้ายไป Next.js ภาษาไทยเป็นค่าเริ่มต้น หน้าตาเดิมที่ชอบยังอยู่ และหน้าแรกมี DNA สามมิติ</aside>
 </section>
 
-<!-- 10 -->
+<!-- 6 · CEO 3: architecture -->
 <section>
-  <p class="eyebrow">09 · Chat</p>
-  <h2>A chat that shows its work</h2>
-  <div class="grid" style="grid-template-columns:1fr 1.25fr;gap:28px;align-items:center">
-    <div style="font-size:.72em">
-      <ul>
-        <li><strong>Reports in the chat:</strong> attach a photo or PDF, see it in the conversation, confirm the values in one click</li>
-        <li><strong>Live steps:</strong> safety check, plan and role, sources found, draft, second review, safety check</li>
-        <li><strong>Chats and projects</strong> like Claude or ChatGPT</li>
-        <li><strong>Demo accounts</strong> <code>test-01</code>, <code>test-02</code>, <code>admin</code> · password <code>1234</code></li>
+  <div class="frame tall">
+    <div>
+      <div class="ceo inline">ความเห็น CEO <b>3</b></div>
+      <h2>Cloudflare:<br>สอง Worker บนโดเมนเดียว</h2>
+      <ul class="notes-list">
+        <li><b><code>labclear-web</code></b>หน้าเว็บ Next.js ส่ง <code>/api</code> ต่อผ่าน service binding ทำให้ cookie และ CSRF ใช้ origin เดียวกัน</li>
+        <li><b><code>labclear-api</code></b>FastAPI ใน Container 1 instance หลับเมื่อไม่มีคำขอ 25 นาที</li>
+        <li><b>PostgreSQL ภายนอก</b>ทุกแถวเข้ารหัส Fernet แชตผู้เยี่ยมชมอยู่ใน RAM เท่านั้น</li>
+        <li style="border-bottom:0"><b>OpenRouter คีย์เดียว</b>ทุกการเรียกผ่านเพดานจำนวนครั้งและงบบาทก่อน</li>
       </ul>
-      <p class="small">Nothing from a report is explained before the customer confirms it. Lab reports get their own safety question: hidden instructions are blocked, the customer's own health data is expected.</p>
     </div>
-    <div class="shot" style="height:440px"><img src="../docs/assets/screenshots/chat.jpg" alt="A lab report confirmed in the chat and explained with sources"></div>
+    <figure><img src="img/architecture-slide.png" alt="แผนภาพสถาปัตยกรรม LabClear 4.0.0: เบราว์เซอร์ → labclear-web → labclear-api → FastAPI ใน Container → PostgreSQL และ OpenRouter"></figure>
   </div>
-  <aside class="notes">The steps stream from the server while the answer is prepared and disappear when it arrives; the same steps stay under "How this was checked".</aside>
+  <aside class="notes">[1:28–1:40] ผู้ใช้เห็นโดเมนเดียว Worker หน้าเว็บส่งคำขอ API ต่อไปที่ Worker ที่รัน FastAPI ใน container ฐานข้อมูลอยู่ข้างนอกและเข้ารหัสทุกแถว โมเดลทุกตัวมาจาก OpenRouter</aside>
 </section>
 
-<!-- 11 -->
+<!-- 7 · one message data flow -->
 <section>
-  <p class="eyebrow">10 · Product</p>
-  <h2>Website and customer workspace</h2>
-  <div class="grid g2" style="gap:18px 26px">
-    <div><div class="shot" style="height:215px"><img src="../docs/assets/screenshots/home.jpg" alt="Home page"></div><p class="cap">Home</p></div>
-    <div><div class="shot" style="height:215px"><img src="../docs/assets/screenshots/compare.jpg" alt="Compare packages"></div><p class="cap">Compare packages test by test</p></div>
-    <div><div class="shot" style="height:215px"><img src="../docs/assets/screenshots/lab-dashboard.jpg" alt="Lab dashboard"></div><p class="cap">Lab dashboard (Plus)</p></div>
-    <div><div class="shot" style="height:215px"><img src="../docs/assets/screenshots/lab-report.jpg" alt="Lab Report"></div><p class="cap">Printable Lab Report</p></div>
+  <div class="frame tall">
+    <div>
+      <h2>หนึ่งข้อความ<br>ผ่านการตรวจก่อนถึงลูกค้า</h2>
+      <ol class="steps">
+        <li>regex ตรวจคำโจมตีก่อนเรียกโมเดลใด ๆ</li>
+        <li>safety ขาเข้า + planner ทำพร้อมกัน<span>ใช้แผนเมื่อข้อความผ่านการตรวจเท่านั้น</span></li>
+        <li>ค้น BM25 + vector และเอกสารองค์กร แล้ว Gemini เขียนคำตอบ</li>
+        <li>Python ตรวจ citation ค่าผลตรวจ และราคา</li>
+        <li>reviewer + safety ขาออก ทำพร้อมกัน<span>ขั้นไหนไม่ผ่าน หยุด แสดงสาเหตุ และให้ลองใหม่</span></li>
+      </ol>
+    </div>
+    <figure><img src="img/message-flow-slide.png" alt="แผนภาพการไหลของข้อมูล 1 ข้อความ 9 ขั้น จากเบราว์เซอร์ผ่าน Cloudflare ถึง FastAPI และ OpenRouter"></figure>
   </div>
-  <p class="small">Screens from the browser test run (simulated data) · live chat demo on the next slide</p>
+  <aside class="notes">[1:40–1:52] ข้อความหนึ่งข้อความผ่าน regex ก่อน แล้วตรวจความปลอดภัยพร้อมกับวางแผน ค้นแหล่งอ้างอิง เขียนคำตอบ ให้ Python ตรวจ แล้ว reviewer กับ safety ตรวจพร้อมกันอีกรอบ ไม่ผ่านขั้นไหนก็หยุดทันที</aside>
 </section>
 
-<!-- 11 -->
+<!-- 8 · CEO 4: models and cost -->
 <section>
-  <p class="eyebrow">11 · Live demo · 3 min</p>
-  <h2>Demo on labclear.onrender.com</h2>
-  <div class="grid" style="grid-template-columns:1.4fr 1fr;align-items:start">
-    <ol class="steps" style="font-size:.72em">
-      <li>“Which package fits 1,500 baht?” → real catalog prices</li>
-      <li>“What is HbA1c?” → Thai answer with numbered sources</li>
-      <li>Attach a sample report in the chat → confirm the values in one click → watch the steps → read the explanation</li>
-      <li>Try to talk it into a 50% discount → refused by policy</li>
-      <li>Request a time → staff confirm it in <code>/staff</code></li>
-    </ol>
-    <div class="shot" style="width:250px;height:470px;justify-self:center"><img src="../docs/assets/screenshots/mobile.jpg" alt="LabClear on a phone"></div>
+  <div class="frame">
+    <div class="ceo">ความเห็น CEO <b>4</b></div>
+    <h2>คีย์ OpenRouter เดียว โมเดลเล็กที่เร็ว</h2>
+    <div class="split" style="grid-template-columns:1.5fr 1fr;gap:44px;align-items:start">
+      <div>
+      <table class="t">
+        <tr><th>ขั้น</th><th>โมเดล</th><th style="text-align:right">USD / คำตอบ</th></tr>
+        <tr><td>Planner</td><td>Qwen3 30B A3B</td><td class="num" style="text-align:right">0.0004</td></tr>
+        <tr class="lead"><td>เขียนคำตอบ และอ่านใบผล</td><td>Gemini 3.1 Flash Lite</td><td class="num" style="text-align:right">0.0033</td></tr>
+        <tr><td>Reviewer</td><td>GPT-4.1 mini</td><td class="num" style="text-align:right">0.0029</td></tr>
+        <tr><td>Safety ขาเข้า + ขาออก</td><td>GPT-4.1 mini</td><td class="num" style="text-align:right">0.0012</td></tr>
+        <tr><td>Embedding (1024 มิติ)</td><td>Qwen3 Embedding 8B</td><td class="num" style="text-align:right">≈ 0</td></tr>
+        <tr><td><strong>รวม</strong></td><td></td><td class="num" style="text-align:right"><strong>≈ 0.008</strong></td></tr>
+      </table>
+      <div class="split" style="grid-template-columns:repeat(3,1fr);gap:22px;margin-top:26px;font-size:17px;line-height:1.42">
+        <div><strong style="display:block;font-size:19px">เร็ว</strong>ตรวจความปลอดภัยคู่กับ planner และ reviewer ข้าม reviewer เมื่อทักทาย ปิด reasoning ของ Gemini</div>
+        <div><strong style="display:block;font-size:19px">เป็นส่วนตัว</strong>ขอเฉพาะ endpoint แบบ zero data retention ที่ไม่เก็บข้อมูล ไม่มี fallback</div>
+        <div><strong style="display:block;font-size:19px">คุมงบ</strong>เพดานจำนวนครั้งและ ledger บาทก่อนทุกการเรียก ล้มเหลวแล้วหยุด</div>
+      </div>
+      </div>
+      <div>
+        <div class="hero-num">≈ 1,250</div>
+        <p style="font-size:22px;margin-top:12px">คำตอบต่องบ USD 10<br><span class="muted">ระบบหยุดเรียก AI เมื่อครบ 360 บาท</span></p>
+        <p class="small" style="margin-top:26px">ประมาณจากราคา 7 ต.ค. 2569 และจำนวน token ที่สมมติ ยังไม่ได้เรียก OpenRouter จริง ต้องยืนยันด้วย usage หลัง deploy</p>
+      </div>
+    </div>
   </div>
-  <aside class="notes">Open the site a minute early: Render's free plan sleeps after 15 idle minutes. If the network fails, use the screenshots on the previous slide.</aside>
+  <aside class="notes">[1:52–2:04] ทุกขั้นใช้คีย์ OpenRouter ของทีม Qwen วางแผน Gemini Flash Lite เขียนและอ่านใบผล GPT-4.1 mini ตรวจทาน ประมาณ 0.008 ดอลลาร์ต่อคำตอบ งบ 10 ดอลลาร์จึงพอราว 1,250 คำตอบ ตัวเลขนี้ยังเป็นค่าประมาณครับ</aside>
 </section>
 
-<!-- 12 -->
+<!-- 9 · CEO 2: guest privacy -->
 <section>
-  <p class="eyebrow">12 · Testing</p>
-  <h2>Assignment tests and automated tests</h2>
-  <div class="grid g3" style="margin:14px 0 22px">
-    <div class="card"><div class="stat">10</div><div class="stat-label">business and health questions (keywords + sources)</div></div>
-    <div class="card"><div class="stat">5</div><div class="stat-label">synthetic lab reports in 3 layouts (pass at ≥ 90% values)</div></div>
-    <div class="card"><div class="stat">5</div><div class="stat-label">safety cases: injection, other people's data, dosing</div></div>
+  <div class="frame">
+    <div class="ceo">ความเห็น CEO <b>2</b></div>
+    <h2>ผู้เยี่ยมชม: รีเฟรชแล้วแชตหาย ตามที่เจ้าของเลือก</h2>
+    <div class="split" style="grid-template-columns:1.4fr 1fr;gap:44px;align-items:start">
+      <table class="t" style="font-size:22px">
+        <tr><th style="width:56%">เมื่อผู้เยี่ยมชม…</th><th>แชตและภาพที่แนบ</th></tr>
+        <tr><td>รีเฟรช หรือปิดแท็บ</td><td>ลบบนเซิร์ฟเวอร์ทันที (beacon)</td></tr>
+        <tr><td>กดย้อนกลับมาหน้าเดิม</td><td>หน้าโหลดใหม่ ไม่เห็นแชตเก่า</td></tr>
+        <tr class="lead"><td>เข้าสู่ระบบ และติ๊ก "เก็บแชตนี้ไว้ในบัญชีของฉัน"</td><td>ย้ายเข้าบัญชี อยู่ต่อหลังรีเฟรช</td></tr>
+        <tr><td>เข้าสู่ระบบโดยไม่ติ๊ก</td><td>ลบ</td></tr>
+        <tr><td>ไม่ใช้งาน 20 นาที</td><td>ลบ</td></tr>
+      </table>
+      <ul class="notes-list">
+        <li><b>ไม่มีอะไรในเบราว์เซอร์</b>ไม่ใช้ localStorage, sessionStorage หรือ cookie เก็บ token ไว้ในหน่วยความจำของหน้าเท่านั้น</li>
+        <li><b>บอกผู้ใช้ตลอด</b>แถบโหมดผู้เยี่ยมชมเหนือช่องพิมพ์ และเบราว์เซอร์ถามก่อนออกจากหน้า</li>
+        <li style="border-bottom:0"><b>ทดสอบแล้ว</b>pytest 2 ข้อ และ UAT R4-02 ถึง R4-04 ผ่าน</li>
+      </ul>
+    </div>
   </div>
-  <table class="t">
-    <tr><th>Automated suite</th><th>Result</th><th>Covers</th></tr>
-    <tr><td>pytest</td><td class="ok">170 passed</td><td>Business rules, bookings, payments, permissions, ledger, call cap, AI providers, safety guards</td></tr>
-    <tr><td>Browser UAT (Playwright)</td><td class="ok">34 / 34</td><td>Customer → booking → staff confirmation → payment → AI Lab Report → report in the chat → chats and projects → demo sign-in → AI providers page</td></tr>
-  </table>
-  <p class="small" style="margin-top:14px">The 10 / 5 / 5 sets run against the live site with <code>scripts/course_eval.py</code>; results are in the report.</p>
-  <aside class="notes">Automated suites use model doubles, so they prove flows and screens; answer quality is measured by the live evaluation.</aside>
+  <aside class="notes">[2:04–2:14] CEO สังเกตว่าแชตหายเมื่อรีเฟรช เจ้าของเลือกให้ลบต่อเพราะเป็นข้อมูลสุขภาพ เราจึงลบให้แน่นขึ้น บอกผู้ใช้ตลอด และให้เลือกเก็บแชตตอนเข้าสู่ระบบ</aside>
 </section>
 
-<!-- 13 -->
+<!-- 10 · CEO 1: organization documents -->
 <section>
-  <p class="eyebrow">13 · Improvements</p>
-  <h2>Before → after</h2>
-  <table class="t" style="font-size:.6em">
-    <tr><th style="width:24%">Area</th><th>Before</th><th>After</th></tr>
-    <tr><td><strong>AI on Render free</strong></td><td>“Assistant unavailable”: the call counter lived on a disk wiped at every restart</td><td>Counter moved to the database; works on the free plan and shows in the staff view</td></tr>
-    <tr><td><strong>Sources</strong></td><td>Answers showed raw IDs such as <code>[siriraj-glucose-07]</code></td><td>Numbered [1] [2] links to real sources plus “How this was checked”</td></tr>
-    <tr><td><strong>Booking</strong></td><td>Auto-confirmed, risking full slots or broken rules</td><td>“Awaiting confirmation” until staff confirm, then payment</td></tr>
-    <tr><td><strong>AI providers</strong></td><td>One hard-coded provider; keys only in server settings</td><td>12 providers and 3 safety models, chosen on an admin page with encrypted keys</td></tr>
-  </table>
-</section>
-
-<!-- 14 -->
-<section>
-  <p class="eyebrow">14 · Cost &amp; limits</p>
-  <h2>Useful, on a controlled budget</h2>
-  <div class="grid g2">
-    <div class="card"><h3>Cost</h3><ul>
-      <li>Typhoon API: free tier</li>
-      <li>OpenThai-SystemOne: free preview, 1,000 decisions a day</li>
-      <li>Render or Vercel and Postgres: free plans</li>
-      <li>Hard cap: 300 THB and a call limit, enforced in code</li>
-    </ul></div>
-    <div class="card"><h3>Limits</h3><ul>
-      <li>Business data and lab reports are simulated</li>
-      <li>General health information, not a diagnosis</li>
-      <li>Render free sleeps after 15 idle minutes</li>
-      <li>Free Render databases expire after 30 days</li>
-    </ul></div>
+  <div class="frame">
+    <div class="ceo">ความเห็น CEO <b>1</b></div>
+    <h2>โรงพยาบาลเพิ่มเอกสารของตัวเอง เจ้าหน้าที่ตรวจก่อนใช้</h2>
+    <div class="flow" style="grid-template-columns:repeat(5,1fr)">
+      <div>สร้างองค์กร<small>ได้รหัสเข้าร่วม · ผู้จัดการ LabClear</small></div>
+      <div>เข้าร่วมด้วยรหัส<small>ลูกค้าที่มีบัญชี</small></div>
+      <div>อัปโหลดเอกสาร<small>PDF, DOCX, TXT, MD · ผู้ดูแลองค์กร</small></div>
+      <div>ตรวจแล้วอนุมัติ<small>อ่านทุกช่วงข้อความ · ผู้จัดการ LabClear</small></div>
+      <div>แชตอ้างอิงได้<small>เฉพาะสมาชิก ระบุชื่อองค์กรเป็นแหล่งที่มา</small></div>
+    </div>
+    <div class="split" style="grid-template-columns:1.25fr 1fr;gap:40px;margin-top:26px;align-items:start">
+      <div><div class="shot" style="height:300px"><img src="img/orgs.png" alt="หน้าองค์กรของฉัน: เอกสารที่อนุมัติแล้วและปุ่มใช้ในแชตของฉัน"></div><p class="cap">หน้าองค์กรของฉัน · ภาพจาก UAT R4-05</p></div>
+      <ul class="notes-list">
+        <li>ช่วงที่ดูเหมือนสั่ง AI ถูกทำเครื่องหมายและไม่ถูกใช้</li>
+        <li>ค้นด้วย BM25 บนเซิร์ฟเวอร์ ไม่ส่งไปทำ embedding</li>
+        <li style="border-bottom:0">เก็บเป็นข้อความเข้ารหัส ไม่เก็บไฟล์ต้นฉบับ</li>
+      </ul>
+    </div>
   </div>
+  <aside class="notes">[2:14–2:24] โรงพยาบาลที่เป็นลูกค้าองค์กรเข้าร่วมด้วยรหัส ผู้ดูแลอัปโหลดเอกสาร เจ้าหน้าที่ LabClear อ่านและอนุมัติก่อน แล้วแชตของสมาชิกจึงอ้างอิงได้ ข้อความที่ดูเหมือนสั่ง AI ถูกตัดออก</aside>
 </section>
 
-<!-- 15 -->
-<section class="title-slide">
-  <div class="brand"><img src="../static/img/mark.svg" alt="">LabClear</div>
-  <div class="rule" style="width:120px"></div>
-  <h1 style="font-size:3em">Thank you</h1>
-  <p class="sub">Questions?</p>
-  <p class="small" style="margin-top:1.2em">Try it <a href="https://labclear.onrender.com">labclear.onrender.com</a><br>
-  Code and report <a href="https://github.com/siriponsri/LabClear">github.com/siriponsri/LabClear</a></p>
+<!-- 11 · CEO 1: knowledge base -->
+<section>
+  <div class="frame">
+    <div class="ceo">ความเห็น CEO <b>1</b></div>
+    <h2>ฐานความรู้จาก 58 เป็น 135 รายการ 24 ผู้เผยแพร่</h2>
+    <div class="split" style="grid-template-columns:1.25fr 1fr;gap:50px;align-items:start">
+      <ul class="bars" style="margin-top:8px">
+        <li><span>ห้องแล็บโรงพยาบาลไทย</span><span class="bar"><i style="width:100%"></i></span><span class="v">49</span></li>
+        <li><span>แหล่งอ้างอิงสากล</span><span class="bar"><i style="width:83.7%"></i></span><span class="v">41</span></li>
+        <li><span>หน่วยงานสากล</span><span class="bar"><i style="width:55.1%"></i></span><span class="v">27</span></li>
+        <li><span>สมาคมวิชาชีพไทย</span><span class="bar"><i style="width:26.5%"></i></span><span class="v">13</span></li>
+        <li><span>หน่วยงานรัฐไทย</span><span class="bar"><i style="width:10.2%"></i></span><span class="v">5</span></li>
+        <li style="margin-top:22px;font-size:17px;color:var(--muted);display:block">ทุกการตรวจในแค็ตตาล็อกมีอย่างน้อย 2 ผู้เผยแพร่ และมีชื่อไทยที่คนทั่วไปใช้ เช่น น้ำตาลสะสม ไขมันเลว ค่าไต</li>
+      </ul>
+      <ul class="notes-list">
+        <li><b class="num">77 รายการใหม่ ยังไม่ได้ตรวจลิงก์</b>เขียนแบบออฟไลน์ ติด <code>url_checked=false</code> ต้องรัน <code>verify_sources.py</code> แล้วให้คนอ่านเทียบ</li>
+        <li style="border-bottom:0"><b class="num">13 ร่างของ 5 โรงพยาบาล แยกไว้</b>อยู่ใน <code>pending.json</code> ไม่ถูกค้น จนกว่าจะเจอบทความจริงของโรงพยาบาล</li>
+      </ul>
+    </div>
+  </div>
+  <aside class="notes">[2:24–2:32] ฐานความรู้สาธารณะเพิ่มเป็น 135 รายการ แต่ 77 รายการใหม่ยังไม่ได้ตรวจลิงก์ เพราะเขียนแบบออฟไลน์ ต้องรันสคริปต์ตรวจและให้คนอ่านเทียบก่อนส่ง</aside>
+</section>
+
+<!-- 12 · testing evidence -->
+<section>
+  <div class="frame">
+    <h2>ผลทดสอบที่มี และสิ่งที่ยังไม่ได้วัด</h2>
+    <div class="stats">
+      <div><div class="n">261</div><div class="l">pytest ผ่านทั้งหมด<br>รวม 11 ข้อใหม่ของ 4.0.0</div></div>
+      <div class="warn"><div class="n">49/51</div><div class="l">สถานการณ์ UAT บนเว็บ Next.js ผ่าน</div></div>
+      <div><div class="n" style="font-size:44px;line-height:1.32">ผ่าน</div><div class="l">type check และตรวจคำแปลไทย</div></div>
+      <div><div class="n" style="font-size:44px;line-height:1.32">ผ่าน</div><div class="l">build และ dry-run ของสอง Worker</div></div>
+    </div>
+    <div class="split" style="grid-template-columns:1fr 1fr;gap:44px;margin-top:28px">
+      <div>
+        <h3>UAT ที่ยังไม่ผ่าน</h3>
+        <ul class="notes-list">
+          <li><b>UI-21</b>กด Escape แล้วเมนูเว็บไม่ปิด ที่ 390 และ 768 px</li>
+          <li style="border-bottom:0"><b>UI-22</b>หน้า 404 ของ <code>/packages/P99</code> มี error ใน console</li>
+        </ul>
+      </div>
+      <div>
+        <h3>ยังไม่ได้วัด</h3>
+        <ul class="notes-list">
+          <li>ทุกผลข้างบนใช้โมเดลจำลอง ยังไม่ได้เรียก OpenRouter จริง</li>
+          <li style="border-bottom:0">ชุดทดสอบของวิชา คำถาม 10 ภาพ 5 ความปลอดภัย 5 ต้องรันหลัง deploy และให้คนตรวจทุกข้อ</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">[2:32–2:42] pytest ผ่าน 261 ข้อ UAT ผ่าน 49 จาก 51 อีกสองข้อเป็นบั๊กหน้าเว็บที่ต้องแก้ ทั้งหมดนี้ใช้โมเดลจำลอง คุณภาพคำตอบจริงต้องวัดหลัง deploy</aside>
+</section>
+
+<!-- 13 · deployment -->
+<section>
+  <div class="frame">
+    <div class="ceo">ความเห็น CEO <b>3</b></div>
+    <h2>Deploy บนบัญชีทีม: API ก่อน แล้วเว็บ</h2>
+    <div class="flow" style="grid-template-columns:repeat(5,1fr)">
+      <div>สร้าง PostgreSQL<small>เช่น Neon ใช้ <code>sslmode=require</code></small></div>
+      <div>ตั้ง secret ทีละตัว<small>ด้วย <code>wrangler secret put</code></small></div>
+      <div>ผูกโดเมน<small>ด้วย <code>npm run cf:domain</code></small></div>
+      <div>deploy API แล้วเว็บ<small>สคริปต์ deploy หรือ GitHub Actions</small></div>
+      <div>ตั้งค่าครั้งแรก<small>สร้างผู้จัดการ กดชุดโมเดลแบบเร็ว กด Test</small></div>
+    </div>
+    <div class="split" style="grid-template-columns:1fr 1fr;gap:44px;margin-top:30px;align-items:start">
+      <div>
+        <h3>ตรวจรับ</h3>
+        <ul class="notes-list" style="margin-bottom:16px">
+          <li><code>/health</code> ตอบ <code>4.0.0</code> และ commit ที่ deploy</li>
+          <li>เข้าสู่ระบบ จองนัด อัปโหลดใบผล ตรวจเอกสารองค์กร</li>
+          <li style="border-bottom:0">แชตผู้เยี่ยมชมหายหลังรีเฟรช · ย้อนรุ่นด้วย <code>wrangler rollback</code></li>
+        </ul>
+        <span class="pill warn">ยังไม่ได้ deploy จากเครื่องที่พัฒนา</span>
+      </div>
+      <div>
+        <h3>ค่าใช้จ่ายต่อเดือน</h3>
+        <table class="t" style="font-size:21px">
+          <tr><td>Cloudflare Workers Paid</td><td class="num" style="text-align:right">USD 5</td></tr>
+          <tr><td>Container ส่วนที่เกินโควตา</td><td style="text-align:right">ตามการใช้</td></tr>
+          <tr><td>OpenRouter</td><td style="text-align:right">ภายใน USD 10</td></tr>
+          <tr><td>PostgreSQL (Neon free tier)</td><td class="num" style="text-align:right">0</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">[2:42–2:50] คู่มือ deploy เป็นภาษาไทย ห้าขั้น สร้างฐานข้อมูล ตั้ง secret ผูกโดเมน deploy API ก่อนเว็บ แล้วตั้งค่าครั้งแรก ค่าคงที่คือ 5 ดอลลาร์ต่อเดือน</aside>
+</section>
+
+<!-- 14 · limitations and next steps -->
+<section>
+  <div class="frame">
+    <h2>สิ่งที่ยังไม่รู้ และงานก่อนส่ง 17 ต.ค.</h2>
+    <div class="split" style="grid-template-columns:1fr 1fr;gap:50px;align-items:start">
+      <div>
+        <h3>ข้อจำกัดตอนนี้</h3>
+        <ul class="notes-list">
+          <li>คุณภาพภาษาไทย ความเร็ว OCR และราคาจริงของโมเดลชุดใหม่ ยังไม่ได้วัด</li>
+          <li>ยังไม่ได้ build Docker image และขึ้น Cloudflare จริง</li>
+          <li>Container มี 1 instance แชตผู้เยี่ยมชมหายเมื่อ restart คำขอแรกหลังหลับต้องรอ</li>
+          <li style="border-bottom:0">ข้อมูลธุรกิจและใบผลเป็นข้อมูลจำลอง ระบบไม่วินิจฉัยโรค</li>
+        </ul>
+      </div>
+      <div>
+        <h3>ลำดับงานต่อไป</h3>
+        <ol class="steps">
+          <li>Deploy บนบัญชีทีมและทำรายการตรวจรับ</li>
+          <li>รันชุดทดสอบ 10 / 5 / 5 ให้คนตรวจทุกข้อ</li>
+          <li>ตรวจลิงก์และเนื้อหาแหล่งอ้างอิงใหม่ 77 รายการ</li>
+          <li>แก้ UI-21 และ UI-22 แล้วรัน UAT ซ้ำ</li>
+          <li>อัดคลิปสาธิตไม่เกิน 3 นาที</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">[2:50–2:57] สิ่งที่เรายังไม่รู้คือผลของโมเดลจริงบนระบบจริง งานถัดไปคือ deploy รันชุดทดสอบของวิชา ตรวจแหล่งอ้างอิง และแก้บั๊กสองข้อ</aside>
+</section>
+
+<!-- 15 · Closing -->
+<section class="night" data-background-color="#1b1328">
+  <div class="dots"></div>
+  <div class="frame">
+    <div class="brand"><img src="../web/public/img/mark.svg" alt="">LabClear 4.0.0</div>
+    <h2 style="font-family:var(--serif);font-size:52px;line-height:1.45;margin:56px 0 24px;max-width:1040px">ความเห็น CEO ทั้ง 5 ข้ออยู่ในโค้ดแล้ว<br>ขั้นต่อไปคือวัดผลบนระบบจริง</h2>
+    <p class="lede">ตอบภาษาไทยจากแหล่งที่ตรวจได้ ลบแชตผู้เยี่ยมชมเมื่อรีเฟรช รันบน Cloudflare และหยุดเรียก AI ที่ 360 บาท</p>
+    <div class="people">โค้ดและเอกสาร: github.com/siriponsri/LabClear · รายงานทางเทคนิค docs/report/LabClear_Technical_Report_4_0_0.pdf<br>นายวัชรินทร์ บัวสอน · นายศิริพล ศรีเฮงไพบูลย์</div>
+  </div>
+  <aside class="notes">[2:57–3:00] สรุปคือทำครบห้าข้อในโค้ดแล้ว และจะวัดผลบนระบบจริงต่อ ขอบคุณครับ</aside>
 </section>
 
 </div></div>
@@ -360,9 +464,9 @@ table.t td{border-bottom:1px solid var(--line);padding:9px 10px;vertical-align:t
 <script src="vendor/reveal.js-5.2.1/plugin/zoom/zoom.js"></script>
 <script>
 Reveal.initialize({
-  width: 1280, height: 720, margin: 0.06,
-  hash: true, slideNumber: 'c/t', transition: 'fade', transitionSpeed: 'fast',
-  center: true, controlsTutorial: false,
+  width: 1280, height: 720, margin: 0, minScale: 0.2, maxScale: 2,
+  hash: true, slideNumber: 'c/t', transition: 'fade', transitionSpeed: 'fast', backgroundTransition: 'none',
+  center: false, controls: false, controlsTutorial: false, pdfSeparateFragments: false,
   plugins: [RevealNotes, RevealZoom]
 });
 </script>
