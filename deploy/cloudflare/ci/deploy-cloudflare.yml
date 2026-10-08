@@ -1,0 +1,66 @@
+# INACTIVE COPY (integration 4.0.0-rc1). Deployment target is Render; Cloudflare is deferred.
+# This file used to live at .github/workflows/deploy-cloudflare.yml on the Claude 4.0.0 branch and
+# deployed on every push to main. It is kept here, outside .github/workflows, so GitHub never runs
+# it. Before moving it back: read deploy/cloudflare/README.md and drop the push trigger.
+# Deploy LabClear to Cloudflare: API (FastAPI in a Cloudflare Container) then the website (Next.js via OpenNext).
+# Repository secrets: CLOUDFLARE_API_TOKEN (Workers Scripts + Containers + Workers Routes edit), CLOUDFLARE_ACCOUNT_ID.
+# Application secrets (DATABASE_URL, BUSINESS_DATA_KEY, OPENROUTER_API_KEY, ...) live in Cloudflare, set once with
+# `npx wrangler secret put NAME` in deploy/cloudflare — never in this repository.
+name: Deploy to Cloudflare
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths-ignore: ["docs/**", "**/*.md", "presentation/**"]
+
+concurrency: { group: cloudflare-deploy, cancel-in-progress: false }
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install -r requirements-dev.txt
+      - run: python -m pytest -q
+      - uses: actions/setup-node@v4
+        with: { node-version: "22" }
+      - run: npm ci
+        working-directory: web
+      - run: npx tsc --noEmit -p . && npm run i18n:check
+        working-directory: web
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    # Set the repository variable CLOUDFLARE_DEPLOY=true once the secrets below exist.
+    if: ${{ vars.CLOUDFLARE_DEPLOY == 'true' }}
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: "22" }
+      - name: Deploy API worker and container (Docker is preinstalled on the runner)
+        working-directory: deploy/cloudflare
+        run: |
+          npm ci
+          npx wrangler deploy --var "LABCLEAR_COMMIT_SHA:${GITHUB_SHA}"
+      - name: Build and deploy the website worker
+        working-directory: web
+        run: |
+          npm ci
+          npx opennextjs-cloudflare build
+          npx opennextjs-cloudflare deploy
+      - name: Health check
+        if: ${{ vars.LABCLEAR_PUBLIC_URL != '' }}
+        run: |
+          for i in $(seq 1 20); do
+            body=$(curl -fsS "${{ vars.LABCLEAR_PUBLIC_URL }}/health" || true)
+            echo "$body" | grep -q "\"commit\":\"${GITHUB_SHA}\"" && echo "$body" && exit 0
+            sleep 15
+          done
+          echo "The new version did not answer /health in time"; exit 1

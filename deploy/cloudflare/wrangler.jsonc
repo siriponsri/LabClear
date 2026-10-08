@@ -1,0 +1,38 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  // LabClear API: FastAPI in a Cloudflare Container (Workers Paid plan).
+  // Not exposed on its own hostname: the website worker (web/wrangler.jsonc) reaches it through
+  // the "API" service binding, so pages and API share one public origin and one cookie.
+  "name": "labclear-api",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-10-01",
+  "workers_dev": false,
+  "containers": [{
+    "class_name": "LabClearContainer",
+    "image": "../../Dockerfile",
+    "image_build_context": "../..",
+    "max_instances": 1,
+    "instance_type": "basic"
+  }],
+  "durable_objects": { "bindings": [{ "name": "LABCLEAR", "class_name": "LabClearContainer" }] },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["LabClearContainer"] }],
+  // Every 5 minutes: run the LINE worker tick only when BUSINESS_WORKER_ENABLED=true.
+  "triggers": { "crons": ["*/5 * * * *"] },
+  "observability": { "enabled": true },
+  "vars": {
+    "LLM_PROVIDER": "openrouter",
+    "VISION_ENABLED": "true",
+    "VISION_PROVIDER": "openrouter",
+    "GUARD_PROVIDER": "openrouter_guard",
+    "OPENROUTER_AGENT_PROFILE": "true",
+    "OPENROUTER_ZDR": "true",
+    "OPENROUTER_DATA_COLLECTION": "deny",
+    "OPENROUTER_SORT": "latency",
+    "EMBEDDING_ENABLED": "true",
+    "PARALLEL_CHECKS": "true",
+    "PROJECT_BUDGET_THB": "360",
+    "BUSINESS_WORKER_ENABLED": "false",
+    "BUSINESS_EXTERNAL_ENABLED": "false",
+    "DEMO_ACCOUNTS": "false"
+  }
+}
