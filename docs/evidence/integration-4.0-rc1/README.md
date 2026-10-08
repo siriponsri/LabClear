@@ -19,7 +19,7 @@ manifest for the final head and the `git diff --stat` that shows no code change.
 | Render entrypoint smoke (unchanged `scripts/run_business.py`) | `python scripts/offline_check.py boot` | **PASS**: started/stopped, 8 route checks, isolated SQLite | `boot.json`, `boot.log` |
 | Next.js type check | `cd web && npx tsc --noEmit` | **pass** | `web-typecheck.log` |
 | Thai dictionary completeness | `cd web && npm run i18n:check` | **pass** (2,260 Thai strings) | `web-i18n.log` |
-| Next.js production build | `cd web && npm run build` | **pass**, 17 routes | `web-build.log` |
+| Next.js production build | `cd web && npm run build` | **pass**, 16 routes | `web-build.log` |
 | Web UAT, Codex flags as in the browser fixture (org documents, hospital links, landing preview on) | `npm run start:render` + `scripts/dev_mock_api.py` + `node tests/uat.mjs` | **53/53 passed**, 0 browser errors | `web-uat/uat.json`, screenshots |
 | Web UAT, every new Codex flag off (default deployment) | `UAT_FLAGS=off scripts/dev_mock_api.py` + `node tests/uat-flags-off.mjs` | **5/5 passed** | `web-uat-flags-off/uat.json` |
 

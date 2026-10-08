@@ -1,83 +1,132 @@
-# LabClear 4.0.0 — ตามความเห็น CEO 5 ข้อ
+# LabClear 4.0.0-rc1 — รุ่นรวม (integration candidate)
 
-วันที่ 8 ตุลาคม 2569 · ต่อจาก 3.1.0 (`3cf9076`) · เอกสารนี้คือข้อเท็จจริงของรุ่นนี้ ใช้อ้างอิงในรายงาน สไลด์ และคู่มือ
+วันที่ 9 ตุลาคม 2569 · branch `integration/labclear-4.0-rc1` · ฐานคือ Codex `main` `c970410` · commit ที่ทดสอบ `c8f3547`
+เอกสารนี้คือข้อเท็จจริงของรุ่นรวม ใช้อ้างอิงในรายงานภาษาไทย รายงานเทคนิค สไลด์ และคู่มือ
 
-## สรุปสั้น
+> **สถานะ:** candidate สำหรับตรวจรับ ยังไม่ได้ merge เข้า `main` ยังไม่ได้ deploy ยังไม่ได้เรียก API ของผู้ให้บริการ AI จริง
+> และไม่ได้แก้ ENV ของ production flag ใหม่ทั้ง 6 ตัวของ Codex ยังเป็น `false` ตามค่าเริ่มต้น
+>
+> เอกสารฉบับนี้เคยเป็น release notes ของ **Claude branch 4.0.0** (`release/4.0.0`, commit `95bf3d7`, 8 ต.ค. 2569) ซึ่งเลือก Cloudflare
+> Workers Paid และชุดโมเดล OpenRouter แบบเร็ว รุ่นรวมนี้ไม่ได้ใช้ทางเลือกสองข้อนั้น ผลทดสอบของ Claude branch ย้ายไปไว้ในหัวข้อ
+> [ประวัติ](#ประวัติ-claude-branch-400-ไม่ใช่ผลของรุ่นรวม) และ **ไม่ใช่ผลของรุ่นรวม**
 
-| ข้อ | ความเห็น CEO | สิ่งที่ทำในรุ่นนี้ | หลักฐาน |
+## ที่มาของแต่ละส่วน
+
+| ส่วน | มาจาก | สถานะในรุ่นรวม |
+|---|---|---|
+| Backend FastAPI, ความปลอดภัย (session, CSRF, origin, rate limit, Fernet), Guest privacy, model harness, runtime skills, เอกสารองค์กร, ลิงก์โรงพยาบาล, สัญญา API | Codex `main` | คงไว้ทั้งหมด เพิ่มเฉพาะส่วนต่อขยายด้านล่าง |
+| ส่วนต่อขยาย backend | รุ่นรวม (ดัดแปลงจาก Claude) | `routers/public.py` อ่านอย่างเดียว, `services/trusted_origins.py` + `TRUSTED_ORIGINS` (ว่างเป็นค่าเริ่มต้น), `GET /api/business/site/membership`, `VERSION = 4.0.0-rc1` |
+| เว็บ Next.js 16 + React 19 + React Three Fiber ภาษาไทยเป็นค่าเริ่มต้น สลับ EN | Claude 4.0.0 (`web/`) | นำมาใช้ คงดีไซน์และ component ปรับเฉพาะส่วนที่สัญญา API ของ Codex ต่างไป |
+| Deploy | Codex (Render เดิม) | `render.yaml` ไม่เปลี่ยน เว็บ Next.js เป็นบริการ Render ตัวที่สองแบบเลือกได้ ([render-web.md](deploy/render-web.md)) |
+| Cloudflare Workers Paid + Containers | Claude 4.0.0 (ต่อจากงานเตรียมใน 3.1.0) | **เลื่อนไว้ (deferred)** เก็บไฟล์ไว้ครบ ไม่ใช้ ไม่ทดสอบซ้ำ ([deploy/cloudflare/README.md](../deploy/cloudflare/README.md)) |
+| ฐานความรู้ที่ระบบค้น | Codex | 58 รายการที่ตรวจแล้ว 4 ผู้เผยแพร่ (BM25) |
+| ระเบียนความรู้ที่ Claude เขียนเพิ่ม | Claude 4.0.0 | 90 รายการ (77 จาก catalog + 13 จาก pending) ย้ายไป `knowledge/acquisition/claude_candidates_400.json` สถานะ `NOT_APPROVED` ไม่ถูกค้น |
+| รายงานไทย รายงานเทคนิค สไลด์ แผนภาพ | Claude 4.0.0 | ปรับเนื้อหาให้ตรงรุ่นรวม (ไม่ได้สร้างชุดใหม่) |
+
+## ความเห็น CEO 5 ข้อ ในรุ่นรวม
+
+| ข้อ | ความเห็น CEO | ผลในรุ่นรวม | หลักฐาน |
 |---|---|---|---|
-| 1 | แหล่งอ้างอิงน้อยและเจาะจงบางโรงพยาบาล ให้เพิ่มการ upload เอกสารเฉพาะโรงพยาบาลในกลุ่มลูกค้าองค์กร | ฐานความรู้สาธารณะจาก 58 เป็น **135 รายการ จาก 24 ผู้เผยแพร่** (หน่วยงานรัฐไทย 5, สมาคมวิชาชีพไทย 13, ห้องแล็บโรงพยาบาลไทย 49, หน่วยงานสากล 27, แหล่งอ้างอิงสากล 41) และระบบ **เอกสารอ้างอิงขององค์กร**: องค์กร/โรงพยาบาลมีรหัสเข้าร่วม ผู้ดูแลองค์กรอัปโหลด PDF/DOCX/TXT/MD เจ้าหน้าที่ LabClear ตรวจก่อนเปิดใช้ แชตของสมาชิกค้นและอ้างอิงเอกสารนั้นโดยระบุชื่อองค์กร | `knowledge/`, `services/org_knowledge.py`, `routers/org.py`, `tests/test_release_400.py` |
-| 2 | ถ้าไม่ได้ Log in ระบบจะไม่เก็บประวัติเมื่อ Refresh | ผู้ใช้เลือก **ล้างทุกครั้งที่ Refresh** (เน้นความเป็นส่วนตัว) จึงคงพฤติกรรมนี้และทำให้ชัดและแน่นขึ้น: token อยู่ในหน่วยความจำของหน้าเท่านั้น, beacon ลบข้อมูลใน RAM ของเซิร์ฟเวอร์ทันทีเมื่อปิด/รีเฟรช, หน้า bfcache ถูกโหลดใหม่, แถบแจ้ง "โหมดผู้เยี่ยมชม" ตลอดเวลา, เบราว์เซอร์ถามก่อนออกจากหน้าเมื่อมีข้อความ, และตอนเข้าสู่ระบบเลือก "เก็บแชตนี้ไว้ในบัญชี" ได้ | `web/lib/api/client.ts`, `web/components/chat/guest.tsx`, `routers/business.py` (`adopt_guest_chat`), UAT R4-03/R4-04 |
-| 3 | ย้ายจาก Render ไป Cloudflare (โดเมนที่ทีมซื้อไว้) | Worker `labclear-web` (Next.js ผ่าน OpenNext) รับทุก request บนโดเมนเดียว ส่ง `/api/*` และ `/health` ไปยัง Worker `labclear-api` ผ่าน service binding ซึ่งรัน FastAPI ใน **Cloudflare Container** (Workers Paid USD 5/เดือน) ฐานข้อมูล PostgreSQL ภายนอก (เช่น Neon) ผ่าน `DATABASE_URL` ตั้งโดเมนด้วย `npm run cf:domain -- <โดเมน>` มีสคริปต์ deploy และ GitHub Actions | `web/wrangler.jsonc`, `web/worker.ts`, `deploy/cloudflare/`, `scripts/deploy-cloudflare.sh`, `.github/workflows/deploy-cloudflare.yml`, `docs/deploy/cloudflare.md` |
-| 4 | ใช้ OpenRouter key ของทีมเป็นหลัก เลือกโมเดลถูก ดี เร็ว งบ API USD 10 พิจารณา embedding | ทุกส่วนใช้ **OpenRouter key เดียว**: planner `qwen/qwen3-30b-a3b-instruct-2507`, ผู้เขียนคำตอบ (Advisor/Explainer) และ OCR `google/gemini-3.1-flash-lite` (ปิด reasoning), reviewer และ safety classifier `openai/gpt-4.1-mini`, embedding `qwen/qwen3-embedding-8b` (ตัดเหลือ 1024 มิติ เก็บใน DB สร้างอัตโนมัติ) ตรวจความปลอดภัยขาเข้าพร้อม planner และขาออกพร้อม reviewer, ข้าม reviewer สำหรับคำทักทาย, routing เลือก endpoint ที่เร็วที่สุดภายใต้เพดานราคาและ ZDR งบในระบบ 360 บาท (USD 10 ที่ 36 บาท/USD) | `config.py`, `services/providers.py`, `services/business_agent.py`, `services/conversation_guard.py`, `services/semantic_search.py` |
-| 5 | หน้าเว็บเน้นภาษาไทย ใช้ Next/React/Three ได้ ให้เด่น เข้าใจง่าย มีลูกเล่น | ย้ายทั้งเว็บไป **Next.js 16 + React 19 + React Three Fiber** ภาษาไทยเป็นค่าเริ่มต้น (สลับ EN ได้, ข้อความแปลไทย 2,000+ รายการ) คงดีไซน์เดิมที่ owner ชอบ หน้าแรกมี DNA helix 3 มิติที่ประกอบตัวจากอนุภาค, รายงานผลตัวอย่างที่กดดูคำอธิบายพร้อมแหล่งอ้างอิงได้, ขั้นตอนตรวจ 5 ชั้นก่อนตอบ, แหล่งอ้างอิงแยกตามประเภท | `web/` |
+| 1 | แหล่งอ้างอิงน้อยและเจาะจงบางโรงพยาบาล ให้เพิ่มการอัปโหลดเอกสารเฉพาะโรงพยาบาลสำหรับลูกค้าองค์กร | ฐานความรู้ที่ใช้งานคง **58 รายการที่ตรวจแล้ว** ส่วนแหล่งใหม่ (Codex: แหล่งการแพทย์ 15 รายการและลิงก์โรงพยาบาล 6 รายการ, Claude: 90 รายการ) อยู่ในคิว acquisition รอตรวจสิทธิ์และความถูกต้องทางคลินิก **เอกสารองค์กร** ใช้ระบบของ Codex: ผู้จัดการกำหนดสมาชิก (reader/editor) editor อัปโหลด TXT/MD UTF-8 ≤ 256 KiB เป็นร่าง ตรวจตัวอย่าง อนุมัติ/ไม่อนุมัติ ออกรุ่นใหม่ ถอน หรือลบ ค้นได้เป็นข้อความต้นฉบับเฉพาะในองค์กรเดียวกัน ผู้ช่วยใช้ข้อความที่อนุมัติแล้วก็ต่อเมื่อเปิด `ORG_REFERENCE_INFERENCE_ENABLED` และผู้ให้บริการทุกตัวที่รับข้อมูลผ่านการตั้งค่าแล้ว เพิ่มหน้า **ลิงก์แพ็กเกจจากเว็บไซต์โรงพยาบาล** (ข้อมูลของ Codex) ในเว็บ Next.js | `services/organization_sources.py`, `web/components/workspace/views/Orgs.tsx`, `web/app/(site)/hospital-links/`, UAT R4-05, R4-15 |
+| 2 | ถ้าไม่ได้ Log in ระบบไม่เก็บประวัติเมื่อ Refresh | คงการล้างทุกครั้งที่ Refresh (ผู้ใช้เลือก) และใช้กฎของ Codex: **การเข้าสู่ระบบหรือสมัครบัญชีลบแชตผู้เยี่ยมชม** (ตัวเลือก "เก็บแชตนี้ไว้ในบัญชี" ของ Claude ไม่ได้นำมา) หน้าเว็บล้างแชตทันทีก่อนปิดหน้าต่างเข้าสู่ระบบ และทิ้งคำตอบ `/workspace` ที่ขอไว้ในนามผู้เยี่ยมชมเดิม | `web/lib/api/client.ts`, `web/components/workspace/Workspace.tsx`, UAT R4-02, R4-03, R4-04, UI-33 |
+| 3 | ย้ายจาก Render ไป Cloudflare บนโดเมนของทีม | เจ้าของเปลี่ยนเป้าหมายกลับเป็น **Render เดิม** บริการ API ไม่เปลี่ยน เว็บ Next.js เป็นบริการที่สองที่ส่ง `/api` ต่อไปยัง API (API ต้องตั้ง `TRUSTED_ORIGINS` ให้ตรง origin ของเว็บ) Cloudflare Free ใช้เป็น DNS/proxy ได้ในอนาคต งาน Cloudflare Workers Paid เก็บไว้เป็นทางเลือก | `docs/deploy/render-web.md`, `deploy/render/web-service.example.yaml`, `scripts/offline_check.py boot` |
+| 4 | ใช้ OpenRouter key ของทีม โมเดลถูก ดี เร็ว งบ USD 10 พิจารณา embedding | ใช้ model harness ของ Codex: ผู้จัดการเลือกผู้ให้บริการและโมเดลต่อ slot/agent (OpenRouter เป็นหนึ่งในตัวเลือก) บทบาทใหม่ Medical analyzer และ Thai composer **ปิดเป็นค่าเริ่มต้น** ต้องระบุโมเดลตรงตัว ราคาที่ตรวจแล้ว และรหัส endpoint ของ OpenRouter ที่ทบทวนแล้ว งบคงเพดาน **300 บาท** ของโครงการและเพดานจำนวนครั้ง embedding **เลื่อนไว้** จนกว่าจะมีผลเปรียบเทียบการค้นคืน ชุดโมเดล "เร็วและประหยัด" ของ Claude ไม่ได้นำมา | `services/providers.py`, `services/model_harness.py`, `runtime_skills/model_registry.json`, `web/components/staff/views/AiProviders.tsx`, UAT R4-06 |
+| 5 | หน้าเว็บเน้นภาษาไทย ใช้ Next/React/Three ให้เด่นและเข้าใจง่าย | ใช้เว็บ Next.js ของ Claude ทั้งหมด (หน้าแรก DNA helix 3 มิติ แชตแบบขั้นตอนสด พื้นที่ลูกค้า staff desk) ภาษาไทยเป็นค่าเริ่มต้น สลับ EN ได้ คำแปลไทย 2,260 ข้อความ หน้า Jinja เดิมของ Codex และ landing preview (flag) ยังอยู่ใน API | `web/`, UAT R4-01, R4-13, R4-14 |
 
-## สถาปัตยกรรม 4.0.0
+## สถาปัตยกรรมรุ่นรวม
 
+```text
+ผู้ใช้ (เบราว์เซอร์) ──HTTPS──▶ Render: labclear-web (Node 22, Next.js 16)   [บริการที่สอง เลือกได้]
+                                  ├─ หน้าเว็บ /, /packages, /sources, /hospital-links, /app, /staff …
+                                  └─ rewrite /api/*, /health ──HTTPS──▶ Render: labclear (Python 3.12, FastAPI ของ Codex)
+                                                                          ├─ ตรวจ Origin: Host ของตัวเอง หรือ TRUSTED_ORIGINS ที่ตรงตัว
+                                                                          ├─ Render PostgreSQL (rs_entities เข้ารหัส Fernet)
+                                                                          ├─ ฐานความรู้ 58 รายการ (BM25) · เอกสารองค์กรเฉพาะสมาชิก (flag)
+                                                                          ├─ คิว acquisition (ไม่ถูกค้น)
+                                                                          └─ ผู้ให้บริการ AI ตาม slot: ค่าเริ่มต้น Typhoon · iApp SystemOne · Typhoon OCR
+                                                                             ผ่าน PROVIDER_NETWORK_ENABLED, เพดานจำนวนครั้ง และบัญชี 300 บาท ก่อนทุกครั้ง
+หน้า Jinja เดิม (/, /app, /staff ของ API) ยังใช้งานได้ที่บริการ API โดยตรง
+Cloudflare Workers Paid: เลื่อนไว้ · Cloudflare Free DNS/proxy: อนาคต
 ```
-ผู้ใช้ (เบราว์เซอร์) ──HTTPS──▶ Cloudflare: Worker labclear-web (โดเมนของทีม)
-                                   ├─ หน้าเว็บ: Next.js (OpenNext) — /, /packages, /sources, /app, /staff …
-                                   └─ /api/*, /health ──service binding──▶ Worker labclear-api
-                                                                            └─ Cloudflare Container: FastAPI (Python 3.12, 1 instance)
-                                                                                 ├─ PostgreSQL ภายนอก (Fernet-encrypted rows)
-                                                                                 ├─ OpenRouter: Qwen3 30B · Gemini 3.1 Flash Lite · GPT-4.1 mini · Qwen3 Embedding 8B
-                                                                                 └─ ฐานความรู้ 135 รายการ (BM25 + vectors) + เอกสารองค์กรที่ผ่านการตรวจ (BM25)
-```
 
-- หน้าเว็บสาธารณะเป็น server component อ่าน `/api/business/site/*` (ไม่มีข้อมูลส่วนบุคคล) ถ้า container ยังไม่ตื่นภายใน 2.5 วินาที ใช้ข้อมูล seed ที่ bundle ไว้ หน้าเว็บจึงไม่ค้าง
-- แชต จอง รายงาน และ staff desk เป็น client component เรียก API เดิมแบบ same-origin (cookie `labclear_session` แบบ httpOnly + CSRF header) ขั้นตอนของแชตส่งแบบ NDJSON ทีละบรรทัด
-- FastAPI ไม่เปลี่ยนสัญญา API เดิม เพิ่ม `routers/org.py` และ `routers/public.py`; หน้า Jinja เดิมยังอยู่ในโค้ดแต่ไม่ถูก route จาก Cloudflare
+## ข้อความ 1 ข้อความเดินทางอย่างไร (Codex pipeline)
 
-## ข้อความ 1 ข้อความเดินทางอย่างไร (4.0.0)
+1. เบราว์เซอร์ POST `/api/business/chat` (Accept: application/x-ndjson) ไปที่เว็บ แล้ว rewrite ไปยัง FastAPI
+2. ตรวจ session/CSRF/origin/rate limit บันทึกข้อความ (บัญชี → PostgreSQL ผู้เยี่ยมชม → RAM ชั่วคราว)
+3. ถ้าเปิดเอกสารองค์กร: ตรวจซ้ำว่าเอกสารส่วนตัวที่เคยใช้ในประวัติยังอนุมัติและยังเป็นขององค์กรเดิม ถ้าไม่ ตัดออกจาก context
+4. ตรวจความปลอดภัยขาเข้า (regex แล้ว safety model) → planner เลือก action และบทบาท
+5. ค้น BM25 บนฐาน 58 รายการ และถ้าเปิด `ORG_REFERENCE_INFERENCE_ENABLED` ค้นข้อความที่อนุมัติแล้วขององค์กร (ผู้ให้บริการทุกตัวที่รับข้อมูลต้องตั้งค่าแล้วและไม่ใช่ `:free`)
+6. ผู้เขียนคำตอบตามบทบาทเขียน JSON พร้อม citation (ถ้าเปิด `RUNTIME_SKILLS_ENABLED` เพิ่มคำสั่งภาษาไทยที่ตรวจ hash แล้ว ถ้าเปิด `MEDICAL_HARNESS_ENABLED` และเป็นใบผลจำลองในระบบ ใช้ Medical analyzer + Thai composer)
+7. Python ตรวจ citation ค่าผลตรวจ ราคา บทบาท (แก้ได้ 1 รอบ) → reviewer → ตรวจความปลอดภัยขาออก
+8. บันทึกคำตอบ แหล่งอ้างอิง (รวม version/section/sha256 ของเอกสารองค์กร) และขั้นตอน แล้วส่งบรรทัดสุดท้าย
 
-1. เบราว์เซอร์ POST `/api/business/chat` (Accept: application/x-ndjson) → Worker web → service binding → container
-2. ตรวจ session/CSRF/origin/rate limit; บันทึกข้อความ (บัญชี → PostgreSQL, ผู้เยี่ยมชม → RAM ชั่วคราว)
-3. ตรวจรูปแบบการโจมตีในเครื่อง (regex) — ถ้าเจอ หยุดโดยไม่เรียกโมเดลใด
-4. **พร้อมกัน**: safety classifier ขาเข้า (GPT-4.1 mini) และ planner (Qwen3 30B) — ใช้แผนเฉพาะเมื่อข้อความปลอดภัย
-5. ค้นความรู้: BM25 + vector (ถ้ามี index) บนฐานสาธารณะ และ BM25 บนเอกสารขององค์กรที่ผู้ใช้เลือก
-6. ผู้เขียนคำตอบตามบทบาท (Gemini 3.1 Flash Lite) เขียน JSON พร้อม citation
-7. Python ตรวจ citation, ค่าผลตรวจ, ราคา, ขอบเขตบทบาท (แก้ได้ 1 รอบ)
-8. **พร้อมกัน**: reviewer (GPT-4.1 mini) และ safety classifier ขาออก — ข้าม reviewer เมื่อเป็นคำทักทาย/ถามกลับที่ไม่มีข้อเท็จจริงหรือแหล่งอ้างอิง
-9. บันทึกคำตอบ แหล่งอ้างอิง และขั้นตอน แล้วส่งผลลัพธ์บรรทัดสุดท้าย
+ทุกการเรียกโมเดลผ่าน `PROVIDER_NETWORK_ENABLED`, เพดานจำนวนครั้ง (`CLOUD_CALL_LIMIT`, ค่าเริ่มต้น 200) และบัญชีบาท (`PROJECT_BUDGET_THB`, 300) ก่อนเสมอ ล้มเหลวแล้วหยุด (fail closed) รุ่นรวมไม่มีการตรวจขนานของ Claude branch
 
-ทุกการเรียกโมเดลผ่านเพดานจำนวนครั้ง (`CLOUD_CALL_LIMIT`) และบัญชีค่าใช้จ่ายบาท (`PROJECT_BUDGET_THB`) ก่อนเสมอ ล้มเหลวแล้วหยุด (fail closed)
+## งานของ Claude ที่นำมาใช้และที่ปรับ
 
-## ค่าใช้จ่ายโดยประมาณต่อคำตอบ (ราคา OpenRouter snapshot 7 ต.ค. 2569)
+| งานของ Claude 4.0.0 | ในรุ่นรวม |
+|---|---|
+| Design system, ฟอนต์ไทย, ธีมสว่าง/มืด, ตัวสลับ TH/EN, พจนานุกรมไทย | ใช้ตามเดิม เพิ่มคำแปล 174 ข้อความสำหรับส่วนที่ปรับ |
+| หน้าแรก R3F DNA helix, หน้าแพ็กเกจ เปรียบเทียบ ศูนย์ ช่วยเหลือ ความเป็นส่วนตัว แหล่งอ้างอิง องค์กร | ใช้ตามเดิม แก้ข้อความเรื่องเอกสารองค์กร การเข้าสู่ระบบ และจำนวนแหล่งให้ตรง Codex |
+| แชต (ขั้นตอนสด การ์ดค่า โปรเจกต์ dock) พื้นที่ลูกค้า staff desk | ใช้ตามเดิม ยกเว้นจุดที่ระบุด้านล่าง |
+| เข้าสู่ระบบพร้อม "เก็บแชตนี้" | **เปลี่ยน**: ส่งเฉพาะ email/password แชตผู้เยี่ยมชมถูกลบ ล้างหน้าจอทันที และกันคำตอบเก่าจากตัวตนเดิม |
+| My organization (รหัสเข้าร่วม PDF/DOCX staff ตรวจ) | **เขียนใหม่ตามสัญญา Codex** บนโครงหน้าและ class เดิม: สมาชิกจากผู้จัดการ, ร่าง/ตัวอย่าง/อนุมัติ/รุ่นใหม่/ถอน/ลบ, ค้นข้อความต้นฉบับ |
+| Staff: Organizations + Reference document review | **แทนที่** ด้วย Organization membership (ผู้จัดการกำหนด reader/editor) เพราะ Codex ให้ editor ขององค์กรเป็นผู้ตรวจ หน้าตรวจเอกสารของ staff ไม่ได้นำมา |
+| Staff: AI providers + ปุ่มชุดโมเดลเร็ว + แผงความพร้อม | **ปรับ**: 3 slot และ 6 agents, บทบาทใหม่ปิดเป็นค่าเริ่มต้น, ช่องรหัส endpoint, สถานะการตั้งค่า, รายการโมเดลที่พิจารณา (metadata) ไม่มีปุ่มชุดโมเดลเร็วและแผงความพร้อม (endpoint ไม่มีใน Codex) |
+| ป้ายองค์กรในแชต (เลือกองค์กรต่อแชต) | **เปลี่ยน** เป็นป้ายแสดงสถานะ (ใช้กับผู้ช่วย / ค้นหาอย่างเดียว) เพราะ Codex ไม่มีการเลือกต่อแชต |
+| `routers/public.py`, `TRUSTED_ORIGINS` | ดัดแปลงแบบต่อขยาย: เทียบ origin แบบตรงตัวทั้ง scheme/host/port, เพิ่ม `/features`, `/hospital-links`, `/membership` |
+| `scripts/dev_mock_api.py`, UAT 51 สถานการณ์ | ปรับให้รันบน fixture ของ Codex แยกสภาพแวดล้อมและห้ามเชื่อมต่อออก UAT เป็น 53 สถานการณ์ + ชุด flag ปิด 5 สถานการณ์ |
+| Backend อื่นของ Claude (`routers/org.py`, `org_knowledge.py`, keep-chat, ชุดโมเดลเร็ว, ตรวจขนาน, semantic search, ค่าเริ่มต้น OpenRouter) | **ไม่ได้นำมา** เพราะขัดกับ backend/security/สัญญา API ของ Codex ยังอยู่ใน `release/4.0.0` ใน bundle |
 
-| ขั้น | โมเดล | สมมติ tokens (เข้า/ออก) | USD |
-|---|---|---|---|
-| Planner | Qwen3 30B A3B (0.048/0.193 ต่อล้าน) | 7,000 / 300 | 0.0004 |
-| เขียนคำตอบ | Gemini 3.1 Flash Lite (0.25/1.50) | 6,000 / 1,200 | 0.0033 |
-| Reviewer | GPT-4.1 mini (0.40/1.60) | 7,000 / 50 | 0.0029 |
-| Safety ×2 | GPT-4.1 mini | 1,500 / 10 ต่อครั้ง | 0.0012 |
-| Embedding query | Qwen3 Embedding 8B (0.01) | ~30 | ~0 |
-| **รวม** | | | **≈ 0.008** |
+## สิ่งที่ตรวจแล้ว (รุ่นรวม commit `c8f3547`)
 
-งบ USD 10 ≈ 1,250 คำตอบ (คำทักทายถูกกว่าเพราะไม่มี reviewer) อ่านใบผลตรวจ 1 หน้า ≈ USD 0.002 + คำอธิบาย ≈ 0.008 สร้าง vector index ครั้งเดียว ≈ 60k tokens (< USD 0.001) ตัวเลขเป็นสมมติฐาน ต้องยืนยันด้วย usage จริง; ledger ในระบบใช้ราคาบาทที่ปัดขึ้นและหยุดเมื่อครบ 360 บาท
-
-เหตุผลการเลือก: Gemini Flash Lite เป็นตระกูลที่เร็วและภาษาไทยดี ราคาถูก รองรับภาพจึงใช้เป็น OCR ด้วย; Qwen3 30B A3B เป็น MoE ที่ active 3B ตอบ JSON สั้นได้เร็วและถูกที่สุด; GPT-4.1 mini เป็นโมเดลต่างตระกูลสำหรับตรวจทานและจัดประเภทความปลอดภัย ซึ่งต่างจาก Llama Guard ตรงที่กำหนดได้ว่าการอธิบายช่วงอ้างอิงบนใบผลถือว่าปลอดภัย; Qwen3 Embedding 8B ราคาต่ำสุดในกลุ่มและรองรับหลายภาษา
-
-## สิ่งที่ตรวจแล้ว
+ทุกการตรวจใช้ข้อมูลจำลอง ฐานข้อมูลชั่วคราว และตัวแทนโมเดล/OCR ไม่ได้เรียกผู้ให้บริการจริง รายละเอียด: [docs/evidence/integration-4.0-rc1/](evidence/integration-4.0-rc1/README.md)
 
 | การตรวจ | ผล |
 |---|---|
-| Python tests (`python -m pytest -q`) | 261 ผ่าน (รวม 11 ข้อใหม่ใน `tests/test_release_400.py`) |
-| Browser UAT บน Next.js (`cd web && npm run uat`) | 51 สถานการณ์ — ดู `docs/evidence/release-4.0.0/uat.json` |
-| Type check + ภาษาไทยครบ (`npx tsc --noEmit`, `npm run i18n:check`) | ผ่าน |
-| `opennextjs-cloudflare build` + `wrangler dev` บน worker ที่ build แล้ว | หน้าเว็บ, `/api` ผ่าน worker, แชตแบบ stream, ล้างแชตผู้เยี่ยมชมเมื่อรีเฟรช ทำงาน |
-| `wrangler deploy --dry-run` ทั้งสอง worker | ผ่าน (container ใช้ `--containers-rollout=none` เพราะเครื่องนี้ดึง base image จาก Docker Hub ไม่ได้) |
+| Python (`scripts/offline_check.py pytest`) | **277 ผ่าน** (Codex 265 + รุ่นรวม 12) |
+| Browser เดิมของ Codex (`tests/browser/uat.cjs`) | **36/36** (หลังแก้ race ของการทดสอบ UI-33 ซึ่ง baseline ของ Codex ก็ไม่ผ่าน 1 ใน 2 รอบ) |
+| Browser upgrade ของ Codex (`tests/browser/upgrade.cjs`) | **10/10** |
+| Offline fixture matrix ของ Codex | **60/60** `LIVE_MODEL_EVALUATION=NOT_RUN` |
+| Render entrypoint smoke | **PASS** 8 route |
+| เว็บ: type check, i18n check, production build | ผ่าน (16 routes) |
+| Web UAT (`web/tests/uat.mjs`, flag ตาม fixture) | **53/53** ไม่มี browser error |
+| Web UAT flag ปิดทั้งหมด (`web/tests/uat-flags-off.mjs`) | **5/5** |
 
-## สิ่งที่ยังไม่ได้ตรวจ (ต้องทำบนบัญชีจริงของทีม)
+## สิ่งที่ยังไม่ได้ตรวจหรือยังต้องทำ
 
-- ยังไม่ได้เรียก OpenRouter จริง (ไม่มีคีย์ในสภาพแวดล้อมนี้) — คุณภาพภาษาไทย, JSON, OCR, ความเร็วจริง และราคาจริงต้องวัดด้วย `scripts/course_eval.py` หลัง deploy
-- ยังไม่ได้ build Docker image และยังไม่ได้ deploy ขึ้น Cloudflare จริง (ไม่มีสิทธิ์เข้าบัญชีทีม)
-- ลิงก์ของแหล่งอ้างอิงใหม่ 77 รายการเขียนจากความรู้โดยไม่ได้เปิดเว็บ (ระบบนี้ไม่มีอินเทอร์เน็ต) ทุกรายการติดธง `verification.url_checked=false` ต้องรัน `python scripts/verify_sources.py` และให้คนอ่านเทียบ; ร่าง 13 รายการของโรงพยาบาลที่ไม่มีลิงก์บทความเฉพาะถูกแยกไว้ใน `knowledge/evidence/pending.json` และไม่ถูกค้น
-- การทำงานจริงบนมือถือ (คีย์บอร์ดเสมือน) และ screen reader
+| เรื่อง | สถานะ / ขั้นต่อไป |
+|---|---|
+| Merge และ deploy | เจ้าของตรวจรับ bundle แล้ว merge เข้า `main` เอง ตรวจ `/health` ว่า commit ตรง |
+| บริการเว็บบน Render | ยังไม่ได้สร้าง ต้องตั้ง `API_ORIGIN` ที่เว็บ และ `TRUSTED_ORIGINS` ที่ API (เจ้าของแก้ ENV เอง) |
+| Rate limit ผ่านเว็บ | API นับตาม IP ที่ต่อเข้ามา ผู้ใช้ทุกคนผ่านเว็บจึงใช้ bucket เดียวกัน ต้องออกแบบการเชื่อ `X-Forwarded-For` ก่อนใช้งานจริง |
+| Google sign-in ผ่านเว็บ | ยังไม่ได้ตรวจ ปิดไว้จนกว่าจะทดสอบ |
+| ผู้ให้บริการ AI จริง, OCR จริง, PostgreSQL production | `NOT_RUN` ต้องได้รับอนุญาตงบประเมินจริงก่อน (Codex เสนอ USD 1 ภายในเพดานโครงการ) |
+| flag ใหม่ 6 ตัว | ปิดอยู่ เปิดตามประตูของเจ้าของใน `docs/ceo-upgrade/MORNING_HANDOFF.md` |
+| แหล่งความรู้ใหม่ | Codex 15 + 6 รายการ และ Claude 90 รายการ รอตรวจสิทธิ์และทางคลินิก ไม่ถูกค้น |
+| Embeddings, Clef, ตัวจัดการ quota | เลื่อนไว้ตาม Codex |
+| Cloudflare | เลื่อนไว้ ค่า `vars` ใน wrangler ต้องทำใหม่ตาม ENV ของ Codex ก่อนใช้ |
+| มือถือจริงและ screen reader | ยังไม่ได้ตรวจ |
+| Report ใน Word | สร้างด้วยสคริปต์ render ด้วย LibreOffice ต้องเปิดใน Word อัปเดตฟิลด์และตรวจการตัดคำ |
 
-## วิธีอัปเกรดจาก 3.x
+## วิธีรันในเครื่อง (ข้อมูลจำลอง ไม่เรียกโมเดลจริง)
 
-1. นำเข้า bundle (ดู `README-TH.md` ในชุดส่งมอบ)
-2. ติดตั้ง: `pip install -r requirements.txt` และ `cd web && npm ci`
-3. รันในเครื่อง: `uvicorn main:app --port 8000` + `TRUSTED_ORIGINS=http://localhost:3000` แล้ว `cd web && npm run dev` เปิด http://localhost:3000
-4. Deploy ตาม `docs/deploy/cloudflare.md`
-5. หลัง deploy: Staff → AI providers → กด "ใช้ชุดโมเดล OpenRouter แบบเร็วและประหยัด" (ค่าที่เคยบันทึกไว้ใน DB มีลำดับเหนือ environment)
+```bash
+pip install -r requirements-dev.txt && npm ci            # root: Playwright สำหรับชุดทดสอบของ Codex
+python scripts/offline_check.py pytest -q                # 277 tests
+python scripts/dev_mock_api.py                            # API จริง + ตัวแทนโมเดล ที่ 127.0.0.1:8000
+cd web && npm ci && npm run build && API_ORIGIN=http://127.0.0.1:8000 npm run start:render
+node tests/uat.mjs                                        # web UAT 53 สถานการณ์
+```
+
+## ประวัติ: Claude branch 4.0.0 (ไม่ใช่ผลของรุ่นรวม)
+
+ส่วนนี้คงไว้เพื่อความโปร่งใส ทุกอย่างเป็นของ `release/4.0.0` commit `95bf3d7` (8 ต.ค. 2569) บน 3.1.0 (`3cf9076`) ไม่ได้ทดสอบซ้ำกับรุ่นรวม
+
+| เรื่อง | ผลบน Claude branch |
+|---|---|
+| Python tests | 261 ผ่าน (backend ของ Claude ที่ไม่ได้นำมา) |
+| Browser UAT | 51/51 บน OpenNext production build ผ่าน `wrangler dev` |
+| Cloudflare | `opennextjs-cloudflare build`, `wrangler dev`, `wrangler deploy --dry-run` ทั้งสอง worker (container ใช้ `--containers-rollout=none`) ไม่ได้ build Docker image และไม่ได้ deploy จริง |
+| ฐานความรู้ | 135 รายการจาก 24 ผู้เผยแพร่ (77 รายการเขียนโดยไม่ได้เปิดเว็บ) |
+| ชุดโมเดล OpenRouter และค่าใช้จ่ายประมาณ USD 0.008 ต่อคำตอบ | เป็นสมมติฐานจากราคา snapshot 7 ต.ค. 2569 ไม่เคยเรียกจริง ไม่ได้ใช้ในรุ่นรวม |
