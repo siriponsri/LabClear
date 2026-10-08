@@ -3,10 +3,11 @@ const { chromium } = require('playwright');
 const { spawn, execFileSync } = require('child_process');
 const fs = require('fs'), path = require('path');
 const root = path.resolve(__dirname, '../..');
-const out = path.join(root, 'docs/ceo-upgrade/evidence/browser');
+// Integration 4.0: UAT_OUT and TEST_PYTHON allow a run outside Windows without overwriting the Codex evidence.
+const out = process.env.UAT_OUT ? path.resolve(root, process.env.UAT_OUT) : path.join(root, 'docs/ceo-upgrade/evidence/browser');
 fs.mkdirSync(out, { recursive: true });
 const base = 'http://127.0.0.1:8099';
-const python = path.join(root, '.venv/Scripts/python.exe');
+const python = process.env.TEST_PYTHON || path.join(root, '.venv/Scripts/python.exe');
 const server = spawn(python, ['scripts/offline_check.py', 'browser', '8099'], { cwd: root, stdio: ['ignore', 'ignore', 'pipe'] });
 let errors = '', browser;
 server.stderr.on('data', b => { errors += b; });
