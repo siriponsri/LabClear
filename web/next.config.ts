@@ -1,10 +1,13 @@
 import type { NextConfig } from "next";
+import path from "node:path";
 
 /*
  * Pages render here; every /api request goes to the FastAPI service.
- * - Local development: Next.js proxies /api and /health to API_ORIGIN (default http://127.0.0.1:8000).
- * - Cloudflare: worker.ts sends /api and /health to the API worker through a service binding
- *   before Next.js sees the request, so this rewrite is only a development convenience.
+ * - Render (integration 4.0 target) and local development: Next.js proxies /api and /health to
+ *   API_ORIGIN (default http://127.0.0.1:8000). The API must list this site's exact origin in
+ *   TRUSTED_ORIGINS. See deploy/render/README.md.
+ * - Cloudflare (deferred option, not the current target): worker.ts would send /api and /health
+ *   to the API through a service binding before Next.js sees the request.
  */
 const api = (process.env.API_ORIGIN || "http://127.0.0.1:8000").replace(/\/$/, "");
 
@@ -26,6 +29,8 @@ const csp = [
 
 const config: NextConfig = {
   reactStrictMode: true,
+  // The repository root has its own package-lock.json (Codex browser tests); build from web/.
+  turbopack: { root: path.resolve(__dirname) },
   poweredByHeader: false,
   images: { unoptimized: true },
   async rewrites() {

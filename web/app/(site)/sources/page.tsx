@@ -10,7 +10,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const { t } = await getT();
   return {
     title: t("Medical sources"),
-    description: t("The public references the assistant may cite, from Thai government agencies, professional societies, hospitals, universities and international bodies, with review dates."),
+    description: t("The public references the assistant may cite, from Thai university hospitals and an international reference library, with review dates."),
   };
 }
 
@@ -40,9 +40,9 @@ export default async function SourcesPage() {
           </h2>
           <p>{t("A hospital, clinic group or company that works with LabClear can add its own documents, such as its laboratory's reference ranges or preparation instructions. They are not listed on this public page.")}</p>
           <ul className="pub-orgref-list small">
-            <li>{t("LabClear staff review every document before the assistant can cite it.")}</li>
-            <li>{t("It is used only for members of that organization, and cited with the organization as publisher.")}</li>
-            <li>{t("It is never sent to an AI provider to build embeddings; it is searched on our server only.")}</li>
+            <li>{t("An editor of that organization reviews every document; members see approved versions only.")}</li>
+            <li>{t("It is visible only to members of that organization; a citation names the document and its version.")}</li>
+            <li>{t("It is searched on our server by matching words; no embeddings are built. The assistant receives approved excerpts only if the service owner turns that on.")}</li>
           </ul>
           <p className="small">
             <Link href="/organizations#orgdocs-title">{t("Use your own hospital's documents")}</Link>

@@ -1,120 +1,73 @@
 "use client";
 /* What this chat uses besides the conversation: the confirmed report, a previous report to
-   compare with, and the organization whose reviewed documents may be cited (CEO requirement 1). */
-import { useEffect, useRef, useState } from "react";
+   compare with, and (integration 4.0, Codex contract) whether approved organization references
+   can reach the assistant. Membership is assigned by a manager; there is no per-chat choice. */
+import { useEffect, useState } from "react";
 import { api } from "@/lib/api/client";
 import { useT } from "@/lib/i18n/client";
 import { useSession } from "@/lib/session";
 import { Icon } from "./icons";
 import type { WorkspaceState } from "./types";
 
-type Membership = { org: { id: string; name: string; kind: string }; role: string };
-type Mine = { memberships: Membership[]; chat_org_id: string };
+export type Features = { org_documents: boolean; org_reference_inference: boolean; hospital_links: boolean; landing_preview: boolean };
+type Listing = { can_edit: boolean; documents: { id: string; state: string }[] };
+export type Membership = { enabled: boolean; member: boolean; role: "" | "reader" | "editor" };
+export type OrgRefs = { approved: number; canEdit: boolean; inference: boolean };
 
-/** Organizations the signed-in user belongs to, and the one this chat uses. */
-export function useOrgScope(state: WorkspaceState | null, registered: boolean) {
-  const [mine, setMine] = useState<Mine | null>(null);
+let featureCache: Promise<Features | null> | null = null;
+/** Optional pages and features switched on by the server owner (booleans only). */
+export function loadFeatures(): Promise<Features | null> {
+  if (!featureCache) featureCache = api.get<Features>("/site/features").catch(() => null);
+  return featureCache;
+}
+
+/** The signed-in member's organization references, or null (not a member, guest or switched off). */
+export function useOrgReferences(state: WorkspaceState | null, registered: boolean) {
+  const [refs, setRefs] = useState<OrgRefs | null>(null);
   const chatId = state?.conversation.chat_id || "";
-  const orgId = (state?.conversation.org_id as string) || "";
   useEffect(() => {
     if (!registered || !chatId) {
-      setMine(null);
+      setRefs(null);
       return;
     }
     let alive = true;
-    api
-      .get<Mine>("/orgs/mine")
-      .then((m) => alive && setMine(m))
-      .catch(() => alive && setMine(null));
+    (async () => {
+      const f = await loadFeatures();
+      if (!f?.org_documents) return alive && setRefs(null);
+      try {
+        // Ask for the caller's own membership first, so non-members never trigger a 403.
+        const m = await api.get<Membership>("/site/membership");
+        if (!m.member) return alive && setRefs(null);
+        const l = await api.get<Listing>("/organization-documents");
+        if (alive) setRefs({ approved: l.documents.filter((d) => d.state === "approved").length, canEdit: l.can_edit, inference: f.org_reference_inference });
+      } catch {
+        if (alive) setRefs(null); // 403: no organization membership
+      }
+    })();
     return () => {
       alive = false;
     };
-  }, [registered, chatId, orgId]);
-  return [mine, setMine] as const;
+  }, [registered, chatId]);
+  return refs;
 }
 
-function OrgChip({ mine, onChange }: { mine: Mine; onChange: (m: Mine) => void }) {
+function OrgChip({ refs, onOpen }: { refs: OrgRefs; onOpen?: () => void }) {
   const { t, tf } = useT();
-  const { fail } = useSession();
-  const [open, setOpen] = useState(false);
-  const [busy, setBusy] = useState(false);
-  const wrap = useRef<HTMLDivElement>(null);
-  const btn = useRef<HTMLButtonElement>(null);
-  const current = mine.memberships.find((m) => m.org.id === mine.chat_org_id);
-
-  useEffect(() => {
-    if (!open) return;
-    wrap.current?.querySelector<HTMLButtonElement>("[role=menuitemradio][aria-checked=true], [role=menuitemradio]")?.focus();
-    const outside = (e: MouseEvent) => {
-      if (!wrap.current?.contains(e.target as Node)) setOpen(false);
-    };
-    document.addEventListener("click", outside);
-    return () => document.removeEventListener("click", outside);
-  }, [open]);
-
-  const pick = async (orgId: string) => {
-    setOpen(false);
-    setBusy(true);
-    try {
-      const r = await api.post<{ chat_org_id: string }>("/chat/org-scope", { org_id: orgId });
-      onChange({ ...mine, chat_org_id: r.chat_org_id });
-    } catch (e) {
-      fail(e);
-    } finally {
-      setBusy(false);
-      btn.current?.focus();
-    }
-  };
-
+  const used = refs.inference && refs.approved > 0;
+  const text = used
+    ? tf("Organization references in use: {n} approved", { n: refs.approved })
+    : refs.inference
+      ? t("Organization references: none approved yet")
+      : t("Organization references: search only, not sent to the assistant");
   return (
-    <div className="org-scope" ref={wrap}>
-      <button
-        ref={btn}
-        type="button"
-        className={"chip" + (current ? " active" : "")}
-        aria-haspopup="menu"
-        aria-expanded={open}
-        aria-busy={busy || undefined}
-        onClick={() => setOpen((o) => !o)}
-      >
-        <Icon name="building" />
-        <span className="chip-text">{current ? tf("Using documents from: {name}", { name: current.org.name }) : t("Organization documents: off")}</span>
-        <Icon name="chevron" className="chev" />
-      </button>
-      {open ? (
-        <div
-          className="org-menu"
-          role="menu"
-          aria-label={t("Organization documents for this chat")}
-          onKeyDown={(e) => {
-            const items = Array.from(wrap.current?.querySelectorAll<HTMLButtonElement>("[role=menuitemradio]") || []);
-            const i = items.indexOf(document.activeElement as HTMLButtonElement);
-            if (e.key === "Escape") {
-              e.stopPropagation();
-              setOpen(false);
-              btn.current?.focus();
-            } else if (e.key === "ArrowDown" || e.key === "ArrowUp") {
-              e.preventDefault();
-              items[(i + (e.key === "ArrowDown" ? 1 : -1) + items.length) % items.length]?.focus();
-            }
-          }}
-        >
-          <p className="tiny muted org-menu-note">{t("Answers may cite reviewed documents from the organization you choose. Your own reports are never shared with it.")}</p>
-          {mine.memberships.map((m) => (
-            <button key={m.org.id} type="button" role="menuitemradio" aria-checked={m.org.id === mine.chat_org_id} onClick={() => pick(m.org.id)}>
-              {m.org.name}
-            </button>
-          ))}
-          <button type="button" role="menuitemradio" aria-checked={!current} onClick={() => pick("none")}>
-            {t("Do not use organization documents")}
-          </button>
-        </div>
-      ) : null}
-    </div>
+    <button type="button" className={"chip" + (used ? " active" : "")} onClick={onOpen} title={t("Approved documents of your organization. Your own reports are never shared with it.")}>
+      <Icon name="building" />
+      <span className="chip-text">{text}</span>
+    </button>
   );
 }
 
-export function ContextChips({ state, mine, setMine, onChanged }: { state: WorkspaceState; mine: Mine | null; setMine: (m: Mine) => void; onChanged: () => Promise<unknown> }) {
+export function ContextChips({ state, refs, onOpenOrg, onChanged }: { state: WorkspaceState; refs: OrgRefs | null; onOpenOrg?: () => void; onChanged: () => Promise<unknown> }) {
   const { t, tf } = useT();
   const { notice, fail } = useSession();
   const c = state.conversation;
@@ -132,7 +85,7 @@ export function ContextChips({ state, mine, setMine, onChanged }: { state: Works
     }
   };
 
-  if (!report && !previous && !mine?.memberships.length) return null;
+  if (!report && !previous && !refs) return null;
   return (
     <div className="context-chips" role="group" aria-label={t("Conversation context")}>
       {report ? (
@@ -153,7 +106,7 @@ export function ContextChips({ state, mine, setMine, onChanged }: { state: Works
           </span>
         </button>
       ) : null}
-      {mine?.memberships.length ? <OrgChip mine={mine} onChange={setMine} /> : null}
+      {refs ? <OrgChip refs={refs} onOpen={onOpenOrg} /> : null}
     </div>
   );
 }

@@ -13,6 +13,7 @@ import { useSession } from "@/lib/session";
 import { Dialog } from "@/components/ui/Dialog";
 import { LanguageSwitch, ThemeToggle } from "@/components/site/Controls";
 import { ChatView } from "@/components/chat/ChatView";
+import { loadFeatures } from "@/components/chat/ContextChips";
 import { VIEWS } from "./views";
 import { WorkspaceContext, type ViewId, type WorkspaceCtx, type WorkspaceState } from "./context";
 import { Empty } from "./ui";
@@ -55,24 +56,56 @@ export function Workspace() {
   const [accountOpen, setAccountOpen] = useState(false);
   const [unread, setUnread] = useState(0);
   const [online, setOnline] = useState<null | boolean>(null);
+  // "My organization" is listed only when the owner turned on organization documents (Codex flag).
+  const [orgDocs, setOrgDocs] = useState(false);
+  useEffect(() => {
+    let alive = true;
+    loadFeatures().then((f) => alive && setOrgDocs(!!f?.org_documents));
+    return () => {
+      alive = false;
+    };
+  }, []);
   const composer = useRef<((text: string, send?: boolean) => void) | null>(null);
   const businessCache = useRef<Promise<any> | null>(null);
 
+  /* A /workspace response requested under an older identity (a guest who has since signed in,
+     or an account that signed out) is dropped, so it can never repaint the new identity's page. */
   const refresh = useCallback(async () => {
+    const who = api.identity;
     try {
       const s = await api.get<WorkspaceState>("/workspace");
+      if (who !== api.identity) return null;
       setState(s);
       setUnread(s.unread_notifications || 0);
       return s;
     } catch (e) {
-      if ((e as any).status === 401) {
+      if ((e as any).status === 401 && who === api.identity) {
         await api.session();
+        const again = api.identity;
         const s = await api.get<WorkspaceState>("/workspace");
+        if (again !== api.identity) return null;
         setState(s);
         return s;
       }
       throw e;
     }
+  }, []);
+
+  // Signing in or out: remove the previous identity's chat from the screen at once, before the
+  // new account's workspace has loaded (Codex guest-privacy fix, mirrored in the dock).
+  useEffect(() => {
+    let who = api.user?.id || "";
+    const off = api.subscribe(() => {
+      const now = api.user?.id || "";
+      if (now === who) return;
+      const previous = who;
+      who = now;
+      if (!previous) return;
+      setState((s) => (s ? { ...s, conversation: { ...s.conversation, messages: [], report_id: "", compare_report_id: "" } } : s));
+    });
+    return () => {
+      off();
+    };
   }, []);
 
   const navigate = useCallback((next: ViewId, p: Record<string, string> = {}, push = true) => {
@@ -156,9 +189,9 @@ export function Workspace() {
         openSignIn({
           reason,
           guestMessages: state?.conversation.messages.length || 0,
-          onDone: (_u, kept) => {
+          onDone: () => {
             refresh();
-            notice(kept ? t("Signed in. This chat is now saved in your account.") : t("Signed in."));
+            notice(t("Signed in."));
           },
         }),
       business: () => {
@@ -194,7 +227,7 @@ export function Workspace() {
               LabClear
             </Link>
             <nav className={"top-nav" + (menu ? " open" : "")} id="sidebar" aria-label={t("Workspace")}>
-              {NAV.map((n) => (
+              {NAV.filter((n) => n.id !== "orgs" || orgDocs || view === "orgs").map((n) => (
                 <button key={n.id} type="button" className={"nav-item" + (view === n.id ? " active" : "")} aria-current={view === n.id ? "page" : undefined} onClick={() => navigate(n.id)}>
                   {t(n.label)}
                 </button>
@@ -247,9 +280,9 @@ export function Workspace() {
                     if (!registered)
                       openSignIn({
                         guestMessages: state?.conversation.messages.length || 0,
-                        onDone: async (_u, kept) => {
+                        onDone: async () => {
                           await refresh();
-                          notice(kept ? t("Signed in. This chat is now saved in your account.") : t("Signed in."));
+                          notice(t("Signed in."));
                         },
                       });
                     else setAccountOpen((o) => !o);

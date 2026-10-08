@@ -31,7 +31,7 @@ export default async function PrivacyPage() {
           <h2 className="h3">{t("Without signing in: a temporary chat")}</h2>
           <p>{t("A chat you start without signing in lives only in the open page and in temporary server memory. It is not saved in the application database, and nothing from it is written to cookies or browser storage.")}</p>
           <p>{t("Refreshing or closing the page deletes it: the page tells the server to forget it straight away, and if that message cannot be sent, the server deletes it after 20 minutes without activity.")}</p>
-          <p>{t("To keep your history, sign in or create an account. When you sign in from a page with a temporary chat, you can choose to keep that chat in your account or let it be deleted.")}</p>
+          <p>{t("To keep your history, sign in or create an account. Signing in or creating an account from a page with a temporary chat deletes that chat and its images; your account starts with a new chat.")}</p>
           <p>{t("AI providers still receive the content needed to answer or read a report, under their own retention settings.")}</p>
         </section>
         <section className="card stack-sm">
@@ -49,9 +49,9 @@ export default async function PrivacyPage() {
         </section>
         <section className="card stack-sm" id="org-documents">
           <h2 className="h3">{t("Organization and hospital documents")}</h2>
-          <p>{t("An organization admin can upload the organization's own reference documents. The text is extracted on our server and stored encrypted; the original file is not kept.")}</p>
-          <p>{t("A LabClear manager reviews every document before the assistant may cite it. Approved passages are used only in chats of that organization's members, and they are never sent to an AI provider to build embeddings.")}</p>
-          <p>{t("Like any cited source, a passage that answers a member's question is part of the text sent to the AI provider for that reply.")}</p>
+          <p>{t("An organization editor can upload the organization's own reference documents as UTF-8 text. They are stored encrypted and visible only to members of the same organization.")}</p>
+          <p>{t("Every version starts as a draft that an editor must approve. Revoking or deleting a document stops later answers from using it; deleting also removes its text.")}</p>
+          <p>{t("Approved excerpts are sent to an AI provider only if the service owner turns on organization reference inference after reviewing the providers' data policies. Then, like any cited source, a matching excerpt is part of the text sent for that reply.")}</p>
         </section>
         <section className="card stack-sm">
           <h2 className="h3">{t("Your controls")}</h2>

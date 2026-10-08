@@ -1,8 +1,8 @@
 import "server-only";
 /*
  * Server-side reads from the FastAPI service while rendering a page.
- * - On Cloudflare the request goes through the "API" service binding (no public round trip).
- * - Locally it goes to API_ORIGIN (default http://127.0.0.1:8000).
+ * - Render and local development: the request goes to API_ORIGIN (default http://127.0.0.1:8000).
+ * - Cloudflare (deferred option): when API_ORIGIN is not set, the "API" service binding is tried.
  * A short timeout keeps pages fast; callers fall back to bundled seed data (lib/site-data.ts)
  * while the API container wakes up.
  */

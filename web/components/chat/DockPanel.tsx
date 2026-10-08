@@ -70,14 +70,18 @@ export default function DockPanel({ open, onClose, seed }: { open: boolean; onCl
     loading.current = (async () => {
       try {
         if (!api.csrf) await api.session();
+        let who = api.identity;
         let s: WorkspaceState;
         try {
           s = await api.get<WorkspaceState>("/workspace");
         } catch (e) {
           if ((e as { status?: number }).status !== 401) throw e;
           await api.session();
+          who = api.identity;
           s = await api.get<WorkspaceState>("/workspace");
         }
+        // Requested under an older identity (signed in or out meanwhile): never show it.
+        if (who !== api.identity) return null;
         setState(s);
         setError("");
         return s;
@@ -90,6 +94,23 @@ export default function DockPanel({ open, onClose, seed }: { open: boolean; onCl
     })();
     return loading.current;
   }, [t]);
+
+  // Signing in or out clears the previous identity's chat immediately (Codex guest-privacy fix).
+  useEffect(() => {
+    let who = api.user?.id || "";
+    const off = api.subscribe(() => {
+      const now = api.user?.id || "";
+      if (now === who) return;
+      const previous = who;
+      who = now;
+      if (!previous) return;
+      loading.current = null;
+      setState((s) => (s ? { ...s, conversation: { ...s.conversation, messages: [], report_id: "", compare_report_id: "" } } : s));
+    });
+    return () => {
+      off();
+    };
+  }, []);
 
   const upgrade = useCallback(
     (reason: string) => modalApi.open(t("This needs LabClear Plus"), <UpgradeView reason={reason} onPlan={() => router.push("/app?view=plan")} />),
@@ -104,14 +125,14 @@ export default function DockPanel({ open, onClose, seed }: { open: boolean; onCl
   useLeaveGuard(!registered && guestCount > 0);
 
   const signedIn = useCallback(
-    async (kept: number) => {
+    async () => {
       await refresh();
-      notice(kept ? t("Signed in. This chat is now saved in your account.") : t("Signed in."));
+      notice(t("Signed in."));
     },
     [notice, refresh, t],
   );
   const requireAccount = useCallback(
-    (reason: string) => openSignIn({ reason, guestMessages: guestCount, onDone: (_u, kept) => signedIn(kept) }),
+    (reason: string) => openSignIn({ reason, guestMessages: guestCount, onDone: () => signedIn() }),
     [guestCount, openSignIn, signedIn],
   );
 
@@ -121,7 +142,7 @@ export default function DockPanel({ open, onClose, seed }: { open: boolean; onCl
     cardRetry: engine.cardRetry,
     followup: (q) => engine.send(q),
     staff: () => {
-      if (!registered) return requireAccount(t("Sign in to send a request to our team. You can keep this chat in your account."));
+      if (!registered) return requireAccount(t("Sign in to send a request to our team. Signing in starts a new chat; this temporary chat is deleted."));
       modalApi.open(t("Talk to our team"), <HandoffForm onSent={refresh} />);
     },
     followupCheck: () => engine.send(t("Is there a follow-up check for the items in this report?")),

@@ -34,13 +34,12 @@ export const viewTitles = (t: T): Record<ViewId, string> => ({
   ai: t("AI providers"),
   channels: t("Channels and budget"),
   audit: t("Audit log"),
-  organizations: t("Organizations"),
-  knowledge: t("Reference document review"),
+  organizations: t("Organization membership"),
 });
 
 const NAV_MAIN: ViewId[] = ["overview", "staff", "operations", "customers", "payments", "notifications"];
 const NAV_MANAGE: ViewId[] = ["catalog-admin", "centers", "roles", "ai", "channels", "audit"];
-const NAV_KNOWLEDGE: ViewId[] = ["organizations", "knowledge"];
+const NAV_KNOWLEDGE: ViewId[] = ["organizations"];
 
 const NARROW = "(max-width: 860px)";
 function useNarrow() {
@@ -67,7 +66,7 @@ export function StaffDesk() {
   const [menu, setMenu] = useState(false);
   const [accountOpen, setAccountOpen] = useState(false);
   const [unread, setUnread] = useState(0);
-  const [counts, setCounts] = useState<Counts>({ waiting: 0, requested: 0, pendingDocs: 0 });
+  const [counts, setCounts] = useState<Counts>({ waiting: 0, requested: 0 });
   const [online, setOnline] = useState<null | boolean>(null);
   const [modes, setModes] = useState<Record<string, { mode: string; label: string }> | null>(null);
   const [biz, setBiz] = useState<Biz | null>(null);
@@ -144,11 +143,10 @@ export function StaffDesk() {
   const refreshCounts = useCallback(async () => {
     if (!api.user || !STAFF_ROLES.includes(api.user.role)) return;
     try {
-      const [d, docs] = await Promise.all([
-        api.get("/staff/dashboard?days=1"),
-        api.user.role === "manager" ? api.get("/staff/org-documents?state=pending") : Promise.resolve({ documents: [] }),
-      ]);
-      setCounts({ waiting: d.tickets.waiting || 0, requested: d.bookings.by_state.requested || 0, pendingDocs: docs.documents.length });
+      // Integration 4.0: organization documents are reviewed by organization editors (Codex), so
+      // the service desk no longer counts a staff review queue.
+      const d = await api.get("/staff/dashboard?days=1");
+      setCounts({ waiting: d.tickets.waiting || 0, requested: d.bookings.by_state.requested || 0 });
     } catch {
       /* counts are a convenience */
     }
@@ -303,9 +301,8 @@ export function StaffDesk() {
               <>
                 <span className="nav-group">{t("Manage")}</span>
                 {NAV_MANAGE.map((id) => navButton(id))}
-                <span className="nav-group">{t("Knowledge and organizations")}</span>
+                <span className="nav-group">{t("Organizations")}</span>
                 {navButton(NAV_KNOWLEDGE[0])}
-                {navButton(NAV_KNOWLEDGE[1], counts.pendingDocs, tf("{n} documents to review", { n: counts.pendingDocs }))}
               </>
             ) : null}
           </nav>

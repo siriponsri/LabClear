@@ -66,6 +66,10 @@ export function useChatEngine(host: ChatHost) {
       if (!switched) return;
       controller.current?.abort();
       setDraft(EMPTY_DRAFT);
+      // The turn in progress belonged to the previous identity: drop it from the screen too.
+      busyRef.current = false;
+      setBusy(false);
+      setLive(null);
     });
     return () => {
       off();

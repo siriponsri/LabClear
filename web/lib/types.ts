@@ -41,6 +41,7 @@ export type SourceRecord = {
   page?: number | null;
   language?: string;
   topics?: string[];
+  rights?: string;
 };
 export type Common = {
   version: string;
@@ -53,6 +54,8 @@ export type Common = {
   sources: { count: number; publishers: number; publisher_types: Record<string, number> };
   maps_embed_key: boolean;
   google_sign_in: boolean;
+  /** Optional pages switched on by the server owner (Codex feature flags, booleans only). */
+  features?: { org_documents: boolean; org_reference_inference: boolean; hospital_links: boolean; landing_preview: boolean };
   /** true when the API was not reachable and seed data was used */
   offline?: boolean;
 };

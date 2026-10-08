@@ -350,7 +350,7 @@ export function PrivacySection({ t }: Tx) {
         <path d="M8.5 10.5V8a3.5 3.5 0 0 1 7 0v2.5M12 14.5v2" />
       </svg>
       <h2 id="privacy-title">{t("Guest chats are deleted when you refresh.")}</h2>
-      <p className="lc-sub">{t("Sign in to keep your chat history and reports. Only you can see your report values.")}</p>
+      <p className="lc-sub">{t("Sign in to save your chats and reports from now on. Only you can see your report values.")}</p>
       <Link className="text-link" href="/privacy">
         {t("Read the privacy policy")}
       </Link>

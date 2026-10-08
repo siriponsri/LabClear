@@ -1,8 +1,8 @@
 {
   "name": "labclear-web",
-  "version": "4.0.0",
+  "version": "4.0.0-rc1",
   "private": true,
-  "description": "LabClear website, customer workspace and service desk (Next.js App Router, React Three Fiber). Talks to the FastAPI service under /api.",
+  "description": "LabClear website, customer workspace and service desk (Next.js App Router, React Three Fiber). Talks to the Codex FastAPI service under /api; deployed on Render as an optional second service (Cloudflare scripts kept as deferred).",
   "scripts": {
     "sync-seed": "node scripts/sync-seed.mjs",
     "predev": "node scripts/sync-seed.mjs && node scripts/merge-i18n.mjs",
@@ -10,6 +10,7 @@
     "prebuild": "node scripts/sync-seed.mjs && node scripts/merge-i18n.mjs",
     "build": "next build",
     "start": "next start -p 3000",
+    "start:render": "next start -H 0.0.0.0 -p ${PORT:-3000}",
     "typecheck": "tsc --noEmit",
     "i18n:check": "node scripts/merge-i18n.mjs && node scripts/i18n-check.mjs",
     "cf:build": "opennextjs-cloudflare build",
@@ -18,7 +19,8 @@
     "cf:typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
     "cf:domain": "node scripts/set-domain.mjs",
     "i18n:merge": "node scripts/merge-i18n.mjs",
-    "uat": "node tests/uat.mjs"
+    "uat": "node tests/uat.mjs",
+    "uat:flags-off": "node tests/uat-flags-off.mjs"
   },
   "dependencies": {
     "@react-three/drei": "10.7.9",

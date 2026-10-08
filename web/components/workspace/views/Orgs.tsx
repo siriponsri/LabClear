@@ -1,67 +1,53 @@
 "use client";
 /*
- * My organization (CEO requirement 1, 4.0.0): join a hospital, clinic or company with its code,
- * see the reference documents LabClear staff approved for it, let the chat cite them, and — for an
- * organization admin — upload documents for review. Backend: routers/org.py, services/org_knowledge.py.
+ * My organization — the Claude 4.0.0 view, adapted in integration 4.0 to the Codex contract
+ * (routers/organization_sources.py, services/organization_sources.py):
+ * - membership is assigned by a LabClear manager (reader or editor); there are no join codes;
+ * - editors upload UTF-8 .txt/.md files of at most 256 KiB as drafts, then approve, reject,
+ *   revoke, delete or upload a new version; readers see approved documents only;
+ * - search returns source excerpts, never an AI answer;
+ * - the assistant receives approved excerpts only when the owner turns on
+ *   ORG_REFERENCE_INFERENCE_ENABLED, and a revoked document never reaches a later answer.
+ * The layout, cards, upload progress and privacy aside are Claude's original design.
  */
 import { useId, useRef, useState } from "react";
 import type { T } from "@/lib/i18n/shared";
 import { api as apiClient } from "@/lib/api/client";
+import { loadFeatures, type Features, type Membership } from "@/components/chat/ContextChips";
 import { useWorkspace } from "../context";
 import { Badge, Empty } from "../ui";
 import { Act, dayText, errorText, LoadError, Loading, useConfirm, useLoad } from "./shared";
 
-type Org = { id: string; name: string; kind: string; active: boolean; docs_version: number; created: number };
-type Doc = {
-  id: string;
-  org_id: string;
-  title: string;
-  filename: string;
-  file_type: string;
-  source_url: string;
-  note: string;
-  state: "pending" | "approved" | "rejected";
-  chunks: number;
-  flagged: number;
-  characters: number;
-  uploaded_by: string;
-  uploaded_at: number;
-  reviewed_at: number | null;
-  review_note: string;
-};
-type Membership = { org: Org; role: "member" | "admin"; joined: number; documents: Doc[] };
-type Mine = { memberships: Membership[]; chat_org_id: string; signed_in: boolean };
+type DocState = "draft" | "approved" | "rejected" | "revoked" | "deleted";
+type Doc = { id: string; state: DocState; title: string; version: number; sha256: string; reviewed_at: number | null };
+type Listing = { can_edit: boolean; documents: Doc[] };
+type Preview = Doc & { text?: string; filename?: string; uploaded_at?: number; previous_id?: string | null };
+type Excerpt = { id: string; version: number; title: string; section: string; content: string; url: string };
+type Loaded = { features: Features | null; listing: Listing | null; problem: "" | "disabled" | "no_membership" };
 
-const MAX_BYTES = 5 * 1024 * 1024;
-const ACCEPT = ".pdf,.docx,.txt,.md,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain,text/markdown";
+const MAX_BYTES = 256 * 1024;
+const ACCEPT = ".txt,.md,text/plain,text/markdown";
+const BASE = "/organization-documents";
 
-function kindLabel(t: T, kind: string) {
-  return ({ hospital: t("Hospital"), clinic: t("Clinic"), company: t("Company"), other: t("Other organization") } as Record<string, string>)[kind] || kind;
-}
-function fileLabel(t: T, type: string) {
-  return ({ pdf: "PDF", docx: "Word (.docx)", text: t("Text file") } as Record<string, string>)[type] || type;
-}
-
-/** Clear Thai messages for every upload error code in services/org_knowledge.py. */
+/** Clear messages for every error code in services/organization_sources.py. */
 function uploadError(t: T, e: unknown): string {
   const code = (e as { code?: string })?.code || "";
   const messages: Record<string, string> = {
-    document_type: t("This file type cannot be used. Upload a PDF with selectable text, a Word file (.docx), or a .txt or .md file."),
-    document_no_text: t("No readable text was found in this file. A scanned PDF has no text layer: export the document as PDF from Word or Google Docs, or upload the .docx file instead."),
-    document_too_large: t("This file is larger than 5 MB. Remove pictures or split the document, then try again."),
-    document_too_long: t("This document is too long. Upload a PDF of 60 pages or fewer, or split the text into smaller files."),
-    org_doc_duplicate: t("This file was already added to the organization. Delete the old copy first if you want to replace it."),
-    org_doc_url: t("The source link must start with https:// (for example https://hospital.example/guide)."),
-    org_doc_limit: t("Your organization already keeps 30 documents. Delete one you no longer need, then upload again."),
-    document_invalid: t("This file could not be opened. Check that it is not damaged or password-protected, then try again."),
-    forbidden: t("Only an organization admin can add or remove documents. Ask a LabClear manager to make you an admin."),
-    org_inactive: t("This organization is inactive, so documents cannot be added."),
+    file_size: t("Use a non-empty file of at most 256 KB."),
+    file_type: t("Use a UTF-8 .txt or .md file. PDF, Word and scanned images are not supported here."),
+    file_encoding: t("Save the document as UTF-8 text, then upload it again."),
+    file_content: t("The file is not plain text. Copy the text into a .txt or .md file."),
+    duplicate_source: t("This file already exists in your organization."),
+    source_limit: t("Your organization has reached 100 documents. Delete one you no longer need first."),
+    version_conflict: t("The approved version changed meanwhile. Upload the new version against the current approved one."),
+    source_state: t("This document cannot make that change in its current state."),
+    forbidden: t("Only an organization editor can add or review documents. Ask a LabClear manager for editor access."),
   };
   return messages[code] || errorText(t, e);
 }
 
 /** multipart POST with upload progress (fetch cannot report it). Same headers as the api client. */
-function postWithProgress(path: string, body: FormData, onProgress: (pct: number) => void): Promise<Doc> {
+function postWithProgress(path: string, body: FormData, onProgress: (pct: number) => void): Promise<{ id: string; state: DocState; version: number }> {
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
     xhr.open("POST", "/api/business" + path);
@@ -75,7 +61,7 @@ function postWithProgress(path: string, body: FormData, onProgress: (pct: number
       try {
         d = JSON.parse(xhr.responseText);
       } catch {
-        return reject(Object.assign(new Error("The server response could not be read."), { code: xhr.status === 413 ? "document_too_large" : "bad_response", status: xhr.status }));
+        return reject(Object.assign(new Error("The server response could not be read."), { code: xhr.status === 413 ? "file_size" : "bad_response", status: xhr.status }));
       }
       if (xhr.status >= 200 && xhr.status < 300) return resolve(d);
       let message = d?.message || (typeof d?.detail === "string" ? d.detail : "The request could not be completed.");
@@ -87,104 +73,41 @@ function postWithProgress(path: string, body: FormData, onProgress: (pct: number
   });
 }
 
-function formatCode(v: string) {
-  const c = v.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 8);
-  return c.length > 4 ? c.slice(0, 4) + "-" + c.slice(4) : c;
+function stateLabel(t: T): Record<DocState, [string, "" | "ok" | "warn" | "bad" | "neutral"]> {
+  return {
+    draft: [t("Draft, waiting for an editor's review"), "warn"],
+    approved: [t("Approved"), "ok"],
+    rejected: [t("Not approved"), "bad"],
+    revoked: [t("Revoked"), "neutral"],
+    deleted: [t("Deleted"), "neutral"],
+  };
 }
 
-function JoinForm({ onJoined, compact }: { onJoined: () => Promise<unknown>; compact: boolean }) {
-  const { api, t, tf, notice } = useWorkspace();
-  const [code, setCode] = useState("");
-  const [busy, setBusy] = useState(false);
-  const [err, setErr] = useState("");
-  const ready = code.replace("-", "").length === 8;
-  return (
-    <form
-      className={"org-join" + (compact ? " compact" : " card")}
-      aria-labelledby="org-join-title"
-      onSubmit={async (e) => {
-        e.preventDefault();
-        if (!ready || busy) return;
-        setBusy(true);
-        setErr("");
-        try {
-          const r = await api.post<{ org: Org; role: string }>("/orgs/join", { code });
-          setCode("");
-          notice(tf("You joined {name}.", { name: r.org.name }));
-          await onJoined();
-        } catch (x) {
-          setErr(errorText(t, x));
-        } finally {
-          setBusy(false);
-        }
-      }}
-    >
-      <h3 id="org-join-title">{compact ? t("Join another organization") : t("Join with a code")}</h3>
-      {!compact ? <p className="small muted">{t("Your hospital, clinic or company gives you an 8-character code. You can join up to 5 organizations.")}</p> : null}
-      <div className="org-join-row">
-        <div className="field">
-          <label htmlFor="org-code">{t("Join code")}</label>
-          <input
-            id="org-code"
-            className="input org-code"
-            value={code}
-            onChange={(e) => {
-              setCode(formatCode(e.target.value));
-              setErr("");
-            }}
-            placeholder="ABCD-2345"
-            inputMode="text"
-            autoCapitalize="characters"
-            autoComplete="off"
-            spellCheck={false}
-            maxLength={9}
-            aria-invalid={!!err || undefined}
-            aria-describedby={err ? "org-code-error" : undefined}
-          />
-        </div>
-        <button type="submit" className="btn primary" disabled={!ready || busy} aria-busy={busy || undefined}>
-          {busy ? t("Joining…") : t("Join")}
-        </button>
-      </div>
-      {err ? (
-        <p className="field-error" id="org-code-error" role="alert">
-          {err}
-        </p>
-      ) : null}
-    </form>
-  );
-}
-
-function UploadForm({ orgId, onDone }: { orgId: string; onDone: () => Promise<unknown> }) {
+function UploadForm({ replacing, onDone, onCancel }: { replacing: Doc | null; onDone: () => Promise<unknown>; onCancel: () => void }) {
   const { t, tf, notice } = useWorkspace();
   const uid = useId();
   const fileRef = useRef<HTMLInputElement>(null);
-  const formRef = useRef<HTMLFormElement>(null);
   const [file, setFile] = useState<File | null>(null);
-  const [title, setTitle] = useState("");
-  const [url, setUrl] = useState("");
-  const [note, setNote] = useState("");
+  const [title, setTitle] = useState(replacing?.title || "");
   const [progress, setProgress] = useState<number | null>(null);
   const [err, setErr] = useState("");
   const busy = progress !== null;
 
   const check = (f: File | null): string => {
     if (!f) return t("Choose a file to upload.");
-    if (!/\.(pdf|docx|txt|md|markdown)$/i.test(f.name)) return uploadError(t, { code: "document_type" });
-    if (f.size > MAX_BYTES) return uploadError(t, { code: "document_too_large" });
-    if (!f.size) return t("The file is empty.");
+    if (!/\.(txt|md)$/i.test(f.name)) return uploadError(t, { code: "file_type" });
+    if (!f.size || f.size > MAX_BYTES) return uploadError(t, { code: "file_size" });
     return "";
   };
 
   return (
     <form
-      ref={formRef}
       className="org-upload form-grid"
       aria-labelledby={uid + "-title"}
       onSubmit={async (e) => {
         e.preventDefault();
         if (busy) return;
-        const problem = check(file) || (url.trim() && !/^https:\/\/[^\s<>"']{4,300}$/.test(url.trim()) ? uploadError(t, { code: "org_doc_url" }) : "");
+        const problem = check(file) || (!title.trim() ? t("Enter a title.") : "");
         if (problem) {
           setErr(problem);
           return;
@@ -192,17 +115,14 @@ function UploadForm({ orgId, onDone }: { orgId: string; onDone: () => Promise<un
         const body = new FormData();
         body.append("file", file!);
         body.append("title", title.trim());
-        body.append("source_url", url.trim());
-        body.append("note", note.trim());
+        body.append("previous_id", replacing?.id || "");
         setErr("");
         setProgress(0);
         try {
-          const doc = await postWithProgress("/orgs/" + encodeURIComponent(orgId) + "/documents", body, setProgress);
-          notice(tf("“{title}” was added. LabClear staff will review it before the chat uses it.", { title: doc.title }));
+          const doc = await postWithProgress(BASE, body, setProgress);
+          notice(tf("Version {n} was saved as a draft. Review and approve it before members can use it.", { n: doc.version }));
           setFile(null);
           setTitle("");
-          setUrl("");
-          setNote("");
           if (fileRef.current) fileRef.current.value = "";
           await onDone();
         } catch (x) {
@@ -212,11 +132,11 @@ function UploadForm({ orgId, onDone }: { orgId: string; onDone: () => Promise<un
         }
       }}
     >
-      <h4 id={uid + "-title"}>{t("Add a document for review")}</h4>
+      <h4 id={uid + "-title"}>{replacing ? tf("New version of “{title}”", { title: replacing.title }) : t("Add a document")}</h4>
       <div className="field">
         <label htmlFor={uid + "-file"}>{t("File")}</label>
         <span className="hint" id={uid + "-file-hint"}>
-          {t("PDF with selectable text, Word (.docx), .txt or .md, up to 5 MB. Scanned images cannot be read.")}
+          {t("UTF-8 .txt or .md, up to 256 KB. Use synthetic or approved text only.")}
         </span>
         <input
           ref={fileRef}
@@ -231,30 +151,19 @@ function UploadForm({ orgId, onDone }: { orgId: string; onDone: () => Promise<un
             const f = e.target.files?.[0] || null;
             setFile(f);
             setErr(f ? check(f) : "");
-            if (f && !title) setTitle(f.name.replace(/\.[a-z0-9]+$/i, "").slice(0, 140));
+            if (f && !title) setTitle(f.name.replace(/\.[a-z0-9]+$/i, "").slice(0, 160));
           }}
         />
       </div>
-      <div className="form-grid two">
-        <div className="field">
-          <label htmlFor={uid + "-name"}>{t("Title")}</label>
-          <span className="hint">{t("Shown to members and in chat citations.")}</span>
-          <input id={uid + "-name"} className="input" maxLength={140} value={title} disabled={busy} onChange={(e) => setTitle(e.target.value)} autoComplete="off" />
-        </div>
-        <div className="field">
-          <label htmlFor={uid + "-url"}>{t("Source link (optional)")}</label>
-          <span className="hint">{t("Where members can read the original. Starts with https://")}</span>
-          <input id={uid + "-url"} className="input" type="url" inputMode="url" maxLength={300} placeholder="https://" value={url} disabled={busy} onChange={(e) => setUrl(e.target.value)} autoComplete="off" />
-        </div>
-      </div>
       <div className="field">
-        <label htmlFor={uid + "-note"}>{t("Note for the reviewer (optional)")}</label>
-        <textarea id={uid + "-note"} className="input" maxLength={500} rows={2} value={note} disabled={busy} onChange={(e) => setNote(e.target.value)} placeholder={t("For example: reference ranges used by our laboratory since 2026")} />
+        <label htmlFor={uid + "-name"}>{t("Title")}</label>
+        <span className="hint">{t("Shown to members and in chat citations.")}</span>
+        <input id={uid + "-name"} className="input" maxLength={160} required value={title} disabled={busy} onChange={(e) => setTitle(e.target.value)} autoComplete="off" />
       </div>
       {busy ? (
         <div className="org-progress" role="status" aria-live="polite">
           <progress max={100} value={progress! < 100 ? progress! : undefined} aria-label={t("Upload progress")} />
-          <span className="small muted">{progress! < 100 ? tf("Uploading… {n}%", { n: progress! }) : t("Reading and checking the text…")}</span>
+          <span className="small muted">{progress! < 100 ? tf("Uploading… {n}%", { n: progress! }) : t("Checking the text…")}</span>
         </div>
       ) : null}
       {err ? (
@@ -264,203 +173,215 @@ function UploadForm({ orgId, onDone }: { orgId: string; onDone: () => Promise<un
       ) : null}
       <div className="row">
         <button type="submit" className="btn primary" disabled={busy} aria-busy={busy || undefined}>
-          {busy ? t("Uploading…") : t("Upload for review")}
+          {busy ? t("Uploading…") : replacing ? t("Upload new version") : t("Upload as draft")}
         </button>
+        {replacing ? (
+          <button type="button" className="btn ghost" disabled={busy} onClick={onCancel}>
+            {t("Cancel")}
+          </button>
+        ) : null}
       </div>
     </form>
   );
 }
 
-function DocMeta({ d }: { d: Doc }) {
-  const { t, tf, lang } = useWorkspace();
+function PreviewBody({ id }: { id: string }) {
+  const { api, t, tf, lang } = useWorkspace();
+  const res = useLoad(() => api.get<Preview>(BASE + "/" + encodeURIComponent(id)), [id]);
+  if (res.error) return <LoadError error={res.error} retry={() => res.reload()} />;
+  if (!res.data) return <Loading rows={3} />;
+  const d = res.data;
   return (
-    <div className="record-meta">
-      <span>{fileLabel(t, d.file_type)}</span>
-      <span>{tf("{n} passages", { n: d.chunks })}</span>
-      {d.state === "approved" && d.reviewed_at ? <span>{tf("Reviewed {date}", { date: dayText(d.reviewed_at, lang) })}</span> : <span>{tf("Uploaded {date}", { date: dayText(d.uploaded_at, lang) })}</span>}
-      {d.source_url ? (
-        <a href={d.source_url} target="_blank" rel="noopener noreferrer" className="org-source">
-          {t("Source")}
-          <span className="sr-only"> ({t("opens in a new tab")})</span>
-        </a>
-      ) : null}
+    <div className="stack-sm">
+      <p className="small muted">
+        {tf("Version {n}", { n: d.version })}
+        {d.uploaded_at ? " · " + tf("Uploaded {date}", { date: dayText(d.uploaded_at, lang) }) : ""} · SHA-256 <span className="mono">{d.sha256.slice(0, 12)}…</span>
+      </p>
+      <pre className="org-preview" tabIndex={0} aria-label={t("Document text")}>
+        {d.text || ""}
+      </pre>
     </div>
   );
 }
 
-function AdminDocs({ m, reload }: { m: Membership; reload: () => Promise<unknown> }) {
-  const { api, t, tf, notice } = useWorkspace();
+function DocRow({ d, editor, reload, onNewVersion }: { d: Doc; editor: boolean; reload: () => Promise<unknown>; onNewVersion: (d: Doc) => void }) {
+  const { api, t, tf, lang, notice, modal } = useWorkspace();
   const confirm = useConfirm();
-  const states: Record<string, [string, "warn" | "ok" | "bad"]> = {
-    pending: [t("Waiting for staff review"), "warn"],
-    approved: [t("Approved"), "ok"],
-    rejected: [t("Not approved"), "bad"],
+  const [label, tone] = stateLabel(t)[d.state] || [d.state, "warn"];
+  const act = (action: "approve" | "reject" | "revoke" | "delete", done: string) => async () => {
+    await api.post(BASE + "/" + encodeURIComponent(d.id) + "/" + action);
+    notice(done);
+    await reload();
   };
-  const docs = m.documents.slice().sort((a, b) => b.uploaded_at - a.uploaded_at);
   return (
-    <div className="org-admin stack">
-      <UploadForm orgId={m.org.id} onDone={reload} />
-      <div className="stack-sm">
-        <h4>{t("Documents and review status")}</h4>
-        {!docs.length ? (
-          <p className="small muted">{t("No documents yet. Upload your laboratory's reference ranges or preparation instructions to start.")}</p>
-        ) : (
-          <div className="record-list">
-            {docs.map((d) => {
-              const [label, tone] = states[d.state] || [d.state, "warn"];
-              return (
-                <article className="record" key={d.id}>
-                  <div className="record-head">
-                    <h3>{d.title}</h3>
-                    <Badge tone={tone}>{label}</Badge>
-                    {d.flagged ? <Badge tone="warn">{tf("{n} flagged passages", { n: d.flagged })}</Badge> : null}
-                  </div>
-                  <DocMeta d={d} />
-                  {d.flagged ? <p className="small muted">{t("Flagged passages read like instructions to an AI. They are never used in the chat.")}</p> : null}
-                  {d.review_note ? (
-                    <p className="small">{d.state === "rejected" ? tf("Reason from LabClear staff: {note}", { note: d.review_note }) : tf("Note from LabClear staff: {note}", { note: d.review_note })}</p>
-                  ) : null}
-                  <div className="record-actions">
-                    <button
-                      type="button"
-                      className="btn sm danger"
-                      onClick={() =>
-                        confirm(t("Delete document"), tf("Delete “{title}”? The chat stops citing it right away. This cannot be undone.", { title: d.title }), t("Delete document"), async () => {
-                          await api.del("/orgs/" + encodeURIComponent(m.org.id) + "/documents/" + encodeURIComponent(d.id));
-                          notice(t("Document deleted."));
-                          await reload();
-                        })
-                      }
-                    >
-                      {t("Delete")}
-                    </button>
-                  </div>
-                </article>
-              );
-            })}
-          </div>
-        )}
+    <article className="record" key={d.id}>
+      <div className="record-head">
+        <h3>{d.title}</h3>
+        <Badge tone={tone}>{label}</Badge>
+        <Badge tone="neutral">{tf("Version {n}", { n: d.version })}</Badge>
       </div>
-    </div>
+      <div className="record-meta">
+        {d.reviewed_at ? <span>{tf("Reviewed {date}", { date: dayText(d.reviewed_at, lang) })}</span> : <span>{t("Not reviewed yet")}</span>}
+        <span className="mono">{d.sha256.slice(0, 12)}…</span>
+        {d.state === "approved" ? (
+          <a href={"/api/business" + BASE + "/" + encodeURIComponent(d.id) + "/download"} download className="org-source">
+            {t("Download text")}
+          </a>
+        ) : null}
+      </div>
+      {editor ? (
+        <div className="record-actions">
+          {d.state !== "revoked" ? (
+            <button type="button" className="btn sm" onClick={() => modal(d.title, <PreviewBody id={d.id} />)}>
+              {t("Preview")}
+            </button>
+          ) : null}
+          {d.state === "draft" ? (
+            <>
+              <Act className="btn sm primary" run={act("approve", t("Approved. Members can now see this version."))}>
+                {t("Approve")}
+              </Act>
+              <Act className="btn sm" run={act("reject", t("Marked as not approved."))}>
+                {t("Reject")}
+              </Act>
+            </>
+          ) : null}
+          {d.state === "approved" ? (
+            <>
+              <button type="button" className="btn sm" onClick={() => onNewVersion(d)}>
+                {t("Upload new version")}
+              </button>
+              <button
+                type="button"
+                className="btn sm"
+                onClick={() =>
+                  confirm(t("Revoke document"), tf("Revoke “{title}”? Members stop seeing it and later answers can no longer use it.", { title: d.title }), t("Revoke"), act("revoke", t("Revoked.")))
+                }
+              >
+                {t("Revoke")}
+              </button>
+            </>
+          ) : null}
+          <button
+            type="button"
+            className="btn sm danger"
+            onClick={() =>
+              confirm(t("Delete document"), tf("Delete “{title}”? Its text is removed from the store. This cannot be undone.", { title: d.title }), t("Delete document"), act("delete", t("Document deleted.")))
+            }
+          >
+            {t("Delete")}
+          </button>
+        </div>
+      ) : null}
+    </article>
   );
 }
 
-function OrgCard({ m, chatOrg, reload }: { m: Membership; chatOrg: string; reload: () => Promise<unknown> }) {
-  const { api, t, tf, lang, notice, navigate, refresh } = useWorkspace();
-  const confirm = useConfirm();
-  const admin = m.role === "admin";
-  const inChat = chatOrg === m.org.id;
-  const approved = m.documents.filter((d) => d.state === "approved");
-  const heading = "org-" + m.org.id;
-  const scope = async (orgId: string) => api.post("/chat/org-scope", { org_id: orgId });
+function SearchBox() {
+  const { api, t, tf, fail } = useWorkspace();
+  const uid = useId();
+  const [q, setQ] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [found, setFound] = useState<Excerpt[] | null>(null);
   return (
-    <section className="org-card card" aria-labelledby={heading}>
-      <div className="record-head">
-        <h3 id={heading}>{m.org.name}</h3>
-        <Badge tone="neutral">{kindLabel(t, m.org.kind)}</Badge>
-        <Badge tone={admin ? "accent" : ""}>{admin ? t("Admin") : t("Member")}</Badge>
-        {inChat ? <Badge tone="ok">{t("Used in your chat")}</Badge> : null}
-      </div>
-      <p className="small muted">{tf("Joined {date}", { date: dayText(m.joined, lang) })}</p>
-
-      <div className="stack-sm">
-        <h4>{t("Approved documents")}</h4>
-        {approved.length ? (
-          <>
-            <p className="small">{t("Your chat cites these documents when this organization is selected.")}</p>
+    <section className="card stack-sm" aria-labelledby={uid + "-h"}>
+      <h3 id={uid + "-h"}>{t("Search approved documents")}</h3>
+      <form
+        className="org-join-row"
+        onSubmit={async (e) => {
+          e.preventDefault();
+          if (!q.trim() || busy) return;
+          setBusy(true);
+          try {
+            setFound((await api.post<{ sources: Excerpt[] }>(BASE + "/search", { q: q.trim() })).sources);
+          } catch (x) {
+            fail(x);
+          } finally {
+            setBusy(false);
+          }
+        }}
+      >
+        <div className="field">
+          <label htmlFor={uid + "-q"}>{t("Words to find")}</label>
+          <input id={uid + "-q"} className="input" maxLength={500} value={q} onChange={(e) => setQ(e.target.value)} autoComplete="off" />
+        </div>
+        <button type="submit" className="btn primary" disabled={busy || !q.trim()} aria-busy={busy || undefined}>
+          {t("Search")}
+        </button>
+      </form>
+      {found ? (
+        found.length ? (
+          <div className="stack-sm" aria-live="polite">
+            <p className="tiny muted">{t("Text from the source document — not an answer from AI.")}</p>
             <ul className="plain org-docs">
-              {approved.map((d) => (
-                <li key={d.id}>
-                  <strong>{d.title}</strong>
-                  <DocMeta d={d} />
+              {found.map((x, i) => (
+                <li key={x.id + i}>
+                  <strong>{x.title}</strong>
+                  <div className="record-meta">
+                    <span>{tf("Version {n}", { n: x.version })}</span>
+                    <span>{x.section}</span>
+                  </div>
+                  <blockquote className="org-excerpt">{x.content}</blockquote>
                 </li>
               ))}
             </ul>
-          </>
+          </div>
         ) : (
-          <p className="small muted">
-            {admin ? t("No approved documents yet. Documents you upload appear here after LabClear staff approve them.") : t("No approved documents yet. Your organization's admin adds them and LabClear staff review each one.")}
+          <p className="small muted" aria-live="polite">
+            {t("No approved document contains these words.")}
           </p>
-        )}
-        <div className="row">
-          {inChat ? (
-            <>
-              <button type="button" className="btn sm primary" onClick={() => navigate("chat")}>
-                {t("Go to the chat")}
-              </button>
-              <Act
-                className="btn sm ghost"
-                run={async () => {
-                  await scope("none");
-                  notice(t("Your chat no longer cites organization documents."));
-                  await reload();
-                }}
-              >
-                {t("Stop citing in my chat")}
-              </Act>
-            </>
-          ) : (
-            <Act
-              className="btn sm primary"
-              run={async () => {
-                await scope(m.org.id);
-                await refresh().catch(() => null);
-                notice(tf("Your chat now cites {name}'s approved documents.", { name: m.org.name }));
-                navigate("chat");
-              }}
-            >
-              {t("Use in my chat")}
-            </Act>
-          )}
-        </div>
-      </div>
-
-      {admin ? <AdminDocs m={m} reload={reload} /> : null}
-
-      <div className="org-leave">
-        <button
-          type="button"
-          className="btn sm ghost danger"
-          onClick={() =>
-            confirm(t("Leave organization"), tf("Leave {name}? Your chat stops citing its documents. To come back you need a join code again.", { name: m.org.name }), t("Leave organization"), async () => {
-              await api.post("/orgs/" + encodeURIComponent(m.org.id) + "/leave");
-              notice(tf("You left {name}.", { name: m.org.name }));
-              await reload();
-            })
-          }
-        >
-          {t("Leave organization")}
-        </button>
-      </div>
+        )
+      ) : null}
     </section>
   );
 }
 
-function PrivacyNote() {
+function PrivacyNote({ features }: { features: Features | null }) {
   const { t } = useWorkspace();
   return (
     <aside className="org-privacy" aria-labelledby="org-privacy-title">
       <h3 id="org-privacy-title">{t("How organization documents are handled")}</h3>
       <ul>
-        <li>{t("Each document is turned into text and stored encrypted. The original file is not kept.")}</li>
-        <li>{t("LabClear staff review every document before the chat can use it. Passages that read like instructions to an AI are left out.")}</li>
-        <li>{t("Only members' chats cite these documents, with the organization named as the source.")}</li>
-        <li>{t("Document text is never sent to an outside service for embeddings. It is searched on our own server.")}</li>
+        <li>{t("Documents are stored encrypted and are visible only to members of the same organization.")}</li>
+        <li>{t("An organization editor reviews every draft. Members see approved versions only.")}</li>
+        <li>{t("Revoking or deleting a document stops later answers from using it.")}</li>
+        <li>
+          {features?.org_reference_inference
+            ? t("The assistant may cite approved excerpts in members' chats, with the document named as the source.")
+            : t("The assistant does not use these documents yet; members can search them here.")}
+        </li>
+        <li>{t("Your own lab reports are never shared with the organization.")}</li>
       </ul>
     </aside>
   );
 }
 
 export function OrgsView() {
-  const { api, t, user, requireAccount } = useWorkspace();
+  const { api, t, tf, user, requireAccount } = useWorkspace();
   const signedIn = !!user?.registered;
-  const res = useLoad(() => (signedIn ? api.get<Mine>("/orgs/mine") : Promise.resolve(null)), [signedIn]);
+  const [replacing, setReplacing] = useState<Doc | null>(null);
+  const res = useLoad<Loaded | null>(async () => {
+    if (!signedIn) return null;
+    const features = await loadFeatures();
+    if (features && !features.org_documents) return { features, listing: null, problem: "disabled" };
+    const m = await api.get<Membership>("/site/membership");
+    if (!m.enabled) return { features, listing: null, problem: "disabled" };
+    if (!m.member) return { features, listing: null, problem: "no_membership" };
+    try {
+      return { features, listing: await api.get<Listing>(BASE), problem: "" };
+    } catch (e) {
+      const code = (e as { code?: string }).code;
+      if (code === "feature_disabled") return { features, listing: null, problem: "disabled" };
+      if (code === "forbidden") return { features, listing: null, problem: "no_membership" };
+      throw e;
+    }
+  }, [signedIn]);
   const reload = () => res.reload(true);
 
   const intro = (
     <div className="view-intro">
       <h2>{t("My organization")}</h2>
-      <p>{t("If your hospital, clinic or company works with LabClear, join it with the code it gives you. The chat can then cite your organization's own reviewed documents, such as its laboratory reference ranges or preparation instructions.")}</p>
+      <p>{t("If your hospital, clinic or company works with LabClear, a LabClear manager adds your account to it. Members can then read and search the organization's own approved documents, such as its laboratory reference ranges or preparation instructions.")}</p>
     </div>
   );
 
@@ -468,27 +389,57 @@ export function OrgsView() {
   if (!signedIn)
     main = (
       <Empty
-        title={t("Sign in to join your organization")}
+        title={t("Sign in to see your organization")}
         actions={
-          <button type="button" className="btn primary sm" onClick={() => requireAccount(t("Sign in to join your organization with its code. Organization documents are only cited for members."))}>
+          <button type="button" className="btn primary sm" onClick={() => requireAccount(t("Organization documents are only shown to signed-in members."))}>
             {t("Sign in or create an account")}
           </button>
         }
       >
-        {t("Organizations are linked to your account, so a temporary guest chat cannot join one.")}
+        {t("Organizations are linked to your account, so a temporary guest chat cannot use one.")}
       </Empty>
     );
   else if (res.error) main = <LoadError error={res.error} retry={() => res.reload()} />;
   else if (!res.data) main = <Loading rows={2} />;
+  else if (res.data.problem === "disabled")
+    main = <Empty title={t("Organization documents are not switched on")}>{t("The service owner has not turned on organization documents for this deployment.")}</Empty>;
+  else if (res.data.problem === "no_membership")
+    main = (
+      <Empty title={t("You are not in an organization yet")}>
+        {t("A LabClear manager adds members to an organization as a reader or an editor. Ask your organization's contact to arrange it.")}{" "}
+        {tf("Your account ID: {id}", { id: user?.id || "" })}
+      </Empty>
+    );
   else {
-    const { memberships, chat_org_id } = res.data;
+    const { can_edit, documents } = res.data.listing!;
+    const docs = documents.filter((d) => d.state !== "deleted").slice().sort((a, b) => (a.state === "approved" ? -1 : 0) - (b.state === "approved" ? -1 : 0));
     main = (
       <div className="stack" aria-busy={res.loading || undefined}>
-        {!memberships.length ? <JoinForm onJoined={reload} compact={false} /> : null}
-        {memberships.map((m) => (
-          <OrgCard key={m.org.id} m={m} chatOrg={chat_org_id} reload={reload} />
-        ))}
-        {memberships.length && memberships.length < 5 ? <JoinForm onJoined={reload} compact /> : null}
+        <section className="org-card card" aria-labelledby="org-docs-h">
+          <div className="record-head">
+            <h3 id="org-docs-h">{t("Your organization")}</h3>
+            <Badge tone={can_edit ? "accent" : ""}>{can_edit ? t("Editor") : t("Reader")}</Badge>
+            {res.data.features?.org_reference_inference ? <Badge tone="ok">{t("Used by the assistant")}</Badge> : <Badge tone="neutral">{t("Search only")}</Badge>}
+          </div>
+          {docs.length ? (
+            <div className="record-list">
+              {docs.map((d) => (
+                <DocRow key={d.id} d={d} editor={can_edit} reload={reload} onNewVersion={setReplacing} />
+              ))}
+            </div>
+          ) : (
+            <p className="small muted">{can_edit ? t("No documents yet. Upload a synthetic or approved text document to start.") : t("No approved documents yet. Your organization's editor adds and reviews them.")}</p>
+          )}
+          {can_edit ? (
+            <div className="org-admin stack">
+              <UploadForm key={replacing?.id || "new"} replacing={replacing} onCancel={() => setReplacing(null)} onDone={async () => {
+                setReplacing(null);
+                await reload();
+              }} />
+            </div>
+          ) : null}
+        </section>
+        <SearchBox />
       </div>
     );
   }
@@ -498,7 +449,7 @@ export function OrgsView() {
       {intro}
       <div className="org-layout">
         <div className="org-main">{main}</div>
-        <PrivacyNote />
+        <PrivacyNote features={res.data?.features || null} />
       </div>
     </div>
   );

@@ -1,6 +1,9 @@
 "use client";
-/* AI providers (manager): what every AI step uses, the project budget, readiness without AI calls,
-   the 4.0.0 fast OpenRouter set, and per-step provider forms. Keys are never shown back. */
+/* AI providers (manager). Claude 4.0.0 view adapted in integration 4.0 to the Codex contract
+   (routers/ai_admin.py, services/providers.py): three slots, four legacy agents that share the
+   language model, and two opt-in roles (Medical analyzer, Thai composer) that start disabled and
+   need an exact model, explicit prices and, on OpenRouter, reviewed endpoint IDs. Saving is a
+   configuration check only; Test makes one real, budgeted call. Keys are never shown back. */
 import { useId, useRef, useState } from "react";
 import { api } from "@/lib/api/client";
 import type { T } from "@/lib/i18n/shared";
@@ -8,10 +11,10 @@ import { ActionButton, Badge, Intro } from "@/components/workspace/ui";
 import { useStaff } from "../context";
 import { BudgetPanel, Icon, Kv, Loaded, errText, useLoad, type BudgetData } from "../parts";
 
-type Kind = "llm" | "vision" | "guard" | "embedding";
+type Kind = "llm" | "vision" | "guard";
 type SlotView = {
   label: string;
-  source: "environment" | "app" | "shared" | "shared_key";
+  source: "environment" | "app" | "shared" | "not_configured" | string;
   preset: string;
   provider_label: string;
   model: string;
@@ -19,84 +22,49 @@ type SlotView = {
   enabled: boolean;
   key: string;
   ready: boolean;
+  config_status: "DISABLED" | "SCHEMA_CHECK_ONLY" | "NOT_CONFIGURED" | string;
+  live_test_status: string;
+  provider_allowlist: string[];
   price_in: number | null;
   price_out: number | null;
-  priced: boolean;
   slot?: string;
   help?: string;
 };
 type Preset = { id: string; label: string; slots: string[]; default_model: string; vision_model: string; price_in: number; price_out: number; key_url: string };
 type AiView = { slots: Record<Kind, SlotView>; agents: Record<string, SlotView & { slot: string; help: string }>; presets: Preset[]; network_enabled: boolean };
-type Readiness = {
-  ready: boolean;
-  issues: string[];
-  required_calls: number;
-  calls: { cycle?: string | null; used?: number; limit?: number; remaining?: number };
-  slots: Record<string, { model: string; provider: string; ready: boolean; priced: boolean; source: string }>;
-  retrieval: { ready: boolean; mode: string; reason?: string; building?: boolean; model?: string; dimensions?: number; records?: number; built_at?: number | string; enabled?: boolean };
-  note: string;
-};
+type Candidate = { model_id: string; roles: string[]; approval_status: string; price_status: string; privacy_approval: string; last_live_eval: string | null; notes: string };
+type Registry = { version: string; status: string; models: Candidate[] };
 
-/** The 4.0.0 default: one team OpenRouter key for every step. */
-const FAST: Record<string, string> = {
-  agent_plan: "qwen/qwen3-30b-a3b-instruct-2507",
-  agent_advisor: "google/gemini-3.1-flash-lite",
-  agent_explainer: "google/gemini-3.1-flash-lite",
-  agent_review: "openai/gpt-4.1-mini",
-  guard: "openai/gpt-4.1-mini",
-  vision: "google/gemini-3.1-flash-lite",
-  embedding: "qwen/qwen3-embedding-8b",
-};
+/** Opt-in roles added by the Codex upgrade: disabled until configured, no inherited key. */
+const UPGRADE = new Set(["medical_analyzer", "thai_composer", "agent_medical_analyzer", "agent_thai_composer"]);
 
 const slotLabel = (t: T, slot: string) =>
   ({
     llm: t("Language model"),
     guard: t("Safety check"),
     vision: t("Report reading (OCR)"),
-    embedding: t("Knowledge retrieval"),
     agent_plan: t("Planner"),
     agent_advisor: t("Health-check Advisor"),
     agent_explainer: t("Report Explainer"),
     agent_review: t("Reviewer"),
+    agent_medical_analyzer: t("Medical analyzer"),
+    agent_thai_composer: t("Thai composer"),
   })[slot] || slot;
 
 const sourceLabel = (t: T, s: string) =>
-  ({ environment: t("Server environment"), app: t("Saved here"), shared: t("Shared language model"), shared_key: t("Shared OpenRouter key") })[s] || s;
+  ({ environment: t("Server environment"), app: t("Saved here"), shared: t("Shared language model"), not_configured: t("Not configured") })[s] || s;
 
-function issueText(t: T, tf: (s: string, v: Record<string, string | number>) => string, issue: string, required: number) {
-  const [code, slot] = issue.split(":");
-  switch (code) {
-    case "offline":
-      return t("AI calls are switched off on this server (PROVIDER_NETWORK_ENABLED is not true).");
-    case "cycle_required":
-      return t("Set PROVIDER_BUDGET_CYCLE_ID and CLOUD_CALL_LIMIT to allow AI calls.");
-    case "provider_not_configured":
-      return tf("{step}: no API key, model or endpoint yet.", { step: slotLabel(t, slot) });
-    case "price_unknown":
-      return tf("{step}: no price, so the budget cannot be enforced.", { step: slotLabel(t, slot) });
-    case "call_limit_insufficient":
-      return tf("Fewer calls are left in this cycle than one evaluation round needs ({n}).", { n: required });
-    case "storage_unavailable":
-      return t("The budget ledger is unavailable.");
-    case "budget_prior_unknown":
-      return t("Spending before this ledger is not set, so paid AI calls are blocked.");
-    case "budget_exhausted":
-      return t("The project budget is used up.");
-    case "embedding_index_unavailable":
-      return t("The knowledge index is not built yet, so retrieval uses keyword search only.");
-    default:
-      return issue;
-  }
-}
+const configLabel = (t: T, s: string): [string, "ok" | "warn" | "neutral"] =>
+  (({ SCHEMA_CHECK_ONLY: [t("Configuration checked"), "ok"], NOT_CONFIGURED: [t("Not configured"), "warn"], DISABLED: [t("Disabled"), "neutral"] }) as Record<string, [string, "ok" | "warn" | "neutral"]>)[s] || [s, "neutral"];
 
 export function AiProviders() {
-  const { t, tf, confirm, notice } = useStaff();
+  const { t } = useStaff();
   const state = useLoad(
     () =>
       Promise.all([
         api.get<AiView>("/staff/ai-providers"),
         api.get<BudgetData>("/staff/budget").catch((e) => ({ error: errText(e) })),
-        api.get<Readiness>("/staff/ai-providers/readiness/details").catch((e) => ({ error: errText(e) })),
+        api.get<Registry>("/staff/ai-providers/registry").catch((e) => ({ error: errText(e) })),
       ]),
     [],
   );
@@ -106,26 +74,13 @@ export function AiProviders() {
         {t("Choose the provider, model and API key for each AI step. Keys are stored encrypted on the server and never shown again; leave the key empty to keep the saved one.")}
       </Intro>
       <Loaded state={state}>
-        {([d, budget, ready]) => {
+        {([d, budget, registry]) => {
           const rows: [string, SlotView][] = [
             ["llm", d.slots.llm],
             ...Object.values(d.agents).map((a) => [a.slot, a] as [string, SlotView]),
             ["guard", d.slots.guard],
             ["vision", d.slots.vision],
-            ["embedding", d.slots.embedding],
           ];
-          const fast = rows.every(([slot, v]) => !FAST[slot] || v.model === FAST[slot]);
-          const useFast = () =>
-            confirm({
-              title: t("Use the fast, economical OpenRouter model set"),
-              body: <FastProfileBody />,
-              confirmLabel: t("Use this model set"),
-              run: async () => {
-                await api.post("/staff/ai-providers/profile/fast");
-                notice(t("Every AI step now uses the fast OpenRouter set."));
-                await state.reload();
-              },
-            });
           return (
             <div className="stack sd-ai">
               {!d.network_enabled ? <p className="callout warn small">{t("AI calls are switched off on this server (PROVIDER_NETWORK_ENABLED is not true). You can still save providers now.")}</p> : null}
@@ -133,9 +88,9 @@ export function AiProviders() {
               <section className="card stack" aria-labelledby="sd-ai-summary">
                 <div className="record-head">
                   <h3 id="sd-ai-summary">{t("What each AI step uses")}</h3>
-                  <Badge tone={fast ? "accent" : "neutral"}>{fast ? t("Fast OpenRouter set") : t("Custom choices")}</Badge>
+                  <Badge tone="neutral">{t("Live verification: not recorded")}</Badge>
                 </div>
-                <p className="small muted">{t("The 4.0.0 default is one team OpenRouter key for every step, with small fast models that fit the USD 10 project budget.")}</p>
+                <p className="small muted">{t("Saving checks the configuration only. Model quality, Thai output and medical accuracy are not verified until a reviewed live evaluation is authorized.")}</p>
                 <div className="table-wrap">
                   <table className="data sd-table sd-ai-table">
                     <thead>
@@ -144,47 +99,43 @@ export function AiProviders() {
                         <th scope="col">{t("Model")}</th>
                         <th scope="col">{t("Provider")}</th>
                         <th scope="col">{t("Settings from")}</th>
-                        <th scope="col">{t("Ready")}</th>
+                        <th scope="col">{t("Configuration")}</th>
                         <th scope="col" className="n">
                           {t("THB per 1M tokens (in / out)")}
                         </th>
                       </tr>
                     </thead>
                     <tbody>
-                      {rows.map(([slot, v]) => (
-                        <tr key={slot}>
-                          <td data-label={t("Step")} className="sd-cell-title">
-                            {slotLabel(t, slot)}
-                            {slot === "llm" ? <span className="sub">{t("Holds the shared OpenRouter key")}</span> : null}
-                          </td>
-                          <td data-label={t("Model")}>
-                            <span className="mono sd-model">{v.model || t("Not set")}</span>
-                            {FAST[slot] && v.model !== FAST[slot] ? <span className="sub">{tf("Fast set uses {model}", { model: FAST[slot] })}</span> : null}
-                          </td>
-                          <td data-label={t("Provider")}>{v.provider_label}</td>
-                          <td data-label={t("Settings from")}>{sourceLabel(t, v.source)}</td>
-                          <td data-label={t("Ready")}>
-                            <Badge tone={v.ready ? "ok" : "warn"}>{v.ready ? t("Ready") : t("Not set up")}</Badge>
-                          </td>
-                          <td data-label={t("THB per 1M tokens (in / out)")} className="n">
-                            {v.priced ? (
-                              <span className="num">
-                                {v.price_in} / {v.price_out}
-                              </span>
-                            ) : (
-                              <Badge tone="warn">{t("No price")}</Badge>
-                            )}
-                          </td>
-                        </tr>
-                      ))}
+                      {rows.map(([slot, v]) => {
+                        const [label, tone] = configLabel(t, v.config_status);
+                        return (
+                          <tr key={slot}>
+                            <td data-label={t("Step")} className="sd-cell-title">
+                              {slotLabel(t, slot)}
+                              {UPGRADE.has(slot) ? <span className="sub">{t("Opt-in role")}</span> : null}
+                            </td>
+                            <td data-label={t("Model")}>
+                              <span className="mono sd-model">{v.model || t("Not set")}</span>
+                            </td>
+                            <td data-label={t("Provider")}>{v.provider_label}</td>
+                            <td data-label={t("Settings from")}>{sourceLabel(t, v.source)}</td>
+                            <td data-label={t("Configuration")}>
+                              <Badge tone={tone}>{label}</Badge>
+                            </td>
+                            <td data-label={t("THB per 1M tokens (in / out)")} className="n">
+                              {v.price_in !== null && v.price_out !== null ? (
+                                <span className="num">
+                                  {v.price_in} / {v.price_out}
+                                </span>
+                              ) : (
+                                <Badge tone="warn">{t("No price")}</Badge>
+                              )}
+                            </td>
+                          </tr>
+                        );
+                      })}
                     </tbody>
                   </table>
-                </div>
-                <div className="form-actions">
-                  <button type="button" className="btn primary" onClick={useFast}>
-                    {t("Use the fast, economical OpenRouter model set")}
-                  </button>
-                  <span className="small muted">{t("Needs the shared OpenRouter key saved under Language model first.")}</span>
                 </div>
               </section>
 
@@ -197,11 +148,11 @@ export function AiProviders() {
                 ) : (
                   <BudgetPanel b={budget} />
                 )}
-                <ReadinessPanel r={ready} reload={state.reload} />
+                <RegistryPanel r={registry} />
               </div>
 
               <h3 className="sd-section-title">{t("Change a step")}</h3>
-              {(["llm", "guard", "vision", "embedding"] as Kind[]).map((slot) => (
+              {(["llm", "guard", "vision"] as Kind[]).map((slot) => (
                 <SlotCard key={slot} d={d} slot={slot} cur={d.slots[slot]} onSaved={state.reload} />
               ))}
               <AgentsCard d={d} onSaved={state.reload} />
@@ -216,89 +167,41 @@ export function AiProviders() {
   );
 }
 
-function FastProfileBody() {
-  const { t } = useStaff();
-  const rows: [string, string][] = [
-    [t("Planner"), "qwen/qwen3-30b-a3b-instruct-2507"],
-    [t("Writers (Advisor and Explainer)"), "google/gemini-3.1-flash-lite"],
-    [t("Reviewer and safety classifier"), "openai/gpt-4.1-mini"],
-    [t("Report reading (OCR)"), "google/gemini-3.1-flash-lite"],
-    [t("Knowledge retrieval"), "qwen/qwen3-embedding-8b"],
-  ];
-  return (
-    <>
-      <p>{t("Every step will use the team's one OpenRouter key:")}</p>
-      <Kv rows={rows.map(([k, v]) => [k, <span key={k} className="mono">{v}</span>])} />
-      <p className="muted">{t("This replaces the saved choices for the agents, the safety check, report reading and retrieval. The shared language model and its key stay as they are.")}</p>
-    </>
-  );
-}
-
-function ReadinessPanel({ r, reload }: { r: Readiness | { error: string }; reload: () => Promise<void> }) {
-  const { t, tf, lang, fail } = useStaff();
+/** Candidate model metadata (runtime_skills/model_registry.json): never a default or a permission to call. */
+function RegistryPanel({ r }: { r: Registry | { error: string } }) {
+  const { t, tf } = useStaff();
   if ("error" in r)
     return (
       <section className="card stack-sm">
-        <h3>{t("Readiness")}</h3>
+        <h3>{t("Candidate models")}</h3>
         <p className="small">{t(r.error)}</p>
       </section>
     );
-  const idx = r.retrieval;
-  const built = idx.built_at ? new Date(typeof idx.built_at === "number" ? idx.built_at * 1000 : idx.built_at) : null;
   return (
-    <section className="card stack" aria-labelledby="sd-ready">
+    <section className="card stack" aria-labelledby="sd-registry">
       <div className="record-head">
-        <h3 id="sd-ready">{t("Readiness (no AI calls)")}</h3>
-        <Badge tone={r.ready ? "ok" : "warn"}>{r.ready ? t("Ready") : tf("{n} to fix", { n: r.issues.length })}</Badge>
+        <h3 id="sd-registry">{t("Candidate models")}</h3>
+        <Badge tone="neutral">{tf("{n} candidates", { n: r.models.length })}</Badge>
       </div>
-      {r.issues.length ? (
-        <ul className="sd-issues small">
-          {r.issues.map((i) => (
-            <li key={i}>
-              <Icon name="warn" size={15} />
-              <span>{issueText(t, tf, i, r.required_calls)}</span>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p className="small">{t("Configuration ready. Live model quality has not been evaluated.")}</p>
-      )}
-      <Kv
-        rows={[
-          [
-            t("Call allowance"),
-            r.calls.limit !== undefined ? tf("{remaining} of {limit} calls left", { remaining: r.calls.remaining ?? "?", limit: r.calls.limit }) : t("Unknown"),
-          ],
-          [
-            t("Knowledge index"),
-            idx.ready ? (
-              <span>
-                <Badge tone="ok">{t("Built")}</Badge>{" "}
-                {tf("{n} passages · {model} · {dims} dimensions", { n: idx.records ?? 0, model: idx.model || "", dims: idx.dimensions ?? "?" })}
-                {built && !Number.isNaN(built.getTime()) ? " · " + built.toLocaleDateString(lang === "th" ? "th-TH" : "en-GB") : ""}
-              </span>
-            ) : (
-              <span>
-                <Badge tone={idx.building ? "accent" : "neutral"}>{idx.building ? t("Building") : t("Not built")}</Badge>{" "}
-                {t("Retrieval uses keyword search (BM25) until the index is built with scripts/build_embeddings.py.")}
-              </span>
-            ),
-          ],
-        ]}
-      />
-      <p className="tiny muted">{t("Configuration checks only; JSON, OCR and Thai quality still need a live evaluation.")}</p>
-      <ActionButton className="btn sm" run={reload} onError={fail}>
-        {t("Check readiness again")}
-      </ActionButton>
+      <p className="small muted">{t("Metadata for review only. Nothing here is selected, priced or approved; prices and privacy terms must be verified before use.")}</p>
+      <ul className="sd-issues small">
+        {r.models.map((m) => (
+          <li key={m.model_id}>
+            <Icon name="doc" size={15} />
+            <span>
+              <span className="mono">{m.model_id}</span> · {m.roles.join(", ")} · {m.price_status} · {m.approval_status}
+            </span>
+          </li>
+        ))}
+      </ul>
     </section>
   );
 }
 
 const HELP = (t: T): Record<Kind, string> => ({
-  llm: t("The shared model every agent below uses unless it has its own. Its OpenRouter key is shared with the other steps. Must follow JSON instructions well."),
+  llm: t("The shared model used by the four legacy agents unless they have their own settings. New roles start disabled. Must follow JSON instructions well."),
   guard: t("Screens every customer message, every answer and every report before it is used. Anything not clearly safe is blocked."),
-  vision: t("Reads lab report photos and PDFs. Verify decimal values and units with the live OCR evaluation."),
-  embedding: t("Optional hybrid retrieval over the public knowledge base. Build the index with scripts/build_embeddings.py before enabling it."),
+  vision: t("Reads lab report photos and PDFs. Typhoon OCR is tuned for Thai reports."),
 });
 
 function TestButton({ slot }: { slot: string }) {
@@ -309,8 +212,8 @@ function TestButton({ slot }: { slot: string }) {
       title={t("Makes one real call, counted in the budget")}
       onError={fail}
       run={async () => {
-        const r = await api.post<{ ok: boolean; message: string }>("/staff/ai-providers/" + slot + "/test");
-        notice(t(r.message), r.ok ? "ok" : "bad");
+        const r = await api.post<{ ok: boolean; message: string; status?: string }>("/staff/ai-providers/" + slot + "/test");
+        notice((r.status ? r.status + " · " : "") + t(r.message), r.ok ? "ok" : "bad");
       }}
     >
       {t("Test connection")}
@@ -327,6 +230,7 @@ function SlotCard({ d, slot, cur, onSaved }: { d: AiView; slot: Kind; cur: SlotV
         <Badge tone={cur.ready ? "ok" : "warn"}>{cur.ready ? sourceLabel(t, cur.source) : t("Not set up")}</Badge>
       </div>
       <p className="small muted">{HELP(t)[slot]}</p>
+      <p className="tiny muted">{t("Configuration") + ": " + configLabel(t, cur.config_status)[0] + " · " + t("Live verification: not recorded")}</p>
       <p className="small">
         <span className="mono">{cur.model || t("Not set")}</span> · {cur.provider_label}
         {cur.key ? (
@@ -335,7 +239,7 @@ function SlotCard({ d, slot, cur, onSaved }: { d: AiView; slot: Kind; cur: SlotV
             {t("key")} <span className="mono">{cur.key}</span>
           </>
         ) : null}
-        {(slot === "vision" || slot === "embedding") && !cur.enabled ? <> · {t("Switched off")}</> : null}
+        {slot === "vision" && !cur.enabled ? <> · {t("Switched off")}</> : null}
       </p>
       <div className="row">
         <TestButton slot={slot} />
@@ -357,16 +261,17 @@ function AgentsCard({ d, onSaved }: { d: AiView; onSaved: () => Promise<void> })
   return (
     <section className="card stack agents-card" aria-labelledby="sd-agents">
       <h3 id="sd-agents">{t("Agents")}</h3>
-      <p className="small muted">{t("Each agent uses the language model above unless you give it its own provider, model and key. A different model for the Reviewer makes its check more independent.")}</p>
+      <p className="small muted">{t("The four legacy agents share the language model unless configured separately. Medical analyzer and Thai composer start disabled and require their own reviewed settings. A separate Reviewer request still checks the original evidence.")}</p>
       {Object.entries(d.agents).map(([id, cur]) => {
-        const saved = cur.source === "app" || cur.source === "shared_key";
+        const upgrade = UPGRADE.has(id);
+        const saved = cur.source === "app";
         const ownChoice = own[id] ?? saved;
         const selectId = "agent-" + id;
         return (
           <div key={id} className="agent-row">
             <div className="record-head">
               <strong>{t(cur.label)}</strong>
-              <Badge tone={saved ? "ok" : "neutral"}>{(saved ? t("Own") : t("Shared")) + ": " + cur.provider_label + " · " + cur.model}</Badge>
+              <Badge tone={saved ? "ok" : "neutral"}>{upgrade && !saved ? t("Disabled until configured") : (saved ? t("Own") : t("Shared")) + ": " + cur.provider_label + " · " + cur.model}</Badge>
             </div>
             <p className="small muted">{t(cur.help)}</p>
             <div className="row sd-agent-controls">
@@ -380,20 +285,20 @@ function AgentsCard({ d, onSaved }: { d: AiView; onSaved: () => Promise<void> })
                     if (e.target.value === "own") return setOwn((o) => ({ ...o, [id]: true }));
                     if (!saved) return setOwn((o) => ({ ...o, [id]: false }));
                     confirm({
-                      title: tf("Use the shared language model for the {agent}?", { agent: t(cur.label) }),
-                      body: <p>{t("Its own provider, model and key are removed. It then uses the language model above.")}</p>,
-                      confirmLabel: t("Use the shared language model"),
+                      title: upgrade ? tf("Disable the {agent}?", { agent: t(cur.label) }) : tf("Use the shared language model for the {agent}?", { agent: t(cur.label) }),
+                      body: <p>{upgrade ? t("Its saved provider, model and key are removed and the role is disabled.") : t("Its own provider, model and key are removed. It then uses the language model above.")}</p>,
+                      confirmLabel: upgrade ? t("Disable this new role") : t("Use the shared language model"),
                       danger: true,
                       run: async () => {
                         await api.del("/staff/ai-providers/" + cur.slot);
                         setOwn((o) => ({ ...o, [id]: false }));
-                        notice(tf("{agent} uses the shared language model again.", { agent: t(cur.label) }));
+                        notice(upgrade ? tf("{agent} is disabled.", { agent: t(cur.label) }) : tf("{agent} uses the shared language model again.", { agent: t(cur.label) }));
                         await onSaved();
                       },
                     });
                   }}
                 >
-                  <option value="shared">{t("Shared language model")}</option>
+                  <option value="shared">{upgrade ? t("Disabled") : t("Shared language model")}</option>
                   <option value="own">{t("Its own provider")}</option>
                 </select>
               </div>
@@ -417,15 +322,18 @@ function AgentsCard({ d, onSaved }: { d: AiView; onSaved: () => Promise<void> })
 
 function ProviderForm({ d, slot, cur, kind, onSaved }: { d: AiView; slot: string; cur: SlotView; kind: Kind; onSaved: () => Promise<void> }) {
   const { t, tf, notice, confirm } = useStaff();
+  const upgrade = UPGRADE.has(slot);
   const options = d.presets.filter((p) => p.slots.includes(kind));
   const initial = options.find((p) => p.id === cur.preset) || options[0];
-  const shared = cur.source === "shared";
+  // Opt-in roles never inherit a default model or price (Codex: exact model and prices required).
+  const shared = cur.source === "shared" || cur.source === "not_configured";
   const [preset, setPreset] = useState(initial?.id || "");
   const [model, setModel] = useState(shared ? "" : cur.model);
   const [key, setKey] = useState("");
   const [url, setUrl] = useState(cur.base_url || "");
-  const [priceIn, setPriceIn] = useState(String((shared ? initial?.price_in : cur.price_in) ?? ""));
-  const [priceOut, setPriceOut] = useState(String((shared ? initial?.price_out : cur.price_out) ?? ""));
+  const [priceIn, setPriceIn] = useState(upgrade && shared ? "" : String((shared ? initial?.price_in : cur.price_in) ?? ""));
+  const [priceOut, setPriceOut] = useState(upgrade && shared ? "" : String((shared ? initial?.price_out : cur.price_out) ?? ""));
+  const [endpoints, setEndpoints] = useState((cur.provider_allowlist || []).join(", "));
   const [enabled, setEnabled] = useState(cur.enabled);
   const [error, setError] = useState("");
   const form = useRef<HTMLFormElement>(null);
@@ -433,9 +341,7 @@ function ProviderForm({ d, slot, cur, kind, onSaved }: { d: AiView; slot: string
   const p = options.find((x) => x.id === preset) || initial;
   if (!p) return null;
   const keyHint =
-    cur.source === "shared_key"
-      ? t("Uses the shared OpenRouter key; leave blank to keep using it.")
-      : cur.key && !shared
+    cur.key && !shared
         ? tf("Saved key: {key}. Leave empty to keep it.", { key: cur.key })
         : t("Paste the key from the provider console.");
   const save = async () => {
@@ -447,9 +353,13 @@ function ProviderForm({ d, slot, cur, kind, onSaved }: { d: AiView; slot: string
         model: model.trim(),
         api_key: key.trim(),
         base_url: url.trim(),
-        enabled: kind === "vision" || kind === "embedding" ? enabled : true,
+        enabled: kind === "vision" ? enabled : true,
         price_in: priceIn === "" ? null : Number(priceIn),
         price_out: priceOut === "" ? null : Number(priceOut),
+        provider_allowlist: endpoints
+          .split(",")
+          .map((x) => x.trim())
+          .filter(Boolean),
       });
       setKey("");
       notice(tf("{step} saved.", { step: t(cur.label) }));
@@ -479,8 +389,8 @@ function ProviderForm({ d, slot, cur, kind, onSaved }: { d: AiView; slot: string
             setPreset(e.target.value);
             setModel("");
             setKey("");
-            setPriceIn(String(next?.price_in ?? ""));
-            setPriceOut(String(next?.price_out ?? ""));
+            setPriceIn(upgrade ? "" : String(next?.price_in ?? ""));
+            setPriceOut(upgrade ? "" : String(next?.price_out ?? ""));
           }}
         >
           {options.map((x) => (
@@ -493,7 +403,7 @@ function ProviderForm({ d, slot, cur, kind, onSaved }: { d: AiView; slot: string
       <div className="field">
         <label htmlFor={uid + "m"}>{t("Model")}</label>
         <span className="hint" id={uid + "mh"}>
-          {t("Leave empty to use the provider default.")}
+          {upgrade ? t("Enter the exact reviewed model ID; this role has no default.") : t("Leave empty to use the provider default.")}
         </span>
         <input
           id={uid + "m"}
@@ -501,7 +411,8 @@ function ProviderForm({ d, slot, cur, kind, onSaved }: { d: AiView; slot: string
           aria-describedby={uid + "mh"}
           maxLength={120}
           spellCheck={false}
-          placeholder={(kind === "vision" && p.vision_model) || p.default_model || t("model name")}
+          placeholder={upgrade ? t("model name") : (kind === "vision" && p.vision_model) || p.default_model || t("model name")}
+          required={upgrade}
           value={model}
           onChange={(e) => setModel(e.target.value)}
         />
@@ -534,16 +445,25 @@ function ProviderForm({ d, slot, cur, kind, onSaved }: { d: AiView; slot: string
       ) : null}
       <div className="field">
         <label htmlFor={uid + "i"}>{t("Input price (THB per 1M tokens)")}</label>
-        <input id={uid + "i"} className="input" type="number" min={0} max={100000} step="any" value={priceIn} onChange={(e) => setPriceIn(e.target.value)} />
+        <input id={uid + "i"} className="input" type="number" min={0} max={100000} step="any" required={upgrade} value={priceIn} onChange={(e) => setPriceIn(e.target.value)} />
       </div>
       <div className="field">
         <label htmlFor={uid + "o"}>{t("Output price (THB per 1M tokens)")}</label>
-        <input id={uid + "o"} className="input" type="number" min={0} max={100000} step="any" value={priceOut} onChange={(e) => setPriceOut(e.target.value)} />
+        <input id={uid + "o"} className="input" type="number" min={0} max={100000} step="any" required={upgrade} value={priceOut} onChange={(e) => setPriceOut(e.target.value)} />
       </div>
-      {kind === "vision" || kind === "embedding" ? (
+      {upgrade ? (
+        <div className="field wide">
+          <label htmlFor={uid + "e"}>{t("Reviewed OpenRouter endpoint IDs")}</label>
+          <span className="hint" id={uid + "eh"}>
+            {t("Comma-separated provider IDs. New OpenRouter roles require reviewed endpoints; fallback routing is off.")}
+          </span>
+          <input id={uid + "e"} className="input mono" aria-describedby={uid + "eh"} maxLength={1000} spellCheck={false} required={preset === "openrouter"} value={endpoints} onChange={(e) => setEndpoints(e.target.value)} />
+        </div>
+      ) : null}
+      {kind === "vision" ? (
         <label className="check wide">
           <input type="checkbox" checked={enabled} onChange={(e) => setEnabled(e.target.checked)} />
-          <span>{kind === "embedding" ? t("Retrieval is on") : t("Report reading is on")}</span>
+          <span>{t("Report reading is on")}</span>
         </label>
       ) : null}
       {error ? (
@@ -555,25 +475,25 @@ function ProviderForm({ d, slot, cur, kind, onSaved }: { d: AiView; slot: string
         <ActionButton className="btn primary sm" run={save}>
           {t("Save")}
         </ActionButton>
-        {cur.source === "app" || cur.source === "shared_key" ? (
+        {cur.source === "app" ? (
           <button
             type="button"
             className="btn sm ghost"
             onClick={() =>
               confirm({
-                title: agent ? t("Use the shared language model") : t("Use server settings"),
-                body: <p>{agent ? t("Its own provider, model and key are removed. It then uses the language model above.") : t("The saved provider, model and key for this step are removed, and the server environment is used again.")}</p>,
-                confirmLabel: agent ? t("Use the shared language model") : t("Use server settings"),
+                title: upgrade ? t("Disable this new role") : agent ? t("Use the shared language model") : t("Use server settings"),
+                body: <p>{upgrade ? t("Its saved provider, model and key are removed and the role is disabled.") : agent ? t("Its own provider, model and key are removed. It then uses the language model above.") : t("The saved provider, model and key for this step are removed, and the server environment is used again.")}</p>,
+                confirmLabel: upgrade ? t("Disable this new role") : agent ? t("Use the shared language model") : t("Use server settings"),
                 danger: true,
                 run: async () => {
                   await api.del("/staff/ai-providers/" + slot);
-                  notice(agent ? tf("{agent} uses the shared language model again.", { agent: t(cur.label) }) : t("Saved settings removed; the server environment is used again."));
+                  notice(upgrade ? tf("{agent} is disabled.", { agent: t(cur.label) }) : agent ? tf("{agent} uses the shared language model again.", { agent: t(cur.label) }) : t("Saved settings removed; the server environment is used again."));
                   await onSaved();
                 },
               })
             }
           >
-            {agent ? t("Use the shared language model") : t("Use server settings")}
+            {upgrade ? t("Disable this new role") : agent ? t("Use the shared language model") : t("Use server settings")}
           </button>
         ) : null}
         {p.key_url ? (

@@ -214,13 +214,15 @@ function SourceList({ m, id }: { m: ChatMessage; id: string }) {
     <div className="sources" id={id}>
       {((m.sources || []) as Source[]).map((s, i) => {
         const u = safeUrl(s.url);
-        const org = s.data_class === "organization_reference";
+        // Codex organization references are private, versioned excerpts with a member-only download.
+        const org = s.data_class === "organization_private";
         const inner = (
           <>
             <span className="cite">{i + 1}</span>
             <span className="src-text">
               {org ? <span className="src-org">{t("Organization document")}</span> : null}
               {s.title}
+              {org && s.version ? <span className="src-pub">, {"v" + s.version + (s.section ? " · " + s.section : "")}</span> : null}
               {s.publisher ? <span className="src-pub">, {s.publisher}</span> : null}
             </span>
           </>
@@ -232,6 +234,12 @@ function SourceList({ m, id }: { m: ChatMessage; id: string }) {
             <span key={key} {...props} tabIndex={-1}>
               {inner}
             </span>
+          );
+        if (org && u.internal)
+          return (
+            <a key={key} {...props} href={u.href} download>
+              {inner}
+            </a>
           );
         if (u.internal)
           return (

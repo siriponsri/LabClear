@@ -16,7 +16,7 @@ import { useChatEngine, planOf } from "./engine";
 import { Feed, useStableHandlers, useStableMessages } from "./Feed";
 import { Composer, type ComposerHandle } from "./Composer";
 import { ChatList, type ChatListing, type ChatSummary, type ProjectSummary } from "./ChatList";
-import { ContextChips, useOrgScope } from "./ContextChips";
+import { ContextChips, useOrgReferences } from "./ContextChips";
 import { Canvas } from "./Canvas";
 import { GuestNote, useLeaveGuard } from "./guest";
 import { Icon } from "./icons";
@@ -124,20 +124,20 @@ export function ChatView() {
   const mode = conversation?.mode || "bot";
   const guestCount = messages.length + (engine.live?.user ? 1 : 0);
   useLeaveGuard(!registered && guestCount > 0);
-  const [mine, setMine] = useOrgScope(state, registered);
+  const orgRefs = useOrgReferences(state, registered);
 
   /* ------------------------------------------------------------ actions */
 
   const signedIn = useCallback(
-    async (kept: number) => {
+    async () => {
       await refresh();
-      notice(kept ? t("Signed in. This chat is now saved in your account.") : t("Signed in."));
+      notice(t("Signed in."));
     },
     [notice, refresh, t],
   );
 
   const requestStaff = useCallback(() => {
-    if (!registered) return ws.requireAccount(t("Sign in to send a request to our team. You can keep this chat in your account."));
+    if (!registered) return ws.requireAccount(t("Sign in to send a request to our team. Signing in starts a new chat; this temporary chat is deleted."));
     modalApi.open(t("Talk to our team"), <HandoffForm onSent={refresh} />);
   }, [modalApi, refresh, registered, t, ws]);
 
@@ -337,7 +337,7 @@ export function ChatView() {
         onEditProject={(p?: ProjectSummary) =>
           modalApi.open(p ? t("Project") : t("New project"), <ProjectEdit project={p} act={chatAction} onCreated={(id) => setExpandedMap((m) => ({ ...m, [id]: true }))} />)
         }
-        onSignIn={() => openSignIn({ guestMessages: guestCount, onDone: (_u, kept) => signedIn(kept) })}
+        onSignIn={() => openSignIn({ guestMessages: guestCount, onDone: () => signedIn() })}
         expanded={expanded}
         setExpanded={(id, open) => setExpandedMap((m) => ({ ...m, [id]: open }))}
       />
@@ -384,7 +384,7 @@ export function ChatView() {
           <div className="chat-status" role="status">
             {engine.live?.human ? t("Sending to our team…") : ""}
           </div>
-          <ContextChips state={state} mine={mine} setMine={setMine} onChanged={refresh} />
+          <ContextChips state={state} refs={orgRefs} onOpenOrg={() => navigate("orgs")} onChanged={refresh} />
           {!registered ? <GuestNote messages={guestCount} onSignedIn={signedIn} /> : null}
           <Composer
             ref={composer}

@@ -1,34 +1,32 @@
 /*
- * LabClear 4.0.0 browser acceptance suite (UAT) for the Next.js website, customer workspace (/app)
- * and service desk (/staff).
+ * LabClear integration 4.0.0-rc1 browser acceptance suite (UAT) for the Next.js website, customer
+ * workspace (/app) and service desk (/staff), running against the Codex backend.
  *
  *   npm run uat                         # from web/, against http://localhost:3000
  *   BASE=http://localhost:3000 node tests/uat.mjs
  *
- * Runs against servers that are already up (Next dev + the API with the offline AI stand-in,
- * scripts/dev_mock_api.py). MOCKED_TEST_ONLY: the language model and the report reader are test
- * doubles, so this is UI/flow evidence (real routes, storage, sessions, CSRF, permissions and state
- * machines), never model or OCR quality evidence.
+ * Origin: Claude's 4.0.0 suite (51 scenarios). Integration 4.0 keeps its scenarios and selectors
+ * and rewrites only those that tested Claude-only backend contracts: keep-chat sign-in (now the
+ * Codex rule: sign-in discards the guest chat, plus the delayed-response race), organization
+ * documents (now Codex membership, draft/approve/revoke, excerpt search) and the AI providers view
+ * (now six agents, two opt-in roles disabled by default, candidate registry). It adds the Codex
+ * hospital links page. tests/uat-flags-off.mjs checks the same build with every new flag off.
  *
- * Writes docs/evidence/release-4.0.0/uat.json and a few screenshots; exits 1 on any failure.
- * The pages run in Thai (the default); selectors use the app's own dictionary (lib/i18n/dict.th.json)
- * through T("English source text"), so a missing translation shows up as English on both sides.
+ * Runs against servers that are already up (next build + next start, and the real Codex API with
+ * the offline AI stand-in, scripts/dev_mock_api.py). MOCKED_TEST_ONLY: the language model and the
+ * report reader are test doubles, so this is UI/flow evidence (real routes, storage, sessions, CSRF,
+ * permissions and state machines), never model or OCR quality evidence.
  *
- * Scenarios: R4-xx are the 4.0.0 requirements. UI-xx are ported from the 3.x suite
- * (tests/browser/uat.cjs) and keep its ids; UI-06 and UI-19 became R4-08 and R4-07, UI-28 is part
- * of R4-06. Not ported: UI-02b (the 4.0 catalog filters the server-rendered catalog in the page, so
- * there is no request to fail), the provider save of UI-28 and the capacity edit / role pause of
- * UI-23 (they change shared settings of the dev server for everyone using it), and the branch-staff
- * sign-in of UI-17 (it costs a rate-limited sign-in; non-manager refusal is checked through the API).
+ * Writes docs/evidence/integration-4.0-rc1/web-uat/uat.json and screenshots (UAT_OUT overrides);
+ * exits 1 on any failure. The pages run in Thai (the default); selectors use the app's own
+ * dictionary (lib/i18n/dict.th.json) through T("English source text").
  *
  * Sign-in budget: the API allows 8 sign-in attempts per IP per 15 minutes. A run signs in once per
- * role (admin, test-02) plus the two "keep this chat" sign-ins as test-01, and reuses those browser
- * contexts everywhere else. Other customers are fresh accounts created with "Create account"
- * (registration is not rate limited). Optional:
+ * role (admin, test-02) and once as test-01 from a guest chat, and reuses those browser contexts.
+ * Other customers are fresh accounts created with "Create account" (not rate limited). Optional:
  *   UAT_ONLY=R4-02,UI-1      run only scenarios whose id starts with one of these prefixes
  *                            (results and screenshots then go to <tmp>/labclear-uat-partial)
- *   UAT_REUSE_AUTH=1|<dir>   keep role storage states between runs (outside the repo) and reuse
- *                            them while the API still accepts them
+ *   UAT_REUSE_AUTH=1|<dir>   keep role storage states between runs (outside the repo)
  *   UAT_DEBUG=1              save a screenshot of every open page when a scenario fails (tmp dir)
  *   UAT_HEADED=1             show the browser
  */
@@ -45,11 +43,11 @@ const BASE = (process.env.BASE || "http://localhost:3000").replace(/\/$/, "");
 const API = BASE + "/api/business";
 const ONLY = (process.env.UAT_ONLY || "").split(",").map((s) => s.trim()).filter(Boolean);
 // A partial run (UAT_ONLY) must not replace the release evidence: it writes to a temp folder.
-const OUT = ONLY.length ? path.join(os.tmpdir(), "labclear-uat-partial") : path.join(ROOT, "docs/evidence/release-4.0.0");
+const OUT = process.env.UAT_OUT ? path.resolve(process.env.UAT_OUT) : ONLY.length ? path.join(os.tmpdir(), "labclear-uat-partial") : path.join(ROOT, "docs/evidence/integration-4.0-rc1/web-uat");
 const AUTH_DIR = !process.env.UAT_REUSE_AUTH ? "" : process.env.UAT_REUSE_AUTH === "1" ? path.join(os.tmpdir(), "labclear-uat-auth") : path.resolve(process.env.UAT_REUSE_AUTH);
 const DEBUG_DIR = path.join(os.tmpdir(), "labclear-uat-debug");
 const RUN = Date.now().toString(36).slice(-6);
-const PASSWORD = "uat-only-password-400";
+const PASSWORD = "uat-only-password-rc1";
 const SAMPLE = path.join(ROOT, "examples/thai_lab_reference_v3/png");
 const PNG_GLUCOSE = path.join(SAMPLE, "04_B_Glucose_Urine.png");
 const PNG_LIVER = path.join(SAMPLE, "01_A_Liver.png");
@@ -247,17 +245,14 @@ const workspace = (ctx) => call(ctx, "GET", "/workspace");
 /* ------------------------------------------------------------------ sign-in */
 
 /** Fill the shared sign-in dialog. kind: "login" (Sign in) or "register" (Create account). */
-async function useSignInDialog(page, email, password, { kind = "login", keep } = {}) {
+async function useSignInDialog(page, email, password, { kind = "login", warnDiscard = false } = {}) {
   const dlg = page.locator("dialog.signin-dialog[open]");
   await dlg.waitFor();
   await dlg.getByLabel(T("Email or username")).fill(email);
   await dlg.getByLabel(T("Password"), { exact: true }).fill(password);
-  if (keep !== undefined) {
-    const box = dlg.getByLabel(T("Keep this chat in my account"));
-    assert(await box.isVisible(), '"Keep this chat in my account" is not offered');
-    if (keep) await box.check();
-    else await box.uncheck();
-  }
+  // Codex rule: there is no "keep this chat" choice; the dialog warns that the guest chat is deleted.
+  assert(!(await dlg.getByRole("checkbox").count()), "the sign-in dialog offers a keep-chat checkbox");
+  if (warnDiscard) await dlg.locator(".guest-discard", { hasText: T("Signing in or creating an account discards this temporary chat and its images.") }).waitFor();
   await dlg.getByRole("button", { name: kind === "login" ? T("Sign in") : T("Create account"), exact: true }).click();
   const end = Date.now() + 20000;
   while (await dlg.count()) {
@@ -383,7 +378,7 @@ async function staffView(page, view, extra = "") {
 
 async function main() {
   fs.mkdirSync(OUT, { recursive: true });
-  browser = await chromium.launch({ executablePath: process.env.CHROMIUM || "/opt/pw-browsers/chromium", headless: !process.env.UAT_HEADED, args: ["--no-sandbox"] });
+  browser = await chromium.launch({ executablePath: process.env.CHROMIUM || "/opt/pw-browsers/chromium", headless: !process.env.UAT_HEADED, args: ["--no-sandbox", "--disable-background-networking", "--disable-component-update"] });
   const health = await fetch(BASE + "/health").catch(() => null);
   if (!health?.ok) throw new Error(`The website or API is not answering at ${BASE}/health`);
 
@@ -499,65 +494,76 @@ async function main() {
     }
   });
 
-  /* ================================================================ 4.0.0: keep chat on sign-in */
+  /* ================================================================ integration: Codex guest sign-in rule */
 
-  await scenario("R4-03", 'Keep chat on sign-in: guest signs in as test-01 from the guest notice with "keep this chat" -> messages stay after reload', async () => {
+  await scenario("R4-03", "Sign-in discards the guest chat (Codex): the dialog warns; the message is gone at once, after reload and in the account", async () => {
     const ctx = await newContext();
     let handedOver = false;
     try {
       const p = await newPage(ctx, "test-01");
       await go(p, "/app");
       await appReady(p);
-      const msg = `UAT-${RUN} keep: ค่าน้ำตาลสะสมคืออะไร`;
+      const msg = `UAT-${RUN} drop: ค่าน้ำตาลสะสมคืออะไร`;
       await sendChat(p, msg);
-      await chat(p).locator(".guest-note").getByRole("button", { name: T("Sign in to keep your history") }).click();
-      const box = p.locator("dialog.signin-dialog[open]").getByLabel(T("Keep this chat in my account"));
-      await box.waitFor();
-      assert(await box.isChecked(), '"keep this chat" should be checked by default');
-      await useSignInDialog(p, "test-01", "1234", { keep: true });
+      await chat(p).locator(".guest-note").getByRole("button", { name: T("Sign in to save future chats") }).click();
+      await useSignInDialog(p, "test-01", "1234", { warnDiscard: true });
+      // Synchronous clear: no guest message may be visible once the dialog has closed.
+      assert(!(await chat(p).locator("article.turn.user", { hasText: msg }).count()), "guest message still on screen right after sign-in");
       await p.getByRole("button", { name: `${T("Account")}: test-01` }).waitFor();
       roles.t01 = { ctx, page: p };
       handedOver = true;
       await saveRole("t01", ctx);
-      await seeToast(p, T("Signed in. This chat is now saved in your account."));
-      await chat(p).locator("article.turn.user", { hasText: msg }).waitFor();
+      await seeToast(p, new RegExp("^" + esc(T("Signed in.")) + "$"));
       assert(!(await chat(p).locator(".guest-note").count()), "guest notice still shown after sign-in");
       await p.reload({ waitUntil: "load" });
       await appReady(p);
-      await chat(p).locator("article.turn.user", { hasText: msg }).waitFor();
+      await wait(500);
+      assert(!(await chat(p).locator("article.turn.user", { hasText: msg }).count()), "discarded guest message is back after reload");
       const w = await workspace(ctx);
-      assert(w.conversation.messages.some((m) => m.content === msg), "kept message not stored in the account");
+      assert(!w.conversation.messages.some((m) => m.content === msg), "guest message stored in the account");
+      assert(!JSON.stringify(w.chats).includes(msg.slice(0, 20)), "guest message listed as a chat");
     } finally {
       if (!handedOver) await ctx.close();
     }
   });
 
-  await scenario("R4-04", 'Discard chat on sign-in: new guest signs in as test-01 with "keep this chat" unchecked -> messages are gone', async () => {
+  await scenario("R4-04", "Identity race (Codex regression): a delayed guest /workspace response cannot repaint the new account's chat", async ({ note }) => {
     const ctx = await newContext();
     try {
-      const p = await newPage(ctx, "test-01b");
+      const p = await newPage(ctx, "race");
       await go(p, "/app");
       await appReady(p);
-      const msg = `UAT-${RUN} drop: ไขมันดีคืออะไร`;
+      const msg = `UAT-${RUN} race: ไขมันดีคืออะไร`;
       await sendChat(p, msg);
-      await chat(p).locator(".guest-note").getByRole("button", { name: T("Sign in to keep your history") }).click();
-      await useSignInDialog(p, "test-01", "1234", { keep: false });
-      await p.getByRole("button", { name: `${T("Account")}: test-01` }).waitFor();
-      await seeToast(p, new RegExp("^" + esc(T("Signed in.")) + "$"));
-      await poll(async () => !(await chat(p).locator("article.turn.user", { hasText: msg }).count()), { timeout: 8000, message: "discarded guest message still shown" });
-      await p.reload({ waitUntil: "load" });
-      await appReady(p);
-      await wait(500);
-      assert(!(await chat(p).locator("article.turn.user", { hasText: msg }).count()), "discarded message is back after reload");
-      const w = await workspace(ctx);
-      assert(!w.conversation.messages.some((m) => m.content === msg), "discarded message stored in the account");
-      assert(!JSON.stringify(w.chats).includes(msg.slice(0, 20)), "discarded message listed as a chat");
-      if (!roles.t01) {
-        roles.t01 = { ctx, page: p };
-        return;
+      let delayed = 0;
+      let released = 0;
+      await p.route("**/api/business/workspace", async (route) => {
+        const guest = route.request().headers()["x-labclear-guest"];
+        if (!guest) return route.continue();
+        delayed++;
+        const response = await route.fetch();
+        await wait(3500);
+        released++;
+        await route.fulfill({ response }).catch(() => {});
+      });
+      // The chat polls /workspace every 4 s; wait until a guest response is held back.
+      await poll(async () => delayed > 0, { timeout: 12000, message: "no guest /workspace request was observed" });
+      await p.locator(".workspace-header .avatar-button").click();
+      const email = `uat-${RUN}-race@example.invalid`;
+      await useSignInDialog(p, email, PASSWORD, { kind: "register", warnDiscard: true });
+      assert(!(await chat(p).locator("article.turn.user", { hasText: msg }).count()), "guest message visible right after creating the account");
+      await p.getByRole("button", { name: `${T("Account")}: ${email}` }).waitFor();
+      await poll(async () => released >= delayed, { timeout: 12000, message: "the delayed guest response was never released" });
+      for (let i = 0; i < 6; i++) {
+        assert(!(await chat(p).locator("article.turn.user", { hasText: msg }).count()), "a delayed guest response repainted the account's chat");
+        await wait(250);
       }
+      await p.unroute("**/api/business/workspace");
+      note(`${delayed} guest /workspace response(s) held for 3.5 s across the sign-up.`);
+      const w = await workspace(ctx);
+      assert(!w.conversation.messages.some((m) => m.content === msg), "guest message stored in the new account");
     } finally {
-      if (roles.t01?.ctx !== ctx) await ctx.close();
+      await ctx.close();
     }
   });
 
@@ -611,9 +617,8 @@ async function main() {
       await go(p, "/sources");
       const all = p.locator(".pub-chips button.chip").first();
       const total = Number(await all.locator(".pub-chip-n").innerText());
-      assert(total >= 58, `only ${total} source records`);
-      if (total > 58) note(`${total} records.`);
-      else note("58 records: the knowledge expansion has not landed yet (asserted >= 58).");
+      assert(total === 58, `the active Codex corpus has 58 reviewed records, the page shows ${total}`);
+      note("58 reviewed records (Codex active corpus; Claude's 77 offline-authored records are in the acquisition queue, not active).");
       const groups = p.locator("section.pub-src-group");
       const g = await groups.count();
       assert(g >= 1, "no publisher-type groups");
@@ -623,7 +628,7 @@ async function main() {
       const types = await p.locator(".pub-chips button.chip").count();
       assert(types === g + 1, "filter chips do not match the groups");
       note(`${g} publisher-type group(s).`);
-      if (total > 58) assert(g >= 2, "the expanded knowledge base should span several publisher types");
+      assert(g === 2, "expected two publisher-type groups (Thai hospitals, international reference)");
       if (types > 2) {
         await p.locator(".pub-chips button.chip").nth(1).click();
         assert((await groups.count()) === 1, "type chip did not filter to one group");
@@ -824,10 +829,14 @@ async function main() {
       assert(!(await p.locator("nav.side-nav").count()), "staff navigation shown to a customer");
       await p.keyboard.press("Escape");
       await dlg.waitFor({ state: "hidden" });
-      for (const path of ["/staff/inbox", "/staff/dashboard", "/staff/organizations", "/staff/org-documents"]) {
+      for (const path of ["/staff/inbox", "/staff/dashboard", "/staff/ai-providers", "/staff/budget"]) {
         const r = await c.ctx.request.get(API + path, { failOnStatusCode: false });
         assert(r.status() === 403, `customer GET ${path} -> ${r.status()}`);
       }
+      // Codex membership is manager-only: a customer cannot add itself to an organization.
+      const self = (await me(c.ctx)).user.id;
+      const join = await c.ctx.request.put(API + "/organization-documents/membership", { data: { user_id: self, organization_id: "org_self", role: "editor" }, headers: { "X-Business-CSRF": (await me(c.ctx)).csrf }, failOnStatusCode: false });
+      assert(join.status() === 403, "customer self-membership not refused: " + join.status());
       const put = await c.ctx.request.put(API + "/staff/catalog/P01", { data: { price_thb: 1, active: true }, headers: { "X-Business-CSRF": (await me(c.ctx)).csrf }, failOnStatusCode: false });
       assert(put.status() === 403, "customer price edit not refused: " + put.status());
       await go(p, "/app?view=staff");
@@ -841,7 +850,7 @@ async function main() {
 
   /* ================================================================ 4.0.0: staff desk */
 
-  await scenario("R4-06", "Staff desk (admin): overview, inbox, appointments, AI providers with the OpenRouter models, organizations, document review", async () => {
+  await scenario("R4-06", "Staff desk (admin): overview, inbox, appointments, AI providers on the Codex contract, organization membership", async ({ note }) => {
     const { page: s, ctx } = await admin();
     await staffView(s, "overview");
     await s.locator(".kpi-grid .kpi").first().waitFor({ timeout: 20000 });
@@ -852,8 +861,7 @@ async function main() {
       ["Inbox", ".metric-grid"],
       ["Appointments", '[role=group][aria-label="' + T("Show appointments") + '"]'],
       ["AI providers", "#sd-ai-summary"],
-      ["Organizations", "#content .view-intro"],
-      ["Reference document review", '[role=group][aria-label="' + T("Show documents") + '"]'],
+      ["Organization membership", "#content .view-intro"],
     ];
     for (const [en, sel] of views) {
       await nav(s, en).click();
@@ -862,21 +870,36 @@ async function main() {
       if (en === "AI providers") {
         const table = s.locator("table.sd-ai-table");
         await table.waitFor();
-        const models = (await table.locator(".sd-model, .sub").allInnerTexts()).join(" ");
-        const hits = models.match(/(qwen|google|openai|anthropic|meta-llama|mistralai|deepseek)\/[\w.:-]+/g) || [];
-        assert(hits.length >= 3, "the AI step summary does not list OpenRouter model ids: " + models.slice(0, 200));
-        const providers = (await table.locator("tbody td:nth-child(3)").allInnerTexts()).join(" ");
-        assert(/openrouter/i.test(providers + models), "OpenRouter not named in the summary");
+        const rows = await table.locator("tbody tr").count();
+        assert(rows === 9, `expected 9 AI steps (language model, 6 agents, safety, OCR), found ${rows}`);
         const raw = await (await ctx.request.get(API + "/staff/ai-providers")).text();
         assert(!/sk-(or|ant|proj)-[A-Za-z0-9_-]{12,}/.test(raw), "an API key is returned to the browser");
+        const view = JSON.parse(raw);
+        assert(Object.keys(view.agents).length === 6, "the API does not list six agents");
+        assert(view.agents.medical_analyzer.config_status !== "SCHEMA_CHECK_ONLY" && view.agents.thai_composer.config_status !== "SCHEMA_CHECK_ONLY", "an opt-in role is configured by default");
         const agents = s.locator("section.agents-card .agent-row");
-        assert((await agents.count()) === 4, "expected four agents, found " + (await agents.count()));
-        const reviewer = s.getByLabel(TF("Model for the {agent}", { agent: T("Reviewer") }));
-        if ((await reviewer.inputValue()) === "shared") {
-          await reviewer.selectOption("own");
-          await agents.filter({ has: reviewer }).locator("details.sd-edit").waitFor();
-          await reviewer.selectOption("shared");
+        assert((await agents.count()) === 6, "expected six agent rows, found " + (await agents.count()));
+        for (const role of ["Medical analyzer", "Thai composer"]) {
+          const row = agents.filter({ has: s.getByText(T(role), { exact: true }) });
+          await row.locator(".badge", { hasText: T("Disabled until configured") }).waitFor();
+          const pick = s.getByLabel(TF("Model for the {agent}", { agent: T(role) }));
+          assert((await pick.inputValue()) === "shared", role + " is not disabled by default");
+          await pick.selectOption("own");
+          const form = row.locator("form.ai-form");
+          await form.waitFor();
+          assert(await form.getByLabel(T("Reviewed OpenRouter endpoint IDs")).isVisible(), role + ": endpoint allowlist field missing");
+          assert((await form.getByLabel(T("Input price (THB per 1M tokens)")).inputValue()) === "", role + ": a default price is prefilled");
+          await pick.selectOption("shared");
         }
+        const registry = s.locator("#sd-registry");
+        await registry.waitFor();
+        const candidates = await s.locator("section:has(#sd-registry) ul li").count();
+        assert(candidates >= 1, "candidate registry is empty");
+        note(`${rows} AI steps; ${candidates} registry candidates shown as metadata only.`);
+        await shot(s, "staff-ai-1440.png");
+      }
+      if (en === "Organization membership") {
+        await s.locator("form", { has: s.getByLabel(T("Organization ID")) }).waitFor();
       }
     }
   });
@@ -967,98 +990,108 @@ async function main() {
 
   /* ================================================================ 4.0.0: organization documents end to end */
 
-  await scenario("R4-05", "Organization documents: admin creates an organization, test-02 joins, becomes its admin, uploads a guide (pending), admin approves, chat uses it", async () => {
+  await scenario("R4-05", "Organization documents (Codex): manager assigns an editor and a reader; draft, preview, approve, search excerpt, new version, revoke; tenant isolation", async ({ note }) => {
     const A = await admin();
     const B = await customer("t02");
     const s = A.page;
     const p = B.page;
-    const name = `UAT Hospital ${RUN}`;
+    const org = `org_uat_${RUN}`;
     const title = `UAT preparation guide ${RUN}`;
-    let orgId = "";
+    const reader = await freshCustomer("orgreader", "org-reader");
+    const outsider = await freshCustomer("outsider", "org-outsider");
     try {
-      // Leftovers from interrupted runs must not hit the 5-organization limit.
-      const mine0 = await call(B.ctx, "GET", "/orgs/mine");
-      for (const m of mine0.memberships.filter((m) => m.org.name.startsWith("UAT "))) await call(B.ctx, "POST", `/orgs/${m.org.id}/leave`);
+      const t02 = (await me(B.ctx)).user.id;
+      const readerId = (await me(reader.ctx)).user.id;
+      // Before membership: My organization explains how to join and shows the account ID.
+      await go(reader.page, "/app?view=orgs");
+      await viewTitle(reader.page, "My organization");
+      await reader.page.getByText(TF("Your account ID: {id}", { id: readerId })).waitFor();
 
+      // The manager assigns both accounts from the service desk.
       await staffView(s, "organizations");
-      await s.locator("#content .toolbar").getByRole("button", { name: T("New organization") }).click();
-      const dlg = openDialog(s);
-      await dlg.getByLabel(T("Organization name")).fill(name);
-      await dlg.getByLabel(T("Type")).selectOption("hospital");
-      await dlg.getByRole("button", { name: T("Create organization") }).click();
-      await dlg.waitFor({ state: "hidden" });
-      const rec = s.locator("article.sd-org", { has: s.getByRole("heading", { name, exact: true }) });
-      await rec.waitFor();
-      const code = (await rec.locator("code.sd-code").innerText()).trim();
-      assert(/^[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(code), "join code format: " + code);
-      orgId = (await call(A.ctx, "GET", "/staff/organizations")).organizations.find((o) => o.name === name)?.id || "";
+      for (const [uid, role] of [[t02, "editor"], [readerId, "reader"]]) {
+        await s.getByLabel(T("Account ID")).fill(uid);
+        await s.getByLabel(T("Organization ID")).fill(org);
+        await s.getByLabel(T("Role")).selectOption(role);
+        await s.getByRole("button", { name: T("Save membership") }).click();
+        await seeToast(s, T("Membership saved."));
+      }
 
       await go(p, "/app?view=orgs");
       await viewTitle(p, "My organization");
-      const join = p.locator("form.org-join").first();
-      await join.getByLabel(T("Join code")).fill(code.replace("-", "").toLowerCase());
-      assert((await join.getByLabel(T("Join code")).inputValue()) === code, "join code input does not format the code");
-      await join.getByRole("button", { name: T("Join"), exact: true }).click();
-      await seeToast(p, TF("You joined {name}.", { name }));
-      const card = p.locator("section.org-card", { has: p.getByRole("heading", { name, exact: true }) });
-      await card.locator(".badge", { hasText: new RegExp("^" + esc(T("Member")) + "$") }).waitFor();
-      assert(!(await card.locator("form.org-upload").count()), "a member sees the upload form");
-
-      await s.reload({ waitUntil: "load" });
-      await rec.getByRole("button", { name: TF("Members ({n})", { n: 1 }) }).click();
-      const row = rec.locator("tr", { hasText: "test-02" });
-      await row.getByRole("button", { name: T("Make admin") }).click();
-      await seeToast(s, TF("{email} is now an organization admin.", { email: "test-02" }));
-      await row.locator(".badge", { hasText: T("Organization admin") }).waitFor();
-
-      await p.reload({ waitUntil: "load" });
-      await viewTitle(p, "My organization");
-      await card.locator(".badge", { hasText: new RegExp("^" + esc(T("Admin")) + "$") }).waitFor();
+      const card = p.locator("section.org-card");
+      await card.locator(".badge", { hasText: new RegExp("^" + esc(T("Editor")) + "$") }).waitFor();
+      await card.locator(".badge", { hasText: T("Search only") }).waitFor();
       const form = card.locator("form.org-upload");
       const text = [
         `${title} (synthetic, UAT ${RUN})`,
         "การเตรียมตัวก่อนตรวจเลือด: งดอาหารและเครื่องดื่มที่มีน้ำตาล 8 ถึง 10 ชั่วโมงก่อนตรวจน้ำตาลในเลือดและไขมัน ดื่มน้ำเปล่าได้",
-        "Fasting: no food or sugary drinks for 8 to 10 hours before a fasting glucose or lipid test. Plain water is fine.",
-        "Bring your ID card and the appointment reference. Results are usually ready within two working days.",
-      ].join("\n\n");
-      await form.getByLabel(T("File")).setInputFiles({ name: `uat-preparation-${RUN}.txt`, mimeType: "text/plain", buffer: Buffer.from(text, "utf8") });
-      assert((await form.getByLabel(T("Title")).inputValue()) === `uat-preparation-${RUN}`, "title not prefilled from the file name");
+        `Fasting preparation ${RUN}: no food or sugary drinks for 8 to 10 hours before a fasting glucose or lipid test.`,
+      ].join("\n");
+      // A PDF is refused before upload with the Codex rule (UTF-8 .txt or .md only).
+      await form.getByLabel(T("File")).setInputFiles({ name: "guide.pdf", mimeType: "application/pdf", buffer: Buffer.from("%PDF-1.4") });
+      await form.locator(".field-error", { hasText: T("Use a UTF-8 .txt or .md file. PDF, Word and scanned images are not supported here.") }).waitFor();
+      await form.getByLabel(T("File")).setInputFiles({ name: `uat-preparation-${RUN}.md`, mimeType: "text/markdown", buffer: Buffer.from(text, "utf8") });
       await form.getByLabel(T("Title")).fill(title);
-      await form.getByRole("button", { name: T("Upload for review") }).click();
+      await form.getByRole("button", { name: T("Upload as draft") }).click();
+      await seeToast(p, TF("Version {n} was saved as a draft. Review and approve it before members can use it.", { n: 1 }));
       const doc = card.locator("article.record", { has: p.getByRole("heading", { name: title, exact: true }) });
-      await doc.locator(".badge", { hasText: T("Waiting for staff review") }).waitFor({ timeout: 20000 });
+      await doc.locator(".badge", { hasText: T("Draft, waiting for an editor's review") }).waitFor({ timeout: 20000 });
 
-      await staffView(s, "knowledge", "&state=pending");
-      const item = s.locator(".staff-list button.ticket-btn", { hasText: title });
-      await item.waitFor({ timeout: 20000 });
-      await item.click();
-      const reader = s.locator(".staff-thread");
-      await reader.getByRole("heading", { name: title }).waitFor();
-      assert((await reader.locator("li.sd-passage").count()) >= 1, "no passages to review");
-      assert(!(await reader.locator("li.sd-passage.flagged").count()), "a plain preparation guide was flagged");
-      await reader.getByRole("button", { name: T("Approve for chat") }).click();
-      await seeToast(s, TF("Approved: {title}. Members can now see it in chat.", { title }));
+      // The reader does not see the draft; the outsider has no organization.
+      const listing = await call(reader.ctx, "GET", "/organization-documents");
+      assert(!listing.documents.length && !listing.can_edit, "a reader sees a draft or can edit");
+      const denied = await outsider.ctx.request.get(API + "/organization-documents", { failOnStatusCode: false });
+      assert(denied.status() === 403, "an account outside the organization is not refused: " + denied.status());
 
-      await p.reload({ waitUntil: "load" });
-      await viewTitle(p, "My organization");
-      await card.locator("ul.org-docs li", { hasText: title }).waitFor();
+      await doc.getByRole("button", { name: T("Preview") }).click();
+      await openDialog(p).locator("pre.org-preview", { hasText: `Fasting preparation ${RUN}` }).waitFor();
+      await p.keyboard.press("Escape");
+      await doc.getByRole("button", { name: T("Approve"), exact: true }).click();
+      await seeToast(p, T("Approved. Members can now see this version."));
       await doc.locator(".badge", { hasText: new RegExp("^" + esc(T("Approved")) + "$") }).waitFor();
-      await card.evaluate((e) => window.scrollTo(0, window.scrollY + e.getBoundingClientRect().top - 84));
-      await wait(200);
       await shot(p, "orgs-1440.png");
-      await card.getByRole("button", { name: T("Use in my chat") }).click();
-      await chat(p).waitFor();
-      const chip = chat(p).locator(".context-chips .org-scope button.chip");
-      await chip.waitFor();
-      await poll(async () => (await chip.innerText()).includes(TF("Using documents from: {name}", { name })), { message: "chat context chip does not show the organization" });
-      const scope = await call(B.ctx, "GET", "/orgs/mine");
-      assert(scope.chat_org_id === orgId, "chat scope not stored");
+
+      // The reader searches and gets a source excerpt (not an AI answer) with a member-only download.
+      await go(reader.page, "/app?view=orgs");
+      await viewTitle(reader.page, "My organization");
+      const rcard = reader.page.locator("section.org-card");
+      await rcard.locator("article.record", { has: reader.page.getByRole("heading", { name: title, exact: true }) }).waitFor();
+      assert(!(await rcard.locator("form.org-upload").count()), "a reader sees the upload form");
+      await reader.page.getByLabel(T("Words to find")).fill(`preparation ${RUN}`);
+      await reader.page.getByRole("button", { name: T("Search"), exact: true }).click();
+      await reader.page.getByText(T("Text from the source document — not an answer from AI.")).waitFor();
+      await reader.page.locator("blockquote.org-excerpt", { hasText: `Fasting preparation ${RUN}` }).waitFor();
+      const found = await call(reader.ctx, "POST", "/organization-documents/search", { q: `preparation ${RUN}` });
+      const download = await reader.ctx.request.get(BASE + found.sources[0].url, { failOnStatusCode: false });
+      assert(download.ok(), "the reader cannot download the approved text");
+      const foreign = await outsider.ctx.request.get(BASE + found.sources[0].url, { failOnStatusCode: false });
+      assert(foreign.status() === 403 || foreign.status() === 404, "an outsider can download the document: " + foreign.status());
+
+      // Chat chip: membership is known; inference stays off by default (search only).
+      await go(p, "/app");
+      await chat(p).locator(".context-chips button.chip", { hasText: T("Organization references: search only, not sent to the assistant") }).waitFor();
+
+      // New version, approve (replaces v1), then revoke: the reader's search is empty again.
+      await go(p, "/app?view=orgs");
+      await viewTitle(p, "My organization");
+      await doc.getByRole("button", { name: T("Upload new version") }).click();
+      await form.getByLabel(T("File")).setInputFiles({ name: `uat-preparation-${RUN}-v2.md`, mimeType: "text/markdown", buffer: Buffer.from(text + `\nVersion two ${RUN}.`, "utf8") });
+      await form.getByRole("button", { name: T("Upload new version") }).click();
+      await seeToast(p, TF("Version {n} was saved as a draft. Review and approve it before members can use it.", { n: 2 }));
+      const v2 = card.locator("article.record", { has: p.locator(".badge", { hasText: TF("Version {n}", { n: 2 }) }) });
+      await v2.getByRole("button", { name: T("Approve"), exact: true }).click();
+      await seeToast(p, T("Approved. Members can now see this version."));
+      await card.locator("article.record", { has: p.locator(".badge", { hasText: TF("Version {n}", { n: 1 }) }) }).locator(".badge", { hasText: new RegExp("^" + esc(T("Revoked")) + "$") }).waitFor();
+      await v2.getByRole("button", { name: T("Revoke"), exact: true }).click();
+      await openDialog(p).getByRole("button", { name: T("Revoke"), exact: true }).click();
+      await seeToast(p, T("Revoked."));
+      const after = await call(reader.ctx, "POST", "/organization-documents/search", { q: `preparation ${RUN}` });
+      assert(after.sources.length === 0, "a revoked document is still searchable");
+      note("v1 revoked by approving v2; v2 revoked; reader search empty; outsider refused (403/404).");
     } finally {
-      if (orgId) {
-        await call(B.ctx, "POST", `/chat/org-scope`, { org_id: "none" }).catch(() => {});
-        await call(B.ctx, "POST", `/orgs/${orgId}/leave`).catch(() => {});
-        await call(A.ctx, "PUT", `/staff/organizations/${orgId}`, { active: false }).catch(() => {});
-      }
+      await reader.ctx.close();
+      await outsider.ctx.close();
     }
   });
 
@@ -1635,9 +1668,35 @@ async function main() {
     assert(!problems.length, problems.join("; "));
   });
 
+  await scenario("R4-15", "Hospital links (Codex data): price only for the verified current offer, external links without referrer, no booking claim", async () => {
+    const ctx = await newContext();
+    try {
+      const p = await newPage(ctx, "hospital-links");
+      await go(p, "/");
+      await p.locator("footer.site-footer").getByRole("link", { name: T("Hospital websites") }).click();
+      await p.waitForURL(/\/hospital-links$/);
+      const cards = p.locator("article.center-row");
+      await cards.first().waitFor();
+      const data = await (await ctx.request.get(API + "/site/hospital-links")).json();
+      assert((await cards.count()) === data.offers.length, "offer count differs from the API");
+      for (const o of data.offers) {
+        const card = p.locator(`article#${o.id}`);
+        const body = await card.innerText();
+        if (o.current_offer) assert(body.includes(TF("{price} THB", { price: o.price_thb.toLocaleString("th-TH") })), `${o.id}: verified price missing`);
+        else assert(body.includes(T("Current price not confirmed")), `${o.id}: an unverified offer shows a price`);
+        const link = card.getByRole("link", { name: new RegExp(esc(T("View on the hospital website"))) });
+        assert((await link.getAttribute("href")) === o.url, `${o.id}: link differs from the reviewed URL`);
+        assert((await link.getAttribute("rel")) === "noopener noreferrer" && (await link.getAttribute("referrerpolicy")) === "no-referrer", `${o.id}: link leaks referrer`);
+      }
+      await shot(p, "hospital-links-1440.png");
+    } finally {
+      await ctx.close();
+    }
+  });
+
   /* ================================================================ 4.0.0: responsive and motion */
 
-  const PAGES = ["/", "/packages", "/sources", "/help", "/organizations", "/app", "/staff"];
+  const PAGES = ["/", "/packages", "/sources", "/help", "/organizations", "/hospital-links", "/app", "/staff"];
   const WIDTHS = [320, 390, 768, 1440];
   for (const route of PAGES) {
     await scenario(`R4-13${route === "/" ? "-home" : route.replace(/\//g, "-")}`, `Responsive ${route}: no horizontal overflow and no console errors at ${WIDTHS.join(", ")} px`, async () => {
@@ -1735,7 +1794,8 @@ try {
   const report = {
     started,
     base: BASE,
-    mode: "MOCKED_TEST_ONLY for the language model and report reader (scripts/dev_mock_api.py); real UI, routes, storage, sessions, CSRF and permissions.",
+    mode: "MOCKED_TEST_ONLY for the language model and report reader (scripts/dev_mock_api.py on the Codex backend); real UI, routes, storage, sessions, CSRF, trusted-origin proxy and permissions.",
+    candidate: process.env.UAT_CANDIDATE || undefined,
     only: ONLY.length ? ONLY : undefined,
     scenarios: results,
     passed: results.filter((r) => r.ok).length,

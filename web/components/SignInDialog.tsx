@@ -8,10 +8,10 @@ import { Dialog } from "@/components/ui/Dialog";
 export type SignInOptions = {
   /** staff: service desk wording, no "Create account", no Google. */
   staff?: boolean;
-  /** Messages in this page's temporary chat; > 0 offers to keep them in the account. */
+  /** Messages in this page's temporary chat; > 0 warns that signing in deletes them. */
   guestMessages?: number;
   /** Called after a successful sign-in or registration. */
-  onDone?: (user: User, keptMessages: number) => void;
+  onDone?: (user: User) => void;
   reason?: string;
 };
 
@@ -21,7 +21,6 @@ export function SignInDialog({ options, onClose }: { options: SignInOptions | nu
   const { t, lang } = useT();
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
-  const [keep, setKeep] = useState(true);
   const form = useRef<HTMLFormElement>(null);
   const open = !!options;
   const staff = !!options?.staff;
@@ -30,7 +29,6 @@ export function SignInDialog({ options, onClose }: { options: SignInOptions | nu
   useEffect(() => {
     if (open) {
       setError("");
-      setKeep(true);
     }
   }, [open]);
 
@@ -40,13 +38,13 @@ export function SignInDialog({ options, onClose }: { options: SignInOptions | nu
     setBusy(true);
     setError("");
     try {
-      const r = await api.auth(kind, String(data.get("email") || ""), String(data.get("password") || ""), guestMessages > 0 && keep);
+      const r = await api.auth(kind, String(data.get("email") || ""), String(data.get("password") || ""));
       onClose();
       if (STAFF_ROLES.includes(r.user.role) && !staff && !location.pathname.startsWith("/staff")) {
         location.href = "/staff";
         return;
       }
-      options?.onDone?.(r.user, r.kept_messages || 0);
+      options?.onDone?.(r.user);
     } catch (e) {
       setError(apiMessage(lang, (e as Error).message));
     } finally {
@@ -84,12 +82,11 @@ export function SignInDialog({ options, onClose }: { options: SignInOptions | nu
             <input id="si-pass" name="password" className="input" type="password" required autoComplete="current-password" minLength={4} maxLength={200} />
             {!staff ? <span className="hint">{t("New accounts need at least 12 characters.")}</span> : null}
           </div>
-          {!staff && guestMessages > 0 ? (
-            <label className="check keep-chat">
-              <input type="checkbox" checked={keep} onChange={(e) => setKeep(e.target.checked)} /> {t("Keep this chat in my account")}
-            </label>
+          {!staff ? (
+            <p className={"tiny" + (guestMessages > 0 ? " callout warn guest-discard" : " muted")}>
+              {t("Signing in or creating an account discards this temporary chat and its images.")}
+            </p>
           ) : null}
-          {!staff && guestMessages === 0 ? <p className="tiny muted">{t("Signing in or creating an account discards this temporary chat and its images.")}</p> : null}
           {error ? (
             <p className="field-error" role="alert">
               {error}

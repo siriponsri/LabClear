@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { getT } from "@/lib/i18n/server";
 
-export async function SiteFooter({ version }: { version: string }) {
+export async function SiteFooter({ version, hospitalLinks = false }: { version: string; hospitalLinks?: boolean }) {
   const { t } = await getT();
   return (
     <footer className="site-footer">
@@ -41,6 +41,7 @@ export async function SiteFooter({ version }: { version: string }) {
           <Link href="/privacy">{t("Privacy")}</Link>
           <Link href="/sources">{t("Medical sources")}</Link>
           <Link href="/centers">{t("Centers")}</Link>
+          {hospitalLinks ? <Link href="/hospital-links">{t("Hospital websites")}</Link> : null}
         </nav>
         <nav className="footer-col" aria-label={t("Organizations")}>
           <h2>{t("Organizations")}</h2>

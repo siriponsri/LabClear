@@ -36,7 +36,7 @@ export type Message = {
   retryable?: boolean;
   [key: string]: unknown;
 };
-export type Source = { id: string; title: string; url: string; publisher: string; data_class: string };
+export type Source = { id: string; title: string; url: string; publisher?: string; data_class: string; version?: number; section?: string; sha256?: string };
 export type Conversation = {
   messages: Message[];
   report_id: string;
@@ -235,10 +235,21 @@ class LabClearApi {
     return r.user;
   }
 
-  /** Sign in or register. keepGuestChat moves this page's temporary chat into the account. */
-  async auth(kind: "login" | "register", email: string, password: string, keepGuestChat = false) {
+  /**
+   * Who the page is acting for: the account id plus the temporary guest token. A response that
+   * was requested under a different identity must not be shown (Codex guest-privacy rule).
+   */
+  get identity() {
+    return (this.user?.id || "") + "|" + this.guestToken;
+  }
+
+  /**
+   * Sign in or register (Codex contract: email and password only). The server discards this
+   * page's temporary guest chat and its images; nothing is carried into the account.
+   */
+  async auth(kind: "login" | "register", email: string, password: string) {
     if (kind === "register" && !this.csrf) await this.session();
-    const r = await this.post<{ user: User; csrf: string; kept_messages?: number }>("/" + kind, { email, password, keep_guest_chat: keepGuestChat });
+    const r = await this.post<{ user: User; csrf: string }>("/" + kind, { email, password });
     this.csrf = r.csrf;
     this.user = r.user;
     this.guestToken = "";

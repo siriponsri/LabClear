@@ -16,13 +16,17 @@ const SEGMENTS = [
   { id: "budget", query: "max_price=1000&sort=price_asc" },
 ];
 
+/** The reviewed corpus has no publisher_type field; same grouping as routers/public.py. */
+const INTERNATIONAL = new Set(["MedlinePlus · U.S. National Library of Medicine"]);
+export const publisherType = (r: SourceRecord) => r.publisher_type || (INTERNATIONAL.has(r.publisher) ? "international_reference" : "thai_hospital");
+
 function seed(): Common {
   const records = (seedEvidence as any).records as SourceRecord[];
   const publishers = new Set(records.map((r) => r.publisher));
   const types: Record<string, number> = {};
-  for (const r of records) types[r.publisher_type || "thai_hospital"] = (types[r.publisher_type || "thai_hospital"] || 0) + 1;
+  for (const r of records) types[publisherType(r)] = (types[publisherType(r)] || 0) + 1;
   return {
-    version: "4.0.0",
+    version: "4.0.0-rc1",
     catalog: seedCatalog as any,
     branches: (seedBranches as any).branches,
     policies: seedPolicies as any,
@@ -32,6 +36,7 @@ function seed(): Common {
     sources: { count: records.length, publishers: publishers.size, publisher_types: types },
     maps_embed_key: false,
     google_sign_in: false,
+    features: { org_documents: false, org_reference_inference: false, hospital_links: false, landing_preview: false },
     offline: true,
   };
 }
@@ -54,9 +59,9 @@ export const getSources = cache(async (): Promise<{ version: string; records: So
     const publisher_types: Record<string, number> = {};
     for (const r of records) {
       publishers[r.publisher] = (publishers[r.publisher] || 0) + 1;
-      publisher_types[r.publisher_type || "thai_hospital"] = (publisher_types[r.publisher_type || "thai_hospital"] || 0) + 1;
+      publisher_types[publisherType(r)] = (publisher_types[publisherType(r)] || 0) + 1;
     }
-    return { version: (seedEvidence as any).version, records, publishers, publisher_types };
+    return { version: (seedEvidence as any).version, records: records.map((r) => ({ ...r, publisher_type: publisherType(r) })), publishers, publisher_types };
   }
 });
 

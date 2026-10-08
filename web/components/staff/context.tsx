@@ -18,8 +18,7 @@ export type ViewId =
   | "ai"
   | "channels"
   | "audit"
-  | "organizations"
-  | "knowledge";
+  | "organizations";
 
 export const VIEW_IDS: ViewId[] = [
   "overview",
@@ -35,15 +34,14 @@ export const VIEW_IDS: ViewId[] = [
   "channels",
   "audit",
   "organizations",
-  "knowledge",
 ];
 /** Views only a manager may open (the server enforces the same rule). */
-export const MANAGER_VIEWS: ViewId[] = ["catalog-admin", "centers", "roles", "ai", "channels", "audit", "organizations", "knowledge"];
+export const MANAGER_VIEWS: ViewId[] = ["catalog-admin", "centers", "roles", "ai", "channels", "audit", "organizations"];
 
 export const isViewId = (v: string | null | undefined): v is ViewId => !!v && (VIEW_IDS as string[]).includes(v);
 
 export type Biz = { catalog: Catalog; branches: Branch[] };
-export type Counts = { waiting: number; requested: number; pendingDocs: number };
+export type Counts = { waiting: number; requested: number };
 
 export type ConfirmOptions = {
   title: string;

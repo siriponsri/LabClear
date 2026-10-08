@@ -24,7 +24,7 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
       <main id="main" className="rails">
         {children}
       </main>
-      <SiteFooter version={common.version} />
+      <SiteFooter version={common.version} hospitalLinks={!!common.features?.hospital_links} />
       <SearchDialog />
       <Dock />
     </div>

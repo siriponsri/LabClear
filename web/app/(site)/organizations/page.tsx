@@ -88,7 +88,7 @@ export default async function OrganizationsPage({ searchParams }: Props) {
         <div className="pub-orgdocs-head">
           <h2 id="orgdocs-title">{t("Use your own hospital's documents")}</h2>
           <p className="muted">
-            {t("Hospitals, clinic groups and companies can add their own references, such as the laboratory's printed reference ranges or preparation instructions. The assistant then cites them for your members, next to the public sources.")}
+            {t("Hospitals, clinic groups and companies can add their own references, such as the laboratory's printed reference ranges or preparation instructions. Your members can read and search them next to the public sources.")}
           </p>
         </div>
         <ol className="pub-steps">
@@ -96,26 +96,26 @@ export default async function OrganizationsPage({ searchParams }: Props) {
             <span className="pub-step-num num" aria-hidden="true">
               1
             </span>
-            <h3>{t("LabClear creates your organization and a join code")}</h3>
-            <p className="small muted">{t("Our team sets up the organization. Your staff join with the code from their own LabClear accounts.")}</p>
+            <h3>{t("A LabClear manager adds your people")}</h3>
+            <p className="small muted">{t("Each person signs up for a LabClear account; a manager assigns them to your organization as a reader or an editor.")}</p>
           </li>
           <li>
             <span className="pub-step-num num" aria-hidden="true">
               2
             </span>
-            <h3>{t("Your organization admin uploads documents")}</h3>
-            <p className="small muted">{t("PDF with selectable text, Word (.docx) or TXT, up to 5 MB each. The text is kept encrypted; the original file is not stored.")}</p>
+            <h3>{t("Your editors upload documents")}</h3>
+            <p className="small muted">{t("UTF-8 text or Markdown files up to 256 KB each; PDF, Word and scanned images are not supported yet. Documents are stored encrypted.")}</p>
           </li>
           <li>
             <span className="pub-step-num num" aria-hidden="true">
               3
             </span>
-            <h3>{t("Our staff review it, then the chat cites it for your members")}</h3>
-            <p className="small muted">{t("Nothing is used until a LabClear manager approves it. Only members of your organization see these citations.")}</p>
+            <h3>{t("An editor approves it, then members can read and search it")}</h3>
+            <p className="small muted">{t("Nothing is shown to readers until an editor approves it. A new version replaces the old one after approval, and revoking a document stops later answers from using it.")}</p>
           </li>
         </ol>
         <div className="pub-orgdocs-foot">
-          <p className="small muted">{t("Organization documents are searched on our server only and are never sent to an AI provider to build embeddings.")}</p>
+          <p className="small muted">{t("Organization documents are searched on our server only. The assistant uses approved excerpts only after the service owner reviews provider data policies and turns it on.")}</p>
           <div className="row">
             <Link className="btn primary" href="/app?view=orgs">
               {t("Open organization settings")}

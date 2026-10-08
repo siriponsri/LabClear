@@ -73,6 +73,11 @@
 .org-join h3{font-size:var(--text-md)}
 .org-join-row{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap}
 .org-join-row .field{flex:1 1 200px;max-width:260px}
+.org-join-row .field:has(input:not([type=file])){max-width:420px}
+/* integration 4.0: Codex organization-documents lifecycle (preview, excerpts) */
+.org-preview{max-height:min(60vh,520px);overflow:auto;margin:0;padding:16px;border:1px solid var(--color-border);border-radius:var(--radius-md);background:var(--color-bg-subtle);font:400 var(--text-sm)/1.7 var(--font-sans);white-space:pre-wrap;overflow-wrap:anywhere}
+.org-excerpt{margin:4px 0 0;padding:8px 12px;border-left:3px solid var(--color-accent-border);background:var(--color-surface);font-size:var(--text-sm);line-height:1.7;overflow-wrap:anywhere}
+.guest-discard{margin:0;padding:8px 12px}
 .org-code{font:600 var(--text-md) var(--font-mono, ui-monospace, monospace);letter-spacing:.12em;text-transform:uppercase}
 .org-privacy{position:sticky;top:84px;display:grid;gap:12px;padding:20px;border:1px solid var(--color-border);border-radius:var(--radius-lg);background:var(--color-surface)}
 .org-privacy h3{font-size:var(--text-md)}

@@ -137,7 +137,7 @@ export default async function HelpPage() {
             })}{" "}
             {t("Employers receive coordination information, never an employee's lab results.")}
           </p>
-          <p>{t("Hospitals and clinics can also add their own reference documents. Our staff review each one before the assistant cites it, and only for that organization's members.")}</p>
+          <p>{t("Hospitals and clinics can also add their own reference documents. An editor of the organization approves each version, and only that organization's members can see it.")}</p>
           <p>
             <Link href="/organizations">{t("For organizations")}</Link>
           </p>
@@ -150,7 +150,7 @@ export default async function HelpPage() {
       a: (
         <>
           <p>{t("Without signing in, your chat is temporary. It lives only in the open page and in server memory, and it is deleted when you refresh or close the page.")}</p>
-          <p>{t("When you sign in you can choose to keep the current chat, and your chats are then saved in your account. You can delete a report from My reports at any time; this also clears conversation history that may contain its values.")}</p>
+          <p>{t("Signing in deletes the temporary chat of the page; from then on your chats are saved in your account. You can delete a report from My reports at any time; this also clears conversation history that may contain its values.")}</p>
           <p>
             <Link href="/privacy">{t("Privacy")}</Link>
           </p>
