@@ -11,11 +11,11 @@
 
 > **สถานะ:** ยังไม่ได้ deploy จากสภาพแวดล้อมที่เขียนเอกสารนี้ เพราะไม่มีสิทธิ์เข้าบัญชีทีมและไม่มีคีย์ OpenRouter สิ่งที่ตรวจแล้วคือ `opennextjs-cloudflare build` กับ `wrangler dev` บน worker ที่ build แล้ว และ `wrangler deploy --dry-run` ของทั้งสอง worker (container ใช้ `--containers-rollout=none` เพราะเครื่องที่ตรวจดึง base image จาก Docker Hub ไม่ได้) ยังไม่เคย build Docker image, ยังไม่เคยต่อ PostgreSQL จริง และยังไม่เคยเรียก OpenRouter จริง ดูรายละเอียดใน [release-4.0.0.md](../release-4.0.0.md)
 
-รุ่น 3.x รันบน Render คู่มือเดิมเก็บไว้ที่ [archive/](archive/) เพื่ออ้างอิงเท่านั้น
+คู่มือ Render ของรุ่นรวมอยู่ที่ [render.md](render.md) และ [render-web.md](render-web.md)
 
 ## ภาพรวมของระบบที่จะขึ้น
 
-<p align="center"><img src="../assets/architecture-4.0.png" alt="สถาปัตยกรรม LabClear 4.0.0 บน Cloudflare" width="680"></p>
+> แผนภาพ Cloudflare เดิมอยู่ใน `docs/assets/architecture-4.0.png` ของ `release/4.0.0` (commit `95bf3d7`) ไฟล์ชื่อเดียวกันใน branch นี้เป็นแผนภาพ Render ของรุ่นรวมแล้ว
 
 | ส่วน | ไฟล์ตั้งค่า | ทำอะไร |
 |---|---|---|

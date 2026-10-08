@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>สถาปัตยกรรมของ LabClear 4.0.0</title>
+  <title>สถาปัตยกรรมของ LabClear 4.0.0-rc1 (รุ่นรวม)</title>
   <!-- Fonts are self-hosted (no network): see labclear-diagram-fonts.css next to this file. -->
   <link rel="stylesheet" href="labclear-diagram-fonts.css">
   <style>
@@ -56,12 +56,12 @@
 </head>
 <body>
   <div class="frame">
-    <p class="eyebrow">Architecture · LabClear 4.0.0</p>
-    <h1>สถาปัตยกรรมของ LabClear 4.0.0</h1>
+    <p class="eyebrow">Architecture · LabClear 4.0.0-rc1</p>
+    <h1>สถาปัตยกรรมของ LabClear 4.0.0-rc1 (รุ่นรวม)</h1>
     <div class="diagram-container">
-<svg viewBox="0 0 880 1024" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="architecture-4.0-title architecture-4.0-desc">
-<title id="architecture-4.0-title">สถาปัตยกรรมของ LabClear 4.0.0</title>
-<desc id="architecture-4.0-desc">แผนภาพสถาปัตยกรรม: ผู้ใช้เข้าโดเมนของทีมไปที่ Worker labclear-web ซึ่งส่ง /api/* และ /health ผ่าน service binding ไปยัง Worker labclear-api และ FastAPI ใน Cloudflare Container ที่เก็บแชตผู้เยี่ยมชมใน RAM ค้นฐานความรู้ บันทึกข้อมูลเข้ารหัสใน PostgreSQL ภายนอก และเรียกโมเดลผ่าน OpenRouter หลังผ่านด่านงบ</desc>
+<svg viewBox="0 0 880 1176" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="architecture-4.0-title architecture-4.0-desc">
+<title id="architecture-4.0-title">สถาปัตยกรรมของ LabClear 4.0.0-rc1 (รุ่นรวม)</title>
+<desc id="architecture-4.0-desc">แผนภาพสถาปัตยกรรมรุ่นรวม 4.0.0-rc1 บน Render: ผู้ใช้ (ลูกค้า ผู้เยี่ยมชม เจ้าหน้าที่) เปิดบริการเว็บ labclear-web ผ่าน HTTPS ซึ่งเป็นบริการ Render ตัวที่สองแบบเลือกได้ (Node 22, Next.js 16, React 19, React Three Fiber ภาษาไทยเป็นค่าเริ่มต้น สลับ EN ได้) เว็บ rewrite /api/* และ /health ผ่าน HTTPS ไปยังบริการ API labclear (Python 3.12, FastAPI ของ Codex, render.yaml ไม่เปลี่ยน, หน้า Jinja เดิมยังใช้ได้) บริการ API ตรวจ Origin เทียบ Host ของตัวเองหรือ TRUSTED_ORIGINS ที่ตรงตัว เก็บแชตผู้เยี่ยมชมใน RAM ซึ่งลบเมื่อ Refresh และเมื่อเข้าสู่ระบบ ค้นฐานความรู้ 58 รายการที่ตรวจแล้วด้วย BM25 ค้นเอกสารองค์กรเฉพาะสมาชิกเมื่อเปิด ORG_DOCUMENTS_ENABLED (ปิดเป็นค่าเริ่มต้น) และบันทึกข้อมูลใน Render PostgreSQL ตาราง rs_entities ที่เข้ารหัส Fernet ทุกการเรียกโมเดลผ่านด่าน PROVIDER_NETWORK_ENABLED เพดาน CLOUD_CALL_LIMIT และบัญชี 300 บาท ไปยังผู้ให้บริการ AI ตาม slot (ค่าเริ่มต้น Typhoon, iApp OpenThai-SystemOne, Typhoon OCR ผู้จัดการเลือกผู้ให้บริการอื่นเช่น OpenRouter ได้) คิว acquisition (Codex 15 + 6 และ Claude 90 รายการ) ไม่ถูกค้น บทบาทเสริม Medical analyzer และ Thai composer ปิดเป็นค่าเริ่มต้น Cloudflare Workers Paid และ Containers เลื่อนไว้ ส่วน Cloudflare Free DNS/proxy เป็นงานในอนาคต</desc>
 <defs>
 <marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#6b6875"/></marker>
 <marker id="arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#6539a9"/></marker>
@@ -70,165 +70,223 @@
 </defs>
 <rect width="100%" height="100%" fill="#fdfcfe"/>
 <!-- ===== Zones (behind everything) ===== -->
-<!-- Zone: CLOUDFLARE WORKERS -->
-<rect x="40" y="152" width="800" height="292" rx="8" fill="rgba(35,32,43,0.02)" stroke="rgba(35,32,43,0.12)" stroke-width="0.8"/>
-<rect x="50" y="158" width="145" height="16" rx="2" fill="#fdfcfe"/>
-<text x="56" y="170" fill="#6b6875" font-size="10" font-weight="500" font-family="'Geist Mono', 'Noto Sans Thai', ui-monospace, monospace" text-anchor="start" letter-spacing="0.14em">CLOUDFLARE WORKERS</text>
-<!-- Zone: CLOUDFLARE CONTAINER -->
-<rect x="40" y="476" width="800" height="160" rx="8" fill="rgba(35,32,43,0.02)" stroke="rgba(35,32,43,0.12)" stroke-width="0.8"/>
-<rect x="50" y="482" width="160" height="16" rx="2" fill="#fdfcfe"/>
-<text x="56" y="494" fill="#6b6875" font-size="10" font-weight="500" font-family="'Geist Mono', 'Noto Sans Thai', ui-monospace, monospace" text-anchor="start" letter-spacing="0.14em">CLOUDFLARE CONTAINER</text>
-<!-- Zone: EXTERNAL SERVICES -->
-<rect x="40" y="684" width="800" height="180" rx="8" fill="rgba(35,32,43,0.02)" stroke="rgba(35,32,43,0.12)" stroke-width="0.8"/>
-<rect x="50" y="690" width="138" height="16" rx="2" fill="#fdfcfe"/>
-<text x="56" y="702" fill="#6b6875" font-size="10" font-weight="500" font-family="'Geist Mono', 'Noto Sans Thai', ui-monospace, monospace" text-anchor="start" letter-spacing="0.14em">EXTERNAL SERVICES</text>
+<!-- Zone: RENDER (deploy target of rc1; render.yaml unchanged) -->
+<rect x="40" y="176" width="800" height="640" rx="8" fill="rgba(35,32,43,0.02)" stroke="rgba(35,32,43,0.12)" stroke-width="0.8"/>
+<rect x="50" y="182" width="58" height="16" rx="2" fill="#fdfcfe"/>
+<text x="56" y="194" fill="#6b6875" font-size="10" font-weight="500" font-family="'Geist Mono', 'Noto Sans Thai', ui-monospace, monospace" text-anchor="start" letter-spacing="0.14em">RENDER</text>
+<!-- Zone: EXTERNAL · AI PROVIDERS -->
+<rect x="40" y="864" width="800" height="176" rx="8" fill="rgba(35,32,43,0.02)" stroke="rgba(35,32,43,0.12)" stroke-width="0.8"/>
+<rect x="50" y="870" width="182" height="16" rx="2" fill="#fdfcfe"/>
+<text x="56" y="882" fill="#6b6875" font-size="10" font-weight="500" font-family="'Geist Mono', 'Noto Sans Thai', ui-monospace, monospace" text-anchor="start" letter-spacing="0.14em">EXTERNAL · AI PROVIDERS</text>
 <!-- ===== Connectors (drawn before boxes) ===== -->
-<!-- Users -> labclear-web (HTTPS on the team's custom domain) -->
-<path d="M 440,116 V 183" fill="none" stroke="#2f6fb5" stroke-width="1.2" marker-end="url(#arrow-link)"/>
-<!-- labclear-web -> labclear-api (service binding) -->
-<path d="M 440,296 V 351" fill="none" stroke="#6b6875" stroke-width="1.2" marker-end="url(#arrow)"/>
-<!-- labclear-api -> FastAPI container -->
-<path d="M 440,428 V 507" fill="none" stroke="#6b6875" stroke-width="1.2" marker-end="url(#arrow)"/>
-<!-- FastAPI -> Guest RAM -->
-<path d="M 320,564.0 H 265" fill="none" stroke="#6b6875" stroke-width="1.2" marker-end="url(#arrow)"/>
-<!-- FastAPI -> knowledge base -->
-<path d="M 560,564.0 H 615" fill="none" stroke="#6b6875" stroke-width="1.2" marker-end="url(#arrow)"/>
-<!-- FastAPI -> PostgreSQL -->
-<path d="M 400,620 V 715" fill="none" stroke="#6b6875" stroke-width="1.2" marker-end="url(#arrow)"/>
-<!-- FastAPI -> OpenRouter (every call gated) -->
-<path d="M 480,620 V 715" fill="none" stroke="#2f6fb5" stroke-width="1.2" marker-end="url(#arrow-link)"/>
+<!-- Users -> labclear-web (HTTPS) -->
+<path d="M 440,136 V 207" fill="none" stroke="#2f6fb5" stroke-width="1.2" marker-end="url(#arrow-link)"/>
+<!-- labclear-web rewrites /api/* and /health over HTTPS -> labclear (API) -->
+<path d="M 440,320 V 383" fill="none" stroke="#2f6fb5" stroke-width="1.2" marker-end="url(#arrow-link)"/>
+<!-- API -> guest chat in RAM -->
+<path d="M 296,440 H 245" fill="none" stroke="#6b6875" stroke-width="1.2" marker-end="url(#arrow)"/>
+<!-- API -> knowledge base (BM25) -->
+<path d="M 584,440 H 635" fill="none" stroke="#6b6875" stroke-width="1.2" marker-end="url(#arrow)"/>
+<!-- API -> Render PostgreSQL -->
+<path d="M 296,584 H 245" fill="none" stroke="#6b6875" stroke-width="1.2" marker-end="url(#arrow)"/>
+<!-- API -> organization documents -->
+<path d="M 584,584 H 635" fill="none" stroke="#6b6875" stroke-width="1.2" marker-end="url(#arrow)"/>
+<!-- API -> gate before every model call -->
+<path d="M 440,640 V 671" fill="none" stroke="#6b6875" stroke-width="1.2" marker-end="url(#arrow)"/>
+<!-- gate -> AI providers (HTTPS) -->
+<path d="M 440,784 V 895" fill="none" stroke="#2f6fb5" stroke-width="1.2" marker-end="url(#arrow-link)"/>
 <!-- ===== Connector labels on paper masks ===== -->
 <g data-fit="label">
-<rect x="450" y="124" width="48" height="20" rx="2" fill="#fdfcfe"/>
-<text x="454" y="138" fill="#2f6fb5" font-size="12" font-weight="400" font-family="'Geist Mono', 'Noto Sans Thai', ui-monospace, monospace" text-anchor="start" letter-spacing="0.06em">HTTPS</text>
+<rect x="450" y="146" width="48" height="20" rx="2" fill="#fdfcfe"/>
+<text x="454" y="160" fill="#2f6fb5" font-size="12" font-weight="400" font-family="'Geist Mono', 'Noto Sans Thai', ui-monospace, monospace" text-anchor="start" letter-spacing="0.06em">HTTPS</text>
 </g>
 <g data-fit="label">
-<rect x="450" y="314" width="64" height="20" rx="2" fill="#f9f8fa"/>
-<text x="454" y="328" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist Mono', 'Noto Sans Thai', ui-monospace, monospace" text-anchor="start" letter-spacing="0.06em">BINDING</text>
+<rect x="450" y="333" width="198" height="38" rx="2" fill="#f9f8fa"/>
+<text x="454" y="347" fill="#2f6fb5" font-size="12" font-weight="400" font-family="'Geist Mono', 'Noto Sans Thai', ui-monospace, monospace" text-anchor="start" letter-spacing="0.06em">HTTPS</text>
+<text x="454" y="365" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist Mono', 'Noto Sans Thai', ui-monospace, monospace" text-anchor="start" letter-spacing="0.06em">rewrite /api/* · /health</text>
 </g>
 <g data-fit="label">
-<rect x="576" y="536" width="24" height="20" rx="2" fill="#f9f8fa"/>
-<text x="588" y="550" fill="#23202b" font-size="12" font-weight="500" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">ค้น</text>
+<rect x="256" y="412" width="26" height="20" rx="2" fill="#f9f8fa"/>
+<text x="269" y="426" fill="#23202b" font-size="12" font-weight="500" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">เก็บ</text>
 </g>
 <g data-fit="label">
-<rect x="278" y="536" width="28" height="20" rx="2" fill="#f9f8fa"/>
-<text x="292" y="550" fill="#23202b" font-size="12" font-weight="500" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">เก็บ</text>
+<rect x="598" y="412" width="24" height="20" rx="2" fill="#f9f8fa"/>
+<text x="610" y="426" fill="#23202b" font-size="12" font-weight="500" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">ค้น</text>
 </g>
 <g data-fit="label">
-<rect x="310" y="658" width="80" height="20" rx="2" fill="#fdfcfe"/>
-<text x="386" y="672" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist Mono', 'Noto Sans Thai', ui-monospace, monospace" text-anchor="end" letter-spacing="0.06em">SQL · TLS</text>
+<rect x="255" y="556" width="30" height="20" rx="2" fill="#f9f8fa"/>
+<text x="270" y="570" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist Mono', 'Noto Sans Thai', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.06em">SQL</text>
 </g>
 <g data-fit="label">
-<rect x="490" y="658" width="84" height="20" rx="2" fill="#fdfcfe"/>
-<text x="494" y="672" fill="#2f6fb5" font-size="12" font-weight="500" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="start">ผ่านด่านงบก่อน</text>
+<rect x="598" y="556" width="24" height="20" rx="2" fill="#f9f8fa"/>
+<text x="610" y="570" fill="#23202b" font-size="12" font-weight="500" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">ค้น</text>
+</g>
+<g data-fit="label">
+<rect x="450" y="830" width="48" height="20" rx="2" fill="#fdfcfe"/>
+<text x="454" y="844" fill="#2f6fb5" font-size="12" font-weight="400" font-family="'Geist Mono', 'Noto Sans Thai', ui-monospace, monospace" text-anchor="start" letter-spacing="0.06em">HTTPS</text>
 </g>
 <!-- ===== Nodes ===== -->
 <!-- Node: ผู้ใช้ผ่านเบราว์เซอร์ (input) -->
 <g data-fit="node">
-<rect x="300" y="40" width="280" height="76" rx="6" fill="#fdfcfe"/>
-<rect x="300" y="40" width="280" height="76" rx="6" fill="rgba(107,104,117,0.10)" stroke="#8b8794" stroke-width="1"/>
-<rect x="308" y="48" width="38" height="14" rx="2" fill="none" stroke="rgba(139,135,148,0.45)" stroke-width="0.8"/>
-<text x="327" y="58.5" fill="#6b6875" font-size="10" font-weight="500" font-family="'Geist Mono', 'Noto Sans Thai', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.08em">USER</text>
+<rect x="316" y="40" width="248" height="96" rx="6" fill="#fdfcfe"/>
+<rect x="316" y="40" width="248" height="96" rx="6" fill="rgba(107,104,117,0.10)" stroke="#8b8794" stroke-width="1"/>
+<rect x="324" y="48" width="38" height="14" rx="2" fill="none" stroke="rgba(139,135,148,0.45)" stroke-width="0.8"/>
+<text x="343" y="58.5" fill="#6b6875" font-size="10" font-weight="500" font-family="'Geist Mono', 'Noto Sans Thai', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.08em">USER</text>
 <text x="440" y="84" fill="#23202b" font-size="16" font-weight="600" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">ผู้ใช้ผ่านเบราว์เซอร์</text>
 <text x="440" y="104" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">ลูกค้า · ผู้เยี่ยมชม · เจ้าหน้าที่</text>
+<text x="440" y="122" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">เห็น origin เดียวคือ labclear-web</text>
 </g>
-<!-- Node: Worker labclear-web (backend) -->
+<!-- Node: Cloudflare (deferred: kept, not used) -->
 <g data-fit="node">
-<rect x="180" y="184" width="520" height="112" rx="6" fill="#fdfcfe"/>
-<rect x="180" y="184" width="520" height="112" rx="6" fill="#ffffff" stroke="#23202b" stroke-width="1"/>
-<rect x="188" y="192" width="32" height="14" rx="2" fill="none" stroke="rgba(35,32,43,0.40)" stroke-width="0.8"/>
-<text x="204" y="202.5" fill="#23202b" font-size="10" font-weight="500" font-family="'Geist Mono', 'Noto Sans Thai', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.08em">WEB</text>
-<text x="440" y="228" fill="#23202b" font-size="16" font-weight="600" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">Worker labclear-web</text>
-<text x="440" y="248" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist Mono', 'Noto Sans Thai', ui-monospace, monospace" text-anchor="middle">custom domain · Next.js 16 · OpenNext</text>
-<text x="440" y="266" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">หน้าสาธารณะ · พื้นที่ลูกค้า /app · staff desk /staff</text>
-<text x="440" y="284" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">หน้าสาธารณะอ่าน /api/business/site/* · ถ้าช้าใช้ seed ที่ bundle ไว้</text>
+<rect x="616" y="40" width="224" height="96" rx="6" fill="#fdfcfe"/>
+<rect x="616" y="40" width="224" height="96" rx="6" fill="#fdfcfe" stroke="rgba(35,32,43,0.34)" stroke-width="1" stroke-dasharray="1.5,3" stroke-linecap="round"/>
+<rect x="624" y="48" width="65" height="14" rx="2" fill="none" stroke="rgba(35,32,43,0.22)" stroke-width="0.8"/>
+<text x="656.5" y="58.5" fill="#6b6875" font-size="10" font-weight="500" font-family="'Geist Mono', 'Noto Sans Thai', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.08em">DEFERRED</text>
+<text x="728" y="84" fill="#6b6875" font-size="16" font-weight="600" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">Cloudflare · เลื่อนไว้</text>
+<text x="728" y="104" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">Workers Paid + Containers: ไม่ใช้</text>
+<text x="728" y="122" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">Free DNS/proxy: อนาคต</text>
 </g>
-<!-- Node: Worker labclear-api (backend) -->
+<!-- Node: บริการเว็บ labclear-web (optional second Render service) -->
 <g data-fit="node">
-<rect x="300" y="352" width="280" height="76" rx="6" fill="#fdfcfe"/>
-<rect x="300" y="352" width="280" height="76" rx="6" fill="#ffffff" stroke="#23202b" stroke-width="1"/>
-<rect x="308" y="360" width="32" height="14" rx="2" fill="none" stroke="rgba(35,32,43,0.40)" stroke-width="0.8"/>
-<text x="324" y="370.5" fill="#23202b" font-size="10" font-weight="500" font-family="'Geist Mono', 'Noto Sans Thai', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.08em">API</text>
-<text x="440" y="396" fill="#23202b" font-size="16" font-weight="600" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">Worker labclear-api</text>
-<text x="440" y="416" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist Mono', 'Noto Sans Thai', ui-monospace, monospace" text-anchor="middle">service binding · /api/* · /health</text>
+<rect x="180" y="208" width="520" height="112" rx="6" fill="#fdfcfe"/>
+<rect x="180" y="208" width="520" height="112" rx="6" fill="#ffffff" stroke="#23202b" stroke-width="1"/>
+<rect x="188" y="216" width="32" height="14" rx="2" fill="none" stroke="rgba(35,32,43,0.40)" stroke-width="0.8"/>
+<text x="204" y="226.5" fill="#23202b" font-size="10" font-weight="500" font-family="'Geist Mono', 'Noto Sans Thai', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.08em">WEB</text>
+<rect x="627" y="216" width="65" height="14" rx="2" fill="none" stroke="rgba(35,32,43,0.40)" stroke-width="0.8"/>
+<text x="659.5" y="226.5" fill="#23202b" font-size="10" font-weight="500" font-family="'Geist Mono', 'Noto Sans Thai', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.08em">OPTIONAL</text>
+<text x="440" y="252" fill="#23202b" font-size="16" font-weight="600" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">บริการเว็บ labclear-web</text>
+<text x="440" y="272" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist Mono', 'Noto Sans Thai', ui-monospace, monospace" text-anchor="middle">Node 22 · Next.js 16 · React 19 · React Three Fiber</text>
+<text x="440" y="290" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">บริการ Render ตัวที่สองแบบเลือกได้ · ภาษาไทยเป็นค่าเริ่มต้น สลับ EN ได้</text>
+<text x="440" y="308" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">หน้าสาธารณะ · /app · /staff · /hospital-links</text>
 </g>
-<!-- Node: FastAPI (focal) -->
+<!-- Node: บริการ API labclear (focal) -->
 <g data-fit="node">
-<rect x="320" y="508" width="240" height="112" rx="6" fill="#fdfcfe"/>
-<rect x="320" y="508" width="240" height="112" rx="6" fill="#f1ecfa" stroke="#6539a9" stroke-width="1"/>
-<rect x="328" y="516" width="38" height="14" rx="2" fill="none" stroke="rgba(101,57,169,0.50)" stroke-width="0.8"/>
-<text x="347" y="526.5" fill="#6539a9" font-size="10" font-weight="500" font-family="'Geist Mono', 'Noto Sans Thai', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.08em">CORE</text>
-<text x="440" y="552" fill="#23202b" font-size="16" font-weight="600" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">FastAPI</text>
-<text x="440" y="572" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist Mono', 'Noto Sans Thai', ui-monospace, monospace" text-anchor="middle">Python 3.12 · 1 instance</text>
-<text x="440" y="590" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">API ทั้งหมด + ไปป์ไลน์แชต 9 ขั้น</text>
-<text x="440" y="608" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">ส่งขั้นตอนแบบ NDJSON</text>
+<rect x="296" y="384" width="288" height="256" rx="6" fill="#fdfcfe"/>
+<rect x="296" y="384" width="288" height="256" rx="6" fill="#f1ecfa" stroke="#6539a9" stroke-width="1"/>
+<rect x="304" y="392" width="32" height="14" rx="2" fill="none" stroke="rgba(101,57,169,0.50)" stroke-width="0.8"/>
+<text x="320" y="402.5" fill="#6539a9" font-size="10" font-weight="500" font-family="'Geist Mono', 'Noto Sans Thai', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.08em">API</text>
+<text x="440" y="454" fill="#23202b" font-size="16" font-weight="600" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">บริการ API labclear</text>
+<text x="440" y="474" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist Mono', 'Noto Sans Thai', ui-monospace, monospace" text-anchor="middle">Python 3.12 · FastAPI (Codex)</text>
+<text x="440" y="492" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">render.yaml ไม่เปลี่ยน · 1 instance</text>
+<text x="440" y="510" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">หน้า Jinja เดิมยังเปิดได้โดยตรง</text>
+<text x="440" y="528" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">ตรวจ session · CSRF · rate limit</text>
+<text x="440" y="546" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">Origin: Host ของตัวเอง</text>
+<text x="440" y="564" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">หรือ TRUSTED_ORIGINS ที่ตรงตัว</text>
+<text x="440" y="582" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">ไปป์ไลน์แชตทีละขั้นตามลำดับ · NDJSON</text>
 </g>
-<!-- Node: Guest RAM (optional) -->
+<!-- Node: แชตผู้เยี่ยมชม (RAM, temporary) -->
 <g data-fit="node">
-<rect x="56" y="508" width="208" height="112" rx="6" fill="#fdfcfe"/>
-<rect x="56" y="508" width="208" height="112" rx="6" fill="rgba(35,32,43,0.02)" stroke="rgba(35,32,43,0.20)" stroke-width="1" stroke-dasharray="4,3"/>
-<rect x="64" y="516" width="32" height="14" rx="2" fill="none" stroke="rgba(35,32,43,0.22)" stroke-width="0.8"/>
-<text x="80" y="526.5" fill="#6b6875" font-size="10" font-weight="500" font-family="'Geist Mono', 'Noto Sans Thai', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.08em">RAM</text>
-<text x="160" y="552" fill="#23202b" font-size="16" font-weight="600" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">Guest RAM</text>
-<text x="160" y="572" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">แชตของผู้เยี่ยมชม</text>
-<text x="160" y="590" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">ไม่ลง DB หรือดิสก์</text>
-<text x="160" y="608" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">ลบเมื่อรีเฟรชหรือปิดหน้า</text>
+<rect x="56" y="384" width="188" height="112" rx="6" fill="#fdfcfe"/>
+<rect x="56" y="384" width="188" height="112" rx="6" fill="rgba(35,32,43,0.02)" stroke="rgba(35,32,43,0.20)" stroke-width="1" stroke-dasharray="4,3"/>
+<rect x="64" y="392" width="32" height="14" rx="2" fill="none" stroke="rgba(35,32,43,0.22)" stroke-width="0.8"/>
+<text x="80" y="402.5" fill="#6b6875" font-size="10" font-weight="500" font-family="'Geist Mono', 'Noto Sans Thai', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.08em">RAM</text>
+<text x="150" y="428" fill="#23202b" font-size="16" font-weight="600" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">แชตผู้เยี่ยมชม</text>
+<text x="150" y="448" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">ไม่ลง DB หรือดิสก์</text>
+<text x="150" y="466" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">ลบเมื่อ Refresh</text>
+<text x="150" y="484" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">และเมื่อเข้าสู่ระบบ</text>
 </g>
 <!-- Node: ฐานความรู้ (store) -->
 <g data-fit="node">
-<rect x="616" y="508" width="208" height="112" rx="6" fill="#fdfcfe"/>
-<rect x="616" y="508" width="208" height="112" rx="6" fill="rgba(35,32,43,0.05)" stroke="#6b6875" stroke-width="1"/>
-<rect x="624" y="516" width="24" height="14" rx="2" fill="none" stroke="rgba(107,104,117,0.50)" stroke-width="0.8"/>
-<text x="636" y="526.5" fill="#6b6875" font-size="10" font-weight="500" font-family="'Geist Mono', 'Noto Sans Thai', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.08em">KB</text>
-<text x="720" y="552" fill="#23202b" font-size="16" font-weight="600" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">ฐานความรู้</text>
-<text x="720" y="572" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">สาธารณะ 135 รายการ</text>
-<text x="720" y="590" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist Mono', 'Noto Sans Thai', ui-monospace, monospace" text-anchor="middle">BM25 + vector</text>
-<text x="720" y="608" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">+ เอกสารองค์กรที่ตรวจแล้ว</text>
+<rect x="636" y="384" width="188" height="112" rx="6" fill="#fdfcfe"/>
+<rect x="636" y="384" width="188" height="112" rx="6" fill="rgba(35,32,43,0.05)" stroke="#6b6875" stroke-width="1"/>
+<rect x="644" y="392" width="24" height="14" rx="2" fill="none" stroke="rgba(107,104,117,0.50)" stroke-width="0.8"/>
+<text x="656" y="402.5" fill="#6b6875" font-size="10" font-weight="500" font-family="'Geist Mono', 'Noto Sans Thai', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.08em">KB</text>
+<text x="730" y="428" fill="#23202b" font-size="16" font-weight="600" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">ฐานความรู้</text>
+<text x="730" y="448" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">58 รายการที่ตรวจแล้ว</text>
+<text x="730" y="466" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">4 ผู้เผยแพร่</text>
+<text x="730" y="484" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist Mono', 'Noto Sans Thai', ui-monospace, monospace" text-anchor="middle">BM25</text>
 </g>
-<!-- Node: PostgreSQL ภายนอก (store) -->
+<!-- Node: Render PostgreSQL (store) -->
 <g data-fit="node">
-<rect x="56" y="716" width="368" height="132" rx="6" fill="#fdfcfe"/>
-<rect x="56" y="716" width="368" height="132" rx="6" fill="rgba(35,32,43,0.05)" stroke="#6b6875" stroke-width="1"/>
-<rect x="64" y="724" width="24" height="14" rx="2" fill="none" stroke="rgba(107,104,117,0.50)" stroke-width="0.8"/>
-<text x="76" y="734.5" fill="#6b6875" font-size="10" font-weight="500" font-family="'Geist Mono', 'Noto Sans Thai', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.08em">DB</text>
-<text x="240" y="760" fill="#23202b" font-size="16" font-weight="600" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">PostgreSQL ภายนอก</text>
-<text x="240" y="780" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist Mono', 'Noto Sans Thai', ui-monospace, monospace" text-anchor="middle">DATABASE_URL · TLS</text>
-<text x="240" y="798" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">ทุกแถวเข้ารหัสด้วย Fernet</text>
-<text x="240" y="816" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">บัญชี · แชต · ใบผล · นัด</text>
-<text x="240" y="834" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">เอกสารองค์กร · vector index 1024 มิติ</text>
+<rect x="56" y="528" width="188" height="256" rx="6" fill="#fdfcfe"/>
+<rect x="56" y="528" width="188" height="256" rx="6" fill="rgba(35,32,43,0.05)" stroke="#6b6875" stroke-width="1"/>
+<rect x="64" y="536" width="24" height="14" rx="2" fill="none" stroke="rgba(107,104,117,0.50)" stroke-width="0.8"/>
+<text x="76" y="546.5" fill="#6b6875" font-size="10" font-weight="500" font-family="'Geist Mono', 'Noto Sans Thai', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.08em">DB</text>
+<text x="150" y="626" fill="#23202b" font-size="16" font-weight="600" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">Render PostgreSQL</text>
+<text x="150" y="646" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist Mono', 'Noto Sans Thai', ui-monospace, monospace" text-anchor="middle">rs_entities</text>
+<text x="150" y="664" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">ทุกแถวเข้ารหัส Fernet</text>
+<text x="150" y="682" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">บัญชี · แชต · ใบผล · นัด</text>
+<text x="150" y="700" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">เอกสารองค์กร (ถ้าเปิด)</text>
 </g>
-<!-- Node: OpenRouter · คีย์เดียวของทีม (external) -->
+<!-- Node: เอกสารองค์กร (members only, flag, default off) -->
 <g data-fit="node">
-<rect x="456" y="716" width="368" height="132" rx="6" fill="#fdfcfe"/>
-<rect x="456" y="716" width="368" height="132" rx="6" fill="rgba(35,32,43,0.03)" stroke="rgba(35,32,43,0.30)" stroke-width="1"/>
-<rect x="464" y="724" width="32" height="14" rx="2" fill="none" stroke="rgba(35,32,43,0.22)" stroke-width="0.8"/>
-<text x="480" y="734.5" fill="#6b6875" font-size="10" font-weight="500" font-family="'Geist Mono', 'Noto Sans Thai', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.08em">LLM</text>
-<text x="640" y="760" fill="#23202b" font-size="16" font-weight="600" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">OpenRouter · คีย์เดียวของทีม</text>
-<text x="640" y="780" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">Planner: Qwen3 30B A3B</text>
-<text x="640" y="798" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">ผู้เขียนคำตอบ + OCR: Gemini 3.1 Flash Lite</text>
-<text x="640" y="816" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">Reviewer + safety classifier: GPT-4.1 mini</text>
-<text x="640" y="834" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">Embedding: Qwen3 Embedding 8B</text>
+<rect x="636" y="528" width="188" height="112" rx="6" fill="#fdfcfe"/>
+<rect x="636" y="528" width="188" height="112" rx="6" fill="#ffffff" stroke="#23202b" stroke-width="1"/>
+<rect x="644" y="536" width="32" height="14" rx="2" fill="none" stroke="rgba(35,32,43,0.40)" stroke-width="0.8"/>
+<text x="660" y="546.5" fill="#23202b" font-size="10" font-weight="500" font-family="'Geist Mono', 'Noto Sans Thai', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.08em">ORG</text>
+<text x="730" y="572" fill="#23202b" font-size="16" font-weight="600" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">เอกสารองค์กร</text>
+<text x="730" y="592" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">เฉพาะสมาชิกองค์กรเดียวกัน</text>
+<text x="730" y="610" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist Mono', 'Noto Sans Thai', ui-monospace, monospace" text-anchor="middle">ORG_DOCUMENTS_ENABLED</text>
+<text x="730" y="628" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">ค่าเริ่มต้น: ปิด</text>
+</g>
+<!-- Node: ด่านก่อนเรียกโมเดลทุกครั้ง (security) -->
+<g data-fit="node">
+<rect x="296" y="672" width="288" height="112" rx="6" fill="#fdfcfe"/>
+<rect x="296" y="672" width="288" height="112" rx="6" fill="rgba(101,57,169,0.05)" stroke="rgba(101,57,169,0.50)" stroke-width="1" stroke-dasharray="4,4"/>
+<rect x="304" y="680" width="38" height="14" rx="2" fill="none" stroke="rgba(101,57,169,0.40)" stroke-width="0.8"/>
+<text x="323" y="690.5" fill="#6539a9" font-size="10" font-weight="500" font-family="'Geist Mono', 'Noto Sans Thai', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.08em">GATE</text>
+<text x="440" y="716" fill="#23202b" font-size="16" font-weight="600" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">ด่านก่อนเรียกโมเดลทุกครั้ง</text>
+<text x="440" y="736" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist Mono', 'Noto Sans Thai', ui-monospace, monospace" text-anchor="middle">PROVIDER_NETWORK_ENABLED</text>
+<text x="440" y="754" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">CLOUD_CALL_LIMIT · บัญชี 300 บาท</text>
+<text x="440" y="772" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">ไม่ผ่าน = หยุดทันที (fail closed)</text>
+</g>
+<!-- Node: คิว acquisition (not searched) -->
+<g data-fit="node">
+<rect x="636" y="672" width="188" height="112" rx="6" fill="#fdfcfe"/>
+<rect x="636" y="672" width="188" height="112" rx="6" fill="#fdfcfe" stroke="rgba(35,32,43,0.34)" stroke-width="1" stroke-dasharray="1.5,3" stroke-linecap="round"/>
+<rect x="644" y="680" width="45" height="14" rx="2" fill="none" stroke="rgba(35,32,43,0.22)" stroke-width="0.8"/>
+<text x="666.5" y="690.5" fill="#6b6875" font-size="10" font-weight="500" font-family="'Geist Mono', 'Noto Sans Thai', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.08em">QUEUE</text>
+<text x="730" y="716" fill="#6b6875" font-size="16" font-weight="600" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">คิว acquisition</text>
+<text x="730" y="736" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">Codex 15 + 6 · Claude 90</text>
+<text x="730" y="754" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">รอตรวจสิทธิ์และทางคลินิก</text>
+<text x="730" y="772" fill="#6b6875" font-size="12" font-weight="500" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">ไม่ถูกค้น</text>
+</g>
+<!-- Node: ผู้ให้บริการ AI ตาม slot (external) -->
+<g data-fit="node">
+<rect x="56" y="896" width="528" height="112" rx="6" fill="#fdfcfe"/>
+<rect x="56" y="896" width="528" height="112" rx="6" fill="rgba(35,32,43,0.03)" stroke="rgba(35,32,43,0.30)" stroke-width="1"/>
+<rect x="64" y="904" width="24" height="14" rx="2" fill="none" stroke="rgba(35,32,43,0.22)" stroke-width="0.8"/>
+<text x="76" y="914.5" fill="#6b6875" font-size="10" font-weight="500" font-family="'Geist Mono', 'Noto Sans Thai', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.08em">AI</text>
+<text x="320" y="940" fill="#23202b" font-size="16" font-weight="600" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">ผู้ให้บริการ AI ตาม slot (ค่าเริ่มต้น)</text>
+<text x="320" y="960" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">ภาษา: Typhoon · ความปลอดภัย: iApp OpenThai-SystemOne · อ่านใบผล: Typhoon OCR</text>
+<text x="320" y="978" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">planner · ผู้เขียนคำตอบ · reviewer ใช้ slot ภาษา เว้นแต่ตั้งแยก</text>
+<text x="320" y="996" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">ผู้จัดการเลือกผู้ให้บริการและโมเดลต่อ slot/agent ได้ เช่น OpenRouter</text>
+</g>
+<!-- Node: บทบาทเสริม (opt-in, disabled by default) -->
+<g data-fit="node">
+<rect x="616" y="896" width="208" height="112" rx="6" fill="#fdfcfe"/>
+<rect x="616" y="896" width="208" height="112" rx="6" fill="#fdfcfe" stroke="rgba(35,32,43,0.34)" stroke-width="1" stroke-dasharray="1.5,3" stroke-linecap="round"/>
+<rect x="624" y="904" width="52" height="14" rx="2" fill="none" stroke="rgba(35,32,43,0.22)" stroke-width="0.8"/>
+<text x="650" y="914.5" fill="#6b6875" font-size="10" font-weight="500" font-family="'Geist Mono', 'Noto Sans Thai', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.08em">OPT-IN</text>
+<text x="720" y="940" fill="#6b6875" font-size="16" font-weight="600" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">บทบาทเสริม</text>
+<text x="720" y="960" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">Medical analyzer · Thai composer</text>
+<text x="720" y="978" fill="#6b6875" font-size="12" font-weight="500" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">ปิดเป็นค่าเริ่มต้น</text>
+<text x="720" y="996" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">ต้องระบุโมเดล ราคา และ endpoint</text>
 </g>
 <!-- ===== Legend ===== -->
 <!-- Legend strip -->
-<line x1="40" y1="892" x2="840" y2="892" stroke="rgba(35,32,43,0.12)" stroke-width="0.8"/>
-<text x="40" y="916" fill="#23202b" font-size="12" font-weight="500" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="start">สัญลักษณ์</text>
-<rect x="40" y="932" width="18" height="12" rx="2" fill="#f1ecfa" stroke="#6539a9" stroke-width="1"/>
-<text x="66" y="942" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="start">จุดหลัก (FastAPI)</text>
-<rect x="181.109375" y="932" width="18" height="12" rx="2" fill="#ffffff" stroke="#23202b" stroke-width="1"/>
-<text x="207.109" y="942" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="start">Worker</text>
-<rect x="275.00563049316406" y="932" width="18" height="12" rx="2" fill="rgba(35,32,43,0.05)" stroke="#6b6875" stroke-width="1"/>
-<text x="301.006" y="942" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="start">ที่เก็บข้อมูล</text>
-<rect x="381.97438049316406" y="932" width="18" height="12" rx="2" fill="rgba(35,32,43,0.03)" stroke="rgba(35,32,43,0.30)" stroke-width="1"/>
-<text x="407.974" y="942" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="start">บริการภายนอก</text>
-<rect x="507.69313049316406" y="932" width="18" height="12" rx="2" fill="rgba(107,104,117,0.10)" stroke="#8b8794" stroke-width="1"/>
-<text x="533.693" y="942" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="start">ผู้ใช้</text>
-<rect x="579.5852203369141" y="932" width="18" height="12" rx="2" fill="rgba(35,32,43,0.02)" stroke="rgba(35,32,43,0.20)" stroke-width="1" stroke-dasharray="4,3"/>
-<text x="605.585" y="942" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="start">ชั่วคราว</text>
-<line x1="670.1854553222656" y1="938" x2="698.1854553222656" y2="938" stroke="#2f6fb5" stroke-width="1.2" marker-end="url(#arrow-link)"/>
-<text x="708.185" y="942" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="start">HTTPS / เรียกภายนอก</text>
-<line x1="40" y1="966" x2="68" y2="966" stroke="#6b6875" stroke-width="1.2" marker-end="url(#arrow)"/>
-<text x="78" y="970" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="start">เรียกภายในระบบ</text>
+<line x1="40" y1="1072" x2="840" y2="1072" stroke="rgba(35,32,43,0.12)" stroke-width="0.8"/>
+<text x="40" y="1096" fill="#23202b" font-size="12" font-weight="500" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="start">สัญลักษณ์</text>
+<rect x="40" y="1112" width="18" height="12" rx="2" fill="#f1ecfa" stroke="#6539a9" stroke-width="1"/>
+<text x="66" y="1122" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="start">จุดหลัก (API)</text>
+<rect x="153" y="1112" width="18" height="12" rx="2" fill="#ffffff" stroke="#23202b" stroke-width="1"/>
+<text x="179" y="1122" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="start">บริการบน Render</text>
+<rect x="291.6" y="1112" width="18" height="12" rx="2" fill="rgba(35,32,43,0.05)" stroke="#6b6875" stroke-width="1"/>
+<text x="317.6" y="1122" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="start">ที่เก็บข้อมูล</text>
+<rect x="394.6" y="1112" width="18" height="12" rx="2" fill="rgba(101,57,169,0.05)" stroke="rgba(101,57,169,0.50)" stroke-width="1" stroke-dasharray="4,4"/>
+<text x="420.6" y="1122" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="start">ด่านควบคุม</text>
+<rect x="499.5" y="1112" width="18" height="12" rx="2" fill="rgba(35,32,43,0.03)" stroke="rgba(35,32,43,0.30)" stroke-width="1"/>
+<text x="525.5" y="1122" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="start">บริการภายนอก</text>
+<rect x="621.2" y="1112" width="18" height="12" rx="2" fill="rgba(107,104,117,0.10)" stroke="#8b8794" stroke-width="1"/>
+<text x="647.2" y="1122" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="start">ผู้ใช้</text>
+<rect x="689.1" y="1112" width="18" height="12" rx="2" fill="rgba(35,32,43,0.02)" stroke="rgba(35,32,43,0.20)" stroke-width="1" stroke-dasharray="4,3"/>
+<text x="715.1" y="1122" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="start">ชั่วคราว (RAM)</text>
+<rect x="40" y="1140" width="18" height="12" rx="2" fill="#fdfcfe" stroke="rgba(35,32,43,0.34)" stroke-width="1" stroke-dasharray="1.5,3" stroke-linecap="round"/>
+<text x="66" y="1150" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="start">ปิดอยู่ · ไม่ถูกค้น · เลื่อนไว้</text>
+<line x1="209.7" y1="1146" x2="237.7" y2="1146" stroke="#2f6fb5" stroke-width="1.2" marker-end="url(#arrow-link)"/>
+<text x="247.7" y="1150" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="start">HTTPS</text>
+<line x1="308.5" y1="1146" x2="336.5" y2="1146" stroke="#6b6875" stroke-width="1.2" marker-end="url(#arrow)"/>
+<text x="346.5" y="1150" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="start">เรียกภายในบริการ</text>
 </svg>
     </div>
   </div>
