@@ -112,3 +112,18 @@ def test_membership_reports_only_the_callers_own_role(monkeypatch):
     body = member.get(SITE + '/membership').json()
     assert body == {'enabled': True, 'member': True, 'role': 'editor'} and 'org_a' not in str(body)
     assert other.get(SITE + '/membership').json()['member'] is False
+
+
+def test_claude_knowledge_records_are_candidates_not_active_evidence():
+    import json
+    from pathlib import Path
+    from services import evidence_search
+    root = Path(__file__).resolve().parents[1]
+    active = json.loads((root / 'knowledge/evidence/catalog.json').read_text(encoding='utf-8'))['records']
+    queue = json.loads((root / 'knowledge/acquisition/claude_candidates_400.json').read_text(encoding='utf-8'))
+    assert len(active) == 58 and queue['candidate_count'] == len(queue['entries']) == 90
+    assert not {r['id'] for r in active} & {e['id'] for e in queue['entries']}
+    assert all(e['rag_approval'] == 'NOT_APPROVED' and e['ingested'] is False for e in queue['entries'])
+    # A topic that exists only among the candidates (USPSTF colorectal screening) finds nothing active.
+    found = {r['id'] for r in evidence_search.lexical('USPSTF colorectal cancer screening FIT', limit=8)}
+    assert not found & {e['id'] for e in queue['entries']}
