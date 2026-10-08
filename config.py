@@ -9,6 +9,10 @@ class Settings(BaseSettings):
     # Same-origin UI needs no CORS. Set an explicit comma-separated allowlist
     # only when a separate trusted frontend must call this API.
     CORS_ALLOWED_ORIGINS: str = ""
+    # Integration 4.0 (optional Next.js web service on Render): exact browser origins, e.g.
+    # https://labclear-web.onrender.com, whose same-site proxy may call /api. Empty keeps the
+    # original rule: the browser Origin must equal this service's own Host.
+    TRUSTED_ORIGINS: str = ""
 
     # CEO upgrade: opt-in only. Existing deployments keep their current paths.
     LANDING_PREVIEW_ENABLED: bool = False

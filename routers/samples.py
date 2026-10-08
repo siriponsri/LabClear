@@ -11,6 +11,7 @@ from fastapi.responses import FileResponse
 from config import settings
 from services.conversation_transport import ConversationError
 from services.request_limits import request_rate_limiter
+from services import trusted_origins
 
 router = APIRouter(prefix="/api/samples")
 ROOT = Path(__file__).resolve().parents[1]
@@ -32,7 +33,7 @@ def authorize(request: Request) -> None:
         # Proxies may report http for an HTTPS browser origin. Compare the
         # full browser authority to the forwarded Host, never a suffix match.
         parsed = urlparse(origin)
-        if parsed.netloc != request.headers.get("host") or parsed.scheme not in {"https", "http"}:
+        if (parsed.netloc != request.headers.get("host") or parsed.scheme not in {"https", "http"}) and not trusted_origins.allowed(origin):
             raise ConversationError("origin_rejected", "Use this application's own page to send requests.", 403)
     if settings.DEMO_ACCESS_CODE:
         supplied = request.headers.get("X-LabClear-Access", "")

@@ -20,6 +20,7 @@ from routers.business_ops import router as business_ops_router
 from routers.samples import router as samples_router
 from routers.site import router as site_router
 from routers.organization_sources import router as organization_sources_router
+from routers.public import router as public_router
 from services.conversation_transport import ConversationError
 from fastapi.responses import JSONResponse
 
@@ -64,6 +65,7 @@ app.include_router(chats_router)
 app.include_router(business_ops_router)
 app.include_router(site_router)
 app.include_router(organization_sources_router)
+app.include_router(public_router)
 
 @app.exception_handler(StarletteHTTPException)
 async def http_error(request: Request, exc: StarletteHTTPException):

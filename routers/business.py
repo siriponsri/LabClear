@@ -13,6 +13,7 @@ from services import business_store as db,business_agent,business_ops as ops,bus
 from services.chat_sessions import conversation
 from services.conversation_transport import ConversationError
 from services.request_limits import request_rate_limiter
+from services import trusted_origins
 from services.lab_fields_v2 import ReportField,normalize
 from services.report_reader_v2 import read_report,document_images,all_images
 from routers.samples import DEMOS,DEMO_ROOT,authorize as provider_authorize
@@ -59,7 +60,7 @@ class BookingChange(Strict):operation:str=Field(pattern='^(cancel|refund_request
 def origin(request):
     from urllib.parse import urlparse
     value=request.headers.get('origin')
-    if request.headers.get('sec-fetch-site')=='cross-site' or (value and urlparse(value).netloc!=request.headers.get('host')):
+    if request.headers.get('sec-fetch-site')=='cross-site' or (value and urlparse(value).netloc!=request.headers.get('host') and not trusted_origins.allowed(value)):
         raise ConversationError('origin_rejected','Use this website to continue.',403)
     if not request_rate_limiter.allow(request):raise ConversationError('rate_limited','Please wait before trying again.',429)
 
