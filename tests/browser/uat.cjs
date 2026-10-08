@@ -364,6 +364,8 @@ async function signUp(page, email) {
       await p.locator('#attach-menu').waitFor({ state: 'visible' }); await p.locator('#add-report').click();
       await p.locator('#report-file').setInputFiles(path.join(root, 'examples/thai_lab_reference_v3/png/04_B_Glucose_Urine.png'));
       await p.locator('#message').fill('PRIVATE_GUEST_302'); await p.locator('#send').click(); await p.locator('.report-card.draft').waitFor();
+      // The thumbnail's private blob is fetched after the turn renders; wait for it before decoding (race seen on Linux).
+      await p.locator('.turn.user .thumb img[src^="blob:"]').last().waitFor({ state: 'attached' });
       await p.locator('.turn.user .thumb img').last().evaluate(img => img.decode());
       assert(await p.locator('.turn.user .thumb img').last().evaluate(img => img.naturalWidth > 0 && img.src.startsWith('blob:')), 'guest image requires a private blob');
       await p.getByRole('button', { name: 'Edit values', exact: true }).click(); await p.locator('.report-preview').evaluate(img => img.decode());
