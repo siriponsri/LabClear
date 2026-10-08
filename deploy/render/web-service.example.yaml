@@ -1,0 +1,21 @@
+# EXAMPLE ONLY — not read by Render automatically, and render.yaml is intentionally unchanged.
+# Optional second Render service for the Next.js website (integration 4.0.0-rc1).
+# Guide: docs/deploy/render-web.md. After review, the owner may copy this service into render.yaml.
+# The API service must then list this site's exact origin in TRUSTED_ORIGINS (an owner ENV change).
+services:
+  - type: web
+    name: labclear-web
+    runtime: node
+    plan: free
+    rootDir: web
+    buildCommand: npm ci && npm run build
+    startCommand: npm run start:render
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: NEXT_TELEMETRY_DISABLED
+        value: "1"
+      # URL of the existing FastAPI service, e.g. https://labclear.onrender.com (no trailing slash).
+      - key: API_ORIGIN
+        sync: false
