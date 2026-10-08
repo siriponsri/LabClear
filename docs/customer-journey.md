@@ -1,3 +1,15 @@
+<!-- ceo-upgrade-20261008 -->
+
+## Optional preview and reference journeys
+
+The Thai-first landing preview is a separate route awaiting G-UI. Its CTAs use the
+existing account/Guest paths. Authorized organization members can upload authored
+synthetic text for editor approval, search approved excerpts and follow scoped
+citations. Official hospital links leave LabClear without creating an appointment.
+The [morning handoff](ceo-upgrade/MORNING_HANDOFF.md) explains how to review these flows.
+
+The 2026-10-08 upgrade is a disabled-by-default software candidate. Its current scope, evidence, configuration and remaining owner gates are recorded in the [upgrade index](ceo-upgrade/README.md). Earlier release counts and screenshots below are historical; they do not establish live model or clinical validation.
+
 # Customer journey
 
 LabClear tells one story everywhere, on the home page, in the empty chat and in the slides: **from the report you have to the check you need.** A customer can start without an account; signing in keeps reports and appointments across devices.

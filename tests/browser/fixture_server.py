@@ -19,6 +19,9 @@ from services.conversation_transport import ConversationError  # noqa: E402
 from services.lab_fields_v2 import ReportField, normalize  # noqa: E402
 
 settings.PROVIDER_NETWORK_ENABLED = False
+settings.LANDING_PREVIEW_ENABLED = True
+settings.ORG_DOCUMENTS_ENABLED = True
+settings.HOSPITAL_LINKS_ENABLED = True
 b.provider_authorize = lambda request: None
 b.request_rate_limiter.allow = lambda request: True
 _failed_once: set[str] = set()
@@ -79,7 +82,8 @@ b.read_report = read
 with db.transaction() as tx:
     for uid, email, role, branch in [("ui_test_manager", "staff@example.invalid", "manager", "BKK01"),
                                      ("ui_test_staff_cnx", "cnx-staff@example.invalid", "staff", "CNX01")]:
-        tx.put(uid, "user", uid, {"email": email, "password": db.password_hash("ui-test-only-password"), "role": role, "branch": branch})
+        tx.put(uid, "user", uid, {"email": email, "password": db.password_hash("ui-test-only-password"), "role": role, "branch": branch,
+                                  "organization_id": "org_synthetic", "organization_role": "editor"})
         tx.put("email_" + db.digest(email), "email", uid, {})
 
 if __name__ == "__main__":

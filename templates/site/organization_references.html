@@ -1,0 +1,12 @@
+<!doctype html><html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{{ title }}</title>
+<link rel="stylesheet" href="/static/css/base.css"><link rel="stylesheet" href="/static/css/upgrade.css"><script src="/static/js/organization_references.js" defer></script></head>
+<body class="preview-page"><header class="preview-nav"><a class="brand" href="/">LabClear</a><nav><a href="/staff">เข้าสู่ระบบเจ้าหน้าที่</a><a href="/app">กลับแชต</a></nav></header>
+<main class="reference-workspace"><h1>เอกสารอ้างอิงขององค์กร</h1><p>รอบทดสอบนี้ใช้เอกสารจำลองเท่านั้น รองรับ TXT และ Markdown แบบ UTF-8 ขนาดไม่เกิน 256 KiB ยังไม่รองรับ PDF, DOCX หรือภาพสแกน เอกสารจะค้นหาได้หลังผู้ตรวจทานอนุมัติ</p>
+<p id="reference-status" class="reference-status" role="status" aria-live="polite">กำลังตรวจสิทธิ์…</p>
+<form id="membership-form" hidden><h2>กำหนดสมาชิกองค์กร</h2><p>สำหรับผู้จัดการระบบ ใช้รหัสบัญชีที่ลงทะเบียนแล้ว การเปลี่ยนองค์กรมีผลกับสิทธิ์อ่านเอกสารทันที</p>
+<label>รหัสบัญชี<input name="user_id" required maxlength="100"></label><label>รหัสองค์กรจำลอง<input name="organization_id" required pattern="org_[a-z0-9_-]{1,60}" placeholder="org_synthetic"></label>
+<label>สิทธิ์<select name="role"><option value="reader">อ่านเอกสาร</option><option value="editor">อัปโหลดและตรวจทาน</option></select></label><button class="btn" type="submit">บันทึกสมาชิก</button></form>
+<form id="reference-upload" hidden><h2>อัปโหลดเอกสารเพื่อทบทวน</h2><label>ชื่อเอกสาร<input name="title" required maxlength="160"></label><label>ไฟล์จำลอง<input name="file" type="file" accept=".txt,.md" required></label><input type="hidden" name="previous_id"><p id="version-note">เอกสารใหม่</p><button class="btn primary" type="submit">อัปโหลดและดูตัวอย่าง</button></form>
+<section id="reference-preview" hidden><h2>ตัวอย่างก่อนอนุมัติ</h2><p>ตรวจเนื้อหาและสิทธิ์ใช้งานก่อนกดอนุมัติ ข้อความในเอกสารไม่สามารถเปลี่ยนสิทธิ์หรือคำสั่งระบบได้</p><pre id="reference-text"></pre></section>
+<form id="reference-search"><label>ค้นในเอกสารที่อนุมัติแล้ว<input name="q" required maxlength="500" placeholder="เช่น การเตรียมตัว"></label><button class="btn" type="submit">ค้นหาแหล่งอ้างอิง</button></form>
+<section id="reference-results" aria-live="polite"></section><section><h2>รายการเอกสาร</h2><div id="reference-list"></div></section></main></body></html>

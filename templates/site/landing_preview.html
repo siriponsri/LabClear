@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="th">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{{ title }}</title><meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="/static/img/favicon.svg"><link rel="stylesheet" href="/static/css/base.css">
+<link rel="stylesheet" href="/static/css/upgrade.css"><script src="/static/js/landing_preview.js" defer></script></head>
+<body class="preview-page">
+<a class="skip" href="#main">ข้ามไปเนื้อหา</a>
+<div class="preview-notice" data-th="หน้าแรกฉบับทดลอง · รายงานและบริการในตัวอย่างเป็นข้อมูลจำลอง" data-en="Landing preview · Sample reports and services are simulated">หน้าแรกฉบับทดลอง · รายงานและบริการในตัวอย่างเป็นข้อมูลจำลอง</div>
+<header class="preview-nav"><a class="brand" href="/">LabClear</a><nav aria-label="เมนูหลัก">
+<a href="/sources" data-th="แหล่งอ้างอิง" data-en="Sources">แหล่งอ้างอิง</a>
+<button id="preview-language" type="button" aria-label="Switch to English">EN</button>
+<a class="btn primary" href="/app" data-th="เริ่มคุย" data-en="Start a chat">เริ่มคุย</a></nav></header>
+<main id="main">
+<section class="preview-hero">
+<div class="preview-intro"><h1 data-th="ผลตรวจของคุณ เข้าใจได้ทีละค่า" data-en="Your lab report. Clearer, one value at a time.">ผลตรวจของคุณ เข้าใจได้ทีละค่า</h1>
+<p class="preview-lead" data-th="เริ่มจากสิ่งที่อยู่ในรายงาน ยืนยันตัวเลข แล้วค่อยอ่านคำอธิบายพร้อมแหล่งที่มา ถามต่อได้ในจุดที่ยังไม่เข้าใจ" data-en="Start with your report. Confirm the values, explore explanations with their sources, and ask about what is still unclear.">เริ่มจากสิ่งที่อยู่ในรายงาน ยืนยันตัวเลข แล้วค่อยอ่านคำอธิบายพร้อมแหล่งที่มา ถามต่อได้ในจุดที่ยังไม่เข้าใจ</p>
+<a class="btn primary" href="/app?attach=1" data-th="เปิดแชตเพื่ออ่านผลตรวจ" data-en="Open report chat">เปิดแชตเพื่ออ่านผลตรวจ</a>
+<p class="preview-note" data-th="Guest ใช้แชตชั่วคราว รีเฟรชแล้วประวัติจะหาย หากต้องการเก็บประวัติ ให้เข้าสู่ระบบก่อนเริ่ม" data-en="Guest chats are temporary and disappear on refresh. Sign in before starting if you want to save history.">Guest ใช้แชตชั่วคราว รีเฟรชแล้วประวัติจะหาย หากต้องการเก็บประวัติ ให้เข้าสู่ระบบก่อนเริ่ม</p>
+</div>
+<div class="report-explorer" aria-labelledby="sample-heading">
+<div class="report-heading"><h2 id="sample-heading" data-th="ลองสำรวจรายงานจำลอง" data-en="Explore a sample report">ลองสำรวจรายงานจำลอง</h2><span class="sample-stamp" data-th="ข้อมูลจำลอง" data-en="SYNTHETIC">ข้อมูลจำลอง</span></div>
+<p data-th="เลือกหนึ่งแถวเพื่อดูว่าตัวเลข หน่วย และช่วงอ้างอิงอยู่ตรงไหน" data-en="Choose a row to locate its value, unit and printed reference interval.">เลือกหนึ่งแถวเพื่อดูว่าตัวเลข หน่วย และช่วงอ้างอิงอยู่ตรงไหน</p>
+<div class="report-columns" aria-hidden="true"><span data-th="รายการตรวจ" data-en="Test">รายการตรวจ</span><span data-th="ผลตรวจ" data-en="Value">ผลตรวจ</span><span data-th="ช่วงในรายงาน" data-en="Printed interval">ช่วงในรายงาน</span></div>
+<div class="report-rows" role="group" aria-label="แถวผลตรวจจำลอง">
+<button class="report-row" data-row="Glucose" data-value="100" data-unit="mg/dL" data-reference="70–99" aria-pressed="true"><span>Glucose<small data-th="น้ำตาลในเลือด" data-en="Blood glucose">น้ำตาลในเลือด</small></span><strong>100 <small>mg/dL</small></strong><span>70–99</span></button>
+<button class="report-row" data-row="Hemoglobin" data-value="13.2" data-unit="g/dL" data-reference="12.0–16.0" aria-pressed="false"><span>Hemoglobin<small data-th="ฮีโมโกลบิน" data-en="Hemoglobin">ฮีโมโกลบิน</small></span><strong>13.2 <small>g/dL</small></strong><span>12.0–16.0</span></button>
+<button class="report-row" data-row="Creatinine" data-value="0.75" data-unit="mg/dL" data-reference="0.50–1.10" aria-pressed="false"><span>Creatinine<small data-th="ครีอะตินีน" data-en="Creatinine">ครีอะตินีน</small></span><strong>0.75 <small>mg/dL</small></strong><span>0.50–1.10</span></button>
+</div>
+<div class="report-reading" aria-live="polite"><h3 id="sample-label">Glucose</h3><p id="sample-value">ค่าที่พิมพ์: 100 mg/dL · ช่วงในรายงาน: 70–99</p>
+<p data-th="ช่วงนี้เป็นส่วนหนึ่งของรายงานจำลอง ไม่ใช่เกณฑ์สำหรับนำไปตัดสินผลของคุณ" data-en="This interval belongs to the synthetic report. It is not a threshold for interpreting your own results.">ช่วงนี้เป็นส่วนหนึ่งของรายงานจำลอง ไม่ใช่เกณฑ์สำหรับนำไปตัดสินผลของคุณ</p>
+<a href="https://medlineplus.gov/lab-tests/how-to-understand-your-lab-results/" target="_blank" rel="noopener noreferrer" data-th="อ่านเรื่องช่วงอ้างอิงจาก MedlinePlus ↗" data-en="Read about reference intervals at MedlinePlus ↗">อ่านเรื่องช่วงอ้างอิงจาก MedlinePlus ↗</a></div>
+</div></section>
+<section class="preview-path"><h2 data-th="จากรายงาน สู่คำถามที่ชัดขึ้น" data-en="From a report to clearer questions">จากรายงาน สู่คำถามที่ชัดขึ้น</h2>
+<ol><li><h3 data-th="ตรวจตัวเลขก่อน" data-en="Check the values">ตรวจตัวเลขก่อน</h3><p data-th="เทียบค่าที่อ่านได้กับต้นฉบับ แก้ไขและยืนยันก่อนให้อธิบาย" data-en="Compare extracted values with your original, then correct and confirm them.">เทียบค่าที่อ่านได้กับต้นฉบับ แก้ไขและยืนยันก่อนให้อธิบาย</p></li>
+<li><h3 data-th="ดูที่มาของคำอธิบาย" data-en="See the evidence">ดูที่มาของคำอธิบาย</h3><p data-th="เปิดแหล่งอ้างอิงประกอบ และสังเกตข้อจำกัดของข้อมูล" data-en="Open supporting sources and understand the limits of the available information.">เปิดแหล่งอ้างอิงประกอบ และสังเกตข้อจำกัดของข้อมูล</p></li>
+<li><h3 data-th="ถามในแบบของคุณ" data-en="Ask in your own words">ถามในแบบของคุณ</h3><p data-th="ขอให้อธิบายศัพท์ สรุปสั้น ๆ หรือขยายส่วนที่ยังไม่ชัดเจน" data-en="Ask about a term, request a short summary, or explore an unclear point.">ขอให้อธิบายศัพท์ สรุปสั้น ๆ หรือขยายส่วนที่ยังไม่ชัดเจน</p></li></ol></section>
+<section class="preview-footer"><h2 data-th="เลือกสิ่งที่อยากทำต่อ" data-en="Choose your next step">เลือกสิ่งที่อยากทำต่อ</h2><div><a href="/packages" data-th="เปรียบเทียบแพ็กเกจจำลอง" data-en="Compare simulated packages">เปรียบเทียบแพ็กเกจจำลอง</a><a href="/privacy" data-th="อ่านนโยบายความเป็นส่วนตัว" data-en="Read the privacy policy">อ่านนโยบายความเป็นส่วนตัว</a><a href="/" data-th="กลับหน้าแรกปัจจุบัน" data-en="Return to the current home page">กลับหน้าแรกปัจจุบัน</a></div>
+<p data-th="LabClear ช่วยอธิบายข้อมูล ไม่ทดแทนการวินิจฉัยหรือคำแนะนำจากบุคลากรทางการแพทย์ ผู้ให้บริการ AI/OCR อาจได้รับข้อมูลที่จำเป็นสำหรับคำขอเมื่อเจ้าของระบบเปิดใช้" data-en="LabClear explains information and does not replace diagnosis or professional care. AI/OCR providers may receive the information needed for a request when enabled by the owner.">LabClear ช่วยอธิบายข้อมูล ไม่ทดแทนการวินิจฉัยหรือคำแนะนำจากบุคลากรทางการแพทย์ ผู้ให้บริการ AI/OCR อาจได้รับข้อมูลที่จำเป็นสำหรับคำขอเมื่อเจ้าของระบบเปิดใช้</p></section>
+</main></body></html>

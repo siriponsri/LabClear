@@ -34,7 +34,8 @@ def body(max_tokens=1000):
 
 def test_estimate_and_settlement_with_usage():
     est = cost_ledger.estimate("priced-model", body())
-    assert est == pytest.approx((1000 * 30 + 1000 * 60) / 1e6, rel=0.05)
+    # Reservation covers UTF-8 bytes and protocol overhead, not chars/3.
+    assert .15 <= est <= .17
     r = cost_ledger.reserve("priced-model", body())
     assert cost_ledger.status()["reserved_thb"] == pytest.approx(r.estimate_thb, abs=1e-4)
     cost_ledger.settle(r, {"prompt_tokens": 100, "completion_tokens": 10}, "succeeded")
@@ -61,9 +62,11 @@ def test_fail_closed_on_unknown_model_or_prior_spend(monkeypatch):
 
 def test_cap_counts_prior_spend_and_blocks_before_request(monkeypatch):
     monkeypatch.setattr(settings, "PROJECT_BUDGET_PRIOR_SPEND_THB", "299.95")
-    cost_ledger.reserve("priced-model", body(10))  # tiny call fits
+    small = body(10)
+    small['messages'][0]['content'] = 'x' * 10
+    cost_ledger.reserve("priced-model", small)  # genuinely small input/output fits
     with pytest.raises(ConversationError) as e:
-        cost_ledger.reserve("priced-model", body(1_000_000))
+        cost_ledger.reserve("priced-model", body(100_000))
     assert e.value.code == "budget_exhausted" and e.value.status == 429
 
 

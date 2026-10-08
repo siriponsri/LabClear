@@ -1,3 +1,15 @@
+<!-- ceo-upgrade-20261008 -->
+
+## Upgrade architecture
+
+The [current flow diagram](ceo-upgrade/IMPLEMENTATION.md#request-flow) adds scoped
+organization evidence and an optional typed analyzer/composer boundary before the
+existing reviewer/guard. Organization documents reuse encrypted entities; runtime
+instructions are fixed hash-checked files. No database table, worker platform or
+deployment entrypoint is added. Acquisition metadata is outside active RAG.
+
+The 2026-10-08 upgrade is a disabled-by-default software candidate. Its current scope, evidence, configuration and remaining owner gates are recorded in the [upgrade index](ceo-upgrade/README.md). Earlier release counts and screenshots below are historical; they do not establish live model or clinical validation.
+
 # Architecture
 
 LabClear is one Python web service. It serves the public website, the customer workspace at `/app`, the service desk at `/staff` and a JSON API under `/api/business`. AI work runs inside the same service and calls external model providers over HTTPS.

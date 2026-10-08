@@ -1,3 +1,16 @@
+<!-- ceo-upgrade-20261008 -->
+
+## Optional analyzer/composer contract
+
+The new medical path accepts only a built-in confirmed sample while data and clinical
+gates remain pending. Analyzer output must preserve observation fields exactly and
+cite supplied IDs; composer and reviewer receive original evidence. Runtime skills
+are allowlisted and hash checked. Schema validity is not medical correctness.
+Legacy input/output guards and reviewer remain mandatory. See the
+[implementation contract](ceo-upgrade/IMPLEMENTATION.md#models-and-guards).
+
+The 2026-10-08 upgrade is a disabled-by-default software candidate. Its current scope, evidence, configuration and remaining owner gates are recorded in the [upgrade index](ceo-upgrade/README.md). Earlier release counts and screenshots below are historical; they do not establish live model or clinical validation.
+
 # Chatbot specification
 
 What the LabClear assistant must do, what it must never do, and how each rule is enforced. "Enforced in code" means a Python check that runs whatever the model writes; "prompt" means an instruction to the model that the code then verifies where it can.

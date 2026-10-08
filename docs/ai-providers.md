@@ -1,3 +1,15 @@
+<!-- ceo-upgrade-20261008 -->
+
+## Current upgrade behavior
+
+Admin now lists four legacy agents and two opt-in roles: Medical analyzer and Thai
+composer. The new roles start disabled, inherit no shared key, require exact model
+and prices, and require reviewed endpoint IDs for OpenRouter. Saving is a schema/config
+check; it does not run Test. OCR Test returns NOT_RUN instead of a success claim.
+Resetting a new role disables it. See the [effective config map](ceo-upgrade/ENV_HANDOVER.md).
+
+The 2026-10-08 upgrade is a disabled-by-default software candidate. Its current scope, evidence, configuration and remaining owner gates are recorded in the [upgrade index](ceo-upgrade/README.md). Earlier release counts and screenshots below are historical; they do not establish live model or clinical validation.
+
 # AI providers and agents
 
 A manager chooses which model does each AI job on `/staff → AI providers` (sign in as `admin` locally). Keys are encrypted with the business data key, shown only as the last four characters and never returned to the browser. Every change is written to the audit log without the key. Environment variables are the fallback when nothing is saved.

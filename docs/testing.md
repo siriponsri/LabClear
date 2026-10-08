@@ -1,3 +1,16 @@
+<!-- ceo-upgrade-20261008 -->
+
+## Current isolated regression
+
+Use `scripts/offline_check.py` to avoid loading repository credentials or production
+storage. The [verification commands](ceo-upgrade/IMPLEMENTATION.md#verification-commands)
+cover Python, both browser suites and the evaluation fixture. Current evidence is
+265 Python tests, 36 legacy browser scenarios, 10 upgrade scenarios and 60 scripted
+fixture checks. These counts are software evidence only; all live model quality
+and clinical measurements are NOT_RUN. Older counts below belong to previous releases.
+
+The 2026-10-08 upgrade is a disabled-by-default software candidate. Its current scope, evidence, configuration and remaining owner gates are recorded in the [upgrade index](ceo-upgrade/README.md). Earlier release counts and screenshots below are historical; they do not establish live model or clinical validation.
+
 # Testing
 
 LabClear is tested at three levels: automated tests of the code (no real AI), browser scenarios of the whole interface (no real AI), and the assignment's test sets run against the live system with real models.

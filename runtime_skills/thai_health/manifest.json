@@ -1,0 +1,12 @@
+{
+  "id": "labclear-thai-health-communication",
+  "version": "0.2.0-offline",
+  "clinical_validation": "NOT_RUN",
+  "modules": {
+    "core.md": "b098db355cbb49b0361a41580b9ac5d20a8d175899436a80be7966a26a64f2bd",
+    "package-advice.md": "140953c844ff2207d6f10b75f37536bdf47c2e6d629353a3b73e36597105ee80",
+    "patient-explanation.md": "7f3dcb5ad4952dd35dcc96863e4d541561b0b92ccc0e8249e1fe1cccdf0e307a",
+    "SOURCES.md": "51c4d7b080181d881599add7133c730d85d713a43a44cc588e9c567b15112fa5",
+    "thai-style.md": "760a7bc48210a81a662574fa9e09dedce3a6015309c42d11219a11cd9544ca63"
+  }
+}

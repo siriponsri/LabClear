@@ -1,5 +1,6 @@
 # Evidence files are verified by SHA-256 at runtime; keep their bytes identical on every OS.
 knowledge/** -text
+runtime_skills/thai_health/** -text
 *.png binary
 *.jpg binary
 *.pdf binary

@@ -1,3 +1,16 @@
+<!-- ceo-upgrade-20261008 -->
+
+## Upgrade boundaries
+
+Private documents require current organization membership and approval; source
+access is rechecked after generation and revoked derivations are removed from later
+model context. Provider error logs contain slot/status only. Cost reservations use
+UTF-8 byte estimates, finite prices/prior spend and idempotent settlement. New roles
+remain disabled until configured; no real-document approval follows from a feature
+flag. See [limitations and trust boundaries](ceo-upgrade/IMPLEMENTATION.md).
+
+The 2026-10-08 upgrade is a disabled-by-default software candidate. Its current scope, evidence, configuration and remaining owner gates are recorded in the [upgrade index](ceo-upgrade/README.md). Earlier release counts and screenshots below are historical; they do not establish live model or clinical validation.
+
 # Safety
 
 LabClear combines the three guardrail types taught in the course (rules, a classifier model and framework-style checks in code) so that no single layer has to be perfect. Every layer fails closed: a missing verdict, an unknown label, a provider error or an invalid model reply stops the turn instead of letting an unchecked answer through.

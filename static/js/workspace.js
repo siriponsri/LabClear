@@ -161,7 +161,13 @@
       email.input.required = true; email.input.autocomplete = 'username'; email.input.spellcheck = false; pass.input.minLength = 4; pass.input.required = true; pass.input.autocomplete = 'current-password';
       const err = el('p', '', 'field-error'); err.setAttribute('role', 'alert'); err.hidden = true;
       async function signedIn(r, kind) {
-        guestToken = ''; clearSources(); controller?.abort(); draft.files = []; draft.sample = null; renderDraft(); csrf = r.csrf; updateUser(r.user); closeModal(); lastMessages = ''; lastChats = '';
+        guestToken = ''; clearSources(); controller?.abort(); draft.files = []; draft.sample = null; renderDraft(); csrf = r.csrf; updateUser(r.user); lastMessages = ''; lastChats = ''; state = null; chatList = null;
+        // Discard Guest content before closing the dialog, even if the account
+        // workspace is slow. A response from the old identity cannot repaint it.
+        renderMessages({ messages: [] });
+        ['context-chips', 'context-next', 'handoff-state'].forEach(id => $(id)?.replaceChildren());
+        if ($('context-report')) $('context-report').textContent = 'No report selected';
+        closeModal();
         // Staff and managers work in the service desk; signing in on /app takes them there.
         if (!STAFF_MODE && STAFF_ROLES.includes(r.user.role)) { location.href = '/staff'; return; }
         if (STAFF_MODE) { location.reload(); return; }
@@ -305,7 +311,10 @@
     if (r) { const c = el('button', null, 'chip active'); c.type = 'button'; c.append(document.createTextNode('Report: ' + (r.label || 'My report') + ' '), el('span', '×', 'x')); c.setAttribute('aria-label', 'Stop using report ' + (r.label || 'My report')); c.onclick = async () => { await post('/reports/select', { report_id: '' }); await refresh(); notice('The report is no longer used in this conversation.'); }; chips.append(c); }
   }
   async function refresh() {
-    state = await api('/workspace');
+    const identity = user?.id, token = guestToken;
+    const next = await api('/workspace');
+    if (identity !== user?.id || token !== guestToken) return;
+    state = next;
     updateUser(state.user);
     renderMessages(state.conversation);
     renderContext();
@@ -1499,10 +1508,12 @@
      model slots and for agents that have their own model. */
   function providerForm(d, slot, cur, kind) {
     const f = el('form', null, 'ai-form');
+    const upgrade = ['agent_medical_analyzer', 'agent_thai_composer'].includes(slot);
+    const endpoints = field('Reviewed OpenRouter endpoint IDs', 'text', (cur.provider_allowlist || []).join(', '), 'Comma-separated provider IDs. New OpenRouter roles require reviewed endpoints; fallback routing is off.');
     const prov = field('Provider', 'select'), options = d.presets.filter(p => p.slots.includes(kind));
     options.forEach(p => { const o = el('option', p.label); o.value = p.id; prov.input.append(o); });
     prov.input.value = options.some(p => p.id === cur.preset) ? cur.preset : options[0].id;
-    const model = field('Model', 'text', cur.source === 'shared' ? '' : cur.model, 'Leave empty to use the provider default.');
+    const model = field('Model', 'text', cur.source === 'shared' ? '' : cur.model, upgrade ? 'Enter the exact reviewed model ID; this role has no default.' : 'Leave empty to use the provider default.');
     const key = field('API key', 'password', '', cur.key && cur.source !== 'shared' ? 'Saved key: ' + cur.key + '. Leave empty to keep it.' : 'Paste the key from the provider console.');
     key.input.autocomplete = 'off'; key.input.spellcheck = false;
     const url = field('Endpoint URL', 'url', cur.base_url, 'OpenAI-compatible base URL, for example https://api.example.com/v1');
@@ -1514,34 +1525,37 @@
       const p = d.presets.find(x => x.id === prov.input.value);
       url.wrap.hidden = p.id !== 'custom';
       model.input.placeholder = (kind === 'vision' && p.vision_model) || p.default_model || 'model name';
-      if (reset) { model.input.value = ''; pin.input.value = p.price_in; pout.input.value = p.price_out; key.input.value = ''; }
+      if (reset) { model.input.value = ''; pin.input.value = upgrade ? '' : p.price_in; pout.input.value = upgrade ? '' : p.price_out; key.input.value = ''; }
       keyLink.textContent = p.key_url ? 'Get a key from ' + p.label + ' ↗' : ''; keyLink.href = p.key_url || '#'; keyLink.hidden = !p.key_url;
     };
     prov.input.onchange = () => sync(true); sync(cur.source === 'shared');
     key.wrap.classList.add('wide'); url.wrap.classList.add('wide'); on.classList.add('wide');
     f.append(prov.wrap, model.wrap, key.wrap, url.wrap, pin.wrap, pout.wrap);
+    if (upgrade) { f.append(endpoints.wrap); if (cur.source === 'not_configured') { pin.input.value = ''; pout.input.value = ''; } }
     if (kind === 'vision') f.append(on);
     const actions = el('div', null, 'form-actions wide');
     actions.append(
       button('Save', async () => {
-        await api('/staff/ai-providers/' + slot, { method: 'PUT', body: JSON.stringify({ preset: prov.input.value, model: model.input.value.trim(), api_key: key.input.value.trim(), base_url: url.input.value.trim(), enabled: kind === 'vision' ? box2.checked : true, price_in: pin.input.value === '' ? null : Number(pin.input.value), price_out: pout.input.value === '' ? null : Number(pout.input.value) }) });
+        await api('/staff/ai-providers/' + slot, { method: 'PUT', body: JSON.stringify({ preset: prov.input.value, model: model.input.value.trim(), api_key: key.input.value.trim(), base_url: url.input.value.trim(), enabled: kind === 'vision' ? box2.checked : true, price_in: pin.input.value === '' ? null : Number(pin.input.value), price_out: pout.input.value === '' ? null : Number(pout.input.value), provider_allowlist: endpoints.input.value.split(',').map(s => s.trim()).filter(Boolean) }) });
         notice(cur.label + ' saved.'); await navigate('ai', false); connection();
       }, 'btn primary sm'),
       button('Test', async () => { const r = await post('/staff/ai-providers/' + slot + '/test'); notice(r.message, r.ok ? '' : 'bad'); }, 'btn sm'));
-    if (cur.source === 'app') actions.append(button(slot.startsWith('agent_') ? 'Use the shared language model' : 'Use server settings', async () => {
+    if (cur.source === 'app') actions.append(button(upgrade ? 'Disable this new role' : slot.startsWith('agent_') ? 'Use the shared language model' : 'Use server settings', async () => {
       await api('/staff/ai-providers/' + slot, { method: 'DELETE' });
-      notice(slot.startsWith('agent_') ? cur.label + ' uses the shared language model again.' : 'Saved settings removed; the server environment is used again.');
+      notice(upgrade ? cur.label + ' is disabled.' : slot.startsWith('agent_') ? cur.label + ' uses the shared language model again.' : 'Saved settings removed; the server environment is used again.');
       await navigate('ai', false); connection();
     }, 'btn sm'));
     f.append(actions); f.onsubmit = e => e.preventDefault();
-    const wrap = el('div', null, 'stack'); wrap.append(f, keyLink); return wrap;
+    const wrap = el('div', null, 'stack');
+    wrap.append(el('p', 'Configuration: ' + cur.config_status + '. Live verification: not recorded. Test uses the saved provider/model shown above and may incur charges.', 'small muted'), f, keyLink);
+    return wrap;
   }
   async function aiProviders() {
     const box = el('div'); box.append(intro('AI providers', 'Choose the provider, model and API key for each AI step. Keys are stored encrypted on the server and never shown again; leave the key empty to keep the saved one.'));
     if (!isManager()) { box.append(empty('Manager access required', '')); return box; }
     const d = await api('/staff/ai-providers');
     if (!d.network_enabled) box.append(el('p', 'AI calls are switched off on this server (PROVIDER_NETWORK_ENABLED is not true). You can still save providers now.', 'callout warn small'));
-    const HELP = { llm: 'The shared model every agent below uses unless it has its own. Must follow JSON instructions well.', guard: 'Screens every customer message, every answer and every report before it is used. Anything not clearly safe is blocked.', vision: 'Reads lab report photos and PDFs. Typhoon OCR is tuned for Thai reports.' };
+    const HELP = { llm: 'The shared model used by the four legacy agents unless they have their own settings. New roles start disabled. Must follow JSON instructions well.', guard: 'Screens every customer message, every answer and every report before it is used. Anything not clearly safe is blocked.', vision: 'Reads lab report photos and PDFs. Typhoon OCR is tuned for Thai reports.' };
     ['llm', 'guard', 'vision'].forEach(slot => {
       const cur = d.slots[slot], card = el('section', null, 'card stack'), head = el('div', null, 'record-head');
       head.append(el('h3', cur.label), badge(cur.ready ? (cur.source === 'app' ? 'Saved here' : 'From server environment') : 'Not set up', cur.ready ? 'ok' : 'warn'));
@@ -1549,17 +1563,18 @@
     });
     // Agents share the language model unless one is given its own provider.
     const agents = el('section', null, 'card stack agents-card');
-    agents.append(el('h3', 'Agents'), el('p', 'Each agent uses the language model above unless you give it its own provider, model and key. A different model for the Reviewer makes its check more independent.', 'small muted'));
+    agents.append(el('h3', 'Agents'), el('p', 'The four legacy agents share the language model unless configured separately. Medical analyzer and Thai composer start disabled and require their own reviewed settings. A separate Reviewer request still checks the original evidence.', 'small muted'));
     Object.entries(d.agents).forEach(([id, cur]) => {
+      const upgrade = ['medical_analyzer', 'thai_composer'].includes(id);
       const row = el('div', null, 'agent-row'), head = el('div', null, 'record-head'), own = cur.source === 'app';
-      head.append(el('strong', cur.label), badge((own ? 'Own: ' : 'Shared: ') + cur.provider_label + ' · ' + cur.model, own ? 'ok' : 'neutral'));
+      head.append(el('strong', cur.label), badge((upgrade && !own) ? 'Disabled until configured' : (own ? 'Own: ' : 'Shared: ') + cur.provider_label + ' · ' + cur.model, own ? 'ok' : 'neutral'));
       const choice = field('Model for the ' + cur.label, 'select');
-      choice.input.append(new Option('Shared language model', 'shared'), new Option('Its own provider', 'own')); choice.input.value = own ? 'own' : 'shared';
+      choice.input.append(new Option(upgrade ? 'Disabled' : 'Shared language model', 'shared'), new Option('Its own provider', 'own')); choice.input.value = own ? 'own' : 'shared';
       const form = providerForm(d, cur.slot, cur, 'llm'); form.hidden = !own;
       choice.input.onchange = async () => {
         if (choice.input.value === 'own') { form.hidden = false; return; }
         form.hidden = true;
-        if (own) { await api('/staff/ai-providers/' + cur.slot, { method: 'DELETE' }); notice(cur.label + ' uses the shared language model again.'); await navigate('ai', false); }
+        if (own) { await api('/staff/ai-providers/' + cur.slot, { method: 'DELETE' }); notice(upgrade ? cur.label + ' is disabled.' : cur.label + ' uses the shared language model again.'); await navigate('ai', false); }
       };
       row.append(head, el('p', cur.help, 'small muted'), choice.wrap, form); agents.append(row);
     });

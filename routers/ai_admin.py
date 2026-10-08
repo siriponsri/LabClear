@@ -23,6 +23,7 @@ class ProviderInput(Strict):
     enabled: bool = True
     price_in: float | None = Field(default=None, ge=0, le=100000)
     price_out: float | None = Field(default=None, ge=0, le=100000)
+    provider_allowlist: list[str] = Field(default_factory=list, max_length=10)
 
 
 def _manager(tx, request):
@@ -45,13 +46,21 @@ async def view(request: Request):
         return providers.public_view(tx)
 
 
+@router.get('/registry')
+async def candidate_registry(request: Request):
+    with db.transaction() as tx:
+        _manager(tx, request)
+    from services.model_registry import registry
+    return registry()
+
+
 @router.put("/{slot}")
 async def update(slot: str, body: ProviderInput, request: Request):
     with db.transaction() as tx:
         user = _manager(tx, request)
         try:
             providers.save(tx, _slot(slot), body.preset, body.model, body.api_key, body.base_url,
-                           body.enabled, body.price_in, body.price_out)
+                           body.enabled, body.price_in, body.price_out, body.provider_allowlist)
         except providers.ProviderSetupError as exc:
             raise ConversationError("provider_setup", exc.message, 422) from None
         tx.audit(user["id"], f"ai_provider.saved.{slot}.{body.preset}", slot)
@@ -73,6 +82,8 @@ async def test(slot: str, request: Request):
     with db.transaction() as tx:
         _manager(tx, request)
     slot = _slot(slot)
+    provider = providers.runtime(slot)
+    identity = {"provider": provider.preset, "model": provider.model}
     from services import conversation_guard, conversation_transport as transport
     if providers.kind_of(slot) == "llm":
         # The chat needs JSON replies, so test exactly that rather than free text.
@@ -86,10 +97,12 @@ async def test(slot: str, request: Request):
         except ValueError:
             ok = False
         if ok:
-            return {"ok": True, "message": "The language model replied with valid JSON. The chat can use it."}
+            return {"ok": True, "status": "LIVE_TESTED", **identity,
+                    "message": "The model returned valid JSON for this test only. Medical accuracy and role suitability are not verified."}
         return {"ok": False, "message": "The language model replied, but not with the JSON the chat needs. "
                                         "Try another model for this provider."}
     if slot == "guard":
         await conversation_guard.check("What does an HbA1c test measure?", "input")
-        return {"ok": True, "message": "The safety check classified a normal question as safe."}
-    return {"ok": True, "message": "Report reading is tested with a real document: open My reports and try a synthetic sample."}
+        return {"ok": True, "status": "LIVE_TESTED", **identity, "message": "The safety check classified one normal question as safe; broader safety evaluation is not verified."}
+    return {"ok": False, "status": "NOT_RUN", **identity,
+            "message": "OCR was not called. To test it explicitly, open My reports and use a synthetic sample; provider charges may apply."}

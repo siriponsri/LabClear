@@ -1,5 +1,6 @@
 """Business API. Explicit confirmations, ownership, encrypted storage and sandbox payments."""
 from __future__ import annotations
+from config import settings
 from services.release_info import VERSION
 from services.answer_checks import critical_note
 import asyncio,base64,hmac,json,logging,os,re,secrets,time
@@ -271,6 +272,30 @@ async def turn(owner,message,retry_id='',page=None,emit=None,reply_to=''):
         report=tx.own(d['report_id'],owner,'report')['data'] if d.get('report_id') else None
         history=[{'role':'assistant' if x['role']=='staff' else x['role'],'content':x['content']} for x in earlier if x.get('content') and x.get('kind')!='report_read'][-12:]
         context={'history':history,'report':report if report and report.get('confirmed') else None,'previous_reports':[], 'customer_state':{'bookings':[{'id':b['id'],**b['data'],'status':b['state']} for b in tx.find('booking',owner)[-5:]]},'page':page or {},'explain_report':bool(reply_to)}
+        if settings.ORG_DOCUMENTS_ENABLED or any(x.get('private_source_ids') or any(s.get('id','').startswith('orgsrc_') for s in x.get('sources',[])) for x in earlier):
+            from services import organization_sources
+            user=tx.get(owner)
+            # Historical private citations may remain in the owner's history, but
+            # revoked/foreign sources must never become context for a new answer.
+            visible=[]
+            private_ids=set()
+            for item in earlier:
+                try:
+                    item_ids=set(item.get('private_source_ids',[])) | {s['id'] for s in item.get('sources',[]) if s.get('id','').startswith('orgsrc_')}
+                    for source_id in item_ids:
+                        if not settings.ORG_REFERENCE_INFERENCE_ENABLED:
+                            raise ConversationError('feature_disabled','Private source inference is disabled.',409)
+                        organization_sources.source(tx,user,source_id)
+                    if item.get('content') and item.get('kind')!='report_read':
+                        visible.append({'role':'assistant' if item['role']=='staff' else item['role'],'content':item['content']})
+                        private_ids.update(item_ids)
+                except ConversationError:
+                    continue
+            context['history']=visible[-12:]
+            if settings.ORG_REFERENCE_INFERENCE_ENABLED and user['data'].get('organization_id'):
+                context['organization_sources']=organization_sources.retrieve(tx,user,message)
+                private_ids.update(s['id'] for s in context['organization_sources'])
+            context['private_source_ids']=sorted(private_ids)
         # Reports stay private, only explicitly selected comparison context is sent.
         other=d.get('compare_report_id')
         if other and other!=d.get('report_id'):
@@ -281,6 +306,9 @@ async def turn(owner,message,retry_id='',page=None,emit=None,reply_to=''):
         async with asyncio.timeout(220):result=await business_agent.run(message,context,**({'emit':emit} if emit else {}))
         with db.transaction() as tx:
             if not tx.get(owner):return {'reply':None,'discarded':True}
+            for source_id in context.get('private_source_ids',[]):
+                from services import organization_sources
+                organization_sources.source(tx,tx.get(owner),source_id)
             c=conversation(tx,owner);d=c['data']
             if d['version']!=version or d['mode']!='bot' or d.get('turn_id')!=turn_id:return {'reply':None,'queued_for_staff':True}
             if result.get('action'):
@@ -288,7 +316,7 @@ async def turn(owner,message,retry_id='',page=None,emit=None,reply_to=''):
             # Observations were matched exactly against the confirmed report by validate_answer; keep them with the turn.
             rows={f.get('id'):f for f in ((context.get('report') or {}).get('fields') or [])}
             observations=[{**o,'name':rows.get(o.get('field_id'),{}).get('name','')} for o in (result.get('observations') or [])]
-            d['messages']=(d['messages']+[msg('assistant',result['reply'],sources=result['sources'],observations=observations,action=result.get('action'),action_id=result.get('action_id'),followups=result.get('followups',[]),dot=result.get('dot'),ui=result.get('ui',[]),checks=result.get('checks'),trace=result.get('trace',[]))])[-100:]
+            d['messages']=(d['messages']+[msg('assistant',result['reply'],sources=result['sources'],private_source_ids=context.get('private_source_ids',[]),observations=observations,action=result.get('action'),action_id=result.get('action_id'),followups=result.get('followups',[]),dot=result.get('dot'),ui=result.get('ui',[]),checks=result.get('checks'),trace=result.get('trace',[]))])[-100:]
             d['busy_until']=0;d['updated']=time.time();tx.put(c['id'],'conversation',owner,d)
         return result
     except ConversationError as exc:

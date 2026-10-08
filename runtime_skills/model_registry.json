@@ -1,0 +1,235 @@
+{
+  "version": "2026-10-08",
+  "status": "LIVE_EVAL_NOT_RUN",
+  "models": [
+    {
+      "model_id": "deepseek/deepseek-v4.1-flash",
+      "roles": [
+        "planner",
+        "medical_analyzer_fallback",
+        "reviewer"
+      ],
+      "provider_allowlist": [],
+      "modalities": [
+        "text"
+      ],
+      "api_family": "openai_chat",
+      "response_format": true,
+      "tool_support": "NOT_VERIFIED",
+      "effective_input_limit": null,
+      "output_limit": 2400,
+      "timeout_seconds": 60,
+      "retries": 0,
+      "privacy_approval": "PENDING_OWNER",
+      "approval_status": "PROVISIONAL_SELECTION",
+      "price_timestamp": null,
+      "unit_rates": null,
+      "price_status": "PRICE_UNVERIFIED",
+      "quota_bucket": "account_shared",
+      "last_live_eval": null,
+      "notes": "Metadata proposal, never a provider default or permission to call."
+    },
+    {
+      "model_id": "openai/gpt-6-luna",
+      "roles": [
+        "advisor",
+        "thai_composer"
+      ],
+      "provider_allowlist": [],
+      "modalities": [
+        "text"
+      ],
+      "api_family": "openai_chat",
+      "response_format": true,
+      "tool_support": "NOT_VERIFIED",
+      "effective_input_limit": null,
+      "output_limit": 2400,
+      "timeout_seconds": 60,
+      "retries": 0,
+      "privacy_approval": "PENDING_OWNER",
+      "approval_status": "PROVISIONAL_SELECTION",
+      "price_timestamp": null,
+      "unit_rates": null,
+      "price_status": "PRICE_UNVERIFIED",
+      "quota_bucket": "account_shared",
+      "last_live_eval": null,
+      "notes": "Metadata proposal, never a provider default or permission to call."
+    },
+    {
+      "model_id": "inclusionai/ling-3.0-flash-sante:free",
+      "roles": [
+        "medical_analyzer"
+      ],
+      "provider_allowlist": [],
+      "modalities": [
+        "text"
+      ],
+      "api_family": "openai_chat",
+      "response_format": false,
+      "tool_support": "NOT_VERIFIED",
+      "effective_input_limit": null,
+      "output_limit": 2400,
+      "timeout_seconds": 60,
+      "retries": 0,
+      "privacy_approval": "SYNTHETIC_ONLY",
+      "approval_status": "PROVISIONAL_SELECTION",
+      "price_timestamp": null,
+      "unit_rates": null,
+      "price_status": "PRICE_UNVERIFIED",
+      "quota_bucket": "account_shared",
+      "last_live_eval": null,
+      "notes": "Metadata proposal, never a provider default or permission to call."
+    },
+    {
+      "model_id": "typhoon-v2.5-30b-a3b-instruct",
+      "roles": [
+        "thai_composer_fallback"
+      ],
+      "provider_allowlist": [],
+      "modalities": [
+        "text"
+      ],
+      "api_family": "openai_chat",
+      "response_format": true,
+      "tool_support": "NOT_VERIFIED",
+      "effective_input_limit": null,
+      "output_limit": 2400,
+      "timeout_seconds": 60,
+      "retries": 0,
+      "privacy_approval": "PENDING_OWNER",
+      "approval_status": "PROVISIONAL_SELECTION",
+      "price_timestamp": null,
+      "unit_rates": null,
+      "price_status": "PRICE_UNVERIFIED",
+      "quota_bucket": "account_shared",
+      "last_live_eval": null,
+      "notes": "Metadata proposal, never a provider default or permission to call."
+    },
+    {
+      "model_id": "typhoon-ocr",
+      "roles": [
+        "vision"
+      ],
+      "provider_allowlist": [],
+      "modalities": [
+        "image",
+        "text"
+      ],
+      "api_family": "typhoon_ocr",
+      "response_format": null,
+      "tool_support": "NOT_VERIFIED",
+      "effective_input_limit": null,
+      "output_limit": null,
+      "timeout_seconds": 60,
+      "retries": 0,
+      "privacy_approval": "PENDING_OWNER",
+      "approval_status": "PROVISIONAL_SELECTION",
+      "price_timestamp": null,
+      "unit_rates": null,
+      "price_status": "PRICE_UNVERIFIED",
+      "quota_bucket": "account_shared",
+      "last_live_eval": null,
+      "notes": "Metadata proposal, never a provider default or permission to call."
+    },
+    {
+      "model_id": "openai/text-embedding-3-small",
+      "roles": [
+        "embedding"
+      ],
+      "provider_allowlist": [],
+      "modalities": [
+        "text"
+      ],
+      "api_family": "embedding",
+      "response_format": null,
+      "tool_support": "NOT_VERIFIED",
+      "effective_input_limit": null,
+      "output_limit": null,
+      "timeout_seconds": 60,
+      "retries": 0,
+      "privacy_approval": "PENDING_OWNER",
+      "approval_status": "PROVISIONAL_SELECTION",
+      "price_timestamp": null,
+      "unit_rates": null,
+      "price_status": "PRICE_UNVERIFIED",
+      "quota_bucket": "account_shared",
+      "last_live_eval": null,
+      "notes": "Metadata proposal, never a provider default or permission to call."
+    },
+    {
+      "model_id": "openthai-systemone",
+      "roles": [
+        "decision_guard_primary"
+      ],
+      "provider_allowlist": [],
+      "modalities": [
+        "text"
+      ],
+      "api_family": "systemone_iapp",
+      "response_format": false,
+      "tool_support": "NOT_VERIFIED",
+      "effective_input_limit": null,
+      "output_limit": null,
+      "timeout_seconds": 60,
+      "retries": 0,
+      "privacy_approval": "PENDING_OWNER",
+      "approval_status": "PROVISIONAL_SELECTION",
+      "price_timestamp": null,
+      "unit_rates": null,
+      "price_status": "PRICE_UNVERIFIED",
+      "quota_bucket": "account_shared",
+      "last_live_eval": null,
+      "notes": "Metadata proposal, never a provider default or permission to call."
+    },
+    {
+      "model_id": "cloudflare/clef-flash",
+      "roles": [
+        "decision_guard_candidate"
+      ],
+      "provider_allowlist": [],
+      "modalities": [
+        "text"
+      ],
+      "api_family": "typed_decision_unverified",
+      "response_format": false,
+      "tool_support": "NOT_VERIFIED",
+      "effective_input_limit": null,
+      "output_limit": null,
+      "timeout_seconds": 60,
+      "retries": 0,
+      "privacy_approval": "PENDING_OWNER",
+      "approval_status": "PROVISIONAL_SELECTION",
+      "price_timestamp": null,
+      "unit_rates": null,
+      "price_status": "PRICE_UNVERIFIED",
+      "quota_bucket": "account_shared",
+      "last_live_eval": null,
+      "notes": "Metadata proposal, never a provider default or permission to call."
+    },
+    {
+      "model_id": "meta-llama/llama-guard-4-12b",
+      "roles": [
+        "content_guard_escalation"
+      ],
+      "provider_allowlist": [],
+      "modalities": [
+        "text"
+      ],
+      "api_family": "openai_chat",
+      "response_format": false,
+      "tool_support": "NOT_VERIFIED",
+      "effective_input_limit": null,
+      "output_limit": 2400,
+      "timeout_seconds": 60,
+      "retries": 0,
+      "privacy_approval": "PENDING_OWNER",
+      "approval_status": "PROVISIONAL_SELECTION",
+      "price_timestamp": null,
+      "unit_rates": null,
+      "price_status": "PRICE_UNVERIFIED",
+      "quota_bucket": "account_shared",
+      "last_live_eval": null,
+      "notes": "Metadata proposal, never a provider default or permission to call."
+    }
+  ]
+}

@@ -1,3 +1,16 @@
+<!-- ceo-upgrade-20261008 -->
+
+## Upgrade deployment compatibility
+
+The overnight candidate retains `render.yaml`, `scripts/run_business.py`, dependencies
+and storage schema. No new key is required; all six new flags default false. An
+isolated smoke check started/stopped the actual entrypoint and checked eight routes.
+Production PostgreSQL and deployment identity remain separate checks. Follow the
+[config and rollback handoff](../ceo-upgrade/ENV_HANDOVER.md); preserve saved settings,
+encryption key, prior spend and counters. No ENV change is authorized by publication alone.
+
+The 2026-10-08 upgrade is a disabled-by-default software candidate. Its current scope, evidence, configuration and remaining owner gates are recorded in the [upgrade index](../ceo-upgrade/README.md). Earlier release counts and screenshots below are historical; they do not establish live model or clinical validation.
+
 # Deploy LabClear to Render
 
 Render runs LabClear as one Python web service with a managed PostgreSQL database. Both work on the free plan.

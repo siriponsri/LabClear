@@ -1,3 +1,14 @@
+<!-- ceo-upgrade-20261008 -->
+
+## Official external offers
+
+The optional hospital-links catalog is separate from this simulated clinic. Official
+URLs do not establish partnership, current eligibility or a confirmed booking.
+Unknown prices/inclusions stay unknown; stale prices are hidden. No external offer
+is automatically mapped to a clinical recommendation or local appointment.
+
+The 2026-10-08 upgrade is a disabled-by-default software candidate. Its current scope, evidence, configuration and remaining owner gates are recorded in the [upgrade index](ceo-upgrade/README.md). Earlier release counts and screenshots below are historical; they do not establish live model or clinical validation.
+
 # The business
 
 LabClear is a simulated, small multi-branch health-check clinic built for the course 06048308 Intelligent Chatbot Development. Every package, price, center, policy, payment and lab report in this repository is synthetic. No real person's data is used.

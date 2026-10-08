@@ -10,7 +10,7 @@ const out = path.resolve(root, process.env.UAT_OUT || 'test-results/uat'); fs.mk
 const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'labclear-uat-')); const port = Number(process.env.UI_TEST_PORT || 8098), base = 'http://127.0.0.1:' + port;
 const py = process.env.TEST_PYTHON || path.join(root, '.venv', process.platform === 'win32' ? 'Scripts/python.exe' : 'bin/python');
 let sha = 'unknown', dirty = null; try { sha = execSync('git rev-parse HEAD', { cwd: root }).toString().trim(); dirty = execSync('git status --porcelain', { cwd: root }).toString().trim().length > 0; } catch { /* no git */ }
-const server = (() => { try { require('child_process').execSync(`node -e "fetch('${'http://127.0.0.1:' + (process.env.UI_TEST_PORT || 8098)}/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"`, { stdio: 'ignore' }); console.error('Port in use: another server answers on the UAT port. Stop it first; results would come from its database.'); process.exit(2); } catch { /* port free */ } return null; })() || spawn(py, ['tests/browser/fixture_server.py'], { cwd: root, env: { ...process.env, UI_TEST_PORT: String(port), PROVIDER_NETWORK_ENABLED: 'false', BUSINESS_DB_PATH: path.join(tmp, 'db.sqlite'), BUSINESS_KEY_PATH: path.join(tmp, 'key'), BUSINESS_DATA_KEY: '', DATABASE_URL: '', VERCEL: '', RENDER: '', APP_ENV: 'test', BUSINESS_EXTERNAL_ENABLED: '', STRIPE_SECRET_KEY: '', LINE_CHANNEL_SECRET: '', LINE_CHANNEL_ACCESS_TOKEN: '' }, stdio: ['ignore', 'ignore', 'pipe'] });
+const server = (() => { try { require('child_process').execSync(`node -e "fetch('${'http://127.0.0.1:' + (process.env.UI_TEST_PORT || 8098)}/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"`, { stdio: 'ignore' }); console.error('Port in use: another server answers on the UAT port. Stop it first; results would come from its database.'); process.exit(2); } catch { /* port free */ } return null; })() || spawn(py, ['scripts/offline_check.py', 'browser', String(port)], { cwd: root, env: { ...process.env, UI_TEST_PORT: String(port), PROVIDER_NETWORK_ENABLED: 'false', BUSINESS_DB_PATH: path.join(tmp, 'db.sqlite'), BUSINESS_KEY_PATH: path.join(tmp, 'key'), BUSINESS_DATA_KEY: '', DATABASE_URL: '', VERCEL: '', RENDER: '', APP_ENV: 'test', BUSINESS_EXTERNAL_ENABLED: '', STRIPE_SECRET_KEY: '', LINE_CHANNEL_SECRET: '', LINE_CHANNEL_ACCESS_TOKEN: '' }, stdio: ['ignore', 'ignore', 'pipe'] });
 let log = ''; server.on('error', e => { log += 'Fixture process failed: ' + e.message; }); server.stderr.on('data', x => { log += x; });
 let browser; const records = [], errors = [], shots = []; const wait = ms => new Promise(r => setTimeout(r, ms));
 const assert = (c, m) => { if (!c) throw Error(m); };
@@ -351,8 +351,9 @@ async function signUp(page, email) {
       await h.getByRole('menuitem', { name: 'Sign out' }).click(); await h.locator('[data-account]').getByRole('button', { name: 'Sign in' }).waitFor();
       await siteSignIn('admin'); await h.waitForURL(/\/staff/);
       await h.locator('[data-view=ai]').click(); await h.locator('.agents-card .agent-row').first().waitFor();
-      assert(await h.locator('.agents-card .agent-row').count() === 4, 'four agents');
-      await h.getByLabel('Model for the Reviewer').selectOption('own'); await h.locator('.agents-card .ai-form').last().waitFor({ state: 'visible' });
+      assert(await h.locator('.agents-card .agent-row').count() === 6, 'four legacy agents and two opt-in roles');
+      await h.getByLabel('Model for the Reviewer').selectOption('own');
+      await h.locator('.agent-row').filter({ has: h.getByLabel('Model for the Reviewer') }).locator('.ai-form').waitFor({ state: 'visible' });
       await shot(h, 'ai-agents-1440'); await hctx.close();
     });
     await check('UI-33', 'Guest: upload/image preview, no persisted token, reload revokes chat and image, no history after signup', async () => {
@@ -380,8 +381,24 @@ async function signUp(page, email) {
       assert((await p.request.get(base + '/api/business/workspace', { headers })).status() === 401, 'close beacon did not revoke old token');
       assert((await p.request.get(base + '/api/business/reports/' + report + '/source', { headers })).status() === 401, 'old report source survived');
       await p.locator('#message').fill('PRIVATE_BEFORE_SIGNUP'); await p.locator('#send').click(); await p.getByText('Offline UI test double: your question was received.').last().waitFor();
+      let releaseGuest, capturedGuest;
+      const delayedGuest = new Promise(resolve => { releaseGuest = resolve; });
+      const captured = new Promise(resolve => { capturedGuest = resolve; });
+      let held = false;
+      await p.route('**/api/business/workspace', async route => {
+        if (!held && route.request().headers()['x-labclear-guest']) {
+          held = true; const response = await route.fetch(); capturedGuest();
+          await delayedGuest; await route.fulfill({ response });
+        } else await route.continue();
+      });
+      // Hold the next ordinary Guest poll across the identity change.
+      await Promise.race([captured, wait(12000).then(() => { throw Error('Guest poll not observed'); })]);
       await signUp(p, 'guest-converted@example.invalid');
       assert(await p.locator('#messages').getByText('PRIVATE_BEFORE_SIGNUP').count() === 0, 'guest chat imported');
+      const staleDelivered = p.waitForResponse(r => r.url().endsWith('/api/business/workspace') && !!r.request().headers()['x-labclear-guest']);
+      releaseGuest(); await staleDelivered; await wait(200);
+      assert(await p.locator('#messages').getByText('PRIVATE_BEFORE_SIGNUP').count() === 0, 'stale guest poll repainted account');
+      assert((await p.locator('#account-label').innerText()).includes('guest-converted@'), 'stale guest poll changed identity');
       assert((await (await p.request.get(base + '/api/business/workspace')).json()).conversation.messages.length === 0, 'guest history stored under account');
       await ctx.close();
     });

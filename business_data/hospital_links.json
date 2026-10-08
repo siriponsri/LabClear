@@ -1,0 +1,51 @@
+{
+  "version": "2026-10-08-review1",
+  "mode": "OFFICIAL_EXTERNAL",
+  "affiliation": "NO_PARTNERSHIP_VERIFIED",
+  "offers": [
+    {
+      "id": "HOSP-002",
+      "hospital": "โรงพยาบาลสมิติเวช",
+      "branch": "สุขุมวิท · Wellness Center",
+      "variant": "Diabetes & Health Check-up Program",
+      "url": "https://www.samitivejhospitals.com/package/detail/advance-diabetic-check-up-program",
+      "price_thb": 7500,
+      "price_kind": "promotion",
+      "fees": "รวมค่าแพทย์และค่าบริการโรงพยาบาลตามหน้าต้นทาง",
+      "eligibility": "ชาวไทยและชาวต่างชาติที่พำนักในประเทศไทย",
+      "included_tests": null,
+      "excluded_tests": null,
+      "sale_from": null,
+      "sale_until": "2026-12-31",
+      "service_until": null,
+      "checked_at": "2026-10-08",
+      "review_until": "2026-10-08",
+      "reviewer": "Codex public-page metadata review; not clinical review",
+      "source_locator": "Program price table and Terms and Conditions",
+      "review_status": "VERIFIED",
+      "internal_mapping": null
+    },
+    {
+      "id": "HOSP-001",
+      "hospital": "โรงพยาบาลกรุงเทพ",
+      "branch": "สำนักงานใหญ่",
+      "variant": "แพ็กเกจตรวจสุขภาพประจำปี 2569 · ยังไม่ได้เลือกโปรแกรมย่อย",
+      "url": "https://www.bangkokhospital.com/th/bangkok/package/health-check-up-packages",
+      "price_thb": null,
+      "price_kind": "unknown_variant",
+      "fees": "ยังไม่ยืนยัน",
+      "eligibility": "โปรดตรวจสอบเงื่อนไขของโปรแกรมย่อยกับโรงพยาบาล",
+      "included_tests": null,
+      "excluded_tests": null,
+      "sale_from": null,
+      "sale_until": null,
+      "service_until": null,
+      "checked_at": "2026-10-08",
+      "review_until": "2026-10-08",
+      "reviewer": "Codex public-page metadata review; exact variant pending",
+      "source_locator": "Annual package landing heading; multiple variants and price range",
+      "review_status": "UNVERIFIED",
+      "internal_mapping": null
+    }
+  ]
+}

@@ -13,6 +13,7 @@ Unknown prior spend or an unpriced model blocks the call (fail closed).
 from __future__ import annotations
 
 import json
+import math
 import secrets
 import time
 from dataclasses import dataclass
@@ -57,13 +58,16 @@ def prior_spend() -> float:
         value = float(raw)
     except ValueError:
         raise ConversationError("budget_prior_unknown", "PROJECT_BUDGET_PRIOR_SPEND_THB must be a number.", 503) from None
-    if value < 0:
+    if not math.isfinite(value) or value < 0:
         raise ConversationError("budget_prior_unknown", "PROJECT_BUDGET_PRIOR_SPEND_THB cannot be negative.", 503)
     return value
 
 
 def _count_tokens(body: dict) -> int:
-    """Conservative token estimate: 1 token per 3 characters of text; a fixed allowance per image."""
+    """UTF-8 byte upper bound for text tokens plus configured image allowance.
+
+    Character/3 undercounts Thai. Image pricing still requires owner verification.
+    """
     images = 0
     text_chars = 0
 
@@ -81,10 +85,10 @@ def _count_tokens(body: dict) -> int:
             for item in value:
                 walk(item)
         elif isinstance(value, str):
-            text_chars += len(value)
+            text_chars += len(value.encode('utf-8'))
 
     walk(body)
-    return text_chars // 3 + 1 + images * settings.COST_IMAGE_TOKEN_ESTIMATE
+    return text_chars + 256 + images * settings.COST_IMAGE_TOKEN_ESTIMATE
 
 
 def estimate(model: str, body: dict, price: dict | None = None) -> float:
@@ -93,7 +97,12 @@ def estimate(model: str, body: dict, price: dict | None = None) -> float:
         if model not in table:
             raise ConversationError("price_unknown", "No price is set for this model. Set it on /staff → AI providers.", 503)
         price = table[model]
-    output = int(body.get("max_tokens") or 512)
+    if any(not math.isfinite(float(price[k])) or float(price[k]) < 0
+           for k in ("input_per_mtok", "output_per_mtok")):
+        raise ConversationError("price_unknown", "Model prices must be finite and non-negative.", 503)
+    output = int(body.get("max_completion_tokens") or body.get("max_tokens") or 512)
+    if output < 1 or output > 100000:
+        raise ConversationError("token_limit_invalid", "Invalid output token limit.", 503)
     return round((_count_tokens(body) * price["input_per_mtok"] + output * price["output_per_mtok"]) / 1_000_000, 6)
 
 
@@ -138,11 +147,13 @@ def reserve(model: str, body: dict, price: dict | None = None) -> CostReservatio
     from services import business_store as db
     cost = estimate(model, body, price)
     prior = prior_spend()
+    if not math.isfinite(settings.PROJECT_BUDGET_THB) or settings.PROJECT_BUDGET_THB <= 0:
+        raise ConversationError("budget_invalid", "The project budget must be finite and positive.", 503)
     with db.transaction() as tx:
         data = _ledger(tx)
         if prior + data["settled_thb"] + data["reserved_thb"] + cost > settings.PROJECT_BUDGET_THB:
             raise ConversationError("budget_exhausted",
-                                    "The project's 300 THB AI budget would be exceeded. AI replies are paused; non-AI features still work.", 429)
+                                    "The configured project AI budget would be exceeded. AI replies are paused; non-AI features still work.", 429)
         data["reserved_thb"] += cost
         data["calls"] += 1
         tx.put(LEDGER_ID, "cost_ledger", "system", data, "active")
@@ -161,15 +172,19 @@ def settle(reservation: CostReservation | None, usage: dict | None, outcome: str
             price = reservation.price or prices()[reservation.model]
             prompt = int(usage.get("prompt_tokens", usage.get("input_tokens")))
             completion = int(usage.get("completion_tokens", usage.get("output_tokens")))
+            if prompt < 0 or completion < 0:
+                raise ValueError
             actual = round((prompt * price["input_per_mtok"] + completion * price["output_per_mtok"]) / 1_000_000, 6)
         except (KeyError, TypeError, ValueError):
             actual = reservation.estimate_thb  # usage missing: keep the conservative estimate
     with db.transaction() as tx:
+        entry = tx.get(reservation.id)
+        if not entry or entry['state'] != 'reserved':
+            return  # settlement retries must not charge the same reservation twice
         data = _ledger(tx)
         data["reserved_thb"] = max(0.0, data["reserved_thb"] - reservation.estimate_thb)
         data["settled_thb"] += actual
         tx.put(LEDGER_ID, "cost_ledger", "system", data, "active")
-        entry = tx.get(reservation.id)
         if entry:
             entry["data"].update(actual_thb=actual, outcome=outcome, settled_at=time.time())
             tx.put(reservation.id, "cost_entry", "system", entry["data"], "settled")

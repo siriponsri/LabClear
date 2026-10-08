@@ -20,6 +20,31 @@ ROOT = Path(__file__).resolve().parents[1]
 templates = Jinja2Templates(directory=ROOT / "templates")
 router = APIRouter()
 
+
+@router.get('/preview/landing', response_class=HTMLResponse)
+async def landing_preview(request: Request):
+    from config import settings
+    if not settings.LANDING_PREVIEW_ENABLED:
+        raise ConversationError('feature_disabled', 'Landing preview is disabled.', 404)
+    return page(request, 'site/landing_preview.html', 'อ่านผลตรวจให้เข้าใจ | LabClear', 'ตัวอย่างทิศทางหน้าแรกภาษาไทยของ LabClear')
+
+
+@router.get('/organization-references', response_class=HTMLResponse)
+async def organization_references(request: Request):
+    from config import settings
+    if not settings.ORG_DOCUMENTS_ENABLED:
+        raise ConversationError('feature_disabled', 'Organization references are disabled.', 404)
+    return page(request, 'site/organization_references.html', 'เอกสารอ้างอิงองค์กร | LabClear', 'จัดการเอกสารจำลองที่ผ่านการตรวจทาน')
+
+
+@router.get('/hospital-links', response_class=HTMLResponse)
+async def hospital_links(request: Request):
+    from config import settings
+    from services.hospital_links import catalog
+    if not settings.HOSPITAL_LINKS_ENABLED:
+        raise ConversationError('feature_disabled', 'Hospital links are disabled.', 404)
+    return page(request, 'site/hospital_links.html', 'แพ็กเกจจากเว็บไซต์โรงพยาบาล | LabClear', 'ลิงก์ข้อมูลบริการจากแหล่งทางการ', offers=catalog())
+
 SEGMENTS = [
     {"id": "core", "label": "Core health checks", "query": "segment=individual&review=excluded",
      "blurb": "Annual-style packages you can book directly after staff confirmation."},

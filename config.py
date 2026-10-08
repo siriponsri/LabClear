@@ -10,6 +10,14 @@ class Settings(BaseSettings):
     # only when a separate trusted frontend must call this API.
     CORS_ALLOWED_ORIGINS: str = ""
 
+    # CEO upgrade: opt-in only. Existing deployments keep their current paths.
+    LANDING_PREVIEW_ENABLED: bool = False
+    ORG_DOCUMENTS_ENABLED: bool = False
+    ORG_REFERENCE_INFERENCE_ENABLED: bool = False
+    HOSPITAL_LINKS_ENABLED: bool = False
+    RUNTIME_SKILLS_ENABLED: bool = False
+    MEDICAL_HARNESS_ENABLED: bool = False
+
     # AI providers. A manager can override all of these on /staff → AI providers;
     # these variables are the fallback when nothing is saved there.
     # Provider ids: see services/providers.py (typhoon, openai, anthropic, gemini, huggingface,

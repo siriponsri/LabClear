@@ -11,6 +11,7 @@ from services import business_dots as dots_mod
 from services import answer_checks
 from services.business_plans import plans as plan_catalog
 import logging
+from config import settings
 log=logging.getLogger('labclear.model')
 
 ACTIONS=('answer','clarify','redirect','urgent','quote','book','handoff','organization','link','pay')
@@ -113,6 +114,15 @@ def _agent(name):
 async def run(message,context,emit=None):
     """One answer. emit(event) receives each step as it starts and ends, for the live view; the
     finished steps are returned as 'trace' and kept with the answer under "How this was checked"."""
+    if context.get('private_source_ids'):
+        from services.providers import runtime
+        private_slots=['agent_plan','agent_advisor','agent_explainer','agent_review','guard']
+        if settings.MEDICAL_HARNESS_ENABLED:
+            private_slots += ['agent_medical_analyzer','agent_thai_composer']
+        for slot in private_slots:
+            configured=runtime(slot)
+            if not configured.ready or configured.model.endswith(':free'):
+                raise transport.ConversationError('data_policy','Configure and review every provider that receives organization context before enabling private reference inference.',409)
     trace=[]
     async def step(id,state,label,detail=''):
         if state=='done':trace.append({'id':id,'label':label,'detail':detail})
@@ -159,6 +169,16 @@ async def run(message,context,emit=None):
     await step('plan','done',f"Plan: {ACTION_TEXT.get(plan.action,plan.action)}, as the {dot['name']}",
                (plan.reason+' ' if plan.reason else '')+(f"(Moved from the {roles[rerouted]['name']}, which cannot do this.)" if rerouted else ''))
     evidence=[]
+    private_sources=context.get('organization_sources',[]) if settings.ORG_REFERENCE_INFERENCE_ENABLED else []
+    if private_sources:
+        from services.providers import runtime
+        # This opt-in is for synthetic rollout only; free/unconfigured endpoints
+        # cannot receive organization excerpts via writer, reviewer or guard.
+        for slot in (_agent(dot['id']), _agent('review'), 'guard'):
+            configured=runtime(slot)
+            if not configured.ready or configured.model.endswith(':free'):
+                raise transport.ConversationError('data_policy','Organization reference providers require explicit configuration and data-policy review.',409)
+        evidence.extend(private_sources)
     if 'catalog' in reads:
         evidence+=[{'id':'rs-'+p['id'].lower(),'title':p['name'],'content':json.dumps(p,ensure_ascii=False),'data_class':'synthetic_business','url':'/packages/'+p['id'],'publisher':'LabClear demo','reviewed_at':'2026-10-05'} for p in biz['catalog']['packages'] if p.get('active',True)]
     if 'branches' in reads:evidence.append({'id':'rs-branches','title':'Demo centers','content':json.dumps(biz['branches']),'data_class':'synthetic_business','url':'/centers','publisher':'LabClear demo'})
@@ -192,8 +212,24 @@ async def run(message,context,emit=None):
     if role_report:await step('report','done','Using your confirmed report',f"{len(role_report.get('fields',[]))} values, compared only with the ranges printed on it")
     payload={'USER_TEXT':message,'ROLE':role,'REPORT':role_report,'PREVIOUS_REPORTS':context.get('previous_reports',[]) if role_report else [],'EVIDENCE':evidence,'ACTION':action,'decision':plan.model_dump(exclude={'ui'}),'customer_state':customer_state}
     writer=_agent(dot['id'])
+    instructions=ANSWER
+    if settings.RUNTIME_SKILLS_ENABLED:
+        from services.runtime_skills import bundle
+        instructions += '\n\n' + bundle('medical' if role_report else 'general')['instructions']
+    if settings.MEDICAL_HARNESS_ENABLED and role_report:
+        from services.model_harness import analyze, packet_from_payload
+        from services.providers import runtime
+        if not role_report.get('sample'):
+            raise transport.ConversationError('data_policy', 'The new medical pipeline is limited to built-in synthetic reports pending data approval.',409)
+        if not runtime('agent_thai_composer').ready:
+            raise transport.ConversationError('provider_not_configured', 'Configure the Thai composer before enabling medical analysis.')
+        packet=packet_from_payload(payload)
+        analysis=await analyze(packet)
+        payload['VALIDATED_ANALYSIS']=analysis.model_dump()
+        payload['ORIGINAL_EVIDENCE_PACKET']=packet.model_dump()
+        writer='agent_thai_composer'
     await step('draft','running','Writing the answer',_label(writer))
-    draft=[{'role':'system','content':ANSWER},*history,{'role':'user','content':json.dumps(payload,ensure_ascii=False)}]
+    draft=[{'role':'system','content':instructions},*history,{'role':'user','content':json.dumps(payload,ensure_ascii=False)}]
     answer=await complete_json(draft,Answer,step='answer',max_tokens=4000,slot=writer)
     plan_prices=[p['price_thb'] for p in plan_catalog()['plans']]
     # At most ONE rewrite across price, citation, role, prose and reviewer checks.
@@ -239,5 +275,5 @@ async def run(message,context,emit=None):
     await step('safety_out','running','Checking the answer for safety',_label('guard'))
     await guard.check(answer.reply+'\n'+'\n'.join(answer.followups)+'\n'+json.dumps(action,ensure_ascii=False)+'\n'+plan.reason,'output',message)
     await step('safety_out','done','The answer passed the safety check',_label('guard'))
-    sources=[{k:e.get(k) for k in ['id','title','url','publisher','data_class']} for e in evidence if e['id'] in answer.evidence_ids]
+    sources=[{k:e.get(k) for k in ['id','title','url','publisher','data_class','version','section','sha256']} for e in evidence if e['id'] in answer.evidence_ids]
     return {'reply':answer.reply,'sources':sources,'observations':[o.model_dump() for o in answer.observations],'followups':answer.followups,'action':action,'retrieval':retrieval,'dot':{'id':dot['id'],'name':dot['name']},'rerouted_from':rerouted,'ui':ui,'checks':{'rewrite_count':attempt,'input_safety':'passed','citations_validated':len(sources),'independent_review':'passed','output_safety':'passed','observations':len(answer.observations)},'trace':trace}

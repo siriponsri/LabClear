@@ -1,3 +1,16 @@
+<!-- ceo-upgrade-20261008 -->
+
+## Upgrade API additions
+
+The gated `/api/business/organization-documents` family adds membership provisioning,
+upload, metadata listing, POST search, preview/download and lifecycle actions.
+The [method/access table](ceo-upgrade/IMPLEMENTATION.md#organization-references)
+is authoritative. `/api/business/staff/ai-providers/registry` is manager-only
+read-only proposal metadata; it never changes settings or calls a provider.
+Default-off pages are `/preview/landing`, `/organization-references`, `/hospital-links`.
+
+The 2026-10-08 upgrade is a disabled-by-default software candidate. Its current scope, evidence, configuration and remaining owner gates are recorded in the [upgrade index](ceo-upgrade/README.md). Earlier release counts and screenshots below are historical; they do not establish live model or clinical validation.
+
 # API reference
 
 All endpoints are under `/api/business` unless noted. Requests that change state need the session cookie and the `X-Business-CSRF` header from `GET /session` (or `/login`). Errors return `{"code": "...", "message": "..."}` with an HTTP status. The interactive schema is at `/docs` when the app runs.

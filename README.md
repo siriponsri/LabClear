@@ -1,3 +1,7 @@
+<!-- ceo-upgrade-20261008 -->
+
+The 2026-10-08 upgrade is a disabled-by-default software candidate. Its current scope, evidence, configuration and remaining owner gates are recorded in the [upgrade index](docs/ceo-upgrade/README.md). Earlier release counts and screenshots below are historical; they do not establish live model or clinical validation.
+
 <div align="center">
 
 <br>

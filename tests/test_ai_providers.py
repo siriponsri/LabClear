@@ -232,7 +232,7 @@ def test_agents_share_the_language_model_until_given_their_own(monkeypatch):
     c = manager()
     assert save(c).status_code == 200  # shared language model: OpenAI
     view = c.get("/api/business/staff/ai-providers").json()
-    assert set(view["agents"]) == {"plan", "advisor", "explainer", "review"}
+    assert set(view["agents"]) == {"plan", "advisor", "explainer", "review", "medical_analyzer", "thai_composer"}
     assert view["agents"]["review"]["source"] == "shared" and view["agents"]["review"]["preset"] == "openai"
     assert providers.runtime("agent_review").api_key == KEY
     r = save(c, "agent_review", preset="anthropic", api_key="sk-ant-review-0123456789")

@@ -21,6 +21,7 @@ from __future__ import annotations
 
 import ipaddress
 import json
+import re
 import threading
 import time
 from dataclasses import dataclass
@@ -41,6 +42,12 @@ AGENTS = {
     "explainer": ("Report Explainer", "Writes explanations of the values in a confirmed lab report."),
     "review": ("Reviewer", "Checks every draft against its sources before it is shown. A different model family makes this check more independent."),
 }
+
+UPGRADE_AGENTS = {
+    'medical_analyzer': ('Medical analyzer', 'Opt-in typed analysis of confirmed values; no default provider or key.'),
+    'thai_composer': ('Thai composer', 'Opt-in communication of validated analysis; existing review and guards still apply.'),
+}
+AGENTS.update(UPGRADE_AGENTS)
 
 
 def agent_slot(agent: str) -> str:
@@ -133,6 +140,7 @@ class RuntimeProvider:
     enabled: bool
     price: dict
     source: str          # "app" (saved by a manager) or "environment"
+    provider_allowlist: tuple[str, ...] = ()
 
     @property
     def ready(self) -> bool:
@@ -201,6 +209,9 @@ def runtime(slot: str, tx=None) -> RuntimeProvider:
     if slot not in SLOTS and not is_agent(slot):
         raise ProviderSetupError(f"Unknown AI slot: {slot}")
     saved = _read_saved(tx).get(slot)
+    if is_agent(slot) and slot[6:] in UPGRADE_AGENTS and not saved:
+        return RuntimeProvider(slot, 'openrouter', 'OpenRouter', 'openai_chat', 'https://openrouter.ai/api/v1',
+                               '', '', settings.LLM_TIMEOUT_SECONDS, False, {'input_per_mtok': 0, 'output_per_mtok': 0}, 'not_configured')
     if is_agent(slot) and not saved:
         # Shared: the agent uses the language model settings.
         shared = runtime("llm", tx)
@@ -218,7 +229,8 @@ def runtime(slot: str, tx=None) -> RuntimeProvider:
     timeout = {"llm": settings.LLM_TIMEOUT_SECONDS, "vision": settings.VISION_TIMEOUT_SECONDS,
                "guard": settings.GUARD_TIMEOUT_SECONDS}[kind]
     return RuntimeProvider(slot, preset.id, preset.label, preset.protocol, base_url, model,
-                           (row.get("api_key") or "").strip(), timeout, bool(row.get("enabled", True)), price, source)
+                           (row.get("api_key") or "").strip(), timeout, bool(row.get("enabled", True)), price, source,
+                           tuple(row.get('provider_allowlist', [])))
 
 
 # ------------------------------------------------------------ admin view and updates
@@ -231,6 +243,9 @@ def _view(p: RuntimeProvider, label: str) -> dict:
     return {"label": label, "source": p.source, "preset": p.preset, "provider_label": p.label, "model": p.model,
             "base_url": p.base_url if p.preset == "custom" else "", "enabled": p.enabled,
             "key": _mask(p.api_key), "ready": p.ready,
+            "config_status": "DISABLED" if not p.enabled else ("SCHEMA_CHECK_ONLY" if p.ready else "NOT_CONFIGURED"),
+            "live_test_status": "NOT_RUN", "network_enabled": settings.PROVIDER_NETWORK_ENABLED,
+            "provider_allowlist": list(p.provider_allowlist),
             "price_in": p.price["input_per_mtok"], "price_out": p.price["output_per_mtok"]}
 
 
@@ -262,12 +277,19 @@ def _check_custom_url(url: str) -> str:
 
 
 def save(tx, slot: str, preset_id: str, model: str, api_key: str | None, base_url: str,
-         enabled: bool, price_in: float | None, price_out: float | None) -> None:
+         enabled: bool, price_in: float | None, price_out: float | None, provider_allowlist=None) -> None:
     if slot not in SLOTS and not is_agent(slot):
         raise ProviderSetupError("Unknown AI slot.")
     preset = PRESETS.get(preset_id)
     if not preset or kind_of(slot) not in preset.slots:
         raise ProviderSetupError("This provider cannot be used for this slot.")
+    if is_agent(slot) and slot[6:] in UPGRADE_AGENTS and (not model.strip() or price_in is None or price_out is None):
+        raise ProviderSetupError("New roles require an exact model and explicit verified input/output prices; defaults are not live approval.")
+    provider_allowlist = provider_allowlist or []
+    if len(provider_allowlist) > 10 or any(not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9_./-]{0,99}', p) for p in provider_allowlist):
+        raise ProviderSetupError('Invalid provider endpoint allowlist.')
+    if is_agent(slot) and slot[6:] in UPGRADE_AGENTS and preset_id == 'openrouter' and not provider_allowlist:
+        raise ProviderSetupError('New OpenRouter roles require explicitly reviewed provider endpoint IDs.')
     data = dict(_read_saved(tx))
     previous = data.get(slot) or {}
     key = (api_key or "").strip()
@@ -279,6 +301,8 @@ def save(tx, slot: str, preset_id: str, model: str, api_key: str | None, base_ur
         raise ProviderSetupError("The API key looks invalid (it contains spaces or is too long).")
     row = {"preset": preset_id, "model": (model or "").strip()[:120], "api_key": key, "enabled": bool(enabled),
            "base_url": _check_custom_url(base_url.strip()) if preset_id == "custom" else "", "updated_at": time.time()}
+    if provider_allowlist:
+        row['provider_allowlist'] = provider_allowlist
     if preset_id == "custom" and not row["base_url"]:
         raise ProviderSetupError("Enter the endpoint URL for the custom provider.")
     if preset_id == "custom" and not row["model"]:

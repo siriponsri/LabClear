@@ -207,5 +207,6 @@ def test_provider_rejection_names_service_and_status_without_secrets(caplog):
     with caplog.at_level("WARNING", logger="labclear.provider"):
         err = rejection_error("guard", 402, '{"error":{"message":"Insufficient credits","key":"sk-or-v1-abcdef123456"}}', "Llama Guard 4 (OpenRouter)")
     assert "OpenRouter" in err.message and "HTTP 402" in err.message and "credit" in err.message
-    assert "sk-or-v1-abcdef123456" not in caplog.text and "Insufficient credits" in caplog.text
+    assert "sk-or-v1-abcdef123456" not in caplog.text and "status=402" in caplog.text
+    assert "Insufficient credits" not in caplog.text  # provider bodies may echo private input
     assert "HTTP 401" in rejection_error("llm", 401, "", "Typhoon").message and "Typhoon" in rejection_error("llm", 401, "", "Typhoon").message

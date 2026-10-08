@@ -35,8 +35,9 @@ def rejection_error(slot: str, status: int, detail: str = "", label: str = "") -
     """Name the service and HTTP status so the owner can fix the right setting; never echo secrets."""
     name = f"The {_name(slot)}" + (f" ({label})" if label else "")
     hint = _STATUS_HINTS.get(status, "server error" if status >= 500 else "request refused")
-    snippet = _SECRETISH.sub("[redacted]", " ".join(detail.split()))[:300]
-    log.warning("provider_rejected slot=%s status=%s detail=%s", slot, status, snippet)
+    # Provider errors can echo prompts, reports or credentials in arbitrary formats.
+    # Keep metadata only: redacting key-like strings cannot protect Guest content.
+    log.warning("provider_rejected slot=%s status=%s", slot, status)
     return ConversationError("provider_rejected",
         f"{name} rejected the request (HTTP {status}: {hint}). Check its key, model and usage limit.", 502)
 
@@ -150,12 +151,19 @@ async def complete(messages: list[dict], *, slot: str = "llm", json_mode: bool =
         raise ConversationError("provider_not_configured", f"{provider.label} cannot be used for this step.")
     headers = {"Authorization": f"Bearer {provider.api_key}", "Content-Type": "application/json"}
     payload: dict[str, Any] = {"model": provider.model, "messages": messages, "stream": False}
+    from services.providers import UPGRADE_AGENTS
+    if provider.preset == 'openrouter' and slot.removeprefix('agent_') in UPGRADE_AGENTS:
+        if not provider.provider_allowlist:
+            raise ConversationError('data_policy', 'Configure reviewed OpenRouter endpoint IDs for this role.', 409)
+        payload['provider'] = {'only': list(provider.provider_allowlist), 'allow_fallbacks': False,
+                               'data_collection': 'deny', 'zdr': True}
     # OpenAI's current models take max_completion_tokens; other compatible APIs use max_tokens.
     payload["max_completion_tokens" if provider.preset == "openai" else "max_tokens"] = max_tokens
     endpoint = provider.base_url.rstrip("/") + "/chat/completions"
     if slot == "guard":
         payload["temperature"] = 0
-    if json_mode:
+    from services.model_registry import supports_response_format
+    if json_mode and supports_response_format(provider.model):
         payload["response_format"] = {"type": "json_object"}
     if provider.protocol == "anthropic_messages":
         payload = {"model": provider.model, "max_tokens": max_tokens,
