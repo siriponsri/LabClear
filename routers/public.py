@@ -1,4 +1,7 @@
-"""Read-only data for the Next.js website (web/). No session, no personal data, no model calls.
+"""Read-only data for the Next.js website (web/). No personal data, no model calls.
+
+Every endpoint is session-free except /membership, which reports only the caller's own
+organization role (Codex membership) so the website does not have to probe with a 403.
 
 Integration 4.0: adapted from the Claude 4.0.0 branch. Every page shows the same catalog,
 centers, policies and reviewed sources the assistant reads. Feature flags are reported as
@@ -11,7 +14,7 @@ import json
 import os
 from pathlib import Path
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Request
 
 from config import settings
 from services import business_dots, business_plans
@@ -143,3 +146,19 @@ async def hospital_links():
     data = json.loads((ROOT / "business_data/hospital_links.json").read_text(encoding="utf-8"))
     return {"version": data.get("version", ""), "mode": data.get("mode", ""), "affiliation": data.get("affiliation", ""),
             "offers": catalog()}
+
+
+@router.get("/membership")
+async def membership(request: Request):
+    """The caller's own organization role (reader/editor) or none. Never another user's data."""
+    if not settings.ORG_DOCUMENTS_ENABLED:
+        return {"enabled": False, "member": False, "role": ""}
+    from routers.business import session_row
+    with db.transaction() as tx:
+        try:
+            user, _ = session_row(tx, request, False)
+        except ConversationError:
+            return {"enabled": True, "member": False, "role": ""}
+        data = user["data"]
+        member = not user["id"].startswith("guest_") and bool(data.get("organization_id"))
+        return {"enabled": True, "member": member, "role": data.get("organization_role", "") if member else ""}

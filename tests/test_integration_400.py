@@ -8,7 +8,7 @@ from fastapi.testclient import TestClient
 
 from config import settings
 from main import app
-from tests.test_business_v3 import client, isolated  # noqa: F401
+from tests.test_business_v3 import client, isolated, promote  # noqa: F401
 
 SITE = '/api/business/site'
 
@@ -95,3 +95,20 @@ def test_ai_request_check_accepts_only_the_listed_web_origin(monkeypatch):
     samples.authorize(_request(web))
     with pytest.raises(ConversationError):
         samples.authorize(_request('https://evil.invalid'))
+
+
+def test_membership_reports_only_the_callers_own_role(monkeypatch):
+    anonymous = TestClient(app)
+    assert anonymous.get(SITE + '/membership').json() == {'enabled': False, 'member': False, 'role': ''}
+    monkeypatch.setattr(settings, 'ORG_DOCUMENTS_ENABLED', True)
+    assert anonymous.get(SITE + '/membership').json() == {'enabled': True, 'member': False, 'role': ''}
+    guest = client(False)
+    assert guest.get(SITE + '/membership').json()['member'] is False
+    admin = client(email='manager@synthetic.invalid')
+    promote(admin)
+    member, other = client(email='member@synthetic.invalid'), client(email='other@synthetic.invalid')
+    uid = member.get('/api/business/session').json()['user']['id']
+    assert admin.put('/api/business/organization-documents/membership', json={'user_id': uid, 'organization_id': 'org_a', 'role': 'editor'}).status_code == 200
+    body = member.get(SITE + '/membership').json()
+    assert body == {'enabled': True, 'member': True, 'role': 'editor'} and 'org_a' not in str(body)
+    assert other.get(SITE + '/membership').json()['member'] is False
