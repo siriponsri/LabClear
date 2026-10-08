@@ -1,0 +1,19 @@
+/* 4.0.0 additions for the Next.js app. Everything else is the 3.x design system, unchanged. */
+.ws-root{min-height:100dvh}
+
+/* Browser surfaces carry the palette too (selection, caret, scrollbars, focus). */
+::selection{background:var(--color-accent-subtle);color:var(--color-fg)}
+:root{caret-color:var(--color-accent);accent-color:var(--color-accent);scrollbar-color:var(--color-border-strong) transparent}
+:focus-visible{outline:2px solid var(--color-focus);outline-offset:2px}
+
+/* Guest privacy notice (CEO request 2): clear, calm, never hidden. */
+.guest-note{display:flex;gap:10px;align-items:flex-start;padding:10px 14px;border:1px solid var(--color-accent-border);border-radius:var(--radius-lg);background:var(--color-accent-subtle);color:var(--color-fg);font-size:var(--text-sm);line-height:1.6}
+.guest-note svg{flex:none;width:18px;height:18px;margin-top:3px;color:var(--color-accent)}
+.guest-note .link-btn{font-weight:600}
+.guest-note p{margin:0}
+
+/* Press feedback on every pressable control. */
+.btn,.chip,.icon-btn,.send-btn,.nav-item{transition:transform 140ms var(--ease-out),background-color var(--dur-base) var(--ease-out),color var(--dur-base) var(--ease-out),border-color var(--dur-base) var(--ease-out)}
+.btn:active:not(:disabled),.chip:active:not(:disabled),.icon-btn:active:not(:disabled),.send-btn:active:not(:disabled){transform:scale(.97)}
+@media (prefers-reduced-motion:reduce){*{animation-duration:1ms!important;transition-duration:1ms!important;scroll-behavior:auto!important}}
+.workspace-header .avatar-button{white-space:nowrap;flex:none}

@@ -1,0 +1,113 @@
+/* Service desk (/staff) additions for 4.0.0. The frame, sidebar, inbox, KPI and heat-strip rules
+   live in workspace.css (3.x, unchanged); this file only adds what the new views need. */
+
+/* ------------------------------------------------------------ frame */
+.sd-icon{flex:none;display:inline-block;vertical-align:-3px}
+.side-nav .nav-item>span:first-child{text-align:left;line-height:1.45}
+.sd-scrim{display:none}
+@media (max-width:860px){
+  .sd-scrim{display:block;position:fixed;inset:0;z-index:45;background:var(--color-scrim);opacity:0;pointer-events:none;transition:opacity var(--dur-slow) var(--ease-out)}
+  .ws-root.staff.sd-menu-open .sd-scrim{opacity:1;pointer-events:auto}
+}
+/* Long Thai labels wrap instead of overflowing narrow screens. */
+.ws-root.staff #content .btn{white-space:normal;text-align:center;line-height:1.35}
+.ws-root.staff #content .chip{line-height:1.35}
+.sd-footnote{margin-top:12px}
+.sd-gap{margin:-8px 0 12px}
+.sd-pad{padding:16px 0}
+.sd-bad{color:var(--color-bad)}
+.sd-break{overflow-wrap:anywhere}
+.sd-row-tight{gap:6px}
+.sd-section-title{font-size:var(--text-lg);margin-top:16px}
+.dash-grid>section>h3+p{margin-top:-2px}
+.decide>.small{padding:12px 20px 16px}
+.ws-root.staff table.heat th[scope=row]{white-space:normal;min-width:120px;line-height:1.4}
+.staff-thread .card h4{margin-bottom:4px}
+.staff-messages:focus-visible,.sd-passages:focus-visible{outline:2px solid var(--color-focus);outline-offset:2px}
+
+/* ------------------------------------------------------------ tables with a phone card layout */
+table.data .sd-cell-title strong{font-weight:600}
+.sd-cell-stack{display:grid;gap:6px;justify-items:start}
+.sd-num-input{max-width:132px}
+table.data td .check{align-items:center}
+table.data td .check input{margin-top:0}
+@media (max-width:640px){
+  .table-wrap:has(>table.sd-table){border:0;background:transparent;overflow:visible;border-radius:0}
+  table.sd-table,table.sd-table tbody,table.sd-table tr{display:block;width:100%}
+  .table-wrap>table.data.sd-table{min-width:0}
+  table.sd-table thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  table.sd-table tr{border:1px solid var(--color-border);border-radius:var(--radius-lg);background:var(--color-surface);padding:4px 16px;margin-bottom:10px}
+  table.sd-table td{display:grid;grid-template-columns:minmax(92px,36%) minmax(0,1fr);gap:12px;align-items:baseline;padding:10px 0;border-bottom:1px solid var(--color-border);text-align:left}
+  table.sd-table td.n{text-align:left}
+  table.sd-table tr td:last-child{border-bottom:0}
+  table.sd-table td::before{content:attr(data-label);color:var(--color-fg-muted);font-size:var(--text-xs);font-weight:500;line-height:1.5}
+  table.sd-table td.sd-cell-title,table.sd-table td[data-label=""],table.sd-table td:not([data-label]){display:block}
+  table.sd-table td.sd-cell-title::before,table.sd-table td[data-label=""]::before,table.sd-table td:not([data-label])::before{display:none}
+  table.sd-table td.sd-cell-title{font-weight:600;font-size:var(--text-md);padding-top:12px}
+  table.sd-table td.sd-cell-title .sub{font-weight:400}
+  table.data.sd-table tr.clickable:hover td{background:transparent}
+  .sd-num-input{max-width:none}
+}
+
+/* ------------------------------------------------------------ AI providers */
+.sd-ai>.card{padding:20px}
+.sd-ai-table .sd-model{overflow-wrap:anywhere}
+.sd-two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;align-items:start}
+@media (max-width:1100px){.sd-two{grid-template-columns:minmax(0,1fr)}}
+.sd-budget-figure{display:flex;gap:4px 12px;align-items:baseline;flex-wrap:wrap}
+.sd-budget-figure strong{font:600 var(--text-3xl)/1.1 var(--font-sans);letter-spacing:-.03em}
+.sd-meter{height:10px;border-radius:var(--radius-pill);background:var(--color-surface-2);overflow:hidden}
+.sd-meter span{display:block;height:100%;background:var(--color-accent);border-radius:inherit;transition:width var(--dur-slow) var(--ease-out)}
+.sd-issues{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.sd-issues li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px;align-items:start;line-height:1.55}
+.sd-issues .sd-icon{color:var(--color-warn);margin-top:3px}
+.sd-slot{padding:20px}
+.sd-edit{border-top:1px solid var(--color-border);padding-top:12px;margin-top:4px}
+.sd-edit>summary{display:inline-flex;align-items:center;gap:8px;cursor:pointer;list-style:none;font:500 var(--text-sm) var(--font-sans);color:var(--color-fg);padding:6px 10px 6px 6px;margin-left:-6px;border-radius:var(--radius-sm);transition:background-color var(--dur-fast) var(--ease-out)}
+.sd-edit>summary::-webkit-details-marker{display:none}
+.sd-edit>summary:hover{background:var(--color-surface-2)}
+.sd-edit>summary .sd-icon{transition:transform var(--dur-base) var(--ease-out)}
+.sd-edit[open]>summary .sd-icon{transform:rotate(90deg)}
+.sd-edit[open]>summary{margin-bottom:12px}
+.sd-agent-controls{align-items:end}
+.sd-agent-controls .field{flex:1;min-width:220px;max-width:360px}
+.agent-row .badge{white-space:normal;line-height:1.5}
+.ai-form .form-actions a{display:inline-flex;align-items:center;gap:4px}
+
+/* ------------------------------------------------------------ organizations */
+.sd-org .record-head h3{font-size:var(--text-lg)}
+.sd-org.inactive .record-head h3{color:var(--color-fg-muted)}
+.sd-org-body{display:grid;grid-template-columns:minmax(220px,auto) minmax(0,1fr);gap:16px 32px;align-items:start}
+.sd-code-box{display:grid;gap:6px;justify-items:start}
+.sd-code{font:600 var(--text-xl)/1.2 var(--font-mono);letter-spacing:.08em;padding:6px 12px;border-radius:var(--radius-sm);border:1px dashed var(--color-border-strong);background:var(--color-bg-subtle);color:var(--color-fg)}
+.sd-copy{min-height:32px;padding:6px 12px}
+.sd-org-stats{display:flex;flex-wrap:wrap;gap:12px 28px;margin:0;font-family:var(--font-sans)}
+.sd-org-stats div{display:grid;gap:2px}
+.sd-org-stats dt{font-size:var(--text-xs);color:var(--color-fg-muted)}
+.sd-org-stats dd{margin:0;font-weight:600;font-size:var(--text-md)}
+.sd-members{border-top:1px solid var(--color-border);padding-top:16px;margin-top:4px}
+.sd-member-form{display:grid;grid-template-columns:minmax(0,1fr) minmax(180px,260px) auto;gap:12px;align-items:end}
+.sd-member-form .sd-span{grid-column:1/-1}
+@media (max-width:760px){
+  .sd-org-body{grid-template-columns:minmax(0,1fr)}
+  .sd-member-form{grid-template-columns:minmax(0,1fr)}
+  .sd-member-form .btn{justify-self:start}
+}
+
+/* ------------------------------------------------------------ document review */
+.sd-filter-note{display:flex;gap:4px 8px;flex-wrap:wrap;align-items:baseline;margin:-4px 0 16px;color:var(--color-fg-muted)}
+.sd-review .ticket-btn strong{overflow-wrap:anywhere}
+.sd-flag-callout{display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px;align-items:start;line-height:1.55}
+.sd-flag-callout .sd-icon{margin-top:2px}
+.sd-passages{list-style:none;margin:0;padding:0;max-height:min(62vh,640px);overflow:auto;border:1px solid var(--color-border);border-radius:var(--radius-lg);background:var(--color-surface);overscroll-behavior:contain}
+.sd-passage{display:grid;grid-template-columns:32px minmax(0,1fr);gap:12px;padding:14px 16px;border-bottom:1px solid var(--color-border)}
+.sd-passage:last-child{border-bottom:0}
+.sd-pnum{font:500 12px/1.9 var(--font-mono);color:var(--color-fg-soft);text-align:right}
+.sd-pbody{display:grid;gap:8px;min-width:0}
+.sd-ptext{margin:0;white-space:pre-wrap;overflow-wrap:anywhere;font-size:var(--text-sm);line-height:1.75;color:var(--color-fg)}
+.sd-passage.flagged{background:var(--color-bad-bg)}
+.sd-passage.flagged .sd-ptext{color:var(--color-fg-muted);text-decoration:line-through;text-decoration-color:color-mix(in oklch,var(--color-bad) 55%,transparent);text-decoration-thickness:1px}
+.sd-passage.flagged .sd-pnum{color:var(--color-bad)}
+.sd-flag{display:inline-flex;align-items:center;gap:6px;justify-self:start;margin:0;padding:2px 10px;border-radius:var(--radius-pill);border:1px solid var(--color-bad-border);background:var(--color-surface);color:var(--color-bad);font:600 12.5px/1.6 var(--font-sans)}
+.sd-review-form{padding:16px;border:1px solid var(--color-border);border-radius:var(--radius-lg);background:var(--color-bg-subtle)}
+.sd-review-form textarea.input{min-height:72px}

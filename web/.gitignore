@@ -1,0 +1,10 @@
+node_modules/
+.next/
+.open-next/
+.wrangler/
+.dev.vars*
+next-env.d.ts
+data/seed/
+*.tsbuildinfo
+test-results/
+!.dev.vars.example

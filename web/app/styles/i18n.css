@@ -1,0 +1,51 @@
+/* Locale-only adjustments: preserve LabClear's existing layout, palette and DNA. */
+.language-switch{display:inline-flex;flex:none;align-items:center;padding:2px;border:1px solid var(--color-border-strong);border-radius:var(--radius-pill);gap:1px}
+.language-switch button{border:0;background:transparent;color:var(--color-fg-muted);border-radius:var(--radius-pill);font:500 12px/1 var(--font-sans);padding:10px 9px;min-height:34px;cursor:pointer}
+.language-switch button[aria-pressed=true]{background:var(--color-primary);color:var(--color-on-primary)}
+:lang(th) h1,:lang(th) h2,:lang(th) h3,:lang(th) h4,:lang(th) .display,:lang(th) .deck-cap strong,:lang(th) .feature-copy h3{letter-spacing:0;line-height:1.4;word-break:normal;overflow-wrap:normal}
+:lang(th) p,:lang(th) li,:lang(th) label{word-break:normal;overflow-wrap:break-word;line-height:1.75}
+:lang(th) .hero-title{font-size:clamp(2.4rem,4.5vw + .5rem,4.6rem);max-width:100%;line-height:1.45}
+[data-hero-headline] [data-headline-line]{display:block}
+:lang(th) [data-headline-line]{white-space:nowrap}
+:lang(th) .hero-lede{max-width:52ch;text-wrap:pretty}
+:lang(th) .feature-copy h3{max-width:24ch}
+:lang(th) .btn,:lang(th) .nav-item,:lang(th) .badge{letter-spacing:0;line-height:1.5}
+:lang(th) .deck-cap strong{font-size:clamp(1.3rem,1.2vw + .8rem,1.85rem)}
+:lang(th) .statement-text{line-height:1.6}
+:lang(th) .eyebrow,:lang(th) .band-label{font-family:var(--font-sans)}
+.nav-bar{gap:12px}.nav-actions{gap:6px;min-width:0}
+@media(min-width:961px) and (max-width:1180px){.main-nav>a,.nav-drop-btn{padding-inline:7px}.nav-signin{padding-inline:6px}.nav-cta{display:none}}
+@media(max-width:600px){
+ :lang(th) .hero-title{font-size:clamp(1.95rem,7.6vw,2.8rem)}
+ :lang(th) .hero-inner{gap:20px}
+ :lang(th) .deck-tabs button{padding:8px 9px;gap:5px}
+ .language-switch button{padding:8px 7px;min-height:32px}
+ .header-actions{gap:5px}
+ :lang(th) .pill-badge{max-width:100%;white-space:normal;text-align:center;flex-wrap:wrap;line-height:1.65}
+ :lang(th) .btn.lg{max-width:100%;white-space:normal;text-wrap:balance}
+ :lang(th) .feature-copy h3{max-width:none}
+}
+@media(max-width:360px){.nav-search,.nav-account{display:none}.workspace-header .brand{font-size:16px}.workspace-header .brand::before{width:20px;height:20px}.workspace-header{gap:6px}}
+
+@media(max-width:600px){:lang(th) .pill-badge{flex-wrap:nowrap;font-size:11px;gap:6px}:lang(th) .pill-badge>[data-i18n-format]{flex:1;min-width:0}:lang(th) .pill-badge>svg{flex:none}:lang(th) .hero-credit{max-width:32ch;margin-inline:auto}}
+
+@media(max-width:600px){.nav-account .nav-signin{padding-inline:4px;font-size:12px}.nav-actions{gap:2px}.nav-bar .brand{flex-shrink:0}}
+
+:lang(th) .welcome h2{max-width:none;white-space:pre-line}
+:lang(th) .welcome-steps li{max-width:100%;align-items:flex-start}
+:lang(th) .welcome-steps li>span:first-child{flex:none}
+:lang(th) .workspace-header #account-open{white-space:nowrap}
+
+@media(max-width:640px){
+ .workspace-header .header-actions{gap:2px}
+ .workspace-header .theme-toggle,.workspace-header .icon-btn,.workspace-header .avatar-button{width:32px;min-width:32px;padding:0;flex:none}
+ .workspace-header .avatar-button .signin-text{display:none}
+ .workspace-header .avatar-button .avatar{display:inline-grid}
+ .workspace-header .status-pill{flex:none}
+}
+@media(max-width:360px){
+ .workspace-header{padding-inline:8px;gap:4px}
+ .workspace-header .language-switch button{font-size:11px;padding-inline:6px}
+ .workspace-header .theme-toggle,.workspace-header .icon-btn,.workspace-header .avatar-button{width:28px;min-width:28px}
+ .workspace-header .status-pill{width:24px}
+}
