@@ -59,6 +59,71 @@ connected through `DATABASE_URL`.
    providers**, choose providers, paste keys and press **Test connection**. See
    [../ai-providers.md](../ai-providers.md).
 
+## Deploying a release from a bundle
+
+For a release delivered as a git bundle (the session that built it cannot push). Windows PowerShell;
+on macOS/Linux use `sha256sum` instead of `Get-FileHash` and `curl` instead of `curl.exe`.
+
+1. **Import and check.**
+
+   ```powershell
+   git fetch origin
+   git rev-parse origin/main                       # must equal the bundle's base (3c15550 for rc3)
+   Get-FileHash .\LabClear-4.0.0-rc3-resilience.bundle -Algorithm SHA256   # compare with the .sha256 file
+   git bundle verify .\LabClear-4.0.0-rc3-resilience.bundle
+   git fetch .\LabClear-4.0.0-rc3-resilience.bundle integration/labclear-4.0-rc1:integration/labclear-4.0-rc1
+   git switch integration/labclear-4.0-rc1
+   ```
+
+2. **Run the checks locally** (no keys, no network):
+
+   ```powershell
+   python scripts/offline_check.py pytest -q
+   python scripts/benchmark_resilience.py --offline --seed 20261010 --json-out eval_runs/resilience/resilience-benchmark.json
+   render blueprints validate render.yaml          # Render CLI, after `render login`
+   ```
+
+3. **Prepare Render before merging.** In the dashboard, open the `labclear` service and confirm it is
+   managed by a Blueprint for this repository (**Blueprints** list). If it is, the merge syncs
+   `render.yaml` (health check `/ready`, resilience variables). If it is not, either connect it with
+   **New → Blueprint** (check that the plan updates `labclear`, never creates a second service), or set
+   **Settings → Health Check Path** to `/ready` and add the resilience variables by hand. In both
+   cases `DATABASE_URL` and `BUSINESS_DATA_KEY` must be set and the database reachable, or `/ready`
+   stays 503 and the new deploy never goes live (the old one keeps serving).
+
+4. **Push and merge** (this deploys: `autoDeployTrigger: commit` on `main`).
+
+   ```powershell
+   git push origin integration/labclear-4.0-rc1
+   gh pr create --base main --head integration/labclear-4.0-rc1 --title "LabClear 4.0.0-rc3" --body "See docs/integration/CLAUDE_INTEGRATION_REPORT.md"
+   gh pr merge --merge                             # after review
+   ```
+
+5. **Follow the deploy with the Render CLI.**
+
+   ```powershell
+   render login                                    # or $env:RENDER_API_KEY = "rnd_..." for scripts
+   render workspace set
+   render services -o json                         # note the labclear service ID (srv-...)
+   render deploys list srv-XXXX -o json            # the new deploy, its commit and status
+   render logs -r srv-XXXX --tail                  # startup, then {"event":"startup",...}
+   ```
+
+6. **Check the release.**
+
+   ```powershell
+   curl.exe -s https://labclear.onrender.com/health        # "commit" = the merged SHA
+   curl.exe -si https://labclear.onrender.com/ready        # 200, checks all ok, X-Request-ID header
+   ```
+
+   Then send one synthetic chat message and read one sample report on `/app`, and open
+   **Process Explainability**. A `live` deploy shows the deployment succeeded, not that every AI flow
+   works.
+
+7. **Roll back if needed**: dashboard **Events → Rollback** to the last good deploy, or
+   `render deploys create srv-XXXX --commit <previous-sha> --wait --confirm`. Then revert the faulty
+   merge on `main`, because the next commit deploys again.
+
 ## Migrating from the two-service setup
 
 Earlier release candidates could run a second Render web service, `labclear-web`, for a Next.js

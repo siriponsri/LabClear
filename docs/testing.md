@@ -164,12 +164,13 @@ Other files: `pytest.txt` (Python suite output), `demo-rollout.json` (synthetic 
 
 ### LIVE_FREE status
 
-Implemented, not run. No provider credentials were provided. The preflight recorded on 2026-10-09 ([`live-preflight.json`](evidence/current/live-preflight.json)) is `BLOCKED` with no inference call:
+Implemented, not run. No provider credentials were provided. The preflight re-run on the clean candidate `8445db6` ([`live-preflight.json`](evidence/current/live-preflight.json)) is `BLOCKED` with no inference call:
 
-- `WORKING_TREE_DIRTY`: commit the candidate first so results map to one commit.
 - `POLICY_NOT_REVIEWED` and `DATA_POLICY_NOT_REVIEWED`: the policy needs `reviewed_by`, `reviewed_at`, `account_label` and a data-terms review.
 - `FREE_STATUS_UNVERIFIED` for the Typhoon text model, Typhoon OCR and iApp OpenThai-SystemOne endpoints.
 - `NO_CREDENTIALS`: `LABCLEAR_TRIAL_TYPHOON_API_KEY` and `LABCLEAR_TRIAL_IAPP_API_KEY` are not set.
+
+The providers' public pages were checked on 2026-10-10 ([provider-free-tier-check.md](evidence/current/provider-free-tier-check.md)): the Typhoon text model is listed as free for light usage (5 requests/s, 200/min), Typhoon OCR's free status is not published (2 requests/s, 20/min), and the iApp guard is credit-based. The policy's rate limits match; the free status still has to be confirmed per account.
 
 To run it: copy [`eval/policies/free_only.example.json`](../eval/policies/free_only.example.json), fill in the review fields, mark each endpoint `VERIFIED_FREE_FOR_THIS_ACCOUNT` with a `verified_at` date no older than 7 days and an `evidence` note, set the two keys in the shell environment (never in files), commit, run the preflight, then the `smoke` suite, then `coursework` with profiles A, B and C. A blocked run exits with code 2 before any provider call. The keys are never written to files, chat or archives.
 

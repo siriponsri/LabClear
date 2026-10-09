@@ -154,8 +154,14 @@ Preflight never calls inference. It checks a clean commit, the policy's reviewer
 policy review, the free status of each endpoint, that credentials are present (present or missing
 only), the effective slots a trial server would call (resolved in a clean process with a fresh
 database) and a worst-case quota estimate. The last recorded preflight
-([docs/evidence/current/live-preflight.json](evidence/current/live-preflight.json)) is `BLOCKED`:
-unverified free status, no credentials and an unreviewed policy. **LIVE_FREE has not been run.**
+([docs/evidence/current/live-preflight.json](evidence/current/live-preflight.json), clean candidate
+`8445db6`) is `BLOCKED`: unverified free status, no credentials and an unreviewed policy.
+**LIVE_FREE has not been run.**
+
+What the providers publish (checked 2026-10-10, [details](evidence/current/provider-free-tier-check.md)):
+Typhoon lists its text model as free for light usage (5 requests/s, 200/min); Typhoon OCR (2/s,
+20/min) has no published free status; iApp charges credits (50 free at sign-up) and lists no free
+SystemOne quota. Treat OCR and the guard as paid until the account shows otherwise.
 
 ### Owner runbook
 

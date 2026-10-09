@@ -1,10 +1,9 @@
 {
  "status": "BLOCKED",
- "checked_at": "2026-10-09T11:36:15+00:00",
+ "checked_at": "2026-10-09T21:17:40+00:00",
  "profile": "B",
- "cases": 5,
+ "cases": 20,
  "blockers": [
-  "WORKING_TREE_DIRTY: commit the candidate before a live run so results map to one SHA",
   "POLICY_NOT_REVIEWED: reviewed_by, reviewed_at and account_label are required",
   "DATA_POLICY_NOT_REVIEWED: confirm the providers' data terms allow these synthetic inputs",
   "FREE_STATUS_UNVERIFIED: text api.opentyphoon.ai/v1/chat/completions model typhoon-v2.5-30b-a3b-instruct",
@@ -16,42 +15,11 @@
  "warnings": [],
  "checks": {
   "candidate": {
-   "candidate_sha": "3c15550cb00bd1942e0f4ce95dc2757a3e6d22c4",
-   "branch": "main",
-   "working_tree_dirty": true,
-   "dirty_files": [
-    "D .vercelignore",
-    " D Dockerfile",
-    " M README.md",
-    " M business_data/hospital_links.json",
-    " D deploy/cloudflare/README.md",
-    " D deploy/cloudflare/ci/deploy-cloudflare.yml",
-    " D deploy/cloudflare/package-lock.json",
-    " D deploy/cloudflare/package.json",
-    " D deploy/cloudflare/src/index.ts",
-    " D deploy/cloudflare/tsconfig.json",
-    " D deploy/cloudflare/wrangler.jsonc",
-    " D deploy/render/web-service.example.yaml",
-    " M docs/README.md",
-    " M docs/ai-providers.md",
-    " M docs/api.md",
-    " M docs/architecture.md",
-    " M docs/assets/architecture.png",
-    " M docs/assets/message-flow.png",
-    " M docs/business.md",
-    " D docs/ceo-upgrade/COURSEWORK_BENCHMARK_REPORT_TH.md",
-    " D docs/ceo-upgrade/ENV_HANDOVER.md",
-    " D docs/ceo-upgrade/FREE_PROVIDER_PREFLIGHT.md",
-    " D docs/ceo-upgrade/IMPLEMENTATION.md",
-    " D docs/ceo-upgrade/MORNING_HANDOFF.md",
-    " D docs/ceo-upgrade/PROGRESS.md",
-    " D docs/ceo-upgrade/README.md",
-    " D docs/ceo-upgrade/SOURCE_REVIEW.md",
-    " D docs/ceo-upgrade/evidence/baseline-pytest.xml",
-    " D docs/ceo-upgrade/evidence/boot.json",
-    " D docs/ceo-upgrade/evidence/browser/admin-agents-1440.png"
-   ],
-   "app_version": "4.0.0-rc2"
+   "candidate_sha": "8445db674f8502bc9a662d1be094d4f8fd63634e",
+   "branch": "integration/labclear-4.0-rc1",
+   "working_tree_dirty": false,
+   "dirty_files": [],
+   "app_version": "4.0.0-rc3"
   },
   "policy": {
    "policy_id": "free-only-trial",
@@ -67,9 +35,9 @@
    "guard api.iapp.co.th/v3/store/openthai/systemone openthai-systemone": "FREE_STATUS_UNVERIFIED"
   },
   "quota_estimate": {
-   "text_calls": 27,
-   "ocr_calls": 1,
-   "guard_decisions": 56,
+   "text_calls": 110,
+   "ocr_calls": 5,
+   "guard_decisions": 230,
    "basis": "worst case per case: planner, writer + one rewrite, reviewer + one rewrite, JSON retry; guard 5 labels per message direction, 3 per document check"
   },
   "credentials_present": {
