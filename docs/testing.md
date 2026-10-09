@@ -21,7 +21,7 @@ Exact commands for Windows PowerShell and macOS/Linux are at the end of this pag
 
 The same script has other modes: `browser [port]` (fixture server for the UAT suites), `evaluation` (`scripts/evaluate_upgrade.py`, scripted fixture checks, never inference), `boot` (`scripts/boot_check.py`, real Uvicorn start-up on an OS-assigned local port), `benchmark` (started by the benchmark runner) and `resilience` / `resilience-server` (started by the resilience runner).
 
-Results: [`docs/evidence/current/pytest.txt`](evidence/current/pytest.txt) records an earlier run with 331 passed and 1 skipped. A run on 2026-10-09 during this documentation update reported 345 passed.
+Results: [`docs/evidence/current/pytest.txt`](evidence/current/pytest.txt) records an earlier run with 331 passed and 1 skipped. The 4.0.0-rc3 candidate reports 371 passed ([`regression/pytest.txt`](evidence/current/regression/pytest.txt), JUnit XML beside it).
 
 ## Browser suites
 
@@ -35,7 +35,7 @@ All three use Playwright (`npm install`, then `npx playwright install chromium`)
 
 `upgrade.cjs` defaults to the Windows interpreter path `.venv/Scripts/python.exe`; on macOS/Linux set `TEST_PYTHON=.venv/bin/python`. The i18n audit's Thai line-break judge needs PyThaiNLP (`pip install pythainlp`); without it that check is reported `NOT_RUN`.
 
-No browser-suite results are recorded in `docs/evidence/current/`.
+Recorded on the 4.0.0-rc3 candidate in [`docs/evidence/current/regression/`](evidence/current/regression/): business UAT 36/36, upgrade scenarios 10/10, TH/EN audit 43/43 (JSON only; screenshots are not committed). The chat-recovery check `tests/browser/resilience.cjs` (10/10) is in [`resilience/ui/`](evidence/current/resilience/ui/).
 
 ## Resilience fault suite
 

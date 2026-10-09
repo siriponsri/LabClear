@@ -28,4 +28,10 @@ A/B/C have the same aggregate automated pass count. The data do not establish an
 python scripts/score_benchmark.py docs/evidence/current/owner-ocr-C
 ```
 
-`pytest.txt` is the owner's earlier record (331 passed, 1 skipped); the 4.0.0-rc3 regression results are in `regression/`. `demo-rollout.json` records full synthetic prompts and observable outputs. Raw synthetic evidence contains no real patient record or provider credential.
+`pytest.txt` is the owner's earlier record (331 passed, 1 skipped); the 4.0.0-rc3 regression results are in `regression/`: Python suite 371 passed, business UAT 36/36, upgrade scenarios 10/10, TH/EN audit 43/43 (the browser runs were made on the working tree committed as `92f1d9e`, so their JSON names the parent commit `36336b4` with uncommitted changes).
+
+## Resilience
+
+The fault suite R01–R12 scores 100 (12/12, 0 skipped, 0 outbound connections), the browser recovery
+check passes 10/10, and local measurements are recorded separately from the score:
+[resilience/README.md](resilience/README.md). `demo-rollout.json` records full synthetic prompts and observable outputs. Raw synthetic evidence contains no real patient record or provider credential.

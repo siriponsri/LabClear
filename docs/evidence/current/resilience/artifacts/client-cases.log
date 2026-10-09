@@ -1,0 +1,134 @@
+{
+  "engine": "node v22.22.0",
+  "module": "static/js/stream.js",
+  "cases": {
+    "R03": [
+      {
+        "name": "HTML 502 from a proxy: classified 'gateway', never parsed as JSON",
+        "passed": true
+      },
+      {
+        "name": "HTML 502: the spinner can end (the promise settled) and the text shown has no HTML",
+        "passed": true
+      },
+      {
+        "name": "HTML 502: no LabClear request ID is claimed for a platform page",
+        "passed": true
+      },
+      {
+        "name": "HTML 502: the POST was sent once (no automatic resend)",
+        "passed": true
+      },
+      {
+        "name": "HTML 503 from a proxy: classified 'gateway', never parsed as JSON",
+        "passed": true
+      },
+      {
+        "name": "HTML 503: the spinner can end (the promise settled) and the text shown has no HTML",
+        "passed": true
+      },
+      {
+        "name": "HTML 503: no LabClear request ID is claimed for a platform page",
+        "passed": true
+      },
+      {
+        "name": "HTML 503: the POST was sent once (no automatic resend)",
+        "passed": true
+      },
+      {
+        "name": "HTML 504 from a proxy: classified 'gateway', never parsed as JSON",
+        "passed": true
+      },
+      {
+        "name": "HTML 504: the spinner can end (the promise settled) and the text shown has no HTML",
+        "passed": true
+      },
+      {
+        "name": "HTML 504: no LabClear request ID is claimed for a platform page",
+        "passed": true
+      },
+      {
+        "name": "HTML 504: the POST was sent once (no automatic resend)",
+        "passed": true
+      },
+      {
+        "name": "LabClear's own 503 JSON (server_busy) stays an app error with Retry-After and request ID",
+        "passed": true
+      },
+      {
+        "name": "network failure before any response: classified 'network'",
+        "passed": true
+      }
+    ],
+    "R04": [
+      {
+        "name": "idle watchdog: nothing for 35 s ends the request as 'idle' (not before)",
+        "passed": true
+      },
+      {
+        "name": "idle: the request ID from 'accepted' is kept for support",
+        "passed": true
+      },
+      {
+        "name": "heartbeats every 10 s keep a 60 s wait alive; done arrives",
+        "passed": true
+      },
+      {
+        "name": "stream cut before its terminal event: 'eof', never success, even after steps",
+        "passed": true
+      },
+      {
+        "name": "an invalid line: 'malformed', the stream is abandoned",
+        "passed": true
+      },
+      {
+        "name": "overall watchdog: server budget (from 'accepted') + 10 s, not earlier",
+        "passed": true
+      },
+      {
+        "name": "a terminal error event keeps code, origin, step and request ID",
+        "passed": true
+      },
+      {
+        "name": "Stop (user abort) is 'aborted', not an error to show",
+        "passed": true
+      }
+    ],
+    "R10": [
+      {
+        "name": "Retry while a workflow is active does nothing (no second POST)",
+        "passed": true
+      },
+      {
+        "name": "after the first finishes, the gate opens again",
+        "passed": true
+      }
+    ],
+    "R11": [
+      {
+        "name": "200 with an HTML page is not success: 'unexpected'",
+        "passed": true
+      },
+      {
+        "name": "200 HTML: no automatic resend of the POST",
+        "passed": true
+      },
+      {
+        "name": "cold start: GET /ready is polled until ready, the user sees one waiting status",
+        "passed": true
+      },
+      {
+        "name": "cold start: the message is POSTed exactly once, after ready",
+        "passed": true
+      },
+      {
+        "name": "a service that never wakes: give up after 90 s without any POST",
+        "passed": true
+      },
+      {
+        "name": "after more than 60 s without contact the next send checks /ready first",
+        "passed": true
+      }
+    ]
+  }
+}

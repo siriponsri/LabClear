@@ -1,0 +1,11 @@
+2026-10-10 01:07:38,700 INFO labclear.request: {"event":"startup","at":1791569258.701,"in_flight":0}
+2026-10-10 01:07:38,862 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-10 01:07:39,431 INFO labclear.request: {"event":"drain_started","at":1791569259.432,"in_flight":2}
+2026-10-10 01:07:39,733 INFO labclear.request: {"event":"http","at":1791569259.734,"request_id":"req_80793083106b60e6","method":"GET","route":"/ready","status":503,"duration_ms":1}
+2026-10-10 01:07:39,740 INFO labclear.request: {"event":"http","at":1791569259.74,"request_id":"req_3e66d3af5332b3d7","method":"POST","route":"/api/business/chat","status":503,"duration_ms":2}
+2026-10-10 01:07:42,433 INFO labclear.request: {"event":"document_worker","at":1791569262.433,"request_id":"req_48fec2c57ebf1f9d","worker":"cancelled","returncode":null}
+2026-10-10 01:07:42,439 INFO labclear.request: {"event":"workflow","at":1791569262.44,"request_id":"req_437ebcf95c668692","route":"/chat","kind":"ai","stream":true,"outcome":"cancelled","status":503,"code":"server_draining","origin":"app","step":"plan","duration_ms":3593,"attempts":2,"dropped_events":0}
+2026-10-10 01:07:42,441 INFO labclear.request: {"event":"http","at":1791569262.441,"request_id":"req_437ebcf95c668692","method":"POST","route":"/api/business/chat","status":200,"duration_ms":3600}
+2026-10-10 01:07:42,442 INFO labclear.request: {"event":"workflow","at":1791569262.443,"request_id":"req_48fec2c57ebf1f9d","route":"/chat/report","kind":"ocr","stream":true,"outcome":"cancelled","status":503,"code":"server_draining","origin":"app","step":"prepare","duration_ms":3559,"attempts":0,"dropped_events":0}
+2026-10-10 01:07:42,443 INFO labclear.request: {"event":"http","at":1791569262.443,"request_id":"req_48fec2c57ebf1f9d","method":"POST","route":"/api/business/chat/report","status":200,"duration_ms":3562}
+2026-10-10 01:07:42,483 INFO labclear.request: {"event":"drain_finished","at":1791569262.484,"cancelled":2,"still_running":0}
