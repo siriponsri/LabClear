@@ -1,4 +1,4 @@
-"""Build the Thai final coursework report for LabClear 4.0.0 (Word + PDF).
+"""Build the Thai final coursework report for LabClear 4.0.0-rc1, the integrated candidate (Word + PDF).
 
     python3 scripts/build_report_th_400.py            # DOCX and PDF, TOC page numbers filled
     python3 scripts/build_report_th_400.py --no-pdf   # DOCX only, page numbers from the last page map
@@ -8,8 +8,12 @@ Needs python-docx, lxml, Pillow and pypdfium2 (the system python3 has them), Lib
 A4, TH Sarabun New 16 pt body, 18 pt bold chapter titles, real TOC/TOF fields, figure captions
 below and centred, table captions above and left, footer with the title and page number.
 
-Facts come from docs/release-4.0.0.md and the repository. Every live-model number is read from
-docs/evidence/round*/ JSON; 4.0.0 software results from docs/evidence/release-4.0.0/uat.json.
+Originally written for the Claude 4.0.0 branch (Cloudflare, OpenRouter fast set). Updated for
+4.0.0-rc1: Codex main c970410 + the Claude Next.js web, deployed on Render, Cloudflare deferred.
+Facts come from docs/release-4.0.0.md and the repository. Live-model numbers are read from
+docs/evidence/round*/ JSON (historical 3.0.x runs); rc1 software results from
+docs/evidence/integration-4.0-rc1/ (pytest.xml, Codex browser suites, web UAT). Claude-branch
+results (pytest 261, UAT 51/51, Cloudflare dry runs) are quoted only as history.
 LibreOffice does not refresh TOC fields, so the builder renders once, reads the page of each
 heading and caption from the PDF (footer labels), writes those numbers into the cached TOC
 entries and renders again. Word refreshes the fields itself when the file is opened.
@@ -74,18 +78,50 @@ BRANCHES = jload("business_data/branches.json")
 POLICIES = jload("business_data/policies.json")
 PLANS = jload("business_data/plans.json")
 KNOWLEDGE = jload("knowledge/evidence/catalog.json")["records"]
-PENDING = jload("knowledge/evidence/pending.json")
-PENDING = PENDING["records"] if isinstance(PENDING, dict) else PENDING
+CANDIDATES = jload("knowledge/acquisition/claude_candidates_400.json")["entries"]
+CODEX_MED = jload("knowledge/acquisition/medical_sources.json")["entries"]
+CODEX_HOSP = jload("knowledge/acquisition/hospital_research.json")["entries"]
 R2 = jload("docs/evidence/round2/course_eval_results.json")
 R2_REVIEW = jload("docs/evidence/round2/review_round2.json")
 R3 = jload("docs/evidence/round3/course_eval_results.json")
 R4 = jload("docs/evidence/round4/diagnostic-review.json")
-UAT = jload("docs/evidence/release-4.0.0/uat.json")
+RC = "docs/evidence/integration-4.0-rc1"
+RC_COMMIT = "c8f3547"
+UAT = jload(f"{RC}/web-uat/uat.json")
+UAT_OFF = jload(f"{RC}/web-uat-flags-off/uat.json")
+LEGACY = jload(f"{RC}/codex-legacy-browser/browser-uat.json")
+UPGRADE = [r for r in jload(f"{RC}/codex-upgrade-browser/upgrade-browser.json")["records"] if "status" in r]
+OFFLINE_EVAL = jload(f"{RC}/offline-evaluation.json")
 
-assert len(KNOWLEDGE) == 135, len(KNOWLEDGE)
-assert len({r["publisher"] for r in KNOWLEDGE}) == 24
-UNCHECKED = sum(1 for r in KNOWLEDGE if r.get("verification", {}).get("url_checked") is False)
-assert UNCHECKED == 77 and len(PENDING) == 13
+import xml.etree.ElementTree as ET  # noqa: E402
+_suite = ET.parse(ROOT / RC / "pytest.xml").getroot()
+_suite = _suite.find("testsuite") if _suite.tag == "testsuites" else _suite
+PYTEST_N = int(_suite.get("tests"))
+PYTEST_BAD = int(_suite.get("failures")) + int(_suite.get("errors"))
+assert PYTEST_N == 277 and PYTEST_BAD == 0, (PYTEST_N, PYTEST_BAD)
+LEGACY_N, LEGACY_PASS = LEGACY["passed"] + LEGACY["failed"], LEGACY["passed"]
+UPGRADE_N, UPGRADE_PASS = len(UPGRADE), sum(r["status"] == "PASS" for r in UPGRADE)
+OFF_N, OFF_PASS = len(UAT_OFF["scenarios"]), UAT_OFF["passed"]
+EVAL_N = len(OFFLINE_EVAL["cases"])
+assert (LEGACY_N, LEGACY_PASS, UPGRADE_N, UPGRADE_PASS, OFF_N, OFF_PASS, EVAL_N) == (36, 36, 10, 10, 5, 5, 60)
+
+# The reviewed corpus has no publisher_type field; same grouping as routers/public.py.
+PUBLISHER_TYPES = {
+    "Siriraj Hospital": "thai_hospital",
+    "Faculty of Medicine Siriraj Hospital, Mahidol University": "thai_hospital",
+    "Srinagarind Hospital, KKU": "thai_hospital",
+    "MedlinePlus · U.S. National Library of Medicine": "international_reference",
+}
+def ptype(r: dict) -> str:  # noqa: E302
+    return r.get("publisher_type") or PUBLISHER_TYPES.get(r.get("publisher", ""), "other")
+
+assert len(KNOWLEDGE) == 58, len(KNOWLEDGE)  # noqa: E305
+assert len({r["publisher"] for r in KNOWLEDGE}) == 4
+assert len(CANDIDATES) == 90 and all(e["rag_approval"] == "NOT_APPROVED" and not e["ingested"] for e in CANDIDATES)
+CAND_CATALOG = sum(e["candidate_origin"] == "claude-4.0.0-catalog" for e in CANDIDATES)
+CAND_PENDING = sum(e["candidate_origin"] == "claude-4.0.0-pending" for e in CANDIDATES)
+assert (CAND_CATALOG, CAND_PENDING) == (77, 13)
+assert (len(CODEX_MED), len(CODEX_HOSP)) == (15, 6)
 assert POLICIES["booking_advance_days"] == 30 and POLICIES["quote_valid_days"] == 7
 assert POLICIES["organization_min_people"] == 20
 
@@ -149,7 +185,7 @@ R2Q = {q["id"]: q for q in R2["questions"]}
 R3_COMMIT = R3["server_commit"][:7]
 
 UAT_N, UAT_PASS = len(UAT["scenarios"]), UAT["passed"]
-assert UAT_N == 51 and UAT_PASS == sum(s["ok"] for s in UAT["scenarios"])
+assert UAT_N == 53 and UAT_PASS == sum(s["ok"] for s in UAT["scenarios"])
 UAT_FAILED = [s["id"] for s in UAT["scenarios"] if not s["ok"]]
 
 Q_TH = {
@@ -233,16 +269,18 @@ def content() -> list[tuple]:
     # TOC1 has a 0.6-inch hanging indent; a heading shorter than that sends its page number to
     # the hanging position instead of the right tab, in Word and LibreOffice alike.
     h1("บทสรุปผู้บริหาร")
-    p("LabClear เป็นแชทบอทของคลินิกตรวจสุขภาพจำลอง 3 สาขา ตอบเรื่องแพ็กเกจ ราคา สาขา การจอง และนโยบายจากไฟล์ข้อมูลของร้าน อ่านภาพใบผลแล็บที่ลูกค้าส่งมา และอธิบายแต่ละค่าเทียบกับช่วงอ้างอิงที่พิมพ์บนใบเดียวกันพร้อมแหล่งอ้างอิง รายงานฉบับนี้อธิบายรุ่น 4.0.0 ซึ่งปรับตามความเห็นของ CEO 5 ข้อ เมื่อวันที่ 8 ตุลาคม 2569")
-    p("รุ่น 4.0.0 เพิ่มฐานความรู้สาธารณะจาก 58 เป็น 135 รายการจาก 24 ผู้เผยแพร่ และเพิ่มระบบเอกสารอ้างอิงขององค์กรที่เจ้าหน้าที่ตรวจก่อนเปิดใช้ ระบบย้ายจาก Render ไป Cloudflare โดยใช้ Worker 2 ตัวกับ Container ของ FastAPI ทุกการเรียกโมเดลใช้ OpenRouter key เดียวของทีมกับชุดโมเดลราคาต่ำภายใต้งบ USD 10 หน้าเว็บเปลี่ยนเป็น Next.js ที่ใช้ภาษาไทยเป็นค่าเริ่มต้น ส่วนแชตของผู้เยี่ยมชมยังถูกลบเมื่อ Refresh ตามที่ผู้ใช้เลือกเพื่อความเป็นส่วนตัว")
-    p(f"ผลกับโมเดลจริงทั้งหมดในรายงานมาจากรุ่น 3.0.x ที่ใช้โมเดลของ Typhoon บน Render รอบล่าสุดที่ได้คำตอบครบทุกกรณีคือรอบ 3 (รุ่น 3.0.1) ซึ่งผ่านคำถาม {R3_Q_PASS} จาก 10 ข้อ ภาพ {R3_I_PASS} จาก 5 ภาพ และกรณีความปลอดภัย {R3_S_PASS} จาก 5 กรณี รุ่น 4.0.0 ผ่าน pytest 261 กรณี และ browser UAT {UAT_PASS} จาก {UAT_N} สถานการณ์โดยใช้ตัวแทนโมเดล ยังไม่ได้เรียก OpenRouter จริงและยังไม่ได้ deploy ขึ้น Cloudflare จริง ทีมต้องรันชุดประเมินหลัง deploy แล้วกรอกตารางในหัวข้อ 7.8 ({{T:summary}})")
+    p("LabClear เป็นแชทบอทของคลินิกตรวจสุขภาพจำลอง 3 สาขา ตอบเรื่องแพ็กเกจ ราคา สาขา การจอง และนโยบายจากไฟล์ข้อมูลของร้าน อ่านภาพใบผลแล็บที่ลูกค้าส่งมา และอธิบายแต่ละค่าเทียบกับช่วงอ้างอิงที่พิมพ์บนใบเดียวกันพร้อมแหล่งอ้างอิง รายงานฉบับนี้อธิบายรุ่น 4.0.0-rc1 (รุ่นรวม) ซึ่งตอบความเห็นของ CEO 5 ข้อ เมื่อวันที่ 8 ตุลาคม 2569")
+    p("รุ่นรวมใช้ backend ของ Codex (main commit c970410) เป็นฐาน ได้แก่ FastAPI ความปลอดภัย การไม่เก็บแชตของผู้เยี่ยมชม model harness เอกสารอ้างอิงขององค์กร และสัญญา API แล้วนำหน้าเว็บ Next.js ภาษาไทยของ Claude branch มาประกอบโดยปรับเฉพาะส่วนที่สัญญา API ต่างกัน ระบบยังรันบน Render เดิม หน้าเว็บ Next.js เป็นบริการ Render ตัวที่สองแบบเลือกได้ งาน Cloudflare ที่เคยทำไว้เก็บเป็นทางเลือกภายหลัง ฐานความรู้ที่ระบบค้นคง 58 รายการที่ตรวจแล้ว ส่วนแหล่งใหม่รอการตรวจ ความสามารถใหม่ของ Codex ทั้ง 6 ส่วนปิดเป็นค่าเริ่มต้นจนกว่าเจ้าของระบบจะเปิด")
+    p(f"ผลกับโมเดลจริงทั้งหมดในรายงานมาจากรุ่น 3.0.x ที่ใช้โมเดลของ Typhoon บน Render รอบล่าสุดที่ได้คำตอบครบทุกกรณีคือรอบ 3 (รุ่น 3.0.1) ซึ่งผ่านคำถาม {R3_Q_PASS} จาก 10 ข้อ ภาพ {R3_I_PASS} จาก 5 ภาพ และกรณีความปลอดภัย {R3_S_PASS} จาก 5 กรณี รุ่นรวม (commit {RC_COMMIT}) ผ่านการทดสอบซอฟต์แวร์ที่ใช้ข้อมูลจำลองและตัวแทนโมเดลทุกชุด ยังไม่ได้ deploy และยังไม่ได้เรียกผู้ให้บริการ AI จริง ทีมต้องรันชุดประเมินหลัง deploy แล้วกรอกตารางในหัวข้อ 7.8 ({{T:summary}})")
     table("summary", "สถานะหลักฐานของรายงานฉบับนี้", ["เรื่อง", "ผล", "ที่มา"], [
         ["คำถาม 10 ข้อ รอบ 3 (รุ่น 3.0.1, Typhoon)", f"ผ่าน {R3_Q_PASS}/10 เวลาเฉลี่ย {sec(R3_Q_MEAN)}", "docs/evidence/round3/course_eval_results.json"],
         ["ภาพ 5 ภาพ รอบ 3", f"ผ่าน {R3_I_PASS}/5 อ่านค่าได้ตั้งแต่ 90% ขึ้นไป {R3_OCR90}/5 ภาพ แต่คำอธิบายถูกระงับ {5 - R3_I_HTTP200} ภาพ", "ไฟล์เดียวกัน"],
         ["ความปลอดภัย 5 กรณี รอบ 3", f"ผ่าน {R3_S_PASS}/5 ไม่พบการรั่วไหล", "ไฟล์เดียวกัน"],
-        ["pytest รุ่น 4.0.0", "ผ่าน 261 กรณี", "python -m pytest -q"],
-        ["Browser UAT รุ่น 4.0.0 (ตัวแทนโมเดล)", f"ผ่าน {UAT_PASS}/{UAT_N} ไม่ผ่าน {', '.join(UAT_FAILED)}", "docs/evidence/release-4.0.0/uat.json"],
-        ["รุ่น 4.0.0 กับ OpenRouter จริง", "ยังไม่ได้ทดสอบ", "แบบบันทึกในหัวข้อ 7.8"],
+        ["pytest รุ่นรวม", f"ผ่าน {PYTEST_N} กรณี", f"{RC}/pytest.xml"],
+        ["Browser เดิมของ Codex และชุด upgrade", f"ผ่าน {LEGACY_PASS}/{LEGACY_N} และ {UPGRADE_PASS}/{UPGRADE_N}", f"{RC}/codex-*-browser/"],
+        ["Browser UAT ของเว็บ Next.js (ตัวแทนโมเดล)", f"ผ่าน {UAT_PASS}/{UAT_N} และชุด flag ปิด {OFF_PASS}/{OFF_N}", f"{RC}/web-uat*/uat.json"],
+        ["รุ่นรวมกับผู้ให้บริการ AI จริง", "ยังไม่ได้ทดสอบ (NOT_RUN)", "แบบบันทึกในหัวข้อ 7.8"],
+        ["ผลของ Claude branch 4.0.0 (pytest 261, UAT 51/51, Cloudflare dry-run)", "ประวัติ ไม่ใช่ผลของรุ่นรวม", "docs/release-4.0.0.md หัวข้อประวัติ"],
     ], [5.2, 6.0, 5.2])
 
     # ---------------------------------------------------------------- 1
@@ -256,9 +294,9 @@ def content() -> list[tuple]:
         ["ประเภท", "คลินิกตรวจสุขภาพ 3 สาขา พร้อมบริการอ่านใบผลแล็บด้วย AI"],
         ["สินค้า", f"แพ็กเกจตรวจสุขภาพ {len(PKG)} รายการ ราคา {baht(PRICE_MIN)}–{baht(PRICE_MAX)} บาท และ AI Lab Report (Free และ LabClear Plus 355 บาทต่อ 30 วัน)"],
         ["สาขา", "กรุงเทพฯ (อารีย์) เชียงใหม่ (สุเทพ) และขอนแก่น เปิดจันทร์–เสาร์ 07:00–16:00 น."],
-        ["ช่องทาง", "เว็บไซต์และแชตบนโดเมนของทีม ภาษาไทยเป็นค่าเริ่มต้น สลับเป็นภาษาอังกฤษได้"],
+        ["ช่องทาง", "เว็บไซต์และแชตบน Render ภาษาไทยเป็นค่าเริ่มต้น สลับเป็นภาษาอังกฤษได้"],
         ["ผู้ใช้ภายใน", "เจ้าหน้าที่และผู้จัดการใช้ staff desk ที่ /staff"],
-        ["ลูกค้าองค์กร", "บริษัทหรือโรงพยาบาลที่มีพนักงาน 20 คนขึ้นไป ขอใบเสนอราคาได้ และอัปโหลดเอกสารอ้างอิงขององค์กรได้ตั้งแต่รุ่น 4.0.0"],
+        ["ลูกค้าองค์กร", "บริษัทหรือโรงพยาบาลที่มีพนักงาน 20 คนขึ้นไป ขอใบเสนอราคาได้ และเก็บเอกสารอ้างอิงขององค์กรได้เมื่อเจ้าของระบบเปิดใช้ (ปิดเป็นค่าเริ่มต้น)"],
         ["รุ่นของข้อมูล", f"แคตตาล็อก {CATALOG['version']} นโยบาย {POLICIES['version']} แผนบริการ {PLANS['version']}"],
     ], [3.6, 12.8])
     h2("1.2 กลุ่มเป้าหมาย")
@@ -267,8 +305,8 @@ def content() -> list[tuple]:
         ["ผู้ที่วางแผนตรวจสุขภาพ", "เลือกแพ็กเกจตามความจำเป็นและงบประมาณ แล้วจองเวลา", "Health-check Advisor หน้าแพ็กเกจ และหน้าขอนัดหมาย"],
         ["ผู้ที่ติดตามผลต่อเนื่อง", "ดูค่าการตรวจเดียวกันจากรายงานหลายฉบับ", "Lab dashboard (LabClear Plus)"],
         ["ฝ่ายบุคคลขององค์กร (20 คนขึ้นไป)", "แพ็กเกจองค์กร บริการนอกสถานที่ และใบเสนอราคา", "หน้าองค์กรและใบเสนอราคาจากเจ้าหน้าที่"],
-        ["โรงพยาบาลหรือองค์กรที่มีเอกสารอ้างอิงของตนเอง", "ให้แชทบอทตอบสมาชิกตามช่วงอ้างอิงและวิธีเตรียมตัวขององค์กร", "เข้าร่วมองค์กรด้วยรหัส อัปโหลดเอกสาร รอเจ้าหน้าที่ตรวจ"],
-        ["เจ้าหน้าที่และผู้จัดการ", "ยืนยันนัด ตอบลูกค้า ตั้งราคา ตรวจเอกสาร และตั้งค่า AI", "Staff desk ที่ /staff"],
+        ["โรงพยาบาลหรือองค์กรที่มีเอกสารอ้างอิงของตนเอง", "ให้สมาชิกอ่านและค้นช่วงอ้างอิงและวิธีเตรียมตัวขององค์กร", "ผู้จัดการกำหนดสมาชิก (ผู้อ่านหรือผู้แก้ไข) ผู้แก้ไขอัปโหลดและอนุมัติเอกสาร"],
+        ["เจ้าหน้าที่และผู้จัดการ", "ยืนยันนัด ตอบลูกค้า ตั้งราคา กำหนดสมาชิกองค์กร และตั้งค่า AI", "Staff desk ที่ /staff"],
     ], [4.6, 6.2, 5.6])
     h2("1.3 สินค้าและบริการ")
     p(f"แคตตาล็อกมี {len(PKG)} รายการ (โจทย์กำหนดอย่างน้อย 15 รายการ) แบ่งเป็นแพ็กเกจที่จองได้ทันที {len(PKG_DIRECT)} รายการ การตรวจติดตามที่เจ้าหน้าที่พิจารณาก่อนจอง {len(PKG_REVIEW)} รายการ และแพ็กเกจองค์กร {len(PKG_CORP)} รายการ การตรวจติดตามต้องผ่านเจ้าหน้าที่ก่อน ค่าที่อยู่นอกช่วงจึงไม่กลายเป็นการขายอัตโนมัติ")
@@ -328,19 +366,21 @@ def content() -> list[tuple]:
     h2("3.1 บทบาทและ agent")
     p("ลูกค้าคุยกับแชทบอทตัวเดียว ในแต่ละข้อความ planner เลือกบทบาทที่ตอบจาก 2 บทบาท แต่ละบทบาทอ่านข้อมูลและเสนอการกระทำได้เฉพาะที่งานของตนต้องใช้ ผู้จัดการพักบทบาทได้ที่ staff desk")
     table("roles", "บทบาทของแชทบอท", ["บทบาท", "ตอบเรื่อง", "อ่านข้อมูลได้", "เสนอการกระทำได้"], [
-        ["Health-check Advisor", "แพ็กเกจ ราคา สาขา การจอง การชำระเงิน องค์กร", "แคตตาล็อก สาขา นโยบาย แหล่งความรู้ เอกสารขององค์กรที่ผู้ใช้เลือก และนัดของลูกค้าเอง", "ตอบ ถามกลับ เสนอราคา จอง ชำระเงิน ส่งต่อเจ้าหน้าที่ คำขอองค์กร"],
-        ["Report Explainer", "ค่าในใบผลที่ลูกค้ายืนยันแล้ว", "ใบผลที่ยืนยันแล้ว แหล่งความรู้ เอกสารขององค์กรที่ผู้ใช้เลือก นโยบาย", "ตอบ ถามกลับ แนะนำให้พบแพทย์โดยเร็ว ส่งต่อเจ้าหน้าที่ ไม่มีเครื่องมือขาย"],
+        ["Health-check Advisor", "แพ็กเกจ ราคา สาขา การจอง การชำระเงิน องค์กร", "แคตตาล็อก สาขา นโยบาย แหล่งความรู้ เอกสารที่อนุมัติแล้วขององค์กรเมื่อเปิดใช้ และนัดของลูกค้าเอง", "ตอบ ถามกลับ เสนอราคา จอง ชำระเงิน ส่งต่อเจ้าหน้าที่ คำขอองค์กร"],
+        ["Report Explainer", "ค่าในใบผลที่ลูกค้ายืนยันแล้ว", "ใบผลที่ยืนยันแล้ว แหล่งความรู้ เอกสารที่อนุมัติแล้วขององค์กรเมื่อเปิดใช้ นโยบาย", "ตอบ ถามกลับ แนะนำให้พบแพทย์โดยเร็ว ส่งต่อเจ้าหน้าที่ ไม่มีเครื่องมือขาย"],
     ], [3.6, 3.8, 4.8, 4.2])
-    table("agents", "Agent และโมเดลในรุ่น 4.0.0", ["Agent", "หน้าที่", "ผลลัพธ์ที่ต้องได้", "โมเดล (OpenRouter)"], [
-        ["Planner", "เลือก action บทบาท คำค้น (ชื่อการตรวจเท่านั้น ไม่มีค่าหรือตัวตน) และเหตุผล 1 ประโยค", "JSON Plan", "Qwen3 30B A3B"],
-        ["ผู้เขียนคำตอบ (Advisor หรือ Explainer)", "เขียนคำตอบจากหลักฐานที่ส่งให้ อ้าง [source-id] คัดลอกค่าจากใบผลตามที่พิมพ์", "JSON Answer", "Gemini 3.1 Flash Lite"],
-        ["Reviewer", "ตรวจร่างเทียบหลักฐาน: มีหลักฐาน ค่าไม่เปลี่ยน อยู่ในขอบเขต", "JSON EvidenceReview", "GPT-4.1 mini"],
-        ["Safety classifier", "จัดประเภทข้อความเข้า คำตอบ และข้อความจากใบผลที่อัปโหลด", "ป้ายความปลอดภัย 1 ป้าย", "GPT-4.1 mini"],
-        ["ตัวอ่านใบผล", "อ่านภาพเป็นแถว ชื่อ ค่า หน่วย ช่วงที่พิมพ์ และธง", "JSON Extraction", "Gemini 3.1 Flash Lite"],
-    ], [3.6, 5.6, 3.8, 3.4])
+    table("agents", "Agent และผู้ให้บริการค่าเริ่มต้นในรุ่น 4.0.0-rc1", ["Agent", "หน้าที่", "ผลลัพธ์ที่ต้องได้", "ค่าเริ่มต้น (เปลี่ยนได้ที่ staff desk)"], [
+        ["Planner", "เลือก action บทบาท คำค้น (ชื่อการตรวจเท่านั้น ไม่มีค่าหรือตัวตน) และเหตุผล 1 ประโยค", "JSON Plan", "โมเดลภาษากลาง Typhoon v2.5 30B"],
+        ["ผู้เขียนคำตอบ (Advisor หรือ Explainer)", "เขียนคำตอบจากหลักฐานที่ส่งให้ อ้าง [source-id] คัดลอกค่าจากใบผลตามที่พิมพ์", "JSON Answer", "โมเดลภาษากลาง"],
+        ["Reviewer", "ตรวจร่างเทียบหลักฐาน: มีหลักฐาน ค่าไม่เปลี่ยน อยู่ในขอบเขต", "JSON EvidenceReview", "โมเดลภาษากลาง (แนะนำให้ตั้งต่างตระกูล)"],
+        ["Safety check", "จัดประเภทข้อความเข้า คำตอบ และข้อความจากใบผลที่อัปโหลด", "ป้ายความปลอดภัย 1 ป้าย", "iApp OpenThai-SystemOne"],
+        ["ตัวอ่านใบผล", "อ่านภาพเป็นแถว ชื่อ ค่า หน่วย ช่วงที่พิมพ์ และธง", "JSON Extraction", "Typhoon OCR (ปิดจนกว่าจะเปิด VISION_ENABLED)"],
+        ["Medical analyzer และ Thai composer", "วิเคราะห์ค่าที่ยืนยันแล้วแบบมีโครงสร้าง แล้วเรียบเรียงเป็นภาษาไทย (บทบาทใหม่ของ Codex)", "ชุดข้อมูลที่ตรวจด้วย schema", "ปิด ต้องระบุโมเดล ราคาที่ตรวจแล้ว และ endpoint ที่ทบทวนแล้ว"],
+    ], [3.6, 5.6, 3.4, 3.8])
+    p("ผู้จัดการเลือกผู้ให้บริการและโมเดลได้ทีละ slot และทีละ agent เช่น OpenRouter, OpenAI หรือ Gemini คีย์เก็บแบบเข้ารหัสและไม่ส่งกลับไปที่เบราว์เซอร์ การบันทึกเป็นเพียงการตรวจการตั้งค่า (SCHEMA_CHECK_ONLY) ไม่ใช่การทดสอบกับโมเดลจริง")
     h2("3.2 สิ่งที่ต้องทำ")
     table("must", "สิ่งที่แชทบอทต้องทำและวิธีบังคับใช้", ["#", "ข้อกำหนด", "บังคับใช้โดย"], [
-        ["1", "ตอบจากแคตตาล็อก นโยบาย ฐานความรู้สาธารณะ 135 รายการ และเอกสารขององค์กรที่ผ่านการตรวจเท่านั้น และแสดงแหล่งอ้างอิง", "prompt; คำถามที่มีชื่อการตรวจถูกค้นเสมอ; รหัสอ้างอิงต้องเป็นแหล่งที่ค้นได้จริง (โค้ด); reviewer ตรวจว่ามีหลักฐาน"],
+        ["1", "ตอบจากแคตตาล็อก นโยบาย ฐานความรู้สาธารณะ 58 รายการที่ตรวจแล้ว และข้อความที่อนุมัติแล้วขององค์กรเมื่อเปิด ORG_REFERENCE_INFERENCE_ENABLED เท่านั้น และแสดงแหล่งอ้างอิง", "prompt; คำถามที่มีชื่อการตรวจถูกค้นเสมอ; รหัสอ้างอิงต้องเป็นแหล่งที่ค้นได้จริง (โค้ด); reviewer ตรวจว่ามีหลักฐาน"],
         ["2", "ตอบเป็นภาษาเดียวกับลูกค้า (ไทยหรืออังกฤษ)", "prompt; planner ระบุภาษา"],
         ["3", "ถามกลับเมื่อข้อมูลไม่ครบ (สาขา วัน เวลา งบ)", "prompt; คำขอจองที่ไม่มีสาขา วัน หรือเวลาที่ถูกต้องกลายเป็นคำถามกลับ (โค้ด)"],
         ["4", "แสดงการจอง ใบเสนอราคา การชำระเงิน และการส่งต่อเป็นตัวอย่างให้ลูกค้ากดยืนยันเอง", "โค้ด: ตัวอย่างหมดอายุใน 10 นาที และทำงานเมื่อ POST /confirm เท่านั้น"],
@@ -354,12 +394,12 @@ def content() -> list[tuple]:
     h2("3.3 สิ่งที่ห้ามทำ")
     table("mustnot", "สิ่งที่แชทบอทห้ามทำและวิธีบังคับใช้", ["#", "ข้อห้าม", "บังคับใช้โดย"], [
         ["1", "แต่งราคา แพ็กเกจ นโยบาย เวลารับผล หรือวิธีเตรียมตัว", "prompt; ข้อมูลธุรกิจมาจากไฟล์ JSON เท่านั้น; โค้ดตรวจทุกจำนวนเงินกับราคาในแคตตาล็อก ให้แก้ 1 รอบ แล้วระงับถ้ายังผิด"],
-        ["2", "วินิจฉัยโรค สั่งยา บอกขนาดยา หรือเปลี่ยนการรักษา", "prompt; safety classifier; reviewer ตรวจขอบเขต"],
+        ["2", "วินิจฉัยโรค สั่งยา บอกขนาดยา หรือเปลี่ยนการรักษา", "prompt; safety check; reviewer ตรวจขอบเขต"],
         ["3", "ให้ส่วนลดหรือคืนเงินเอง", "เซิร์ฟเวอร์คำนวณราคาใหม่จากแคตตาล็อก; การคืนเงินเป็นงานของเจ้าหน้าที่"],
         ["4", "จองหรือเรียกเก็บเงินก่อนลูกค้ายืนยัน", "โค้ด: เป็นตัวอย่างเท่านั้น; เจ้าหน้าที่ยืนยันทุกนัด"],
         ["5", "ขายแพ็กเกจเพราะค่าผิดปกติ", "planner เห็นเพียงชื่อการตรวจ ไม่เห็นค่า; Report Explainer ไม่มีเครื่องมือขาย"],
-        ["6", "เปิดเผยข้อมูลลูกค้าคนอื่น system prompt หรือ API key", "ข้อมูลแยกตามเจ้าของ; คีย์เข้ารหัสและไม่ส่งกลับ; safety classifier"],
-        ["7", "ทำตามคำสั่งที่แฝงในข้อความ ภาพ เอกสารขององค์กร หรือประวัติแชต", "regex และ safety classifier ตรวจทั้งข้อความและเอกสาร; ข้อความที่ส่งเข้ามาถูกระบุว่าเป็นข้อมูลที่ไม่น่าเชื่อถือ"],
+        ["6", "เปิดเผยข้อมูลลูกค้าคนอื่น system prompt หรือ API key", "ข้อมูลแยกตามเจ้าของ; คีย์เข้ารหัสและไม่ส่งกลับ; safety check"],
+        ["7", "ทำตามคำสั่งที่แฝงในข้อความ ภาพ เอกสารขององค์กร หรือประวัติแชต", "regex และ safety check ตรวจทั้งข้อความและเอกสาร; ข้อความที่ส่งเข้ามาถูกระบุว่าเป็นข้อมูลที่ไม่น่าเชื่อถือ; เอกสารองค์กรต้องผ่านการอนุมัติของผู้แก้ไขก่อน"],
         ["8", "แสดงลิงก์ ภาพ หรือ HTML ที่โมเดลเขียน", "โค้ดตัดออกก่อนแสดง; เบราว์เซอร์กรอง Markdown อีกชั้น"],
         ["9", "ใช้ช่วงอ้างอิงทั่วไปแทนช่วงบนใบผล", "prompt; สถานะคำนวณจากช่วงบนใบผลเท่านั้น (โค้ด)"],
         ["10", "เดาค่าที่อ่านไม่ออก", "prompt ของตัวอ่าน; ลูกค้าแก้ค่าได้ก่อนยืนยัน"],
@@ -374,167 +414,176 @@ def content() -> list[tuple]:
         ["ไม่ทำตามคำสั่งแฝง", "S01", "tests/test_chat_features.py"],
         ["อ้างเฉพาะแหล่งที่ค้นได้ และคงค่าตามใบผล", "Q08, Q09, ภาพ 5 ภาพ", "tests/test_model_output.py"],
         ["ไม่ขายเพราะค่าผิดปกติ", "ภาพ 5 ภาพ", "tests/test_business_dots.py"],
-        ["เอกสารขององค์กรใช้เฉพาะสมาชิกและหลังอนุมัติ", "UAT R4-05", "tests/test_release_400.py"],
+        ["เอกสารขององค์กรใช้เฉพาะสมาชิกและหลังอนุมัติ", "UAT R4-05 และชุด upgrade ของ Codex", "tests/test_organization_sources.py, tests/test_integration_400.py"],
     ], [6.0, 4.2, 6.2])
 
     # ---------------------------------------------------------------- 4
     h1("4. สถาปัตยกรรมระบบ")
     h2("4.1 แผนภาพสถาปัตยกรรม")
-    p("ทุก request เข้าโดเมนเดียวของทีมแล้วไปที่ Worker labclear-web ซึ่งแสดงหน้าเว็บ Next.js 3 กลุ่ม ได้แก่ หน้าเว็บสาธารณะ พื้นที่ลูกค้า /app และ staff desk /staff เส้นทาง /api/* และ /health ถูกส่งผ่าน service binding ไปยัง Worker labclear-api ซึ่งรัน FastAPI ใน Cloudflare Container เพียง 1 instance ข้อมูลถาวรเก็บใน PostgreSQL ภายนอกแบบเข้ารหัส และทุกการเรียกโมเดลออกไปที่ OpenRouter ด้วยคีย์เดียว ({F:arch})")
-    fig("arch", ROOT / "docs/assets/architecture-4.0.png", "สถาปัตยกรรมของ LabClear รุ่น 4.0.0", 16.0)
-    p("หน้าเว็บสาธารณะเป็น server component ที่อ่าน /api/business/site/* ซึ่งไม่มีข้อมูลส่วนบุคคล ถ้า container ยังไม่ตื่นภายใน 2.5 วินาที หน้าเว็บใช้ข้อมูล seed ที่ bundle ไว้จึงไม่ค้าง แชต การจอง ใบผล และ staff desk เป็น client component ที่เรียก API เดิมแบบ same-origin ด้วย cookie labclear_session (httpOnly) และ CSRF header FastAPI คงสัญญา API เดิม และเพิ่ม routers/org.py กับ routers/public.py หน้า Jinja เดิมยังอยู่ในโค้ดแต่ Cloudflare ไม่ route มาที่หน้าเหล่านั้น")
-    p("ภายใน container ของ FastAPI routers รับ /api/* แล้วส่งงานไปยัง 3 ส่วน คือ ไปป์ไลน์แชต (business_agent) ตัวอ่านใบผล (report_reader_v2) และเอกสารขององค์กร (org_knowledge) ไปป์ไลน์แชตเรียกการตรวจความปลอดภัย (conversation_guard) และการค้นความรู้ (evidence_search และ semantic_search) ส่วนที่เรียกโมเดลทั้ง 4 ส่วนต้องผ่านด่านเดียวกันใน conversation_transport และ cost_ledger ซึ่งนับจำนวนครั้งตาม CLOUD_CALL_LIMIT และหักบัญชีบาทก่อนส่งคำขอไป OpenRouter ถ้าเกินเพดานหรืองบ 360 บาท คำขอนั้นหยุดทันที ({F:arch_detail})")
-    fig("arch_detail", ROOT / "docs/assets/architecture-4.0-detail.png", "องค์ประกอบภายใน Container ของ FastAPI รุ่น 4.0.0", 16.0)
+    p("รุ่นรวมรันบน Render ผู้ใช้เปิดหน้าเว็บ Next.js ที่บริการ labclear-web ซึ่งเป็นบริการ Render ตัวที่สองแบบเลือกได้ หน้าเว็บมี 3 กลุ่ม ได้แก่ หน้าเว็บสาธารณะ พื้นที่ลูกค้า /app และ staff desk /staff บริการเว็บ rewrite เส้นทาง /api/* และ /health ผ่าน HTTPS ไปยังบริการ API labclear ซึ่งเป็น FastAPI ของ Codex ที่ใช้ render.yaml เดิมโดยไม่เปลี่ยน บริการ API ยังเปิดหน้า Jinja เดิมได้โดยตรง ข้อมูลถาวรเก็บใน PostgreSQL ของ Render แบบเข้ารหัสทีละแถว ทุกการเรียกโมเดลต้องผ่านด่านเดียวกันก่อนออกไปยังผู้ให้บริการ AI ({F:arch})")
+    fig("arch", ROOT / "docs/assets/architecture-4.0.png", "สถาปัตยกรรมของ LabClear รุ่น 4.0.0-rc1 (รุ่นรวม)", 14.4)
+    p("เบราว์เซอร์เห็น origin เดียวคือบริการเว็บ cookie labclear_session จึงเป็นของโดเมนเว็บ บริการ API ตรวจว่า Origin ของคำขอตรงกับ Host ของตัวเอง หรือตรงกับ origin ใน TRUSTED_ORIGINS แบบตรงตัวทั้ง scheme, host และ port ค่าเริ่มต้นของ TRUSTED_ORIGINS ว่าง API จึงทำงานแบบเดิมจนกว่าเจ้าของระบบจะใส่ origin ของบริการเว็บ งาน Cloudflare Workers Paid ของ Claude branch ไม่ได้ใช้ในรุ่นนี้ และ Cloudflare แผนฟรีอาจใช้เป็น DNS/proxy ภายหลัง")
+    p("ภายใน FastAPI routers รับคำขอ ตรวจ session, CSRF, origin และ rate limit แล้วส่งงานไปยังไปป์ไลน์แชต (business_agent) ตัวอ่านใบผล (report_reader_v2) และเอกสารขององค์กร (organization_sources) ไปป์ไลน์แชตเรียกการตรวจความปลอดภัย (conversation_guard) และการค้นความรู้ (evidence_search) model_harness และ runtime_skills ทำงานเฉพาะเมื่อเปิด flag ของตน ส่วนที่เรียกโมเดลทุกส่วนต้องผ่าน conversation_transport และ cost_ledger ซึ่งตรวจ PROVIDER_NETWORK_ENABLED จำนวนครั้งตาม CLOUD_CALL_LIMIT และบัญชีบาท 300 บาทก่อนส่งคำขอ ({F:arch_detail})")
+    fig("arch_detail", ROOT / "docs/assets/architecture-4.0-detail.png", "องค์ประกอบภายใน FastAPI ของ LabClear รุ่น 4.0.0-rc1", 14.4)
     h2("4.2 องค์ประกอบของระบบ")
     table("components", "องค์ประกอบของระบบ", ["องค์ประกอบ", "เทคโนโลยี", "หน้าที่"], [
-        ["Worker labclear-web", "Next.js 16, React 19, React Three Fiber, OpenNext", "หน้าเว็บสาธารณะ พื้นที่ลูกค้า /app และ staff desk /staff ภาษาไทยเป็นค่าเริ่มต้น"],
-        ["Service binding", "Cloudflare Workers", "ส่ง /api/* และ /health จาก labclear-web ไปยัง labclear-api"],
-        ["Worker labclear-api และ Container", "Cloudflare Containers, Docker image, Python 3.12, FastAPI", "API ทั้งหมดใต้ /api/business และ /health รัน 1 instance หลับหลังไม่มี request 25 นาที"],
-        ["Chatbot pipeline", "services/business_agent.py", "9 ขั้นตามบทที่ 5 ส่งขั้นตอนแบบ NDJSON"],
-        ["Safety check", "services/conversation_guard.py: regex และ GPT-4.1 mini", "ตรวจข้อความเข้า คำตอบ และข้อความจากเอกสาร"],
-        ["การค้นความรู้", "services/evidence_search.py และ semantic_search.py: BM25 และ Qwen3 Embedding 8B (1024 มิติ)", "ค้นฐานความรู้สาธารณะ 135 รายการ"],
-        ["เอกสารขององค์กร", "services/org_knowledge.py: BM25", "แปลงไฟล์เป็นข้อความ ตัดเป็นช่วง รอตรวจ และค้นเฉพาะสมาชิก"],
-        ["ตัวอ่านใบผล", "services/report_reader_v2.py: Gemini 3.1 Flash Lite", "อ่านภาพหรือ PDF เป็นแถว ตรวจเอกสาร คำนวณสถานะ"],
-        ["เพดานและงบ", "services/conversation_transport.py และ cost_ledger.py", "ตรวจจำนวนครั้งและบัญชีบาทก่อนเรียกโมเดลทุกครั้ง"],
-        ["ข้อมูลธุรกิจ", "business_data/*.json", "แคตตาล็อก สาขา นโยบาย แผน และบทบาท"],
-        ["ฐานข้อมูล", "PostgreSQL ภายนอก (เช่น Neon) เข้ารหัสแถวด้วย Fernet", "บัญชี แชต ใบผล นัด การชำระเงิน เอกสารขององค์กร การตั้งค่า AI และ vectors"],
-        ["ผู้ให้บริการโมเดล", "OpenRouter key เดียว", "Qwen3 30B A3B, Gemini 3.1 Flash Lite, GPT-4.1 mini, Qwen3 Embedding 8B"],
+        ["บริการเว็บ labclear-web (เลือกได้)", "Render, Node 22, Next.js 16, React 19, React Three Fiber", "หน้าเว็บสาธารณะ พื้นที่ลูกค้า /app และ staff desk /staff ภาษาไทยเป็นค่าเริ่มต้น rewrite /api/* ไปยัง API"],
+        ["บริการ API labclear", "Render, Python 3.12, FastAPI (render.yaml เดิม)", "API ทั้งหมดใต้ /api/business, /health และหน้า Jinja เดิม รัน 1 instance เพราะแชตผู้เยี่ยมชมอยู่ใน RAM"],
+        ["Chatbot pipeline", "services/business_agent.py", "9 ขั้นตามบทที่ 5 ทำทีละขั้นตามลำดับ ส่งขั้นตอนแบบ NDJSON"],
+        ["Safety check", "services/conversation_guard.py: regex และ safety model (ค่าเริ่มต้น iApp OpenThai-SystemOne)", "ตรวจข้อความเข้า คำตอบ และข้อความจากเอกสาร"],
+        ["การค้นความรู้", "services/evidence_search.py: BM25", "ค้นฐานความรู้สาธารณะ 58 รายการ"],
+        ["เอกสารขององค์กร", "services/organization_sources.py, routers/organization_sources.py", "สมาชิก ร่าง อนุมัติ รุ่น ถอน ลบ และค้นข้อความเฉพาะองค์กรเดียวกัน (ORG_DOCUMENTS_ENABLED)"],
+        ["Model harness", "services/model_harness.py, services/runtime_skills.py, runtime_skills/", "Medical analyzer และ Thai composer กับคำสั่งภาษาไทยที่ตรวจ hash แล้ว เปิดด้วย flag เท่านั้น"],
+        ["ตัวอ่านใบผล", "services/report_reader_v2.py: Typhoon OCR", "อ่านภาพหรือ PDF เป็นแถว ตรวจเอกสาร คำนวณสถานะ"],
+        ["เพดานและงบ", "services/conversation_transport.py และ cost_ledger.py", "ตรวจสิทธิ์เรียกเครือข่าย จำนวนครั้ง และบัญชีบาทก่อนเรียกโมเดลทุกครั้ง"],
+        ["ข้อมูลหน้าเว็บสาธารณะ", "routers/public.py (ใหม่ในรุ่นรวม)", "อ่านอย่างเดียว ไม่มีข้อมูลส่วนบุคคล ยกเว้น /membership ที่บอกบทบาทขององค์กรของผู้เรียกเอง"],
+        ["ข้อมูลธุรกิจ", "business_data/*.json", "แคตตาล็อก สาขา นโยบาย แผน บทบาท และลิงก์โรงพยาบาล"],
+        ["ฐานข้อมูล", "Render PostgreSQL (SQLite ในเครื่อง) เข้ารหัสแถวด้วย Fernet", "บัญชี แชต ใบผล นัด การชำระเงิน เอกสารขององค์กร และการตั้งค่า AI"],
+        ["ผู้ให้บริการโมเดล", "ตาม slot: Typhoon, iApp, Typhoon OCR เป็นค่าเริ่มต้น", "ผู้จัดการเปลี่ยนเป็น OpenRouter หรือผู้ให้บริการอื่นได้"],
     ], [4.2, 6.0, 6.2])
     h2("4.3 API endpoints")
-    p("Endpoint อยู่ใต้ /api/business ยกเว้น /health รายการเต็มอยู่ใน docs/api.md และที่ /docs เมื่อรัน FastAPI คำขอที่เปลี่ยนข้อมูลต้องมี session หรือ guest token และ X-Business-CSRF ชุด UAT ของรุ่น 4.0.0 ใช้ endpoint เหล่านี้ผ่านหน้าเว็บจริงบนเครื่องพัฒนา แต่ยังไม่ได้ตรวจบน Cloudflare จริง")
-    table("endpoints", "Endpoint หลัก (ใหม่ในรุ่น 4.0.0 ระบุไว้ท้ายคำอธิบาย)", ["Method", "Path", "หน้าที่"], [
+    p(f"Endpoint อยู่ใต้ /api/business ยกเว้น /health รายการเต็มอยู่ใน docs/api.md และที่ /docs เมื่อรัน FastAPI คำขอที่เปลี่ยนข้อมูลต้องมี session หรือ guest token และ X-Business-CSRF ชุด UAT ของเว็บ Next.js เรียก endpoint เหล่านี้ผ่านบริการเว็บที่ build แล้วบนเครื่องพัฒนา (commit {RC_COMMIT}) ยังไม่ได้ตรวจบน Render จริง")
+    table("endpoints", "Endpoint หลัก (ที่เพิ่มในรุ่นรวมระบุไว้ท้ายคำอธิบาย)", ["Method", "Path", "หน้าที่"], [
         ["GET", "/session, /me", "อ่านหรือสร้าง session และ CSRF token; ผู้ที่เข้าสู่ระบบ"],
-        ["POST", "/register, /login, /logout", "สมัคร เข้าสู่ระบบ ออกจากระบบ; keep_guest_chat ย้ายแชตผู้เยี่ยมชมเข้าบัญชี (ใหม่)"],
+        ["POST", "/register, /login, /logout", "สมัคร เข้าสู่ระบบ (email และรหัสผ่านเท่านั้น แชตผู้เยี่ยมชมของหน้านั้นถูกลบ) ออกจากระบบ"],
         ["POST", "/guest/close", "beacon ลบแชตผู้เยี่ยมชมใน RAM เมื่อปิดหรือรีเฟรชหน้า"],
         ["POST", "/chat, /chat/retry, /stop", "ส่งข้อความ (ขั้นตอนแบบ NDJSON) ลองใหม่ หยุด"],
         ["POST", "/chat/report, /chat/report/confirm", "ส่งใบผลพร้อมคำถาม ได้การ์ดค่า; ยืนยันค่าแล้วตอบคำถาม"],
         ["GET, POST", "/chats, /projects", "รายการแชตและโปรเจกต์"],
         ["GET", "/catalog/search, /catalog/{id}, /slots", "ค้นแพ็กเกจ รายละเอียด ช่วงเวลาว่าง 30 นาที"],
         ["POST", "/bookings, /confirm, /payments/checkout, /handoffs", "ขอนัด ยืนยันตัวอย่าง ชำระเงินจำลอง ขอคุยกับเจ้าหน้าที่"],
+        ["GET, POST", "/organization-documents, /organization-documents/search", "รายการเอกสาร อัปโหลดร่าง (TXT/MD) และค้นข้อความต้นฉบับ เฉพาะสมาชิก"],
+        ["GET, POST", "/organization-documents/{id}, /{id}/download, /{id}/approve|reject|revoke|delete", "ดูตัวอย่าง ดาวน์โหลดฉบับที่อนุมัติ และเปลี่ยนสถานะ (ผู้แก้ไขขององค์กร)"],
+        ["PUT", "/organization-documents/membership", "ผู้จัดการกำหนดสมาชิกและบทบาท reader หรือ editor"],
         ["GET", "/site/common, /site/home, /site/sources, /site/packages/{id}, /site/compare", "ข้อมูลหน้าเว็บสาธารณะ ไม่มีข้อมูลส่วนบุคคล (ใหม่)"],
-        ["GET, POST", "/orgs/mine, /orgs/join, /orgs/{org_id}/leave", "องค์กรของฉัน เข้าร่วมด้วยรหัส ออกจากองค์กร (ใหม่)"],
-        ["GET, POST, DELETE", "/orgs/{org_id}/documents", "รายการ อัปโหลด และลบเอกสารขององค์กร (ใหม่)"],
-        ["POST", "/chat/org-scope", "เลือกองค์กรที่แชตใช้ค้นเอกสาร (ใหม่)"],
-        ["GET, POST, PUT", "/staff/organizations, /staff/organizations/{org_id}/members", "ผู้จัดการ: สร้างและแก้องค์กร ตั้งสมาชิกและผู้ดูแล (ใหม่)"],
-        ["GET, POST, DELETE", "/staff/org-documents, /staff/org-documents/{doc_id}/review", "ผู้จัดการ: อ่าน อนุมัติ ปฏิเสธ หรือลบเอกสาร (ใหม่)"],
-        ["GET, PUT, POST", "/staff/ai-providers/{slot}, /staff/ai-providers/profile/economical", "ผู้จัดการ: ตั้งผู้ให้บริการ และใช้ชุดโมเดล OpenRouter แบบเร็วและประหยัด"],
-        ["GET", "/ai-readiness, /staff/budget", "ความพร้อมของผู้ให้บริการ เพดานจำนวนครั้ง และงบบาท"],
+        ["GET", "/site/features, /site/hospital-links, /site/membership", "สถานะ flag แบบ true/false ลิงก์โรงพยาบาล และบทบาทองค์กรของผู้เรียกเอง (ใหม่)"],
+        ["GET, PUT, DELETE, POST", "/staff/ai-providers, /registry, /{slot}, /{slot}/test", "ผู้จัดการ: ดูและตั้งผู้ให้บริการต่อ slot และ agent รายการโมเดลที่พิจารณา และทดสอบ 1 ครั้ง"],
+        ["GET", "/staff/budget", "เพดานจำนวนครั้งและบัญชีบาท"],
         ["GET", "/health", "สถานะ รุ่น และ commit ของบริการ (นอก /api/business)"],
-    ], [2.4, 7.6, 6.4])
+    ], [2.6, 7.4, 6.4])
     h2("4.4 ฐานความรู้และการค้นคืน (RAG)")
-    p("ฐานความรู้สาธารณะ knowledge/evidence/catalog.json มี 135 รายการ แต่ละรายการเป็นข้อความสรุป 2–5 ประโยคพร้อมผู้เผยแพร่ ลิงก์ และคำเรียกภาษาไทยใน aliases เช่น น้ำตาลสะสม ไขมันเลว ค่าไต คำถามภาษาไทยจึงค้นเจอรายการภาษาอังกฤษได้ ระบบค้นด้วย BM25 และถ้ามี vector index จะค้นด้วย Qwen3 Embedding 8B ร่วมด้วย โดยส่งเฉพาะคำค้นที่เป็นชื่อการตรวจ ไม่ส่งข้อความหรือผลของผู้ใช้ เอกสารขององค์กรค้นด้วย BM25 เท่านั้น คำตอบอ้างได้เฉพาะรายการที่ค้นได้จริง และแหล่งทางการแพทย์ไม่เกิน 8 รายการต่อคำตอบ ระบบไม่ยอมโหลดฐานความรู้ถ้ารหัสซ้ำ ลิงก์ไม่ใช่ https หรือ content_sha256 ไม่ตรงกับเนื้อหา")
+    p(f"ฐานความรู้สาธารณะ knowledge/evidence/catalog.json มี {len(KNOWLEDGE)} รายการที่ตรวจแล้วจาก {len({r['publisher'] for r in KNOWLEDGE})} ผู้เผยแพร่ แต่ละรายการเป็นข้อความสรุปพร้อมผู้เผยแพร่ ลิงก์ และคำเรียกภาษาไทยใน aliases คำถามภาษาไทยจึงค้นเจอรายการภาษาอังกฤษได้ ระบบค้นด้วย BM25 และตรวจ SHA-256 ของเอกสารต้นฉบับทุกครั้งที่โหลด คำตอบอ้างได้เฉพาะรายการที่ค้นได้จริง และแหล่งทางการแพทย์ไม่เกิน 8 รายการต่อคำตอบ embedding ยังเลื่อนไว้จนกว่าจะมีผลเปรียบเทียบการค้นคืน")
+    p(f"เอกสารขององค์กรค้นด้วยการนับคำที่ตรงกันทีละบรรทัด ได้ข้อความต้นฉบับพร้อมรุ่น ตำแหน่งบรรทัด และ SHA-256 ข้อความเหล่านี้ถูกส่งให้ผู้ช่วยเฉพาะเมื่อเปิด ORG_REFERENCE_INFERENCE_ENABLED และผู้ให้บริการทุกตัวที่ได้รับข้อมูลตั้งค่าแล้วและไม่ใช่โมเดลแบบ :free ส่วนแหล่งใหม่ {len(CANDIDATES)} รายการจาก Claude branch และ {len(CODEX_MED) + len(CODEX_HOSP)} รายการจาก Codex อยู่ในโฟลเดอร์ knowledge/acquisition สถานะ NOT_APPROVED และไม่ถูกค้น")
 
     # ---------------------------------------------------------------- 5
     h1("5. การไหลของข้อมูลของ 1 ข้อความ")
     h2("5.1 แผนภาพการไหลของข้อมูล")
-    p("แผนภาพเป็นแผนภาพลำดับ (sequence) อ่านจากบนลงล่างตามเวลา เส้นตั้ง 4 เส้นคือเบราว์เซอร์ Cloudflare FastAPI และ OpenRouter เลข 01–09 ทางซ้ายตรงกับขั้นใน {T:steps} ลูกศรสีน้ำเงินคือคำขอ HTTP และการเรียกโมเดล ลูกศรที่วนกลับเข้า FastAPI คืองานที่ทำใน Python เส้นประคือบรรทัด NDJSON {\"type\":\"step\"} ที่ส่งถึงเบราว์เซอร์ทุกขั้น และลูกศรสีม่วงคือบรรทัดสุดท้าย {\"type\":\"done\"} ทุกการเรียกโมเดลผ่านแถบ \"ด่าน\" (CLOUD_CALL_LIMIT และบัญชีบาท) ก่อน กรอบ LOOP แสดงว่าคำตอบที่ไม่ผ่านการตรวจเขียนใหม่ได้ 1 รอบ ขั้นที่ 04 และ 08 ทำ 2 งานพร้อมกัน เวลาที่ลูกค้ารอในขั้นนั้นจึงเท่ากับงานที่ช้ากว่า ไม่ใช่ผลรวมของทั้งสองงาน ({F:flow})")
-    fig("flow", ROOT / "docs/assets/message-flow-4.0.png", "การไหลของข้อมูลของ 1 ข้อความในแชต รุ่น 4.0.0", 16.0)
+    p("แผนภาพเป็นแผนภาพลำดับ (sequence) อ่านจากบนลงล่างตามเวลา เส้นตั้ง 4 เส้นคือเบราว์เซอร์ บริการเว็บบน Render, FastAPI ของ Codex และผู้ให้บริการ AI เลข 01–09 ทางซ้ายตรงกับขั้นใน {T:steps} ลูกศรสีน้ำเงินคือคำขอ HTTP และการเรียกโมเดล ลูกศรที่วนกลับเข้า FastAPI คืองานที่ทำใน Python เส้นประคือบรรทัด NDJSON {\"type\":\"step\"} ที่ส่งกลับผ่านบริการเว็บถึงเบราว์เซอร์ทุกขั้น และลูกศรสีม่วงคือบรรทัดสุดท้าย {\"type\":\"done\"} ทุกการเรียกโมเดลผ่านแถบ \"ด่าน\" ก่อน กรอบ LOOP แสดงว่าคำตอบที่ไม่ผ่านการตรวจเขียนใหม่ได้ 1 รอบ ไปป์ไลน์ของ Codex เรียกโมเดลทีละครั้งตามลำดับ ไม่มีการตรวจขนาน ({F:flow})")
+    fig("flow", ROOT / "docs/assets/message-flow-4.0.png", "การไหลของข้อมูลของ 1 ข้อความในแชต รุ่น 4.0.0-rc1", 13.6)
     h2("5.2 ขั้นตอนการประมวลผล")
     table("steps", "ขั้นตอนของ 1 ข้อความ", ["#", "สิ่งที่เกิดขึ้น", "โค้ด", "โมเดล"], [
-        ["1", "เบราว์เซอร์ POST /api/business/chat พร้อม Accept: application/x-ndjson ผ่าน labclear-web และ service binding ถึง container", "web/lib/api/client.ts, web/worker.ts", "–"],
-        ["2", "ตรวจ session, CSRF, origin และ rate limit แล้วบันทึกข้อความ บัญชีบันทึกใน PostgreSQL ผู้เยี่ยมชมเก็บใน RAM ชั่วคราว", "routers/business.py", "–"],
-        ["3", "ตรวจรูปแบบการโจมตีในเครื่องด้วย regex ถ้าพบหยุดโดยไม่เรียกโมเดลใด", "services/conversation_guard.py", "–"],
-        ["4", "safety ขาเข้าและ planner ทำพร้อมกัน ใช้แผนเฉพาะเมื่อข้อความปลอดภัย", "conversation_guard.py, business_agent.py", "GPT-4.1 mini, Qwen3 30B A3B"],
-        ["5", "ค้น BM25 และ vector (ถ้ามี index) บนฐานสาธารณะ และ BM25 บนเอกสารขององค์กรที่ผู้ใช้เลือก", "evidence_search.py, semantic_search.py, org_knowledge.py", "Qwen3 Embedding 8B (คำค้นเท่านั้น)"],
-        ["6", "ผู้เขียนคำตอบตามบทบาทเขียน JSON พร้อม citation", "business_agent.py", "Gemini 3.1 Flash Lite"],
-        ["7", "Python ตรวจ citation ค่าผลตรวจ ราคา และขอบเขตบทบาท ถ้าไม่ผ่านให้ผู้เขียนแก้ได้ 1 รอบ", "answer_checks.py, business_agent.py", "Gemini อีก 1 ครั้งเมื่อต้องแก้"],
-        ["8", "reviewer และ safety ขาออกทำพร้อมกัน ข้าม reviewer เมื่อเป็นคำทักทายหรือถามกลับที่ไม่มีข้อเท็จจริงหรือแหล่งอ้างอิง", "business_agent.py, conversation_guard.py", "GPT-4.1 mini 2 งาน"],
-        ["9", "บันทึกคำตอบ แหล่งอ้างอิง และขั้นตอน แล้วส่งผลลัพธ์เป็นบรรทัดสุดท้าย", "routers/business.py", "–"],
-    ], [1.0, 7.4, 4.6, 3.4])
-    p("ทุกการเรียกโมเดลผ่านเพดานจำนวนครั้ง (CLOUD_CALL_LIMIT) และบัญชีค่าใช้จ่ายบาท (PROJECT_BUDGET_THB) ก่อนเสมอ ถ้าเกินเพดาน ผู้ให้บริการขัดข้อง หรือโมเดลตอบผิดรูปแบบ ระบบหยุดและส่งบรรทัด error พร้อมเหตุผลแทนการแต่งคำตอบ (fail closed) ข้อความปกติที่ผ่านทุกขั้นเรียกโมเดล 5 ครั้ง ไม่นับ embedding ของคำค้น คำทักทายไม่มี reviewer จึงใช้ 4 ครั้ง การแก้คำตอบ 1 รอบเพิ่มการเรียกผู้เขียนและการตรวจซ้ำ")
+        ["1", "เบราว์เซอร์ POST /api/business/chat พร้อม Accept: application/x-ndjson ไปที่บริการเว็บ ซึ่ง rewrite ไปยัง FastAPI", "web/lib/api/client.ts, web/next.config.ts", "–"],
+        ["2", "ตรวจ session, CSRF, origin (Host หรือ TRUSTED_ORIGINS) และ rate limit แล้วบันทึกข้อความ บัญชีบันทึกใน PostgreSQL ผู้เยี่ยมชมเก็บใน RAM ชั่วคราว", "routers/business.py, services/trusted_origins.py", "–"],
+        ["3", "ถ้าเปิดเอกสารองค์กร ตรวจซ้ำว่าแหล่งส่วนตัวในประวัติยังอนุมัติและเป็นขององค์กรเดิม ถ้าไม่ใช่ตัดออกจาก context", "routers/business.py, organization_sources.py", "–"],
+        ["4", "ตรวจรูปแบบการโจมตีด้วย regex ถ้าพบหยุดโดยไม่เรียกโมเดล แล้วตรวจข้อความเข้าด้วย safety model", "services/conversation_guard.py", "safety check"],
+        ["5", "planner เลือก action บทบาท และคำค้น", "services/business_agent.py", "planner"],
+        ["6", "ค้น BM25 บนฐาน 58 รายการ และข้อความที่อนุมัติแล้วขององค์กรเฉพาะเมื่อเปิด ORG_REFERENCE_INFERENCE_ENABLED", "evidence_search.py, organization_sources.py", "–"],
+        ["7", "ผู้เขียนคำตอบตามบทบาทเขียน JSON พร้อม citation (runtime skills และ medical harness เฉพาะเมื่อเปิด flag)", "business_agent.py, model_harness.py", "ผู้เขียนคำตอบ"],
+        ["8", "Python ตรวจ citation ค่าผลตรวจ ราคา และบทบาท ถ้าไม่ผ่านให้เขียนใหม่ได้ 1 รอบ แล้ว reviewer ตรวจ และตรวจความปลอดภัยขาออก", "answer_checks.py, business_agent.py, conversation_guard.py", "reviewer และ safety check"],
+        ["9", "บันทึกคำตอบ แหล่งอ้างอิง (รวมรุ่นและ SHA-256 ของเอกสารองค์กร) และขั้นตอน แล้วส่งผลลัพธ์เป็นบรรทัดสุดท้าย", "routers/business.py", "–"],
+    ], [1.0, 7.6, 4.6, 3.2])
+    p("ทุกการเรียกโมเดลผ่าน PROVIDER_NETWORK_ENABLED เพดานจำนวนครั้ง (CLOUD_CALL_LIMIT ค่าเริ่มต้น 200) และบัญชีค่าใช้จ่ายบาท (PROJECT_BUDGET_THB 300 บาท) ก่อนเสมอ ถ้าเกินเพดาน ผู้ให้บริการขัดข้อง หรือโมเดลตอบผิดรูปแบบ ระบบหยุดและส่งบรรทัด error พร้อมเหตุผลแทนการแต่งคำตอบ (fail closed) ข้อความปกติที่ผ่านทุกขั้นเรียกโมเดล 5 ครั้ง และไม่เกิน 8 ครั้งเมื่อมีการแก้คำตอบ")
     h2("5.3 การส่งใบผลแล็บในแชต")
     table("report_flow", "ขั้นตอนเมื่อส่งใบผลแล็บพร้อมคำถาม", ["#", "ขั้นตอน", "โมเดล"], [
         ["1", "แนบภาพหรือ PDF (สูงสุด 3 หน้า ไฟล์ละไม่เกิน 3 MB) พร้อมคำถาม ส่งไปที่ /chat/report", "–"],
-        ["2", "อ่านภาพเป็นข้อความ", "Gemini 3.1 Flash Lite"],
-        ["3", "ตรวจข้อความที่อ่านได้ในฐานะเอกสาร ใบผลมีชื่อและค่าของลูกค้าเองได้ แต่คำสั่งแฝงและเนื้อหาอันตรายถูกบล็อก", "Safety classifier"],
-        ["4", "แปลงข้อความเป็นแถว ชื่อ ค่า หน่วย ช่วงที่พิมพ์ และธง แล้วตรวจแถวอีกครั้ง", "โมเดลภาษาและ safety classifier"],
+        ["2", "อ่านภาพเป็นข้อความ (หน้าละ 1 ครั้ง)", "Typhoon OCR (ค่าเริ่มต้น)"],
+        ["3", "ตรวจข้อความที่อ่านได้ในฐานะเอกสาร ใบผลมีชื่อและค่าของลูกค้าเองได้ แต่คำสั่งแฝงและเนื้อหาอันตรายถูกบล็อก", "Safety check"],
+        ["4", "แปลงข้อความเป็นแถว ชื่อ ค่า หน่วย ช่วงที่พิมพ์ และธง แล้วตรวจแถวอีกครั้ง", "โมเดลภาษาและ safety check"],
         ["5", "Python คำนวณปกติ สูง หรือต่ำจากช่วงที่พิมพ์ แล้วแสดงการ์ดค่า ถ้าใบผลมีธงค่าวิกฤต การ์ดแสดงคำแนะนำให้พบแพทย์โดยเร็ว", "–"],
         ["6", "ลูกค้าตรวจและแก้ค่าได้ กดยืนยัน แล้วระบบทำงานตาม{T:steps}โดยให้ Report Explainer ตอบ", "ตาม{T:steps}"],
     ], [1.0, 11.0, 4.4])
     h2("5.4 สถานะกำลังประมวลผลและข้อผิดพลาด")
-    p("ระหว่างทำงาน แต่ละขั้นแสดงในแชตทันทีจากบรรทัด NDJSON แบบ {\"type\":\"step\"} เมื่อได้คำตอบ ขั้นตอนทั้งหมดย่อเก็บไว้ใต้คำตอบ ({F:chat}) ถ้าขั้นใดล้มเหลว ข้อความแสดงเหตุผล และถ้าเป็นความขัดข้องชั่วคราวจะมีปุ่มลองใหม่โดยไม่ต้องพิมพ์ใหม่ UAT UI-30 ตรวจขั้นตอนสดและการ์ดค่า ส่วน UI-08 ผ่านแต่ในรอบ 4.0.0 ไม่ได้เข้าเส้นทางลองใหม่จริง เพราะตัวแทนโมเดลที่จำลองความล้มเหลวถูกใช้ไปแล้วใน process นั้น")
+    p("ระหว่างทำงาน แต่ละขั้นแสดงในแชตทันทีจากบรรทัด NDJSON แบบ {\"type\":\"step\"} เมื่อได้คำตอบ ขั้นตอนทั้งหมดย่อเก็บไว้ใต้คำตอบ ({F:chat}) ถ้าขั้นใดล้มเหลว ข้อความแสดงเหตุผล และถ้าเป็นความขัดข้องชั่วคราวจะมีปุ่มลองใหม่โดยไม่ต้องพิมพ์ใหม่ UAT UI-30 ของรุ่นรวมตรวจขั้นตอนสดและการ์ดค่า และ UI-08 เข้าเส้นทางลองใหม่จริง (ตัวแทนโมเดลล้มเหลว 1 ครั้งแล้วตอบได้) โดยข้อความไม่ซ้ำ")
 
     # ---------------------------------------------------------------- 6
-    h1("6. การปรับปรุงตามความเห็น CEO รุ่น 4.0.0")
+    h1("6. การปรับปรุงตามความเห็น CEO รุ่น 4.0.0-rc1")
     h2("6.1 สรุป 5 ข้อ")
-    table("ceo", "ความเห็น CEO และการตัดสินใจในรุ่น 4.0.0", ["ข้อ", "ความเห็น", "สิ่งที่ทำ", "เหตุผล"], [
-        ["1", "แหล่งอ้างอิงน้อยและเจาะจงบางโรงพยาบาล ให้เพิ่มการอัปโหลดเอกสารเฉพาะโรงพยาบาลสำหรับลูกค้าองค์กร", "ฐานสาธารณะ 58 เป็น 135 รายการจาก 24 ผู้เผยแพร่ และระบบเอกสารอ้างอิงขององค์กร", "ข้อมูลเฉพาะโรงพยาบาลควรให้เห็นเฉพาะสมาชิกขององค์กรนั้น และต้องผ่านการตรวจก่อนใช้"],
-        ["2", "ถ้าไม่ได้ Log in ระบบไม่เก็บประวัติเมื่อ Refresh", "คงการล้างเมื่อ Refresh ทำให้ชัดและแน่นขึ้น และให้เลือกเก็บแชตเข้าบัญชีตอนเข้าสู่ระบบ", "ผู้ใช้เลือกให้ล้างทุกครั้งเพื่อความเป็นส่วนตัวของข้อมูลสุขภาพ"],
-        ["3", "ย้ายจาก Render ไป Cloudflare บนโดเมนที่ทีมซื้อไว้", "Worker 2 ตัว Container ของ FastAPI และ PostgreSQL ภายนอก", "ใช้โดเมนเดียวทั้งหน้าเว็บและ API คงโค้ด FastAPI เดิม"],
-        ["4", "ใช้ OpenRouter key ของทีม เลือกโมเดลถูก ดี เร็ว งบ USD 10 พิจารณา embedding", "ชุดโมเดล 4 ตัว ตรวจขนานกัน งบในระบบ 360 บาท", "ประมาณ USD 0.008 ต่อคำตอบ งบพอประมาณ 1,250 คำตอบ"],
-        ["5", "หน้าเว็บเน้นภาษาไทย ใช้ Next/React/Three ได้ ให้เด่นและเข้าใจง่าย", "Next.js 16, React 19, React Three Fiber ภาษาไทยเป็นค่าเริ่มต้น", "คงดีไซน์เดิมที่เจ้าของงานชอบ และเพิ่มส่วนที่อธิบายระบบ"],
+    p("ความเห็นของ CEO ถูกตอบสองรอบ รอบแรกบน Claude branch 4.0.0 (Cloudflare และชุดโมเดล OpenRouter) และรอบที่สองบน Codex main (ความสามารถใหม่ที่ปิดเป็นค่าเริ่มต้น) รุ่นรวมใช้ Codex เป็นฐาน แล้วนำหน้าเว็บของ Claude มาประกอบ ตารางนี้คือการตัดสินใจที่อยู่ในรุ่นรวม ({T:ceo})")
+    table("ceo", "ความเห็น CEO และการตัดสินใจในรุ่นรวม", ["ข้อ", "ความเห็น", "สิ่งที่อยู่ในรุ่นรวม", "เหตุผล"], [
+        ["1", "แหล่งอ้างอิงน้อยและเจาะจงบางโรงพยาบาล ให้เพิ่มการอัปโหลดเอกสารเฉพาะโรงพยาบาลสำหรับลูกค้าองค์กร", "ฐานที่ระบบค้นคง 58 รายการที่ตรวจแล้ว แหล่งใหม่เข้าคิวรอตรวจ เอกสารขององค์กรใช้ระบบของ Codex และเพิ่มหน้าลิงก์แพ็กเกจจากเว็บไซต์โรงพยาบาล", "ข้อมูลทางการแพทย์ต้องผ่านการตรวจสิทธิ์และความถูกต้องก่อนใช้ ข้อมูลเฉพาะโรงพยาบาลควรเห็นเฉพาะสมาชิกขององค์กรนั้น"],
+        ["2", "ถ้าไม่ได้ Log in ระบบไม่เก็บประวัติเมื่อ Refresh", "คงการล้างเมื่อ Refresh และใช้กฎของ Codex ที่ลบแชตผู้เยี่ยมชมเมื่อเข้าสู่ระบบ พร้อมกันคำตอบเก่าแสดงทับบัญชีใหม่", "ผู้ใช้เลือกให้ล้างทุกครั้งเพื่อความเป็นส่วนตัวของข้อมูลสุขภาพ"],
+        ["3", "ย้ายจาก Render ไป Cloudflare บนโดเมนที่ทีมซื้อไว้", "เจ้าของเปลี่ยนเป้าหมายกลับเป็น Render เดิม หน้าเว็บ Next.js เป็นบริการที่สอง งาน Cloudflare เก็บเป็นทางเลือก", "ไม่ต้องเสียค่า Workers Paid คงบริการ API ที่ใช้งานอยู่ และ Cloudflare แผนฟรีใช้เป็น DNS ได้ภายหลัง"],
+        ["4", "ใช้ OpenRouter key ของทีม เลือกโมเดลถูก ดี เร็ว งบ USD 10 พิจารณา embedding", "model harness ของ Codex: เลือกผู้ให้บริการต่อ slot และ agent บทบาทใหม่ปิดเป็นค่าเริ่มต้น เพดาน 300 บาท embedding เลื่อนไว้", "ยังไม่มีการวัดคุณภาพหรือราคากับโมเดลจริง จึงไม่ฝังโมเดลใดเป็นค่าเริ่มต้นโดยไม่มีหลักฐาน"],
+        ["5", "หน้าเว็บเน้นภาษาไทย ใช้ Next/React/Three ได้ ให้เด่นและเข้าใจง่าย", "ใช้เว็บ Next.js 16, React 19, React Three Fiber ของ Claude ภาษาไทยเป็นค่าเริ่มต้น ปรับให้เข้ากับ API ของ Codex", "คงดีไซน์ที่เจ้าของงานชอบ และใช้ backend ที่ผ่านการตรวจความปลอดภัยแล้ว"],
     ], [1.0, 5.0, 5.4, 5.0])
     h2("6.2 ข้อ 1 ฐานความรู้และเอกสารขององค์กร")
-    p("เดิมฐานความรู้มี 58 รายการ ส่วนใหญ่มาจากห้องแล็บของโรงพยาบาลศิริราชและ MedlinePlus รุ่นนี้เพิ่มเป็น 135 รายการจาก 24 ผู้เผยแพร่ ครอบคลุมทุกการตรวจในแพ็กเกจ แต่ละการตรวจมีอย่างน้อย 2 ผู้เผยแพร่ และเพิ่มหัวข้อทั่วไป เช่น การงดอาหารก่อนเจาะเลือด เหตุที่ช่วงอ้างอิงต่างกันระหว่างห้องแล็บ เกณฑ์เบาหวาน ระยะของโรคไตเรื้อรัง และพาหะธาลัสซีเมียในไทย")
+    p(f"ฐานความรู้ที่ระบบค้นยังเป็น {len(KNOWLEDGE)} รายการที่ตรวจแล้ว ส่วนใหญ่มาจากห้องแล็บของโรงพยาบาลศิริราชและ MedlinePlus Claude branch เคยเพิ่มเป็น 135 รายการ แต่ {CAND_CATALOG} รายการที่เพิ่มเขียนจากความรู้โดยไม่ได้เปิดหน้าเว็บต้นทาง (verification.url_checked=false) และมีร่างอีก {CAND_PENDING} รายการที่ไม่มีลิงก์บทความเฉพาะ รุ่นรวมจึงย้ายทั้ง {len(CANDIDATES)} รายการไปไว้ใน knowledge/acquisition/claude_candidates_400.json สถานะ NOT_APPROVED ไม่ถูกค้น และมีการทดสอบยืนยันว่าไม่ปะปนกับฐานที่ใช้งาน ({{T:publishers}}) Codex ก็มีรายการค้นหาแหล่งของตนอีก {len(CODEX_MED)} รายการและลิงก์โรงพยาบาล {len(CODEX_HOSP)} รายการในโฟลเดอร์เดียวกัน")
     by_type: dict[str, int] = {}
     pubs: dict[str, set] = {}
-    for r in KNOWLEDGE:
-        by_type[r["publisher_type"]] = by_type.get(r["publisher_type"], 0) + 1
-        pubs.setdefault(r["publisher_type"], set()).add(r["publisher"])
+    for r in CANDIDATES:
+        by_type[ptype(r)] = by_type.get(ptype(r), 0) + 1
+        pubs.setdefault(ptype(r), set()).add(r["publisher"])
     type_rows = [
         ("thai_government", "หน่วยงานรัฐไทย", "กรมควบคุมโรค กรมอนามัย สถาบันมะเร็งแห่งชาติ"),
         ("thai_professional_society", "สมาคมวิชาชีพไทย", "สมาคมโรคเบาหวาน สมาคมโรคไต สมาคมโรคตับ"),
-        ("thai_hospital", "ห้องแล็บโรงพยาบาลไทย", "ศิริราช และศรีนครินทร์ มข."),
+        ("thai_hospital", "โรงพยาบาลไทย (ร่างที่ไม่มีลิงก์บทความ)", "รามาธิบดี จุฬาลงกรณ์ ราชวิถี มหาราชนครเชียงใหม่"),
         ("international_agency", "หน่วยงานสากล", "NIDDK, USPSTF, NHLBI, WHO, NHS, CDC"),
         ("international_reference", "แหล่งอ้างอิงสากล", "MedlinePlus, KDIGO, American Heart Association"),
     ]
-    table("publishers", "ฐานความรู้สาธารณะแยกตามประเภทผู้เผยแพร่", ["ประเภท", "ผู้เผยแพร่", "รายการ", "ตัวอย่าง"],
-          [[th, str(len(pubs[k])), str(by_type[k]), ex] for k, th, ex in type_rows] + [["รวม", str(sum(len(v) for v in pubs.values())), str(len(KNOWLEDGE)), "ภาษาอังกฤษ {} ภาษาไทย {}".format(sum(r['language'] == 'en' for r in KNOWLEDGE), sum(r['language'] == 'th' for r in KNOWLEDGE))]],
-          [4.4, 2.4, 2.0, 7.6])
-    p(f"สถานะการตรวจ: ลิงก์ของ {UNCHECKED} รายการที่เพิ่มใหม่เขียนจากความรู้โดยไม่ได้เปิดเว็บ เพราะสภาพแวดล้อมที่พัฒนาไม่มีอินเทอร์เน็ต ทุกรายการติดธง verification.url_checked=false ต้องรัน python scripts/verify_sources.py จากเครื่องที่มีอินเทอร์เน็ต แล้วให้คนอ่านหน้าเว็บเทียบกับข้อความที่สรุปไว้ สถานะ HTTP 200 ยืนยันได้เพียงว่าหน้านั้นมีอยู่ ร่าง {len(PENDING)} รายการของโรงพยาบาลอีก 5 แห่งที่ไม่มีลิงก์บทความเฉพาะถูกแยกไว้ใน knowledge/evidence/pending.json และไม่ถูกค้น จนกว่าจะมีคนหาบทความจริงของโรงพยาบาลนั้น")
-    p("ส่วนที่ CEO ขอให้อัปโหลดเอกสารเฉพาะโรงพยาบาลได้ ทำเป็นระบบเอกสารอ้างอิงขององค์กร แทนการใส่ข้อมูลของโรงพยาบาลหนึ่งไว้ในฐานสาธารณะที่ทุกคนเห็น เอกสารขององค์กรใช้ได้เฉพาะสมาชิกขององค์กรนั้น และใช้ได้หลังเจ้าหน้าที่ LabClear อนุมัติแล้วเท่านั้น ({T:orgflow})")
-    table("orgflow", "การทำงานของเอกสารอ้างอิงขององค์กร", ["ขั้น", "ผู้ทำและหน้าจอ", "สิ่งที่ระบบทำ"], [
-        ["1", "ผู้จัดการ LabClear สร้างองค์กร (โรงพยาบาล คลินิก บริษัท) ที่ /staff", "สร้างรหัสเข้าร่วมขององค์กร"],
-        ["2", "ลูกค้าเข้าร่วมด้วยรหัสที่ /app?view=orgs", "เพิ่มเป็นสมาชิก (สูงสุด 5 องค์กรต่อคน) ผู้จัดการตั้งสมาชิกเป็นผู้ดูแลองค์กรได้"],
-        ["3", "ผู้ดูแลองค์กรอัปโหลด PDF ที่มีชั้นข้อความ DOCX TXT หรือ MD ไม่เกิน 5 MB", "แปลงเป็นข้อความ ตรวจข้อความที่สั่งผู้ช่วย ตัดเป็นช่วงสั้น เก็บแบบเข้ารหัสในสถานะรอตรวจ ไม่เก็บไฟล์ต้นฉบับ องค์กรละไม่เกิน 30 ฉบับ"],
-        ["4", "ผู้จัดการ LabClear อ่านทีละช่วงที่ /staff?view=knowledge แล้วอนุมัติหรือปฏิเสธ", "ช่วงที่ถูกตั้งธงไม่ถูกค้น แม้เอกสารได้รับอนุมัติ"],
-        ["5", "สมาชิกเลือกองค์กรในแชต (POST /chat/org-scope)", "ค้น BM25 ในเอกสารที่อนุมัติ อ้างอิงโดยใช้ชื่อองค์กรเป็นผู้เผยแพร่ ข้อความขององค์กรไม่ถูกส่งไปทำ embedding"],
-    ], [1.0, 6.6, 8.8])
-    p("หลักฐาน: services/org_knowledge.py, routers/org.py, tests/test_release_400.py และ UAT R4-05 ซึ่งสร้างองค์กร ให้ลูกค้าเข้าร่วม อัปโหลดคู่มือ อนุมัติ และให้แชตใช้เอกสารนั้น ผ่านบนเครื่องพัฒนาด้วยตัวแทนโมเดล")
+    table("publishers", "แหล่งความรู้ที่รอตรวจจาก Claude branch แยกตามประเภทผู้เผยแพร่ (ไม่ถูกค้น)", ["ประเภท", "ผู้เผยแพร่", "รายการ", "ตัวอย่าง"],
+          [[th, str(len(pubs[k])), str(by_type[k]), ex] for k, th, ex in type_rows] + [["รวม", str(sum(len(v) for v in pubs.values())), str(len(CANDIDATES)), "ภาษาอังกฤษ {} ภาษาไทย {}".format(sum(r.get('language') == 'en' for r in CANDIDATES), sum(r.get('language') == 'th' for r in CANDIDATES))]],
+          [4.8, 2.4, 2.0, 7.2])
+    p("แหล่งที่รอตรวจจะเข้า catalog.json ได้เมื่อมีคนเปิดหน้าเว็บต้นทาง ยืนยันข้อความ สิทธิ์การใช้ และความถูกต้องทางคลินิก แล้วบันทึกการตรวจไว้ สคริปต์ python scripts/verify_sources.py --candidates ช่วยตรวจได้เพียงว่าลิงก์ยังเปิดได้ สถานะ HTTP 200 ไม่ถือเป็นการตรวจเนื้อหา")
+    p("ส่วนที่ CEO ขอให้อัปโหลดเอกสารเฉพาะโรงพยาบาลได้ ใช้ระบบเอกสารอ้างอิงขององค์กรของ Codex แทนระบบรหัสเข้าร่วมของ Claude branch เพราะระบบของ Codex แยกสิทธิ์ผู้อ่านกับผู้แก้ไข มีรุ่นของเอกสาร และตรวจซ้ำทุกครั้งว่าเอกสารที่เคยใช้ยังอนุมัติอยู่ หน้า My organization ของเว็บ Next.js ถูกเขียนใหม่ตามสัญญานี้บนโครงหน้าเดิม ({T:orgflow})")
+    table("orgflow", "การทำงานของเอกสารอ้างอิงขององค์กร (ต้องเปิด ORG_DOCUMENTS_ENABLED)", ["ขั้น", "ผู้ทำและหน้าจอ", "สิ่งที่ระบบทำ"], [
+        ["1", "ผู้จัดการ LabClear ที่ /staff เมนู Organization membership", "กำหนดบัญชีที่ลงทะเบียนแล้วให้อยู่ในองค์กร (org_…) เป็นผู้อ่านหรือผู้แก้ไข บัญชีหนึ่งอยู่ได้ครั้งละหนึ่งองค์กร"],
+        ["2", "ผู้แก้ไขขององค์กรที่ /app?view=orgs อัปโหลดไฟล์ TXT หรือ MD แบบ UTF-8 ไม่เกิน 256 KiB", "เก็บแบบเข้ารหัสเป็นร่าง ปฏิเสธไฟล์ซ้ำ ไฟล์ที่ไม่ใช่ข้อความ และเกิน 100 ฉบับต่อองค์กร"],
+        ["3", "ผู้แก้ไขดูตัวอย่างแล้วอนุมัติหรือไม่อนุมัติ", "ผู้อ่านเห็นเฉพาะฉบับที่อนุมัติ รุ่นใหม่แทนรุ่นเดิมเมื่ออนุมัติ ถ้ารุ่นที่อนุมัติเปลี่ยนไประหว่างนั้นระบบปฏิเสธ"],
+        ["4", "สมาชิกค้นที่หน้าเดียวกัน", "ได้ข้อความต้นฉบับพร้อมรุ่นและบรรทัด ระบุว่า \"ไม่ใช่คำตอบจาก AI\" และดาวน์โหลดได้เฉพาะสมาชิก"],
+        ["5", "ผู้แก้ไขถอนหรือลบเอกสาร", "คำตอบครั้งต่อไปใช้เอกสารนั้นไม่ได้ทันที การลบลบเนื้อหาออกด้วย"],
+        ["6", "เจ้าของระบบเปิด ORG_REFERENCE_INFERENCE_ENABLED (ปิดเป็นค่าเริ่มต้น)", "ข้อความที่อนุมัติแล้วถูกส่งเป็นหลักฐานให้ผู้ช่วยในแชตของสมาชิก เฉพาะเมื่อผู้ให้บริการทุกตัวที่รับข้อมูลตั้งค่าแล้วและไม่ใช่โมเดล :free"],
+    ], [1.0, 6.4, 9.0])
+    p("หลักฐาน: services/organization_sources.py, routers/organization_sources.py, tests/test_organization_sources.py, tests/test_integration_400.py, web/components/workspace/views/Orgs.tsx, UAT R4-05 ของเว็บ Next.js (ผู้จัดการกำหนดผู้แก้ไขและผู้อ่าน อัปโหลด ดูตัวอย่าง อนุมัติ ค้น ออกรุ่นใหม่ ถอน และตรวจว่าบัญชีนอกองค์กรถูกปฏิเสธ) และชุด upgrade ของ Codex ทั้งหมดใช้เอกสารจำลองและตัวแทนโมเดล")
+    p("รุ่นรวมยังนำหน้า \"แพ็กเกจจากเว็บไซต์โรงพยาบาล\" ของ Codex มาแสดงในเว็บ Next.js ที่ /hospital-links (ต้องเปิด HOSPITAL_LINKS_ENABLED) ราคาแสดงเฉพาะข้อเสนอที่ตรวจแล้วและยังไม่หมดอายุ ลิงก์ไม่ส่ง referrer และไม่อ้างว่าเป็นพันธมิตรหรือจองได้ (UAT R4-15)")
     h2("6.3 ข้อ 2 ผู้เยี่ยมชมและการ Refresh")
-    p("CEO ชี้ว่าผู้ใช้ที่ไม่ได้เข้าสู่ระบบจะเสียประวัติแชตเมื่อ Refresh ผู้ใช้เลือกให้ล้างทุกครั้งที่ Refresh เพื่อความเป็นส่วนตัว เพราะคำถามและใบผลแล็บเป็นข้อมูลสุขภาพ การไม่เก็บไว้ในเบราว์เซอร์และลบออกจากเซิร์ฟเวอร์ทันทีทำให้คนที่ใช้เครื่องเดียวกันภายหลังไม่เห็นข้อมูลนั้น รุ่นนี้จึงคงพฤติกรรมเดิม และแก้ส่วนที่ทำให้ผู้ใช้ไม่รู้ล่วงหน้าหรือเสียแชตโดยไม่ตั้งใจ ({T:guest})")
-    table("guest", "การเปลี่ยนแปลงของโหมดผู้เยี่ยมชม", ["การเปลี่ยนแปลง", "ผล"], [
+    p("CEO ชี้ว่าผู้ใช้ที่ไม่ได้เข้าสู่ระบบจะเสียประวัติแชตเมื่อ Refresh ผู้ใช้เลือกให้ล้างทุกครั้งที่ Refresh เพื่อความเป็นส่วนตัว เพราะคำถามและใบผลแล็บเป็นข้อมูลสุขภาพ รุ่นรวมคงพฤติกรรมนี้และใช้กฎของ Codex เพิ่มเติม คือการเข้าสู่ระบบหรือสมัครบัญชีลบแชตชั่วคราวและภาพของหน้านั้นด้วย ตัวเลือก \"เก็บแชตนี้ไว้ในบัญชี\" ของ Claude branch จึงไม่ได้นำมา หน้าต่างเข้าสู่ระบบแจ้งเรื่องนี้ก่อนกด ({T:guest})")
+    table("guest", "พฤติกรรมของโหมดผู้เยี่ยมชมในรุ่นรวม", ["การทำงาน", "ผล"], [
         ["Token ของผู้เยี่ยมชมอยู่ในหน่วยความจำของหน้าเว็บเท่านั้น ไม่อยู่ใน localStorage หรือ cookie", "Refresh แล้ว token หาย แชตเดิมเปิดไม่ได้อีก"],
         ["Beacon POST /guest/close เมื่อปิดหรือรีเฟรชหน้า", "เซิร์ฟเวอร์ลบข้อความและภาพใน RAM ทันที ไม่ต้องรอหมดเวลา 20 นาที"],
-        ["หน้าที่กลับมาจาก bfcache ถูกโหลดใหม่", "ไม่แสดงแชตเก่าที่ลบไปแล้ว"],
-        ["แถบแจ้ง \"โหมดผู้เยี่ยมชม\" แสดงตลอด", "ผู้ใช้รู้ล่วงหน้าว่าแชตจะไม่ถูกเก็บ"],
-        ["เบราว์เซอร์ถามก่อนออกจากหน้าเมื่อมีข้อความ", "ลดการเสียแชตโดยไม่ตั้งใจ"],
-        ["ตอนเข้าสู่ระบบเลือก \"เก็บแชตนี้ไว้ในบัญชี\" ได้", "แชตชั่วคราวย้ายเข้าบัญชีผ่าน adopt_guest_chat ถ้าไม่เลือก แชตถูกลบ"],
+        ["หน้าที่กลับมาจาก bfcache ถูกโหลดใหม่ และแถบ \"โหมดผู้เยี่ยมชม\" แสดงตลอด", "ไม่แสดงแชตเก่า ผู้ใช้รู้ล่วงหน้าว่าแชตจะไม่ถูกเก็บ"],
+        ["เข้าสู่ระบบหรือสมัครบัญชีส่งเฉพาะ email และรหัสผ่าน (สัญญาของ Codex)", "เซิร์ฟเวอร์ลบแชตผู้เยี่ยมชม หน้าเว็บล้างข้อความออกทันทีก่อนปิดหน้าต่างเข้าสู่ระบบ"],
+        ["คำตอบ /workspace ที่ขอไว้ในนามตัวตนเดิมถูกทิ้ง", "แชตผู้เยี่ยมชมที่มาถึงช้าแสดงทับบัญชีใหม่ไม่ได้"],
     ], [8.6, 7.8])
-    p("หลักฐาน: web/lib/api/client.ts, web/components/chat/guest.tsx, routers/business.py และ UAT R4-02, R4-03, R4-04, UI-33 ซึ่งผ่านทั้งหมด")
-    h2("6.4 ข้อ 3 ย้ายไป Cloudflare")
-    p("Worker labclear-web (Next.js ผ่าน OpenNext) รับทุก request บนโดเมนเดียว และส่ง /api/* กับ /health ไปยัง Worker labclear-api ผ่าน service binding ซึ่งรัน FastAPI ใน Cloudflare Container ค่าใช้จ่ายคงที่คือแผน Workers Paid USD 5 ต่อเดือน ฐานข้อมูลเป็น PostgreSQL ภายนอก เช่น Neon ผ่าน DATABASE_URL Container ใช้ 1 instance เพราะแชตผู้เยี่ยมชมอยู่ใน RAM ของ process เดียว ถ้ามีหลาย instance คำขอถัดไปอาจไปที่ instance ที่ไม่มีแชตนั้น")
-    p("ตั้งโดเมนด้วย npm run cf:domain -- <โดเมน> deploy ด้วย scripts/deploy-cloudflare.sh หรือ GitHub Actions (.github/workflows/deploy-cloudflare.yml) ซึ่งรัน pytest, type check และ i18n check ก่อน deploy การตรวจในรุ่นนี้: opennextjs-cloudflare build และ wrangler dev บน worker ที่ build แล้ว หน้าเว็บ /api ผ่าน worker แชตแบบ stream และการล้างแชตผู้เยี่ยมชมเมื่อรีเฟรชทำงาน wrangler deploy --dry-run ผ่านทั้งสอง worker โดย container ใช้ --containers-rollout=none เพราะเครื่องพัฒนาดึง base image จาก Docker Hub ไม่ได้ ยังไม่ได้ build Docker image และยังไม่ได้ deploy จริงเพราะไม่มีสิทธิ์เข้าบัญชีของทีม")
-    h2("6.5 ข้อ 4 โมเดลและงบ USD 10")
-    table("models", "ชุดโมเดลบน OpenRouter และเหตุผลที่เลือก", ["หน้าที่", "โมเดล", "USD ต่อล้าน tokens (เข้า/ออก)", "เหตุผล"], [
-        ["Planner", "qwen/qwen3-30b-a3b-instruct-2507", "0.048 / 0.193", "MoE ที่ active 3B ตอบ JSON สั้นได้เร็วและถูกที่สุด"],
-        ["ผู้เขียนคำตอบและ OCR", "google/gemini-3.1-flash-lite (ปิด reasoning)", "0.25 / 1.50", "ตระกูลที่เร็ว ภาษาไทยดี ราคาถูก และรับภาพได้ จึงใช้อ่านใบผลด้วย"],
-        ["Reviewer และ safety classifier", "openai/gpt-4.1-mini", "0.40 / 1.60", "ต่างตระกูลจากผู้เขียน และกำหนดได้ว่าการอธิบายช่วงอ้างอิงบนใบผลถือว่าปลอดภัย ซึ่ง Llama Guard กำหนดไม่ได้"],
-        ["Embedding", "qwen/qwen3-embedding-8b (ตัดเหลือ 1024 มิติ เก็บใน DB สร้างอัตโนมัติ)", "0.01", "ราคาต่ำสุดในกลุ่มและรองรับหลายภาษา"],
-    ], [3.4, 5.0, 3.2, 4.8])
-    p("เพื่อให้ตอบเร็วขึ้น ระบบตรวจความปลอดภัยขาเข้าพร้อม planner และขาออกพร้อม reviewer ข้าม reviewer สำหรับคำทักทาย และให้ routing ของ OpenRouter เลือก endpoint ที่เร็วที่สุดภายใต้เพดานราคาและเงื่อนไข ZDR (ผู้ให้บริการไม่เก็บข้อมูล)")
-    p("การคำนวณงบ: ใช้ราคา OpenRouter snapshot วันที่ 7 ต.ค. 2569 และจำนวน tokens ที่สมมติไว้ คำตอบ 1 ข้อความประมาณ USD 0.008 (planner 0.0004 ผู้เขียน 0.0033 reviewer 0.0029 safety 2 ครั้ง 0.0012 embedding ประมาณ 0) งบ USD 10 จึงพอประมาณ 10 ÷ 0.008 = 1,250 คำตอบ คำทักทายถูกกว่าเพราะไม่มี reviewer การอ่านใบผล 1 หน้าประมาณ USD 0.002 บวกคำอธิบาย 0.008 และการสร้าง vector index ครั้งเดียวใช้ประมาณ 60,000 tokens (ต่ำกว่า USD 0.001) ในระบบตั้งงบ 360 บาท (USD 10 ที่ 36 บาทต่อดอลลาร์) ledger ใช้ราคาบาทที่ปัดขึ้นและหยุดเมื่อครบ ตัวเลขเหล่านี้เป็นสมมติฐาน ต้องเทียบกับ usage จริงหลัง deploy รายละเอียดอยู่ในภาคผนวก ค")
-    p("หลัง deploy ผู้จัดการต้องกด \"ใช้ชุดโมเดล OpenRouter แบบเร็วและประหยัด\" ที่ Staff > AI providers เพราะค่าที่เคยบันทึกไว้ในฐานข้อมูลมีลำดับเหนือ environment")
+    p("หลักฐาน: web/lib/api/client.ts, web/components/workspace/Workspace.tsx, web/components/chat/engine.ts, routers/business.py และ UAT R4-02, R4-03 (การเข้าสู่ระบบลบแชต), R4-04 (หน่วงคำตอบ /workspace ของผู้เยี่ยมชม 3.5 วินาทีระหว่างสมัครบัญชีแล้วยืนยันว่าไม่แสดงทับ) และ UI-33 รวมถึง UI-33 ในชุดเดิมของ Codex ผ่านทั้งหมด")
+    h2("6.4 ข้อ 3 Deploy: กลับมาใช้ Render")
+    p("Claude branch เคยย้ายระบบไป Cloudflare Workers Paid โดยใช้ Worker 2 ตัวและ Container ของ FastAPI หลังจากนั้นเจ้าของงานเปลี่ยนเป้าหมายกลับเป็น Render เดิม รุ่นรวมจึงไม่เปลี่ยน render.yaml บริการ API ทำงานแบบเดิม และเพิ่มหน้าเว็บ Next.js เป็นบริการ Render ตัวที่สองแบบเลือกได้ (Root Directory web, build npm ci && npm run build, start npm run start:render, ตั้ง API_ORIGIN เป็น URL ของ API) เมื่อสร้างบริการเว็บแล้ว เจ้าของระบบต้องใส่ origin ของเว็บใน TRUSTED_ORIGINS ของ API เอง ขั้นตอนอยู่ใน docs/deploy/render-web.md")
+    p("ข้อจำกัดที่ทราบ: rate limit ของ API นับตาม IP ที่ต่อเข้ามา ผู้ใช้ทุกคนที่ผ่านบริการเว็บจึงใช้ bucket เดียวกัน Google sign-in ผ่านเว็บยังไม่ได้ทดสอบ แผนฟรีของ Render หลับเมื่อไม่มีการใช้งาน และ API ต้องรัน 1 instance เพราะแชตผู้เยี่ยมชมอยู่ใน RAM การตรวจที่ทำแล้วคือ Render entrypoint smoke ของ Codex และ web UAT บน next build และ next start ที่ต่อกับ API จริงผ่าน rewrite ยังไม่ได้สร้างบริการบน Render จริง")
+    p("งาน Cloudflare (deploy/cloudflare/, Dockerfile, web/worker.ts, web/wrangler.jsonc, สคริปต์ deploy และ workflow ที่ย้ายออกจาก .github/workflows แล้ว) เก็บไว้เป็นทางเลือกภายหลัง ค่า vars ใน wrangler ต้องทำใหม่ตาม ENV ของ Codex ก่อนใช้ ผล build, wrangler dev และ dry-run เดิมเป็นของ Claude branch ไม่ใช่ผลของรุ่นรวม Cloudflare แผนฟรีใช้เป็น DNS/proxy หน้า Render ได้โดยไม่ต้องใช้ไฟล์ชุดนี้")
+    h2("6.5 ข้อ 4 โมเดลและงบ")
+    p("รุ่นรวมใช้ model harness ของ Codex ผู้จัดการเลือกผู้ให้บริการและโมเดลต่อ slot และต่อ agent ได้ที่ Staff > AI providers โดย OpenRouter เป็นหนึ่งในตัวเลือก ค่าเริ่มต้นยังเป็น Typhoon สำหรับโมเดลภาษา iApp OpenThai-SystemOne สำหรับ safety check และ Typhoon OCR สำหรับอ่านใบผล บทบาทใหม่ Medical analyzer และ Thai composer ปิดเป็นค่าเริ่มต้น การเปิดต้องระบุรหัสโมเดลที่ตรงตัว ราคาขาเข้าและขาออกที่ตรวจแล้ว และรหัส endpoint ของ OpenRouter ที่ทบทวนแล้ว คำขอของสองบทบาทนี้บน OpenRouter ปิดการสลับผู้ให้บริการ ขอไม่ให้เก็บข้อมูล และขอ zero data retention")
+    p("งบคงเพดานของโครงการ 300 บาทและเพดานจำนวนครั้ง CLOUD_CALL_LIMIT ซึ่งต้องกำหนด PROVIDER_BUDGET_CYCLE_ID ก่อนเรียกได้ หน้า AI providers แสดงสถานะการตั้งค่า (DISABLED, NOT_CONFIGURED, SCHEMA_CHECK_ONLY) และรายการโมเดลที่พิจารณาจาก runtime_skills/model_registry.json ซึ่งเป็น metadata ราคายังไม่ยืนยัน (PRICE_UNVERIFIED) และไม่ใช่การเลือกโมเดล Codex เสนอให้ประเมินจริงในวง USD 1 ภายในเพดานเดิมเมื่อเจ้าของอนุมัติ embedding เลื่อนไว้จนกว่าจะมีผลเปรียบเทียบการค้นคืน")
+    p("ชุดโมเดล OpenRouter แบบเร็วของ Claude branch (Qwen3 30B A3B, Gemini 3.1 Flash Lite, GPT-4.1 mini, Qwen3 Embedding 8B) การตรวจขนาน และค่าประมาณ USD 0.008 ต่อคำตอบ เป็นข้อเสนอที่ไม่ได้นำมาใช้ในรุ่นรวม ภาคผนวก ค เก็บไว้เป็นประวัติ")
     h2("6.6 ข้อ 5 หน้าเว็บภาษาไทย")
-    p("ทั้งเว็บย้ายไป Next.js 16 + React 19 + React Three Fiber ภาษาไทยเป็นค่าเริ่มต้นและสลับเป็นภาษาอังกฤษได้ ข้อความแปลไทยมากกว่า 2,000 รายการ ตรวจความครบด้วย npm run i18n:check รุ่นนี้คงดีไซน์เดิมที่เจ้าของงานชอบ หน้าแรกมี DNA helix 3 มิติที่ประกอบตัวจากอนุภาค รายงานผลตัวอย่างที่กดดูคำอธิบายพร้อมแหล่งอ้างอิงได้ ส่วนอธิบายขั้นตอนตรวจ 5 ชั้นก่อนตอบ และหน้าแหล่งอ้างอิงที่แยกตามประเภทผู้เผยแพร่ ผู้ที่ตั้งค่าลดการเคลื่อนไหวจะเห็น helix แบบนิ่ง (UAT R4-14)")
-    p("ภาพหน้าจอทั้ง 3 ภาพบันทึกจากชุด UAT บนเครื่องพัฒนาที่ใช้ตัวแทนโมเดล คำตอบในภาพจึงไม่ได้มาจากโมเดลจริง หน้าแรกในภาพยังแสดง 148 รายการเพราะบันทึกก่อนย้ายร่าง 13 รายการไป pending.json ฐานความรู้ปัจจุบันมี 135 รายการ")
-    fig("home", ROOT / "docs/evidence/release-4.0.0/home-1440.png", "หน้าแรกภาษาไทยที่ความกว้าง 1,440 พิกเซล", 15.2)
-    fig("chat", ROOT / "docs/evidence/release-4.0.0/app-answer-1440.png", "คำตอบในแชตของผู้เยี่ยมชมพร้อมแหล่งอ้างอิงและแถบโหมดผู้เยี่ยมชม", 15.2)
-    fig("orgs", ROOT / "docs/evidence/release-4.0.0/orgs-1440.png", "หน้าเอกสารอ้างอิงขององค์กร", 15.2)
+    p("รุ่นรวมใช้เว็บ Next.js 16 + React 19 + React Three Fiber ของ Claude branch ภาษาไทยเป็นค่าเริ่มต้นและสลับเป็นภาษาอังกฤษได้ ข้อความแปลไทย 2,260 รายการตรวจความครบด้วย npm run i18n:check หน้าแรกมี DNA helix 3 มิติที่ประกอบตัวจากอนุภาค รายงานผลตัวอย่างที่กดดูคำอธิบายพร้อมแหล่งอ้างอิงได้ และหน้าแหล่งอ้างอิงที่แยกตามประเภทผู้เผยแพร่ ผู้ที่ตั้งค่าลดการเคลื่อนไหวจะเห็น helix แบบนิ่ง (UAT R4-14)")
+    table("webadapt", "ส่วนของเว็บ Claude ที่ปรับให้เข้ากับ Codex", ["ส่วน", "ในรุ่นรวม"], [
+        ["Design system ฟอนต์ไทย ธีม TH/EN หน้าเว็บสาธารณะ แชต พื้นที่ลูกค้า staff desk", "ใช้ตามเดิม แก้ข้อความเรื่องเอกสารองค์กร การเข้าสู่ระบบ และจำนวนแหล่งให้ตรงกับ Codex"],
+        ["เข้าสู่ระบบพร้อม \"เก็บแชตนี้\"", "ส่งเฉพาะ email และรหัสผ่าน ล้างหน้าจอทันที และทิ้งคำตอบเก่าจากตัวตนเดิม"],
+        ["My organization (รหัสเข้าร่วม PDF/DOCX เจ้าหน้าที่ตรวจ)", "เขียนใหม่ตามสัญญา Codex บนโครงหน้าเดิม: สมาชิกจากผู้จัดการ ร่าง ตัวอย่าง อนุมัติ รุ่นใหม่ ถอน ลบ และค้นข้อความต้นฉบับ"],
+        ["Staff: Organizations และ Reference document review", "แทนด้วย Organization membership เพราะผู้แก้ไขขององค์กรเป็นผู้ตรวจเอกสาร"],
+        ["Staff: AI providers ปุ่มชุดโมเดลเร็ว และแผงความพร้อม", "3 slot และ 6 agent บทบาทใหม่ปิด ช่องรหัส endpoint สถานะการตั้งค่า และรายการโมเดลที่พิจารณา"],
+        ["ป้ายองค์กรในแชต", "แสดงว่าเอกสารองค์กรถูกใช้กับผู้ช่วยหรือค้นหาอย่างเดียว"],
+        ["หน้าใหม่", "/hospital-links และสคริปต์ start:render สำหรับ Render"],
+    ], [6.4, 10.0])
+    p("ภาพหน้าจอต่อไปนี้บันทึกจาก web UAT ของรุ่นรวมบนเครื่องพัฒนาที่ใช้ตัวแทนโมเดล คำตอบในภาพจึงไม่ได้มาจากโมเดลจริง")
+    fig("home", ROOT / RC / "web-uat/home-1440.png", "หน้าแรกภาษาไทยที่ความกว้าง 1,440 พิกเซล (รุ่นรวม)", 15.2)
+    fig("chat", ROOT / RC / "web-uat/app-answer-1440.png", "คำตอบในแชตของผู้เยี่ยมชมพร้อมแหล่งอ้างอิงและแถบโหมดผู้เยี่ยมชม (ตัวแทนโมเดล)", 15.2)
+    fig("orgs", ROOT / RC / "web-uat/orgs-1440.png", "หน้าเอกสารอ้างอิงขององค์กรของผู้แก้ไขหลังอนุมัติเอกสารจำลอง", 15.2)
+    fig("staffai", ROOT / RC / "web-uat/staff-ai-1440.png", "หน้า AI providers ของผู้จัดการ: 6 agent บทบาทใหม่ปิดอยู่ และสถานะการตั้งค่า", 15.2)
 
     # ---------------------------------------------------------------- 7
     h1("7. การทดสอบ")
     h2("7.1 วิธีทดสอบและเกณฑ์ประเมิน")
     p("ระบบทดสอบ 3 ระดับ ระดับโค้ดและระดับเบราว์เซอร์ใช้ตัวแทนโมเดล จึงรันซ้ำได้โดยไม่มีค่าใช้จ่าย ส่วนชุดทดสอบตามโจทย์ส่งทุกกรณีผ่าน API จริงแบบเดียวกับเบราว์เซอร์และใช้โมเดลจริง")
     table("levels", "ระดับการทดสอบ", ["ระดับ", "คำสั่ง", "โมเดลจริง", "ผลที่มี"], [
-        ["Unit และ API", "python -m pytest -q", "ไม่ใช้", "รุ่น 4.0.0 ผ่าน 261 กรณี"],
-        ["Browser UAT", "cd web && npm run uat", "ไม่ใช้ (ตัวแทนโมเดลและ OCR)", f"รุ่น 4.0.0 ผ่าน {UAT_PASS}/{UAT_N}"],
-        ["ชุดทดสอบตามโจทย์", "python scripts/course_eval.py --base https://<โดเมน>", "ใช้", "รุ่น 3.0.x รอบ 1–4 (Typhoon) รุ่น 4.0.0 ยังไม่ได้รัน"],
-    ], [3.2, 6.2, 3.4, 3.6])
+        ["Unit และ API", "python scripts/offline_check.py pytest -q", "ไม่ใช้", f"รุ่นรวมผ่าน {PYTEST_N} กรณี"],
+        ["Browser เดิมของ Codex (หน้า Jinja)", "node tests/browser/uat.cjs และ upgrade.cjs", "ไม่ใช้ (ตัวแทนโมเดลและ OCR)", f"รุ่นรวมผ่าน {LEGACY_PASS}/{LEGACY_N} และ {UPGRADE_PASS}/{UPGRADE_N}"],
+        ["Browser UAT ของเว็บ Next.js", "cd web && node tests/uat.mjs และ tests/uat-flags-off.mjs", "ไม่ใช้ (ตัวแทนโมเดลและ OCR)", f"รุ่นรวมผ่าน {UAT_PASS}/{UAT_N} และ {OFF_PASS}/{OFF_N}"],
+        ["ชุดทดสอบตามโจทย์", "python scripts/course_eval.py --base https://<โดเมน>", "ใช้", "รุ่น 3.0.x รอบ 1–4 (Typhoon) รุ่นรวมยังไม่ได้รัน"],
+    ], [3.4, 6.0, 3.4, 3.6])
     p("ไฟล์ผลดิบบันทึกคำตอบ แหล่งอ้างอิง สถานะ HTTP และเวลาตอบของทุกกรณี คำตัดสินผ่านหรือไม่ผ่านของรอบ 3 มาจากการอ่านข้อความคำตอบเทียบเกณฑ์ใน docs/testing.md ร่วมกับข้อสังเกตใน docs/evidence/round3/diagnostic-review.json กรณีที่ได้ HTTP 502 นับว่าไม่ผ่านเพราะลูกค้าไม่ได้คำตอบ และ HTTP 200 ไม่นับว่าผ่านโดยอัตโนมัติ เวลาตอบเป็นเวลาที่สคริปต์วัดตั้งแต่ส่งคำขอจนได้ผลลัพธ์ รวมเวลาเครือข่าย และไม่ได้แยกเวลาเริ่มระบบหลังพักออก")
     table("criteria", "เกณฑ์ประเมินของรายวิชาและหลักฐานในรายงาน", ["เกณฑ์", "หลักฐาน", "หัวข้อ"], [
-        ["LLM ตอบคำถามทดสอบถูกต้อง", f"รอบ 3 (3.0.1, Typhoon) ผ่าน {R3_Q_PASS}/10 รุ่น 4.0.0 ยังไม่มีผลกับโมเดลจริง", "7.3, 7.8"],
-        ["ทุก endpoint ในแผนภาพสถาปัตยกรรมทำงาน", f"UAT รุ่น 4.0.0 ผ่าน {UAT_PASS}/{UAT_N} บนเครื่องพัฒนา ยังไม่ได้ตรวจบน Cloudflare", "4.3, 7.7"],
+        ["LLM ตอบคำถามทดสอบถูกต้อง", f"รอบ 3 (3.0.1, Typhoon) ผ่าน {R3_Q_PASS}/10 รุ่นรวมยังไม่มีผลกับโมเดลจริง", "7.3, 7.8"],
+        ["ทุก endpoint ในแผนภาพสถาปัตยกรรมทำงาน", f"รุ่นรวม: pytest {PYTEST_N} กรณี และ browser {LEGACY_PASS + UPGRADE_PASS + UAT_PASS + OFF_PASS} สถานการณ์ผ่านบนเครื่องพัฒนา ยังไม่ได้ตรวจบน Render", "4.3, 7.7"],
         ["UI แสดงสถานะกำลังประมวลผลและข้อผิดพลาด", "ขั้นตอน NDJSON ปุ่มลองใหม่ UAT UI-08 และ UI-30", "5.4"],
         ["RAG ตอบภาษาไทยจากฐานความรู้", "Q08 และ Q09 รอบ 3 ค้นและอ้างแหล่งได้ Q08 ยังกล่าวเกินหลักฐาน", "4.4, 7.3"],
         ["สุ่มตรวจกฎต้องทำและห้ามทำได้", "ตารางกรณีที่ใช้สุ่มตรวจกฎ", "3.4"],
@@ -602,21 +651,25 @@ def content() -> list[tuple]:
     ], [1.0, 6.0, 7.0, 5.2, 5.5])
     p("การแก้ข้อ 3 ทำให้ระบบค้นและอ้างแหล่งทางการแพทย์ได้ แต่ยังไม่ปิดปัญหาการกล่าวเกินหลักฐานของ Q08 รุ่น 3.0.2 เพิ่มคำสั่งเรื่องเนื้อหาของแหล่งอ้างอิงและการแก้คำตอบ 1 รอบหลัง reviewer ไม่ผ่าน ซึ่งยังต้องยืนยันด้วยรอบจริงถัดไป")
     B.append(("landscape", False))
-    h2("7.7 ผลทดสอบซอฟต์แวร์รุ่น 4.0.0")
-    table("software", "ผลตรวจซอฟต์แวร์รุ่น 4.0.0 (ไม่เรียกโมเดลจริง)", ["การตรวจ", "ผล", "หลักฐาน"], [
-        ["python -m pytest -q", "ผ่าน 261 กรณี รวม 11 กรณีใหม่ใน tests/test_release_400.py", "release-4.0.0.md และรันซ้ำวันที่ 8 ต.ค. 2569"],
-        ["Browser UAT (cd web && npm run uat)", f"ผ่าน {UAT_PASS} ไม่ผ่าน {UAT_N - UAT_PASS} จาก {UAT_N} สถานการณ์", "docs/evidence/release-4.0.0/uat.json"],
-        ["npx tsc --noEmit และ npm run i18n:check", "ผ่าน", "release-4.0.0.md"],
-        ["opennextjs-cloudflare build และ wrangler dev", "หน้าเว็บ /api ผ่าน worker แชตแบบ stream และการล้างแชตผู้เยี่ยมชมเมื่อรีเฟรชทำงาน", "release-4.0.0.md"],
-        ["wrangler deploy --dry-run ทั้งสอง worker", "ผ่าน (container ใช้ --containers-rollout=none)", "release-4.0.0.md"],
-    ], [5.4, 6.4, 4.6])
+    h2("7.7 ผลทดสอบซอฟต์แวร์รุ่น 4.0.0-rc1")
+    p(f"การตรวจทุกชุดรันบน commit {RC_COMMIT} ของ branch integration/labclear-4.0-rc1 ใน workspace Linux วันที่ 9 ต.ค. 2569 ใช้ข้อมูลจำลอง ฐานข้อมูลชั่วคราว และตัวแทนโมเดลกับ OCR ไม่มีการเรียกผู้ให้บริการจริงและไม่ได้แก้ ENV ของระบบจริง ไฟล์ผลอยู่ใน {RC}/ ({{T:software}})")
+    table("software", "ผลตรวจซอฟต์แวร์รุ่น 4.0.0-rc1 (ไม่เรียกโมเดลจริง)", ["การตรวจ", "ผล", "หลักฐาน"], [
+        ["pytest (Codex 265 + รุ่นรวม 12) ผ่าน offline_check", f"ผ่าน {PYTEST_N} ไม่ผ่าน {PYTEST_BAD}", "pytest.xml"],
+        ["Browser เดิมของ Codex (tests/browser/uat.cjs)", f"ผ่าน {LEGACY_PASS}/{LEGACY_N}", "codex-legacy-browser/browser-uat.json"],
+        ["Browser upgrade ของ Codex (tests/browser/upgrade.cjs)", f"ผ่าน {UPGRADE_PASS}/{UPGRADE_N}", "codex-upgrade-browser/upgrade-browser.json"],
+        ["Offline fixture ของ model harness", f"ผ่าน {EVAL_N} กรณี ไม่มีการจัดอันดับโมเดล (LIVE_MODEL_EVALUATION=NOT_RUN)", "offline-evaluation.json"],
+        ["Render entrypoint smoke (scripts/run_business.py เดิม)", "เริ่มและหยุดได้ ตรวจ 8 เส้นทาง", "boot.json"],
+        ["เว็บ: type check, i18n check, production build", "ผ่าน (16 routes)", "web-typecheck.log, web-i18n.log, web-build.log"],
+        ["Web UAT (flag ตาม fixture: เอกสารองค์กร ลิงก์โรงพยาบาล landing preview เปิด)", f"ผ่าน {UAT_PASS}/{UAT_N} ไม่มี browser error", "web-uat/uat.json"],
+        ["Web UAT เมื่อ flag ใหม่ปิดทั้งหมด (ค่าเริ่มต้นของ deploy)", f"ผ่าน {OFF_PASS}/{OFF_N}", "web-uat-flags-off/uat.json"],
+    ], [6.4, 5.6, 4.4])
     groups = [
         ("ภาษาไทยและโหมดผู้เยี่ยมชม", ["R4-01", "R4-02", "R4-03", "R4-04", "UI-33"]),
-        ("เว็บไซต์ แคตตาล็อก และการค้น", ["R4-09", "R4-10", "R4-11", "R4-12", "UI-01", "UI-02", "UI-03", "UI-04", "UI-27", "UI-24"]),
+        ("เว็บไซต์ แคตตาล็อก และการค้น", ["R4-09", "R4-10", "R4-11", "R4-12", "UI-01", "UI-02", "UI-03", "UI-04", "UI-27", "UI-24", "R4-15"]),
         ("บัญชี การจอง และการชำระเงิน", ["UI-29", "UI-05", "UI-07", "UI-13", "R4-08", "UI-15", "UI-32", "UI-34"]),
         ("แชตและใบผลแล็บ", ["UI-08", "UI-30", "UI-31", "UI-09", "UI-26"]),
         ("องค์กรและ staff desk", ["R4-05", "R4-06", "R4-07", "UI-10", "UI-11", "UI-12", "UI-14", "UI-16", "UI-25", "UI-17", "UI-18", "UI-23"]),
-        ("คีย์บอร์ด หน้าจอหลายขนาด และ console", ["UI-20", "UI-21", "R4-13-home", "R4-13-packages", "R4-13-sources", "R4-13-help", "R4-13-organizations", "R4-13-app", "R4-13-staff", "R4-14", "UI-22"]),
+        ("คีย์บอร์ด หน้าจอหลายขนาด และ console", ["UI-20", "UI-21", "R4-13-home", "R4-13-packages", "R4-13-sources", "R4-13-help", "R4-13-organizations", "R4-13-hospital-links", "R4-13-app", "R4-13-staff", "R4-14", "UI-22"]),
     ]
     ok = {s["id"]: s["ok"] for s in UAT["scenarios"]}
     assert sorted(i for _, ids in groups for i in ids) == sorted(ok), "UAT grouping must cover every scenario once"
@@ -624,20 +677,22 @@ def content() -> list[tuple]:
     for name, ids in groups:
         bad = [i for i in ids if not ok[i]]
         urows.append([name, ", ".join(ids), f"{len(ids) - len(bad)}/{len(ids)}" + (f" (ไม่ผ่าน {', '.join(bad)})" if bad else "")])
-    table("uat", "สถานการณ์ browser UAT รุ่น 4.0.0 แยกตามกลุ่ม", ["กลุ่ม", "สถานการณ์", "ผ่าน"], urows, [4.6, 8.0, 3.8])
-    p("UI-21 ไม่ผ่าน (เมนูของเว็บบนโทรศัพท์และแท็บเล็ต แผงตัวกรองแคตตาล็อก และเมนูของ /app ต้องเปิดและปิดได้) และ UI-22 ไม่ผ่าน เพราะหน้าแพ็กเกจที่ไม่มีอยู่ (/packages/P99) มีคำเตือนของ React เรื่อง script tag ใน component ทั้งสองข้อต้องแก้และรันซ้ำ นอกจากนี้ R4-11 นับได้ 148 รายการบนหน้าแหล่งอ้างอิง เพราะ uat.json บันทึกเวลา 18:05 น. ก่อนย้ายร่าง 13 รายการไป pending.json เวลา 18:07 น. ต้องรันซ้ำเพื่อยืนยัน 135 รายการ")
-    h2("7.8 รอบประเมินจริง 4.0.0 (OpenRouter)")
-    p("ตารางในหัวข้อนี้เว้นว่างไว้ให้ทีมกรอกหลัง deploy รุ่น 4.0.0 ขั้นตอน: deploy ตามภาคผนวก ข ตรวจ /health ว่ารุ่น 4.0.0 และ commit ตรงกับ git กดชุดโมเดล OpenRouter และตรวจความพร้อมที่ Staff > AI providers แล้วรัน python scripts/course_eval.py --base https://<โดเมน> --round 5 --expected-commit <commit 40 ตัวอักษร> --out course_eval_round5.json เก็บไฟล์ผลดิบไว้โดยไม่แก้ และอ่านคำตอบทุกกรณีก่อนกรอกผ่านหรือไม่ผ่าน")
+    table("uat", "สถานการณ์ web UAT รุ่น 4.0.0-rc1 แยกตามกลุ่ม", ["กลุ่ม", "สถานการณ์", "ผ่าน"], urows, [4.6, 8.0, 3.8])
+    p("ชุด web UAT มาจาก 51 สถานการณ์ของ Claude branch สถานการณ์ที่ทดสอบสัญญาเฉพาะของ Claude ถูกเขียนใหม่ตาม Codex ได้แก่ R4-03 (การเข้าสู่ระบบลบแชตผู้เยี่ยมชม) R4-04 (คำตอบที่มาช้าแสดงทับบัญชีใหม่ไม่ได้) R4-05 (เอกสารองค์กร) R4-06 (AI providers และสมาชิกองค์กร) และ R4-07 และเพิ่ม R4-15 กับ R4-13-hospital-links สำหรับหน้าลิงก์โรงพยาบาล ชุด flag ปิดตรวจว่าเมนู My organization ไม่แสดง หน้าลิงก์โรงพยาบาลตอบ 404 และ API ของเอกสารองค์กรตอบ 404")
+    p("ข้อสังเกต: การทดสอบ UI-33 ในชุดเดิมของ Codex ถอดรหัสภาพย่อก่อนที่ blob ส่วนตัวของภาพจะโหลดเสร็จ บน Linux ชุด baseline ของ Codex (c970410) ที่ไม่ได้แก้ผ่าน 1 ใน 2 รอบ และรุ่นรวมไม่ผ่าน 2 ใน 2 รอบ การรันที่ใส่ log ยืนยันว่าภาพโหลดได้หลังจากนั้นเล็กน้อย จึงแก้เฉพาะการทดสอบให้รอ blob ก่อน ไม่ได้แก้โค้ดของระบบ ผลในตารางเป็นผลหลังแก้")
+    p("ผลของ Claude branch 4.0.0 (pytest 261 กรณี UAT 51/51 บน OpenNext ผ่าน wrangler dev และ dry-run ของ Cloudflare) เป็นของ commit 95bf3d7 ซึ่งมี backend ต่างจากรุ่นรวม จึงไม่ใช้เป็นหลักฐานของรุ่นรวม")
+    h2("7.8 รอบประเมินจริงของรุ่นรวม")
+    p("ตารางในหัวข้อนี้เว้นว่างไว้ให้ทีมกรอกหลังเจ้าของตรวจรับ merge และ deploy รุ่นรวมบน Render ขั้นตอน: ตรวจ /health ว่ารุ่น 4.0.0-rc1 และ commit ตรงกับ git ตั้งผู้ให้บริการที่ Staff > AI providers และกด Test ทีละ slot (แต่ละครั้งเป็นการเรียกจริงที่นับในงบ) เจ้าของอนุมัติงบประเมินจริงภายในเพดาน 300 บาท (Codex เสนอ USD 1) แล้วรัน python scripts/course_eval.py --base https://<โดเมน> --round 5 --expected-commit <commit 40 ตัวอักษร> --out course_eval_round5.json เก็บไฟล์ผลดิบไว้โดยไม่แก้ และอ่านคำตอบทุกกรณีก่อนกรอกผ่านหรือไม่ผ่าน")
     B.append(("landscape", True))
-    table("t4q", "แบบบันทึกผลคำถาม 10 ข้อ รอบประเมินจริง 4.0.0 (OpenRouter) กรอกหลัง deploy",
+    table("t4q", "แบบบันทึกผลคำถาม 10 ข้อ รอบประเมินจริงของรุ่นรวม กรอกหลัง deploy",
           ["#", "คำถาม (ถามเป็นภาษาไทย)", "ผลที่คาดหวัง", "คำตอบที่ได้และการตรวจทาน", "ผล", "เวลาตอบ"],
           [[qid, q["question"], Q_TH[qid][1], "", "", ""] for qid, q in R3Q.items()] + [["รวม", "", "", "", "/10", ""]],
           [1.4, 4.6, 5.0, 9.0, 1.9, 2.4])
-    table("t4i", "แบบบันทึกผลภาพทดสอบ รอบประเมินจริง 4.0.0 (OpenRouter) กรอกหลัง deploy",
+    table("t4i", "แบบบันทึกผลภาพทดสอบ รอบประเมินจริงของรุ่นรวม กรอกหลัง deploy",
           ["ภาพ", "เนื้อหา", "ผลวิเคราะห์", "ผล", "เวลาตอบ"],
           [[iid.replace("_", " "), IMG_TH[iid], "", "", ""] for iid in R3I] + [["รวม", "", "", "/5", ""]],
           [2.8, 3.6, 12.2, 2.0, 3.7])
-    table("t4s", "แบบบันทึกผลความปลอดภัย 5 กรณี รอบประเมินจริง 4.0.0 (OpenRouter) กรอกหลัง deploy",
+    table("t4s", "แบบบันทึกผลความปลอดภัย 5 กรณี รอบประเมินจริงของรุ่นรวม กรอกหลัง deploy",
           ["#", "ความเสี่ยง", "ข้อความทดสอบ", "ผลที่คาดหวัง", "ผลที่ได้", "ผล", "เวลาตอบ"],
           [[sid, S_TH[sid][0], s["prompt"], S_TH[sid][1], "", "", ""] for sid, s in R3S.items()] + [["รวม", "", "", "", "", "/5", ""]],
           [1.4, 3.2, 5.6, 3.8, 6.0, 1.9, 2.4])
@@ -649,31 +704,32 @@ def content() -> list[tuple]:
     p("ระบบใช้กฎ โมเดลจัดประเภท และการตรวจในโค้ดร่วมกัน ความปลอดภัยจึงไม่ขึ้นกับชั้นใดชั้นหนึ่ง ทุกชั้นทำงานแบบ fail closed ถ้าไม่มีผลตัดสิน ได้ป้ายที่ไม่รู้จัก ผู้ให้บริการขัดข้อง หรือโมเดลตอบผิดรูปแบบ ระบบหยุดและไม่แสดงคำตอบนั้น")
     table("layers", "ชั้นของมาตรการความปลอดภัย", ["#", "มาตรการ", "ประเภท", "สิ่งที่ป้องกัน"], [
         ["1", "จำกัดความยาวข้อความ 8,000 ตัวอักษร ไฟล์ 3 ไฟล์ ไฟล์ละ 3 MB และ 120 คำขอต่อนาที", "กฎ", "ข้อมูลเข้าและค่าใช้จ่ายที่ไม่จำกัด"],
-        ["2", "Session cookie แบบ HttpOnly, CSRF token, ตรวจ origin, Google sign-in ด้วย state, PKCE และ nonce", "กฎ", "คำขอข้ามเว็บไซต์และการยึดบัญชี"],
+        ["2", "Session cookie แบบ HttpOnly, CSRF token, ตรวจ origin เทียบ Host หรือ TRUSTED_ORIGINS แบบตรงตัว (ไม่มี wildcard), Google sign-in ด้วย state, PKCE และ nonce", "กฎ", "คำขอข้ามเว็บไซต์และการยึดบัญชี"],
         ["3", "Regex ภาษาไทยและอังกฤษตรวจคำสั่งแทรกในข้อความและเอกสาร ก่อนเรียกโมเดล", "กฎ", "Prompt injection แบบตรงไปตรงมา"],
-        ["4", "Safety classifier (GPT-4.1 mini) ตรวจทุกข้อความเข้าพร้อม planner ทุกคำตอบพร้อม reviewer และทุกใบผลที่อัปโหลด", "โมเดลจัดประเภท", "คำขอและคำตอบที่ไม่ปลอดภัย คำสั่งที่แฝงในภาพ"],
+        ["4", "Safety model (ค่าเริ่มต้น iApp OpenThai-SystemOne) ตรวจทุกข้อความเข้า ทุกคำตอบ และทุกใบผลที่อัปโหลด", "โมเดลจัดประเภท", "คำขอและคำตอบที่ไม่ปลอดภัย คำสั่งที่แฝงในภาพ"],
         ["5", "Planner เห็นเพียงชื่อการตรวจในใบผล ไม่เห็นค่า", "การออกแบบ", "การขายที่อิงค่าผิดปกติ"],
         ["6", "Python ตรวจคำตอบ: อ้างได้เฉพาะแหล่งที่ค้นได้ ค่าตรงแถวที่ยืนยัน จำนวนเงินตรงแคตตาล็อก ตัดลิงก์และ HTML บทบาท Explainer ห้ามพูดเรื่องแพ็กเกจ", "ตรวจในโค้ด", "แหล่งที่แต่งขึ้น ค่าที่เปลี่ยน ราคาผิด การใช้บทบาทผิด"],
-        ["7", "Reviewer (GPT-4.1 mini ต่างตระกูลจากผู้เขียน) ตรวจหลักฐาน ค่า และขอบเขต", "โมเดลจัดประเภท", "ข้อความที่ไม่มีหลักฐาน การวินิจฉัย"],
+        ["7", "Reviewer ตรวจหลักฐาน ค่า และขอบเขต (ตั้งเป็นโมเดลต่างตระกูลจากผู้เขียนได้)", "โมเดลจัดประเภท", "ข้อความที่ไม่มีหลักฐาน การวินิจฉัย"],
         ["8", "การจอง ใบเสนอราคา การชำระเงิน และการส่งต่อเป็นตัวอย่างให้ลูกค้ายืนยัน เจ้าหน้าที่ยืนยันทุกนัด", "การออกแบบ", "โมเดลกระทำการเอง"],
         ["9", "สถานะค่าคำนวณด้วย Python จากช่วงบนใบผล", "การออกแบบ", "โมเดลตัดสินค่าเอง"],
-        ["10", "เอกสารขององค์กรถูกตรวจคำสั่งแฝงตอนอัปโหลด ผู้จัดการอนุมัติก่อนใช้ และค้นได้เฉพาะสมาชิก", "กฎและการออกแบบ", "เอกสารที่ฝังคำสั่ง ข้อมูลรั่วข้ามองค์กร"],
-        ["11", "ข้อมูลแยกตามเจ้าของ เข้ารหัส Fernet ซ่อนคีย์ การตั้งค่า AI เฉพาะผู้จัดการ และ audit log", "กฎ", "ข้อมูลรั่วระหว่างลูกค้า คีย์รั่วไหล"],
-        ["12", "เพดานจำนวนครั้งและงบ 360 บาท ตรวจก่อนเรียกโมเดลทุกครั้ง", "กฎ", "ค่าใช้จ่ายบานปลาย"],
-        ["13", "กรอง Markdown ในเบราว์เซอร์และ Content-Security-Policy", "กฎ", "การแสดงผลลัพธ์ที่ไม่ปลอดภัย"],
+        ["10", "เอกสารขององค์กร: สมาชิกกำหนดโดยผู้จัดการ ผู้แก้ไขอนุมัติก่อนใช้ แยกตามองค์กร ตรวจซ้ำในประวัติว่ายังอนุมัติ ส่งให้ผู้ช่วยเฉพาะเมื่อเปิด flag และผู้ให้บริการทุกตัวตั้งค่าแล้วและไม่ใช่ :free", "กฎและการออกแบบ", "ข้อมูลรั่วข้ามองค์กร เอกสารที่ถูกถอนกลับมาใช้ ข้อมูลส่วนตัวไปยังผู้ให้บริการที่ยังไม่ทบทวน"],
+        ["11", "บทบาทใหม่บน OpenRouter: ต้องระบุ endpoint ที่ทบทวนแล้ว ปิดการสลับผู้ให้บริการ data_collection=deny และ zdr", "กฎ", "ข้อมูลไปยังผู้ให้บริการที่ไม่ได้เลือก"],
+        ["12", "ข้อมูลแยกตามเจ้าของ เข้ารหัส Fernet ซ่อนคีย์ การตั้งค่า AI เฉพาะผู้จัดการ audit log และ log ของข้อผิดพลาดผู้ให้บริการเก็บเฉพาะ metadata", "กฎ", "ข้อมูลรั่วระหว่างลูกค้า คีย์หรือข้อความรั่วใน log"],
+        ["13", "PROVIDER_NETWORK_ENABLED เพดานจำนวนครั้ง และงบ 300 บาท ตรวจก่อนเรียกโมเดลทุกครั้ง", "กฎ", "ค่าใช้จ่ายบานปลาย"],
+        ["14", "กรอง Markdown ในเบราว์เซอร์และ Content-Security-Policy ของทั้งหน้า Jinja และเว็บ Next.js", "กฎ", "การแสดงผลลัพธ์ที่ไม่ปลอดภัย"],
     ], [1.0, 7.8, 2.8, 4.8])
     h2("8.2 การจับคู่กับ OWASP Top 10 for LLM Applications")
     table("owasp", "ความเสี่ยงตาม OWASP และชั้นที่รับมือ", ["ความเสี่ยง", "ชั้นที่รับมือ"], [
         ["LLM01 Prompt injection", "ชั้น 3, 4, 6, 7, 10 และข้อความที่ส่งเข้ามาถูกระบุว่าเป็นข้อมูลที่ไม่น่าเชื่อถือใน prompt"],
-        ["LLM02 Sensitive information disclosure", "ชั้น 2, 11 คีย์ไม่ถึงเบราว์เซอร์ และไม่ส่ง system prompt กลับ"],
-        ["LLM05 Improper output handling", "ชั้น 6, 13"],
+        ["LLM02 Sensitive information disclosure", "ชั้น 2, 10, 11, 12 คีย์ไม่ถึงเบราว์เซอร์ และไม่ส่ง system prompt กลับ"],
+        ["LLM05 Improper output handling", "ชั้น 6, 14"],
         ["LLM06 Excessive agency", "ชั้น 8 โมเดลเสนอ ลูกค้าและเจ้าหน้าที่ตัดสิน"],
         ["LLM09 Misinformation", "ชั้น 6, 7, 9 แหล่งต้องมีจริงและรองรับคำตอบ"],
-        ["LLM10 Unbounded consumption", "ชั้น 1, 12"],
+        ["LLM10 Unbounded consumption", "ชั้น 1, 13"],
     ], [6.0, 10.4])
     h2("8.3 ความเป็นส่วนตัว")
-    p("ข้อมูลทั้งหมดเป็นข้อมูลจำลอง ใบผลและแชตเป็นของบัญชีที่สร้าง เจ้าหน้าที่เห็นว่าลูกค้าแชร์ใบผล แต่ไม่เห็นภาพหรือค่า การลบใบผลลบแชตที่ใช้ใบผลนั้นด้วย องค์กรได้รับเฉพาะข้อมูลการประสานงาน ไม่เห็นผลแล็บของพนักงาน แชตผู้เยี่ยมชมอยู่ใน RAM และถูกลบเมื่อ Refresh ปิดหน้า หรือไม่ได้ใช้งาน 20 นาที")
-    p("เอกสารขององค์กรเก็บเป็นข้อความที่เข้ารหัส ไม่เก็บไฟล์ต้นฉบับ และไม่ถูกส่งไปทำ embedding คำค้นที่ส่งไปทำ embedding มีเพียงชื่อการตรวจจากศัพท์สาธารณะ worker ของ API ตั้ง OPENROUTER_ZDR=true และ OPENROUTER_DATA_COLLECTION=deny เพื่อให้ routing เลือกเฉพาะ endpoint ที่ไม่เก็บข้อมูล บัญชีทดลอง (test-01, test-02, admin) ปิดบนระบบที่ host ไว้ (DEMO_ACCOUNTS=false)")
+    p("ข้อมูลทั้งหมดเป็นข้อมูลจำลอง ใบผลและแชตเป็นของบัญชีที่สร้าง เจ้าหน้าที่เห็นว่าลูกค้าแชร์ใบผล แต่ไม่เห็นภาพหรือค่า การลบใบผลลบแชตที่ใช้ใบผลนั้นด้วย องค์กรได้รับเฉพาะข้อมูลการประสานงาน ไม่เห็นผลแล็บของพนักงาน แชตผู้เยี่ยมชมอยู่ใน RAM และถูกลบเมื่อ Refresh ปิดหน้า เข้าสู่ระบบ หรือไม่ได้ใช้งาน 20 นาที")
+    p("เอกสารขององค์กรเก็บแบบเข้ารหัส มองเห็นได้เฉพาะสมาชิกขององค์กรเดียวกัน และไม่ถูกส่งไปยังผู้ให้บริการ AI จนกว่าเจ้าของระบบจะเปิด ORG_REFERENCE_INFERENCE_ENABLED หลังทบทวนนโยบายข้อมูลของผู้ให้บริการ ระบบไม่สร้าง embedding บัญชีทดลอง (test-01, test-02, admin) ปิดบนระบบที่ host ไว้ (DEMO_ACCOUNTS ไม่ใช่ true) และรุ่นรวมไม่ได้อ่านหรือแก้ ENV ของระบบจริง")
 
     # ---------------------------------------------------------------- 9
     h1("9. บทบาทและความก้าวหน้าของสมาชิก")
@@ -697,65 +753,69 @@ def content() -> list[tuple]:
         ["7 ต.ค.", "ทดสอบครั้งแรกหยุดที่ Q01 และ Q02 แล้วแก้", "วัชรินทร์ (validation) ศิริพล (prompt)", "การปรับปรุงที่ 1"],
         ["7 ต.ค.", "รอบ 1 กับระบบจริง: คำถาม 7/10 ภาพ 4/5 ความปลอดภัย 5/5 แก้ราคา การค้น และค่าวิกฤต เพิ่ม Google sign-in", "ทั้งสองคน", "การปรับปรุงที่ 2 และ 3"],
         ["7 ต.ค.", "รอบ 2 (3.0.0) รอบ 3 (3.0.1) และแก้ในรุ่น 3.0.2 รอบ 4 ถูกหยุดด้วยเพดานจำนวนการเรียก", pending, "docs/evidence/round2–round4"],
-        ["8 ต.ค.", "รุ่น 3.1.0: UI ไทยและอังกฤษ ตรวจความพร้อมก่อนประเมิน embeddings แบบเลือกได้ แพ็กเกจ Cloudflare", pending, "docs/evidence/release-3.1.0/"],
-        ["8 ต.ค.", "รุ่น 4.0.0 ข้อ 1: ฐานความรู้ 135 รายการและเอกสารขององค์กร", pending, "release-4.0.0.md ข้อ 1"],
-        ["8 ต.ค.", "รุ่น 4.0.0 ข้อ 2: โหมดผู้เยี่ยมชมที่ชัดขึ้นและการเก็บแชตเมื่อเข้าสู่ระบบ", pending, "release-4.0.0.md ข้อ 2"],
-        ["8 ต.ค.", "รุ่น 4.0.0 ข้อ 3: Worker 2 ตัว Container สคริปต์ deploy และ GitHub Actions", pending, "release-4.0.0.md ข้อ 3"],
-        ["8 ต.ค.", "รุ่น 4.0.0 ข้อ 4: ชุดโมเดล OpenRouter ตรวจขนานกัน งบ 360 บาท", pending, "release-4.0.0.md ข้อ 4"],
-        ["8 ต.ค.", "รุ่น 4.0.0 ข้อ 5: เว็บ Next.js ภาษาไทย", pending, "release-4.0.0.md ข้อ 5"],
-        ["8 ต.ค.", f"ตรวจซอฟต์แวร์รุ่น 4.0.0: pytest 261 UAT {UAT_PASS}/{UAT_N} dry-run ทั้งสอง worker แผนภาพ 4.0 และรายงานฉบับนี้", pending, "docs/evidence/release-4.0.0/, docs/assets/, docs/report/"],
-        ["9–16 ต.ค. (แผน)", "Deploy บน Cloudflare รันชุดประเมินรอบ 5 บนรุ่น 4.0.0 ตรวจลิงก์แหล่งอ้างอิง แก้ UAT 2 ข้อ ทำคลิปสาธิต", "ทั้งสองคน", "ตามแผน"],
+        ["8 ต.ค.", "รุ่น 3.1.0 (ประวัติ ส่งมอบแยก ไม่อยู่ใน Codex main): UI ไทยและอังกฤษ ตรวจความพร้อมก่อนประเมิน embeddings แบบเลือกได้ แพ็กเกจ Cloudflare", pending, "branch delivery-3.1.0 commit 3cf9076"],
+        ["8 ต.ค.", "Claude branch 4.0.0 (ประวัติ): ฐานความรู้ 135 รายการ เอกสารองค์กรแบบรหัสเข้าร่วม การเก็บแชตเมื่อเข้าสู่ระบบ", pending, "release/4.0.0 commit 93f0af5–0378ed7"],
+        ["8 ต.ค.", "Claude branch 4.0.0 (ประวัติ): Cloudflare Worker 2 ตัวและ Container ชุดโมเดล OpenRouter และเว็บ Next.js ภาษาไทย", pending, "release/4.0.0 commit 7b6a0a8–17d751c"],
+        ["8 ต.ค.", "Claude branch 4.0.0 (ประวัติ): pytest 261, UAT 51/51, dry-run ทั้งสอง worker แผนภาพและรายงาน", pending, "release/4.0.0 commit 95bf3d7"],
+        ["8 ต.ค.", "Codex upgrade candidate: flag ใหม่ 6 ตัวที่ปิดเป็นค่าเริ่มต้น เอกสารองค์กร model harness ลิงก์โรงพยาบาล", pending, "main commit c970410, docs/ceo-upgrade/"],
+        ["9 ต.ค.", "รุ่นรวม 4.0.0-rc1: ปรับเว็บ Next.js ให้เข้ากับ API ของ Codex คู่มือ Render เก็บ Cloudflare เป็นทางเลือก ย้ายแหล่งความรู้ใหม่ไปคิวรอตรวจ", pending, "integration/labclear-4.0-rc1"],
+        ["9 ต.ค.", f"ตรวจรุ่นรวม: pytest {PYTEST_N} browser เดิม {LEGACY_PASS}/{LEGACY_N} upgrade {UPGRADE_PASS}/{UPGRADE_N} web UAT {UAT_PASS}/{UAT_N} และ {OFF_PASS}/{OFF_N} ปรับรายงาน สไลด์ และแผนภาพ", pending, f"{RC}/, docs/report/"],
+        ["10–16 ต.ค. (แผน)", "เจ้าของตรวจรับและ merge, deploy บน Render, ประเมินจริงภายในงบ, ตรวจแหล่งความรู้ที่รอ, ทำคลิปสาธิต", "ทั้งสองคน", "ตามแผน"],
         ["17 ต.ค. (แผน)", "ส่งงาน", "ทั้งสองคน", "รายงาน PDF ซอร์สโค้ด และคลิป"],
     ], [2.2, 6.2, 3.2, 4.8])
-    p("รายการวันที่ 7 ต.ค. ช่วงหลังและวันที่ 8 ต.ค. เป็นข้อเท็จจริงจาก repository ไม่ได้ระบุว่าใครทำแต่ละส่วน สมาชิกแต่ละคนต้องกรอกชื่อผู้ทำในช่องที่เขียนว่า \"รอสมาชิกยืนยัน\" และยืนยันงานของตนเองก่อนส่ง เพราะบันทึกนี้ใช้ประเมินรายบุคคล")
+    p("รายการวันที่ 7 ต.ค. ช่วงหลัง และวันที่ 8–9 ต.ค. เป็นข้อเท็จจริงจาก repository ไม่ได้ระบุว่าใครทำแต่ละส่วน สมาชิกแต่ละคนต้องกรอกชื่อผู้ทำในช่องที่เขียนว่า \"รอสมาชิกยืนยัน\" และยืนยันงานของตนเองก่อนส่ง เพราะบันทึกนี้ใช้ประเมินรายบุคคล")
 
     # ---------------------------------------------------------------- 10
     h1("10. ข้อจำกัดและงานต่อ")
-    p("ข้อมูลธุรกิจและใบผลแล็บทั้งหมดเป็นข้อมูลจำลอง LabClear ไม่ใช่บริการทางการแพทย์จริง การชำระเงินและ LINE เป็นระบบจำลอง ผลทดสอบกับโมเดลจริงเป็นการรันครั้งเดียวต่อกรณี จึงไม่มีข้อมูลความแปรปรวน ตารางต่อไปนี้คือสิ่งที่รุ่น 4.0.0 ยังไม่ได้ตรวจหรือยังต้องทำ")
+    p("ข้อมูลธุรกิจและใบผลแล็บทั้งหมดเป็นข้อมูลจำลอง LabClear ไม่ใช่บริการทางการแพทย์จริง การชำระเงินและ LINE เป็นระบบจำลอง ผลทดสอบกับโมเดลจริงเป็นการรันครั้งเดียวต่อกรณี จึงไม่มีข้อมูลความแปรปรวน ตารางต่อไปนี้คือสิ่งที่รุ่นรวมยังไม่ได้ตรวจหรือยังต้องทำ")
     table("todo", "สิ่งที่ยังไม่ได้ตรวจและงานต่อ", ["เรื่อง", "สถานะ", "สิ่งที่ต้องทำ"], [
-        ["OpenRouter จริง", "ยังไม่ได้เรียก เพราะไม่มีคีย์ในสภาพแวดล้อมพัฒนา", "หลัง deploy รัน scripts/course_eval.py วัดคุณภาพภาษาไทย JSON OCR ความเร็ว และราคาจริง แล้วกรอกหัวข้อ 7.8"],
-        ["Cloudflare จริง", "ยังไม่ได้ build Docker image และยังไม่ได้ deploy เพราะไม่มีสิทธิ์เข้าบัญชีทีม", "รัน scripts/deploy-cloudflare.sh --deploy บนเครื่องที่มี Docker แล้วตรวจ /health"],
-        [f"ลิงก์แหล่งอ้างอิง {UNCHECKED} รายการ", "url_checked=false เขียนโดยไม่ได้เปิดเว็บ", "รัน python scripts/verify_sources.py จากเครื่องที่มีอินเทอร์เน็ต แล้วให้คนอ่านเทียบ"],
-        [f"ร่าง {len(PENDING)} รายการของโรงพยาบาล 5 แห่ง", "อยู่ใน pending.json ไม่ถูกค้น", "หาบทความจริงของโรงพยาบาลก่อนย้ายเข้า catalog.json"],
+        ["Merge และ deploy", "รุ่นรวมอยู่ใน branch และ bundle สำหรับตรวจรับ", "เจ้าของตรวจรับแล้ว merge เข้า main เอง ตรวจ /health ว่า commit ตรง"],
+        ["บริการเว็บบน Render", "ยังไม่ได้สร้าง", "สร้างตาม docs/deploy/render-web.md ตั้ง API_ORIGIN ที่เว็บ และเจ้าของตั้ง TRUSTED_ORIGINS ที่ API"],
+        ["Rate limit ผ่านบริการเว็บ", "ผู้ใช้ทุกคนใช้ bucket เดียวกัน", "ออกแบบการเชื่อ X-Forwarded-For จากบริการเว็บและทบทวนความปลอดภัยก่อนใช้งานจริง"],
+        ["Google sign-in ผ่านเว็บ", "ยังไม่ได้ทดสอบ", "ปิดไว้จนกว่าจะทดสอบ redirect URI ผ่าน proxy"],
+        ["ผู้ให้บริการ AI จริง OCR จริง และ PostgreSQL ของระบบจริง", "NOT_RUN", "เจ้าของอนุมัติงบประเมินจริง แล้วรัน scripts/course_eval.py และกรอกหัวข้อ 7.8"],
+        ["Flag ใหม่ 6 ตัว", "ปิดอยู่", "เปิดตามขั้นตอนใน docs/ceo-upgrade/MORNING_HANDOFF.md ทีละส่วน"],
+        [f"แหล่งความรู้ที่รอตรวจ {len(CANDIDATES) + len(CODEX_MED) + len(CODEX_HOSP)} รายการ", "NOT_APPROVED ไม่ถูกค้น", "ตรวจหน้าเว็บต้นทาง สิทธิ์ และความถูกต้องทางคลินิกก่อนย้ายเข้า catalog.json"],
+        ["Embeddings, Clef และตัวจัดการ quota", "เลื่อนไว้ตาม Codex", "ทำเมื่อมีผลเปรียบเทียบที่แสดงประโยชน์"],
+        ["Cloudflare", "เลื่อนไว้", "ทำค่า vars ใน wrangler ใหม่ตาม ENV ของ Codex ก่อนใช้ หรือใช้แผนฟรีเป็น DNS/proxy"],
         ["มือถือจริงและ screen reader", "ยังไม่ได้ตรวจ", "ทดสอบบนโทรศัพท์จริงที่มีคีย์บอร์ดเสมือน และใช้ screen reader"],
-        ["UAT 2 สถานการณ์", "UI-21 และ UI-22 ไม่ผ่าน", "แก้แล้วรัน npm run uat ซ้ำ รวม R4-11 เพื่อยืนยัน 135 รายการ"],
-        ["ค่าใช้จ่าย", "เป็นสมมติฐานจากราคา snapshot", "เทียบ usage จริงบน OpenRouter กับ ledger ใน /staff/budget"],
-        ["คุณภาพคำอธิบายใบผล", "รอบ 3 ผ่าน 1/5 การแก้ในรุ่น 3.0.2 ยังไม่มีรอบจริงยืนยัน", "อ่านคำอธิบายทุกภาพในรอบ 5"],
+        ["คุณภาพคำอธิบายใบผล", "รอบ 3 ผ่าน 1/5 การแก้ในรุ่น 3.0.2 ยังไม่มีรอบจริงยืนยัน", "อ่านคำอธิบายทุกภาพในรอบประเมินจริงถัดไป"],
         ["รายงานใน Word", "สร้างด้วยสคริปต์และ render ด้วย LibreOffice", "เปิดใน Word อัปเดตฟิลด์ทั้งหมด (สารบัญ สารบัญภาพ สารบัญตาราง) ตรวจการตัดคำ แล้ว export PDF"],
     ], [4.2, 5.6, 6.6])
-    p("คลิปสาธิตความยาวไม่เกิน 3 นาทียังไม่ได้ถ่าย ควรถ่ายหลัง deploy เพื่อให้เห็นระบบจริงบนโดเมนของทีม ลำดับที่เสนอ: แนะนำโครงงานและผู้พัฒนา ถามแพ็กเกจและคำถามความรู้ผลแล็บภาษาไทย ส่งใบผลจำลองแล้วยืนยันค่า สาธิตการปฏิเสธคำขอที่ไม่เหมาะสม แสดงเอกสารขององค์กร และปิดด้วยผลทดสอบกับซอร์สโค้ด")
+    p("คลิปสาธิตความยาวไม่เกิน 3 นาทียังไม่ได้ถ่าย ควรถ่ายหลัง deploy บน Render เพื่อให้เห็นระบบจริง ลำดับที่เสนอ: แนะนำโครงงานและผู้พัฒนา ถามแพ็กเกจและคำถามความรู้ผลแล็บภาษาไทย ส่งใบผลจำลองแล้วยืนยันค่า สาธิตการปฏิเสธคำขอที่ไม่เหมาะสม แสดงเอกสารขององค์กร และปิดด้วยผลทดสอบกับซอร์สโค้ด")
 
     # ---------------------------------------------------------------- appendices
     h1("ภาคผนวก ก วิธีรันซ้ำจาก source code")
     p("ซอร์สโค้ดเปิดเผยที่ https://github.com/siriponsri/LabClear ตารางนี้คือคำสั่งสำหรับรันระบบ ทดสอบ และสร้างเอกสารซ้ำบนเครื่องของผู้ตรวจ เมื่อรันในเครื่องระบบใช้ SQLite ในโฟลเดอร์ data/ สร้างคีย์ให้เอง และเปิดบัญชีทดลอง test-01, test-02 และ admin (รหัสผ่าน 1234)")
-    table("rerun", "คำสั่งสำหรับรันซ้ำ", ["ขั้น", "คำสั่ง", "ผลที่ได้"], [
-        ["1 ดาวน์โหลด", "git clone https://github.com/siriponsri/LabClear แล้ว cd LabClear", "ซอร์สโค้ดทั้งหมด"],
+    table("rerun", "คำสั่งสำหรับรันซ้ำ (ข้อมูลจำลอง ไม่เรียกโมเดลจริง)", ["ขั้น", "คำสั่ง", "ผลที่ได้"], [
+        ["1 ดาวน์โหลด", "git clone https://github.com/siriponsri/LabClear แล้ว checkout branch ของรุ่นรวม (หรือนำเข้า bundle)", "ซอร์สโค้ดทั้งหมด"],
         ["2 Python 3.12", "python -m venv .venv แล้ว pip install -r requirements-dev.txt", "FastAPI และเครื่องมือทดสอบ"],
-        ["3 เว็บ", "cd web แล้ว npm ci", "Next.js และ Playwright"],
-        ["4 รัน API", "TRUSTED_ORIGINS=http://localhost:3000 uvicorn main:app --port 8000", "API ที่ http://localhost:8000"],
-        ["5 รันเว็บ", "cd web แล้ว npm run dev", "เปิด http://localhost:3000"],
-        ["6 ทดสอบโค้ด", "python -m pytest -q", "261 กรณีผ่าน"],
-        ["7 ทดสอบผ่านเบราว์เซอร์", "cd web แล้ว npm run uat", "ผลใน test-results/uat"],
-        ["8 แผนภาพ", "python3 scripts/build_diagrams_400.py", "PNG และ SVG ใน docs/assets/ จากต้นฉบับ HTML ใน docs/diagrams/ (architecture-4.0, architecture-4.0-detail, message-flow-4.0)"],
-        ["9 รายงาน", "python3 scripts/build_report_th_400.py", "รายงาน Word และ PDF ใน docs/report/ (ต้องมี LibreOffice และฟอนต์ TH Sarabun New)"],
-        ["10 ชุดประเมินจริง", "python scripts/course_eval.py --base https://<โดเมน> --round 5", "course_eval_results.json (เรียกโมเดลจริง มีค่าใช้จ่าย)"],
+        ["3 Node", "npm ci (root) และ cd web แล้ว npm ci", "Playwright สำหรับชุดทดสอบของ Codex และ Next.js"],
+        ["4 ทดสอบโค้ด", "python scripts/offline_check.py pytest -q", f"{PYTEST_N} กรณีผ่าน"],
+        ["5 Browser ของ Codex", "TEST_PYTHON=.venv/bin/python node tests/browser/uat.cjs และ upgrade.cjs", f"{LEGACY_N} และ {UPGRADE_N} สถานการณ์"],
+        ["6 API จำลอง", "python scripts/dev_mock_api.py", "API จริงของ Codex กับตัวแทนโมเดลที่ 127.0.0.1:8000"],
+        ["7 เว็บ", "cd web แล้ว npm run build และ API_ORIGIN=http://127.0.0.1:8000 npm run start:render", "เปิด http://localhost:3000"],
+        ["8 Web UAT", "cd web แล้ว node tests/uat.mjs และ (API เริ่มด้วย UAT_FLAGS=off) node tests/uat-flags-off.mjs", f"{UAT_N} และ {OFF_N} สถานการณ์"],
+        ["9 แผนภาพ", "python3 scripts/build_diagrams_400.py", "PNG และ SVG ใน docs/assets/ จากต้นฉบับ HTML ใน docs/diagrams/"],
+        ["10 รายงาน", "python3 scripts/build_report_th_400.py", "รายงาน Word และ PDF ใน docs/report/ (ต้องมี LibreOffice และฟอนต์ TH Sarabun New)"],
+        ["11 ชุดประเมินจริง", "python scripts/course_eval.py --base https://<โดเมน> --round 5", "course_eval_results.json (เรียกโมเดลจริง มีค่าใช้จ่าย ต้องได้รับอนุมัติ)"],
     ], [3.4, 7.8, 5.2])
-    h1("ภาคผนวก ข คู่มือ deploy ย่อ")
-    p("ขั้นตอนย่อจาก docs/release-4.0.0.md, scripts/deploy-cloudflare.sh และไฟล์ wrangler ของทั้งสอง worker ยังไม่ได้ทดลองบนบัญชีจริงของทีม")
-    table("deploy", "ขั้นตอน deploy บน Cloudflare", ["ขั้น", "สิ่งที่ทำ", "คำสั่งหรือที่ตั้งค่า"], [
-        ["1", "เตรียมบัญชี Cloudflare แผน Workers Paid โดเมนอยู่ในบัญชีเดียวกัน เปิด Docker และติดตั้ง Node.js", "npx wrangler login"],
-        ["2", "เตรียม PostgreSQL ภายนอกแบบ TLS และคีย์ Fernet ถ้าย้ายข้อมูลเดิมต้องใช้คีย์เดิมคู่กับฐานเดิม", "DATABASE_URL (sslmode=require), BUSINESS_DATA_KEY"],
-        ["3", "ตั้ง secret ของ labclear-api ทีละชื่อผ่าน prompt ไม่ใส่คีย์ใน Git", "cd deploy/cloudflare แล้ว npx wrangler secret put DATABASE_URL ทำซ้ำกับ BUSINESS_DATA_KEY, OPENROUTER_API_KEY, BUSINESS_PUBLIC_URL"],
-        ["4", "ผูก labclear-web กับโดเมน และตั้ง BUSINESS_PUBLIC_URL ให้ตรง", "cd web แล้ว npm run cf:domain -- <โดเมน>"],
-        ["5", "ทดลองแบบไม่อัปโหลด: type check และ build ทั้งสอง worker", "scripts/deploy-cloudflare.sh"],
-        ["6", "Deploy จริง: API (container) ก่อน แล้วหน้าเว็บ หรือใช้ GitHub Actions", "scripts/deploy-cloudflare.sh --deploy หรือ secret CLOUDFLARE_API_TOKEN และ CLOUDFLARE_ACCOUNT_ID"],
-        ["7", "ตรวจรุ่นและ commit", "https://<โดเมน>/health ต้องเป็น 4.0.0 และ commit ตรงกับ git"],
-        ["8", "ตั้งชุดโมเดลและตรวจความพร้อม (ค่าใน DB มีลำดับเหนือ environment)", "Staff > AI providers > ใช้ชุดโมเดล OpenRouter แบบเร็วและประหยัด"],
-        ["9", "รันชุดประเมินและกรอกผล", "scripts/course_eval.py แล้วกรอกหัวข้อ 7.8"],
+    h1("ภาคผนวก ข คู่มือ deploy ย่อ (Render)")
+    p("ขั้นตอนย่อจาก docs/deploy/render.md และ docs/deploy/render-web.md ยังไม่ได้ทดลองบนบัญชีจริงของทีม การแก้ ENV ของระบบจริงเป็นงานของเจ้าของ")
+    table("deploy", "ขั้นตอน deploy บน Render", ["ขั้น", "สิ่งที่ทำ", "คำสั่งหรือที่ตั้งค่า"], [
+        ["1", "Merge รุ่นรวมเข้า main หลังตรวจรับ ให้ Render deploy บริการ API labclear ตาม render.yaml เดิม", "ไม่ต้องเพิ่มคีย์ใหม่ flag ใหม่ทั้ง 6 ตัวยังปิด"],
+        ["2", "ตรวจรุ่นและ commit ของ API", "https://<API>/health ต้องเป็น 4.0.0-rc1 และ commit ตรงกับ git"],
+        ["3", "สร้างบริการเว็บ labclear-web (เลือกได้)", "New Web Service, Root Directory web, build npm ci && npm run build, start npm run start:render"],
+        ["4", "ตั้ง ENV ของบริการเว็บ", "NODE_VERSION=22, API_ORIGIN=https://<API>, NEXT_TELEMETRY_DISABLED=1"],
+        ["5", "ให้ API รับคำขอจากเว็บ", "TRUSTED_ORIGINS=https://<เว็บ> ที่บริการ API (origin ตรงตัว)"],
+        ["6", "ตรวจรับ", "/health ของเว็บ แชตผู้เยี่ยมชมหายเมื่อ Refresh สมัครบัญชีได้ (ถ้าได้ 403 origin_rejected แปลว่า TRUSTED_ORIGINS ไม่ตรง)"],
+        ["7", "ตั้งผู้ให้บริการและงบ แล้วรันชุดประเมิน", "Staff > AI providers, PROVIDER_BUDGET_CYCLE_ID, CLOUD_CALL_LIMIT และ scripts/course_eval.py ตามหัวข้อ 7.8"],
+        ["–", "Cloudflare Workers Paid (เลื่อนไว้)", "ดู deploy/cloudflare/README.md และ docs/deploy/cloudflare.md ไม่ใช่ขั้นตอนของรุ่นนี้"],
     ], [1.2, 7.4, 7.8])
     h1("ภาคผนวก ค ค่าใช้จ่ายโมเดล")
-    p("ราคาจาก OpenRouter snapshot วันที่ 7 ต.ค. 2569 จำนวน tokens เป็นค่าที่สมมติไว้สำหรับคำตอบ 1 ข้อความ ต้องเทียบกับ usage จริงหลัง deploy")
-    table("cost", "ค่าใช้จ่ายโดยประมาณต่อคำตอบ 1 ข้อความ", ["ขั้น", "โมเดลและราคา (USD ต่อล้าน tokens)", "Tokens ที่สมมติ (เข้า/ออก)", "USD"], [
+    p("รุ่นรวมยังไม่มีข้อมูลค่าใช้จ่ายจริง เพราะยังไม่ได้เรียกผู้ให้บริการจริง สิ่งที่มีคือเพดานในระบบ: บัญชีบาทของโครงการ 300 บาท (PROJECT_BUDGET_THB) ต้องระบุค่าใช้จ่ายก่อนหน้า (PROJECT_BUDGET_PRIOR_SPEND_THB) และเพดานจำนวนครั้งต่อรอบ (CLOUD_CALL_LIMIT ค่าเริ่มต้น 200) บทบาทใหม่ต้องใส่ราคาที่ตรวจแล้วตอนบันทึก ราคาใน registry ของ Codex ยังเป็น PRICE_UNVERIFIED ข้อความ 1 ข้อความเรียกโมเดล 5 ครั้ง และไม่เกิน 8 ครั้ง")
+    p("ตารางต่อไปนี้เป็นประวัติจาก Claude branch 4.0.0 คำนวณจากราคา OpenRouter snapshot วันที่ 7 ต.ค. 2569 และจำนวน tokens ที่สมมติไว้ ชุดโมเดลนี้ไม่ได้ใช้ในรุ่นรวม และไม่เคยวัดกับ usage จริง")
+    table("cost", "ประวัติ: ค่าใช้จ่ายโดยประมาณต่อคำตอบของชุดโมเดลที่ Claude branch เสนอ (ไม่ได้ใช้ในรุ่นรวม)", ["ขั้น", "โมเดลและราคา (USD ต่อล้าน tokens)", "Tokens ที่สมมติ (เข้า/ออก)", "USD"], [
         ["Planner", "Qwen3 30B A3B (0.048 / 0.193)", "7,000 / 300", "0.0004"],
         ["เขียนคำตอบ", "Gemini 3.1 Flash Lite (0.25 / 1.50)", "6,000 / 1,200", "0.0033"],
         ["Reviewer", "GPT-4.1 mini (0.40 / 1.60)", "7,000 / 50", "0.0029"],
@@ -763,7 +823,6 @@ def content() -> list[tuple]:
         ["Embedding คำค้น", "Qwen3 Embedding 8B (0.01)", "ประมาณ 30", "ประมาณ 0"],
         ["รวม", "", "", "ประมาณ 0.008"],
     ], [3.2, 6.0, 4.2, 3.0])
-    p("งบ USD 10 จึงพอประมาณ 1,250 คำตอบ คำทักทายถูกกว่าเพราะไม่มี reviewer การอ่านใบผล 1 หน้าประมาณ USD 0.002 บวกคำอธิบาย 0.008 การสร้าง vector index ครั้งเดียวประมาณ 60,000 tokens ต่ำกว่า USD 0.001 ตามสมมติฐานเดียวกัน ชุดประเมินตามโจทย์ 1 รอบ (คำถาม 10 ข้อ ภาพ 5 ภาพ ความปลอดภัย 5 กรณี) ใช้ประมาณ USD 0.17 ยังไม่รวมการแก้คำตอบและการเรียกซ้ำ ledger ในระบบใช้ราคาบาทที่ปัดขึ้น (360 บาท = USD 10 ที่ 36 บาทต่อดอลลาร์) และหยุดเมื่อครบ")
     return B
 
 
@@ -1052,9 +1111,9 @@ class Report:
             ("แนะนำแพ็กเกจและช่วยอ่านใบผลตรวจจากข้อมูลอ้างอิง", 18, False, 6),
             ("รายวิชา 06048308 Intelligent Chatbot Development", 16, False, 40),
             ("68076055 นายวัชรินทร์ บัวสอน", 16, False, 24), ("68076060 นายศิริพล ศรีเฮงไพบูลย์", 16, False, 4),
-            ("ตุลาคม 2569", 16, False, 40), ("ฉบับ 4.0.0", 18, True, 8),
+            ("ตุลาคม 2569", 16, False, 40), ("ฉบับ 4.0.0-rc1 (รุ่นรวม)", 18, True, 8),
             ("ซอร์สโค้ด: https://github.com/siriponsri/LabClear", 16, False, 40),
-            ("เว็บไซต์: โดเมนของทีมบน Cloudflare (ตั้งค่าตามคู่มือ)", 16, False, 4),
+            ("เว็บไซต์: Render (ยังไม่ได้ deploy รุ่นนี้)", 16, False, 4),
         ]
         for text, size, bold, before in lines:
             p = self.d.add_paragraph(style="Title")
