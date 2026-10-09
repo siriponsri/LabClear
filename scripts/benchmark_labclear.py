@@ -264,19 +264,28 @@ def live_env(run: dict) -> dict:
 
 class Pacer:
     """Keeps the runner under the app's own per-client limit (CHAT_RATE_LIMIT_REQUESTS, 120/min by
-    default) instead of switching it off. Waiting time is recorded separately from response time."""
+    default) instead of switching it off. AI endpoints are counted twice by the app (origin check and
+    provider authorisation), so they cost 2 here. Waiting time is recorded separately from response
+    time; a 429 that still happens is waited out once and counted on the row."""
 
     def __init__(self, per_minute: int = 100):
-        self.per_minute, self.sent, self.waited_ms = per_minute, [], 0
+        self.per_minute, self.sent, self.waited_ms, self.rate_limited = per_minute, [], 0, 0
 
-    def wait(self) -> None:
-        now_ = time.monotonic()
-        self.sent = [t for t in self.sent if now_ - t < 60]
-        if len(self.sent) >= self.per_minute:
+    def wait(self, cost: int = 1) -> None:
+        while True:
+            now_ = time.monotonic()
+            self.sent = [t for t in self.sent if now_ - t < 60]
+            if len(self.sent) + cost <= self.per_minute:
+                break
             pause = 60 - (now_ - self.sent[0]) + 0.05
             self.waited_ms += round(pause * 1000)
             time.sleep(pause)
-        self.sent.append(time.monotonic())
+        self.sent.extend([time.monotonic()] * cost)
+
+    def limited(self) -> None:
+        self.rate_limited += 1
+        self.waited_ms += 61000
+        time.sleep(61)
 
 
 PACER = Pacer()
@@ -301,6 +310,9 @@ class Client:
     def get(self, path: str):
         PACER.wait()
         r = self.c.get(self.base + "/api/business" + path, headers=self.headers())
+        if r.status_code == 429:
+            PACER.limited()
+            r = self.c.get(self.base + "/api/business" + path, headers=self.headers())
         try:
             return r.status_code, r.json()
         except ValueError:
@@ -308,7 +320,15 @@ class Client:
 
     def stream(self, path: str, **kw) -> dict:
         """POST with Accept: application/x-ndjson; time every step event as it arrives."""
-        PACER.wait()
+        for attempt in (1, 2):
+            out = self._stream(path, **kw)
+            if attempt == 1 and out["status"] == 429 and (out["error"] or {}).get("code") == "rate_limited":
+                PACER.limited()  # the app's own client limit, not a provider answer
+                continue
+            return out
+
+    def _stream(self, path: str, **kw) -> dict:
+        PACER.wait(2)
         t0 = time.perf_counter()
         events, result, error, status = [], None, None, 0
         headers = {**self.headers(), "Accept": "application/x-ndjson"}
@@ -379,6 +399,9 @@ class Staff:
     def snapshot(self) -> dict:
         PACER.wait()
         r = self.c.get("/api/business/staff/budget", headers={"X-Business-CSRF": self.csrf})
+        if r.status_code == 429:
+            PACER.limited()
+            r = self.c.get("/api/business/staff/budget", headers={"X-Business-CSRF": self.csrf})
         return r.json() if r.status_code == 200 else {}
 
     def close(self) -> None:
@@ -543,7 +566,7 @@ def run_case(server: Server, staff: Staff | None, case: dict, rule: dict, gold: 
            "topic": case["topic"], "input_turns": case["turns"], "timestamp": now(), "cache_hit": False,
            "human_verdict": "PENDING_REVIEW", "human_review_role": None}
     outcomes = []
-    waited = PACER.waited_ms
+    waited, limited = PACER.waited_ms, PACER.rate_limited
     try:
         client.start()
         if case["kind"] == "image":
@@ -556,6 +579,7 @@ def run_case(server: Server, staff: Staff | None, case: dict, rule: dict, gold: 
             res = read.get("result") or {}
             if res.get("report_id"):
                 status, report = client.get(f"/reports/{res['report_id']}")
+                row["report_fetch_status"] = status
                 fields = (report.get("data") or {}).get("fields", []) if status == 200 else []
                 row["raw_extraction"] = fields
                 row["raw_score"] = score_image_rows(fields, gold["rows"])
@@ -590,7 +614,8 @@ def run_case(server: Server, staff: Staff | None, case: dict, rule: dict, gold: 
                checks_reported=result.get("checks"), trace=[t.get("label") for t in result.get("trace") or []],
                dot=(result.get("dot") or {}).get("id"), action=(result.get("action") or {}).get("type"),
                total_ms=sum(o.get("total_ms", 0) for o in outcomes), step_ms=[o.get("step_ms") for o in outcomes],
-               queue_ms=None, provider_ms=None, runner_pacing_ms=PACER.waited_ms - waited)
+               queue_ms=None, provider_ms=None, runner_pacing_ms=PACER.waited_ms - waited,
+               app_rate_limited_responses=PACER.rate_limited - limited)
     stages = {}
     for c in calls:
         stages[c.get("stage")] = stages.get(c.get("stage"), 0) + 1
