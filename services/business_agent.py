@@ -234,7 +234,7 @@ async def run(message,context,emit=None):
     if settings.MEDICAL_HARNESS_ENABLED and role_report:
         from services.model_harness import analyze, packet_from_payload
         from services.providers import runtime
-        if not role_report.get('sample'):
+        if not (role_report.get('sample') or context.get('synthetic_report')):
             raise transport.ConversationError('data_policy', 'The new medical pipeline is limited to built-in synthetic reports pending data approval.',409)
         if not runtime('agent_thai_composer').ready:
             raise transport.ConversationError('provider_not_configured', 'Configure the Thai composer before enabling medical analysis.')

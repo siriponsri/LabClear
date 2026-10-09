@@ -21,6 +21,9 @@ class Settings(BaseSettings):
     HOSPITAL_LINKS_ENABLED: bool = False
     RUNTIME_SKILLS_ENABLED: bool = False
     MEDICAL_HARNESS_ENABLED: bool = False
+    # Test environments only (APP_ENV=test): extra JSON list of author-generated synthetic fixture hashes
+    # the medical harness may accept as uploads; see services/synthetic_fixtures.py.
+    SYNTHETIC_FIXTURE_MANIFEST: str = ""
 
     # AI providers. A manager can override all of these on /staff → AI providers;
     # these variables are the fallback when nothing is saved there.

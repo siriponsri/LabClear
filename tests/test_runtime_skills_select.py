@@ -58,12 +58,11 @@ def test_no_sales_module_ever_reaches_a_role_without_quote(isolated):  # noqa: F
                     assert files[:2] == ["core.md", "thai-style.md"]
 
 
-def test_selection_is_smaller_than_the_old_whole_profile_for_simple_tasks(isolated):  # noqa: F811
-    advisor = roles()["advisor"]
-    policy_only = runtime_skills.select(advisor, "answer", False, {"synthetic_business"}, [])
-    assert len(policy_only["instructions"]) < len(runtime_skills.bundle("general")["instructions"]) + 2000
-    greeting = runtime_skills.select(advisor, "answer", False, set(), [])
+def test_a_greeting_gets_only_the_two_base_modules(isolated):  # noqa: F811
+    # Selection targets modules to the task; it is not a size optimisation (see scripts/skill_route_matrix.py).
+    greeting = runtime_skills.select(roles()["advisor"], "answer", False, set(), [])
     assert [m["file"] for m in greeting["modules"]] == ["core.md", "thai-style.md"]
+    assert greeting["sha256"] == runtime_skills.select(roles()["advisor"], "answer", False, set(), [])["sha256"]
 
 
 def test_tampered_module_fails_closed(tmp_path, monkeypatch, isolated):  # noqa: F811

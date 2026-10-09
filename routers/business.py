@@ -17,6 +17,7 @@ from services import trusted_origins
 from services.lab_fields_v2 import ReportField,normalize
 from services.report_reader_v2 import read_report,document_images,all_images
 from routers.samples import DEMOS,DEMO_ROOT,authorize as provider_authorize
+from services import synthetic_fixtures
 
 router=APIRouter(prefix='/api/business'); COOKIE='labclear_session'; TZ=ZoneInfo('Asia/Bangkok')
 class Strict(BaseModel):model_config=ConfigDict(extra='forbid')
@@ -240,6 +241,8 @@ async def workspace(request:Request):
         unread=sum(1 for _ in tx.find('notification',owner,'unread'))
         return {'conversation':c['data'],'bookings':tx.find('booking',owner),'tickets':tx.find('ticket',owner),'quotes':tx.find('corporate_quote',owner),'reports':reports,'user':db.user_public(u),'payments':payments,'unread_notifications':unread,'inquiries':tx.find('org_inquiry',owner),'plan':plans.entitlement(tx,owner),'chats':chats.listing(tx,owner),'line_linked':bool(tx.find('line_identity',owner))}
 
+# Report keys that never become model context: originals, raw unconfirmed OCR rows and fixture labels.
+PRIVATE_REPORT_KEYS={'original','extra_originals','media_type','raw_fields','synthetic_fixture'}
 RETRYABLE={'service_unavailable','price_invalid','provider_response_invalid','answer_invalid','observation_invalid','citation_invalid','review_failed','evidence_review_failed','role_violation','guard_invalid','provider_rejected','storage_unavailable'}
 async def turn(owner,message,retry_id='',page=None,emit=None,reply_to=''):
     """One assistant turn on the active chat.
@@ -301,8 +304,10 @@ async def turn(owner,message,retry_id='',page=None,emit=None,reply_to=''):
         other=d.get('compare_report_id')
         if other and other!=d.get('report_id'):
             r=tx.own(other,owner,'report')['data']
-            if r.get('confirmed') and r.get('same_person_confirmed'):context['previous_reports']=[{k:v for k,v in r.items() if k not in ['original','extra_originals','media_type']}]
-        if context['report']:context['report']={k:v for k,v in context['report'].items() if k not in ['original','extra_originals','media_type']}
+            if r.get('confirmed') and r.get('same_person_confirmed'):context['previous_reports']=[{k:v for k,v in r.items() if k not in PRIVATE_REPORT_KEYS}]
+        if context['report']:
+            context['synthetic_report']=bool(context['report'].get('sample') or context['report'].get('synthetic_fixture'))
+            context['report']={k:v for k,v in context['report'].items() if k not in PRIVATE_REPORT_KEYS}
     try:
         async with asyncio.timeout(220):result=await business_agent.run(message,context,**({'emit':emit} if emit else {}))
         with db.transaction() as tx:
@@ -509,7 +514,11 @@ async def save_read_report(owner,raw,sample=False,emit=None):
             with db.transaction() as tx:plans.uncount_read(tx,owner)
         raise
     report.update(original=base64.b64encode(raws[0]).decode(),extra_originals=[base64.b64encode(r).decode() for r in raws[1:]],pages=len(images),
-                  media_type='application/pdf' if raws[0].startswith(b'%PDF') else images[0][1],label='Unconfirmed report',same_person_confirmed=False,sample=sample)
+                  media_type='application/pdf' if raws[0].startswith(b'%PDF') else images[0][1],label='Unconfirmed report',same_person_confirmed=False,sample=sample,
+                  # Raw extraction as read, kept beside the confirmed rows so corrections stay visible; never sent to a model.
+                  raw_fields=[dict(f) for f in report.get('fields',[])],
+                  # Test environments only: exact bytes of a reviewed synthetic fixture (services/synthetic_fixtures.py).
+                  synthetic_fixture='' if sample else synthetic_fixtures.trusted(raws))
     with db.transaction() as tx:
         r=tx.put('report_'+secrets.token_hex(12),'report',owner,report,'draft');tx.audit(owner,'report.read',r['id'])
         r['data'].pop('original',None);r['data'].pop('extra_originals',None);r['entitlement']=plans.entitlement(tx,owner);return r
