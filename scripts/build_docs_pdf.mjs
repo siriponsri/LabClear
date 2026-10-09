@@ -27,7 +27,7 @@ function reportHtml(mdFile) {
   const body = marked.parse("## " + rest.join("\n## "));
   const base = pathToFileURL(path.dirname(mdFile) + "/").href;
   return `<!doctype html><html lang="th"><head><meta charset="utf-8"><base href="${base}">
-<title>LabClear 4.0.0 รายงานทางเทคนิค</title>
+<title>LabClear 4.0.0-rc1 รายงานทางเทคนิค</title>
 <style>
 @font-face{font-family:"Noto Sans Thai";src:url(${fonts}/noto-sans-thai-400.woff2) format("woff2");font-weight:400}
 @font-face{font-family:"Noto Sans Thai";src:url(${fonts}/noto-sans-thai-600.woff2) format("woff2");font-weight:600 700}
@@ -76,7 +76,7 @@ try {
     await page.pdf({
       path: out, format: "A4", printBackground: true, preferCSSPageSize: true,
       displayHeaderFooter: true, headerTemplate: "<span></span>",
-      footerTemplate: '<div style="width:100%;font-size:8px;color:#8d819d;text-align:center;font-family:sans-serif">LabClear 4.0.0 · <span class="pageNumber"></span> / <span class="totalPages"></span></div>',
+      footerTemplate: '<div style="width:100%;font-size:8px;color:#8d819d;text-align:center;font-family:sans-serif">LabClear 4.0.0-rc1 · <span class="pageNumber"></span> / <span class="totalPages"></span></div>',
     });
     console.log("Wrote", path.relative(root, out));
   } else if (mode === "slides") {
