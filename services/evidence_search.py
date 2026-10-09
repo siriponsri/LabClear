@@ -85,4 +85,6 @@ def lexical(query: str, limit: int = 6) -> list[dict]:
 
 async def search(query: str, limit: int = 6) -> tuple[list[dict], str]:
     """BM25 over the verified catalog; returns the records and the retrieval mode."""
-    return lexical(query, limit=limit), "lexical"
+    import asyncio
+    # BM25 and the knowledge settings lookup run in a worker thread, off the event loop.
+    return await asyncio.to_thread(lexical, query, limit=limit), "lexical"

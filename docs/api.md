@@ -10,11 +10,23 @@ Endpoints of LabClear 4.0.0-rc3, grouped by router. Paths are complete. The inte
   `X-LabClear-Guest` from page memory.
 - Every `POST`, `PUT`, `PATCH` and `DELETE` that needs a session sends `X-Business-CSRF`.
 - The browser `Origin` must match the service host (or an entry in `TRUSTED_ORIGINS`).
-- Errors return `{"code": "...", "message": "..."}` with an HTTP status. `/api/*` responses are
-  `Cache-Control: no-store`.
-- Chat endpoints stream with `Accept: application/x-ndjson`: one JSON object per line,
-  `{"type":"step",…}` for each step, then `{"type":"done","result":…}` or `{"type":"error",…}`.
-  Without that header they return the plain JSON result.
+- Every response carries `X-Request-ID` (`req_…`). Errors return
+  `{"code": "...", "message": "...", "origin": "client|app|upstream", "request_id": "req_…"}` with an
+  HTTP status; `503 server_busy` and `503 server_draining` add `Retry-After: 5`. A response without
+  `X-Request-ID` (for example an HTML 502 page) came from a gateway, not from LabClear. `/api/*`
+  responses are `Cache-Control: no-store`. Codes and statuses:
+  [operations/resilience.md](operations/resilience.md#error-contract).
+- AI workflows (marked **AI** below) are admitted first: at most `AI_MAX_IN_FLIGHT` at once (report
+  readings also count against `OCR_MAX_IN_FLIGHT`), otherwise `503 server_busy` before any provider
+  call. Each has a deadline for the whole workflow: 220 s for chat, 150 s for report reading.
+- With `Accept: application/x-ndjson` they stream one JSON object per line: `{"type":"accepted",
+  "request_id", "deadline_ms", "heartbeat_ms"}` first, `{"type":"step",…}` for each step,
+  `{"type":"heartbeat"}` after 10 s without output, then exactly one terminal event,
+  `{"type":"done","result":…,"request_id"}` or `{"type":"error","code","message","status","origin",
+  "request_id","step"}`. Steps still running when a workflow fails are sent first with their final
+  state (`timeout`, `cancelled`, `unavailable`, `blocked`, `error`) and duration. Without that header
+  they return the plain JSON result or a JSON error (504 for a timeout). Closing the connection
+  cancels the workflow.
 
 | Access | Meaning |
 |---|---|
@@ -31,7 +43,8 @@ Endpoints of LabClear 4.0.0-rc3, grouped by router. Paths are complete. The inte
 
 | Method | Path | Access | Purpose |
 |---|---|---|---|
-| GET | `/health` | Public | Status, app, environment, version and deployed commit |
+| GET | `/health` | Public | Liveness: status, app, environment, version and deployed commit |
+| GET | `/ready` | Public | Readiness (Render health check): 200, or 503 while starting, draining or without storage; `checks`, `load`, `version`, `commit` |
 | GET | `/app` | Public | Customer workspace page |
 | GET | `/staff` | Public | Service desk page (data needs a staff session) |
 | GET | `/static/{path}` | Public | CSS, JavaScript, fonts, images, Thai dictionary |
@@ -89,7 +102,7 @@ Endpoints of LabClear 4.0.0-rc3, grouped by router. Paths are complete. The inte
 |---|---|---|---|
 | POST | `/api/business/chat` | AI | Send a message; streams steps, then the answer |
 | POST | `/api/business/chat/retry` | AI | Retry the latest failed message |
-| POST | `/api/business/stop` | Session | Stop the running reply |
+| POST | `/api/business/stop` | Session | Stop the running reply: no late answer is added, the running work is cancelled and its slot freed |
 | POST | `/api/business/new-chat` | Session | Start a new chat (older clients) |
 | GET | `/api/business/history` | Session | Earlier chats (older clients) |
 | POST | `/api/business/confirm` | Session | Confirm a preview: booking request, quote, payment or hand-off |
@@ -99,7 +112,7 @@ Endpoints of LabClear 4.0.0-rc3, grouped by router. Paths are complete. The inte
 
 | Method | Path | Access | Purpose |
 |---|---|---|---|
-| POST | `/api/business/chat/report` | AI | Read one to three files (or a `demo_id`) into a chat card |
+| POST | `/api/business/chat/report` | AI | Read one to three files (or a `demo_id`) into a chat card; files are prepared in a time- and memory-limited worker process |
 | POST | `/api/business/chat/report/confirm` | AI | Confirm the card's values (optionally edited), then explain them |
 | POST | `/api/business/chat/report/answer` | AI | Retry the explanation of a confirmed card |
 | POST | `/api/business/chat/report/discard` | Session | Discard an unconfirmed card and its report |

@@ -21,7 +21,7 @@ def authorized(request):
 
 
 @router.get('')
-async def index(request: Request):
+def index(request: Request):
     with db.transaction() as tx:
         _manager(tx, request)
         overrides = knowledge.state(tx)
@@ -39,7 +39,7 @@ class Publication(Strict):
 
 
 @router.put('/{source_id}')
-async def publish(source_id: str, request: Request, body: Publication):
+def publish(source_id: str, request: Request, body: Publication):
     with db.transaction() as tx:
         user = _manager(tx, request)
         knowledge.record(source_id)

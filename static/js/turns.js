@@ -148,12 +148,25 @@ window.RSTurns = (() => {
     return box;
   }
   const FAILED = { safety_blocked: 'Not answered: the safety check blocked this request.' };
+  const STEP_END = { timeout: 'Timed out', cancelled: 'Cancelled', unavailable: 'Temporarily unavailable', blocked: 'Blocked by the safety check', error: 'Failed', interrupted: 'Interrupted' };
   function failure(m, opts, onRetry) {
     const text = m.retryable ? 'Not answered yet.' : (FAILED[m.error] || 'Not answered.');
     const r = make('div', null, 'callout bad failure'); r.append(make('strong', text));
     if (m.error_message) r.append(make('span', ' ' + m.error_message, 'small'));
     else if (!m.retryable) r.append(make('span', ' Try rephrasing, or ask our team.', 'small'));
     if (opts.interactive && m.retryable && onRetry) { const b = make('button', 'Retry', 'btn sm'); b.type = 'button'; b.onclick = () => onRetry(m.id); r.append(b); }
+    // Process Explainability for a turn that ended without an answer: which step stopped, how, and the
+    // request reference for support (server: services/execution.py). No answer text is shown.
+    const f = m.failure;
+    if (f && (f.steps?.length || f.request_id)) {
+      const ul = make('ul', null, 'receipt failure-steps');
+      (f.steps || []).forEach(x => { const li = make('li'), t = make('div'); t.append(make('span', x.label, 'step-label'));
+        const d = make('span', null, 'step-detail'); d.append(make('span', STEP_END[x.state] || 'Failed'));
+        if (x.duration_ms !== undefined) d.append(document.createTextNode(' · ' + (x.duration_ms / 1000).toFixed(1) + ' s'));
+        t.append(d); li.append(t); ul.append(li); });
+      if (f.request_id) { const li = make('li', null, 'ref'), c = make('code', f.request_id); c.setAttribute('translate', 'no'); li.append(make('span', 'Request reference'), document.createTextNode(': '), c); ul.append(li); }
+      r.append(ul);
+    }
     return r;
   }
   /* opts: {interactive, onRetry(id), onShortcut(cmd) -> element|null, onAction(msg) -> element|null, onStaff(), onFollowup(q),

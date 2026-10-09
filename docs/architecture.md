@@ -11,11 +11,12 @@ Diagrams: [system architecture](assets/architecture.svg) and [one chat message](
 | Item | Choice |
 |---|---|
 | Hosting | One Render web service (`labclear`, Python runtime) from [`render.yaml`](../render.yaml) |
-| Entry point | [`scripts/run_business.py`](../scripts/run_business.py) runs `uvicorn main:app` on `PORT`; it also starts the LINE worker when `BUSINESS_WORKER_ENABLED=true` |
+| Entry point | [`scripts/run_business.py`](../scripts/run_business.py) runs one Uvicorn process for `main:app` on `0.0.0.0:$PORT` and drains on SIGTERM; it also starts the LINE worker when `BUSINESS_WORKER_ENABLED=true` |
 | Web | FastAPI, Jinja2 templates, vanilla JavaScript and CSS; no front-end build step |
 | Node.js | Not used at runtime. Only for rebuilding the Thai dictionary and running browser tests |
 | Storage | SQLite locally, PostgreSQL through `DATABASE_URL` when hosted |
-| Health check | `GET /health` returns status, environment, version and the deployed commit |
+| Health checks | `GET /health` (liveness: status, environment, version, deployed commit); `GET /ready` (readiness: started, not draining, storage answering; Render's health check) |
+| Request resilience | One execution context per AI request: request ID, whole-workflow deadline, admission slot, cancellation; NDJSON with heartbeats; storage and file rendering off the event loop. See [operations/resilience.md](operations/resilience.md) |
 
 ## Components
 
@@ -37,7 +38,10 @@ Diagrams: [system architecture](assets/architecture.svg) and [one chat message](
 | Harness config | `services/harness_config.py` | Versioned manager settings for skills and tools |
 | Knowledge admin | `services/knowledge_admin.py` | Pause/resume records, PDF documents |
 | Hospital links | `services/hospital_links.py`, `business_data/hospital_links.json` | Reviewed official hospital pages |
-| Providers | `services/providers.py`, `services/conversation_transport.py` | Provider per slot, bounded HTTPS calls |
+| Providers | `services/providers.py`, `services/conversation_transport.py` | Provider per slot, bounded HTTPS calls classified by origin (one snapshot of the settings per request) |
+| Execution | `services/execution.py` | Request ID, deadline, admission (`AI_MAX_IN_FLIGHT`, `OCR_MAX_IN_FLIGHT`), stream protocol, cancellation, drain, structured logs |
+| Document worker | `services/document_worker.py`, `services/document_render.py` | Report files checked and rendered in a separate, killable process with time and memory limits |
+| Browser client | `static/js/stream.js` | Stream reading, failure classification, watchdogs, readiness wait before sending after a pause |
 | Spending | `services/cost_ledger.py`, `services/free_policy.py` | THB ledger, call cap, optional free-only policy |
 | Storage | `services/business_store.py`, `services/guest_memory.py` | Encrypted entities; guest data in memory only |
 
@@ -273,7 +277,8 @@ A signed-in customer types "HbA1c คืออะไร" in `/app` and presses S
 
 | Stage | What happens | What is stored | Shown live (and kept in Process Explainability) |
 |---|---|---|---|
-| Request | Browser posts `POST /api/business/chat` with `{"message": …, "page": …}`, the session cookie, `X-Business-CSRF` and `Accept: application/x-ndjson` | The message is added to the encrypted conversation; the chat is marked busy | Sending (live only) |
+| Request | Browser posts `POST /api/business/chat` with `{"message": …, "page": …}`, the session cookie, `X-Business-CSRF` and `Accept: application/x-ndjson` (after a long pause it first waits for `GET /ready`) | — | Sending (live only) |
+| Admission | Session check, then one of `AI_MAX_IN_FLIGHT` slots, or `503 server_busy` at once; the 220 s deadline starts | The message is added to the encrypted conversation; the chat is marked busy | `accepted` with the request ID (heartbeats every 10 s while nothing else is sent) |
 | Harness | Settings snapshot for this turn | — | Company Harness · typed tools version · configuration revision · skills on or off |
 | Input guard | Pattern check, then one safety-model call | Call cap count and ledger reservation | Your message passed the safety check |
 | Planner | One JSON call: action `answer`, search terms `HbA1c`, a role, a reason | Call cap and ledger | Plan: answer the question, as the … (with the reason) |
@@ -284,6 +289,10 @@ A signed-in customer types "HbA1c คืออะไร" in `/app` and presses S
 | Checks and review | Deterministic checks, then one reviewer call | Call cap and ledger | Second review passed |
 | Output guard | One safety-model call on the answer | Call cap and ledger | The answer passed the safety check |
 | Result | The answer is streamed last and replaces the live steps | Assistant message with reply, cited sources, follow-ups, role, `checks` (tools, skills, harness revision and SHA-256) and the trace with durations | The answer, its sources, and a **Process Explainability** button that lists the steps above |
+
+If a step fails, times out or is cancelled, the steps still running are shown with their final state
+and duration, the terminal error carries the request ID, and the message stays retryable; see
+[operations/resilience.md](operations/resilience.md).
 
 Prompts, raw model output and keys are not stored. A guest's chat follows the same path but is kept
 only in process memory.

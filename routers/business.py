@@ -15,7 +15,9 @@ from services.conversation_transport import ConversationError
 from services.request_limits import request_rate_limiter
 from services import trusted_origins
 from services.lab_fields_v2 import ReportField,normalize
-from services.report_reader_v2 import read_report,document_images,all_images
+from services.report_reader_v2 import read_report,document_images
+from services import execution,document_worker
+from services.document_render import signature as file_signature
 from routers.samples import DEMOS,DEMO_ROOT,authorize as provider_authorize
 from services import synthetic_fixtures
 
@@ -109,6 +111,22 @@ def staff_ticket(tx,request,id):
 
 def msg(role,text,**kw):return {'id':secrets.token_hex(12),'role':role,'content':text,'at':time.time(),**kw}
 
+def _in_tx(fn):
+    with db.transaction() as tx:return fn(tx)
+
+async def stored(fn):
+    """One storage transaction in a worker thread: async routes never wait on the database on the
+    event loop, so /health, heartbeats and other requests keep being served."""
+    return await execution.offload(_in_tx,fn)
+
+def check_files(raws):
+    """Cheap upload limits before admission and before any decoding: size and file type per file.
+    Pages and decoded pixels are checked by the document worker before it renders anything."""
+    for raw in raws:
+        if not raw:raise ConversationError('empty_image','The uploaded image is empty.',400)
+        if len(raw)>settings.IMAGE_MAX_BYTES:raise ConversationError('file_too_large','Choose a file smaller than 3 MB.',413)
+        if not file_signature(raw):raise ConversationError('unsupported_image','Use PDF, PNG or JPEG files.',415)
+
 def booking_create(tx,owner,payload):
     u=tx.get(owner)
     if not u['data'].get('password') and not u['data'].get('line_verified'):raise ConversationError('account_required','Create an account before confirming a booking.',409)
@@ -152,13 +170,13 @@ def ticket_create(tx,owner,summary,pause_bot=True,extra=None):
     return row
 
 @router.get('/catalog')
-async def get_catalog():return db.catalog()
+def get_catalog():return db.catalog()
 @router.get('/branches')
-async def get_branches():return {**db.branches(),'maps_embed_key':os.getenv('GOOGLE_MAPS_EMBED_KEY','')}
+def get_branches():return {**db.branches(),'maps_embed_key':os.getenv('GOOGLE_MAPS_EMBED_KEY','')}
 @router.get('/policies')
-async def get_policies():return db.policies()
+def get_policies():return db.policies()
 @router.get('/session')
-async def get_session(request:Request,response:Response):
+def get_session(request:Request,response:Response):
     origin(request)
     with db.transaction() as tx:
         s=request_session(tx,request);guest_token=''
@@ -176,17 +194,19 @@ async def get_session(request:Request,response:Response):
         return {'user':db.user_public(u),'csrf':csrf,'guest_token':guest_token,'conversation':c['data'],'simulation':True,'version':VERSION,'ocr_provider':'typhoon','external_business_enabled':os.getenv('BUSINESS_EXTERNAL_ENABLED')=='true','google':google_sign_in()}
 
 @router.post('/guest/close')
-async def close_guest(body:GuestClose,request:Request):
+def close_guest(body:GuestClose,request:Request):
     origin(request)
     with db.transaction() as tx:
         s=tx.get('session_'+db.digest(body.guest_token))
         if s and s['owner'].startswith('guest_'):
             if not hmac.compare_digest(body.csrf,s['data']['csrf']):raise ConversationError('csrf_rejected','Invalid temporary session.',403)
             tx.forget_guest(s['owner'])
+            # Guest privacy: closing the page also stops any work still running on its data.
+            execution.cancel_owner(s['owner'],'disconnect')
     return {'ok':True}
 
 @router.get('/me')
-async def me(request:Request):
+def me(request:Request):
     """Who is signed in, for the website header. Unlike /session it never creates a guest session."""
     origin(request)
     with db.transaction() as tx:
@@ -196,7 +216,7 @@ async def me(request:Request):
         return {'user':db.user_public(u) if signed else None,'csrf':s['data']['csrf'] if signed else '','google':google_sign_in()}
 
 @router.post('/register')
-async def register(body:Credentials,request:Request,response:Response):
+def register(body:Credentials,request:Request,response:Response):
     with db.transaction() as tx:
         u,s=session_row(tx,request)
         email=body.email.strip().lower()
@@ -211,7 +231,7 @@ async def register(body:Credentials,request:Request,response:Response):
         return {'user':db.user_public(tx.get(uid)),'csrf':csrf}
 
 @router.post('/login')
-async def login(body:LoginInput,request:Request,response:Response):
+def login(body:LoginInput,request:Request,response:Response):
     origin(request)
     with db.transaction() as tx:
         bucket='auth_'+db.digest(request.client.host if request.client else 'unknown');rate=tx.get(bucket)
@@ -228,12 +248,13 @@ async def login(body:LoginInput,request:Request,response:Response):
         csrf=set_session(tx,response,u['id']);return {'user':db.user_public(u),'csrf':csrf}
 
 @router.post('/logout')
-async def logout(request:Request,response:Response):
+def logout(request:Request,response:Response):
     with db.transaction() as tx:u,s=session_row(tx,request);tx.delete(s['id']);tx.forget_guest(u['id'])
+    execution.cancel_owner(u['id'],'disconnect')
     response.delete_cookie(COOKIE);return {'ok':True}
 
 @router.get('/workspace')
-async def workspace(request:Request):
+def workspace(request:Request):
     with db.transaction() as tx:
         u,_=session_row(tx,request,False);owner=u['id'];c=conversation(tx,owner)
         reports=[{'id':r['id'],'label':r['data'].get('label','Report'),'date':r['data'].get('collected_date',''),'confirmed':r['data'].get('confirmed',False),'pages':r['data'].get('pages',1),'sample':r['data'].get('sample',False)} for r in tx.find('report',owner)]
@@ -243,36 +264,79 @@ async def workspace(request:Request):
 
 # Report keys that never become model context: originals, raw unconfirmed OCR rows and fixture labels.
 PRIVATE_REPORT_KEYS={'original','extra_originals','media_type','raw_fields','synthetic_fixture'}
-RETRYABLE={'service_unavailable','price_invalid','provider_response_invalid','answer_invalid','observation_invalid','citation_invalid','review_failed','evidence_review_failed','role_violation','guard_invalid','provider_rejected','storage_unavailable'}
+RETRYABLE={'service_unavailable','price_invalid','provider_response_invalid','answer_invalid','observation_invalid','citation_invalid','review_failed','evidence_review_failed','role_violation','guard_invalid','provider_rejected','storage_unavailable',
+           # resilience (services/execution.py): nothing was answered, the same message can run again
+           'request_timeout','upstream_timeout','upstream_unavailable','upstream_rate_limited','cancelled','server_draining'}
+
+def _hold():
+    """How long a conversation stays busy for one workflow: its remaining time plus the cleanup bound.
+    Cleanup frees it earlier; this only covers a process that died mid-turn."""
+    ctx=execution.current()
+    return (ctx.remaining() if ctx else settings.CHAT_DEADLINE_SECONDS)+execution.CLEANUP_SECONDS
+
+def _failure(exc):
+    """What Process Explainability shows for a turn that ended without an answer (no message text)."""
+    ctx=execution.current()
+    out={'code':exc.code,'origin':exc.origin}
+    if ctx:
+        steps=ctx.interrupted(exc)
+        out.update(request_id=ctx.request_id,steps=[{k:x[k] for k in ('id','label','state','duration_ms')} for x in steps])
+    return out
+
+def _mark_failed(owner,turn_id,version,target_id,exc):
+    failure=_failure(exc)
+    def run(tx):
+        c=tx.get('conversation_'+owner)
+        if c and c['data'].get('turn_id')==turn_id and c['data']['version']==version:
+            for m in c['data']['messages']:
+                if m['id']==target_id:m.update(failed=True,error=exc.code,error_message=exc.message[:300],retryable=exc.code in RETRYABLE,failure=failure)
+            tx.put(c['id'],'conversation',owner,c['data'])
+    return run
+
+def _release_busy(owner,token):
+    def run(tx):
+        c=tx.get('conversation_'+owner)
+        if c and c['data'].get('turn_id')==token:c['data']['busy_until']=0;tx.put(c['id'],'conversation',owner,c['data'])
+    return run
+
+async def _within_deadline(work):
+    """Direct calls (tests, the LINE worker) have no route Execution: keep the chat deadline anyway."""
+    if execution.current():return await work
+    try:
+        async with asyncio.timeout(settings.CHAT_DEADLINE_SECONDS):return await work
+    except TimeoutError:raise ConversationError('request_timeout','This took longer than the time allowed and was stopped. No answer was saved; please try again.',504,origin='app') from None
+
 async def turn(owner,message,retry_id='',page=None,emit=None,reply_to=''):
     """One assistant turn on the active chat.
 
     retry_id: re-run the last failed user message. reply_to: answer the question that came with
-    an uploaded report, right after the customer confirmed its values (no new user message)."""
+    an uploaded report, right after the customer confirmed its values (no new user message).
+    Storage work runs in worker threads; the route's Execution bounds the whole turn."""
     if not message.strip() and not retry_id and not reply_to:raise ConversationError('empty_message','Type a message.',422)
     turn_id=secrets.token_hex(16)
-    with db.transaction() as tx:
+    def prepare(tx):
+        nonlocal message
         c=conversation(tx,owner);d=c['data']
         if d.get('busy_until',0)>time.time():raise ConversationError('busy','Please wait for the previous message.',409)
         last=d['messages'][-1] if d['messages'] else None
         if reply_to:
             card=last if last and last['id']==reply_to and last.get('kind')=='report_read' else None
             if not card or card.get('state')!='confirmed':raise ConversationError('retry_unavailable','Confirm the report values first, or ask a new question.',409)
-            for k in ('failed','error','error_message'):card.pop(k,None)
+            for k in ('failed','error','error_message','failure'):card.pop(k,None)
             message=card.get('question') or message
             target_id=reply_to;earlier=[x for x in d['messages'] if x['id'] not in (reply_to,card.get('upload_id'))]
         elif retry_id:
             # Retry re-runs the last failed user message; it is never appended twice.
             if not last or last['id']!=retry_id or last['role']!='user' or not last.get('failed') or not last.get('retryable'):raise ConversationError('retry_unavailable','Only the latest unanswered message can be retried.',409)
-            for k in ('failed','error','error_message'):last.pop(k,None)
+            for k in ('failed','error','error_message','failure'):last.pop(k,None)
             message=last['content'];target_id=retry_id;earlier=d['messages'][:-1]
         else:
             d['messages']=(d['messages']+[msg('user',message)])[-100:]
             if not d.get('title'):d['title']=chats.title_from(message)
             target_id=d['messages'][-1]['id'];earlier=d['messages'][:-1]
         d['updated']=time.time()
-        if d['mode']!='bot':tx.put(c['id'],'conversation',owner,d);return {'reply':None,'queued_for_staff':True}
-        version=d['version'];d['busy_until']=time.time()+240;d['turn_id']=turn_id;tx.put(c['id'],'conversation',owner,d)
+        if d['mode']!='bot':tx.put(c['id'],'conversation',owner,d);return None
+        version=d['version'];d['busy_until']=time.time()+_hold();d['turn_id']=turn_id;tx.put(c['id'],'conversation',owner,d)
         report=tx.own(d['report_id'],owner,'report')['data'] if d.get('report_id') else None
         history=[{'role':'assistant' if x['role']=='staff' else x['role'],'content':x['content']} for x in earlier if x.get('content') and x.get('kind')!='report_read'][-12:]
         context={'history':history,'report':report if report and report.get('confirmed') else None,'previous_reports':[], 'customer_state':{'bookings':[{'id':b['id'],**b['data'],'status':b['state']} for b in tx.find('booking',owner)[-5:]]},'page':page or {},'explain_report':bool(reply_to)}
@@ -308,9 +372,13 @@ async def turn(owner,message,retry_id='',page=None,emit=None,reply_to=''):
         if context['report']:
             context['synthetic_report']=bool(context['report'].get('sample') or context['report'].get('synthetic_fixture'))
             context['report']={k:v for k,v in context['report'].items() if k not in PRIVATE_REPORT_KEYS}
+        return version,target_id,context
+    started=await stored(prepare)
+    if started is None:return {'reply':None,'queued_for_staff':True}
+    version,target_id,context=started
     try:
-        async with asyncio.timeout(220):result=await business_agent.run(message,context,**({'emit':emit} if emit else {}))
-        with db.transaction() as tx:
+        result=await _within_deadline(business_agent.run(message,context,**({'emit':emit} if emit else {})))
+        def finish(tx):
             if not tx.get(owner):return {'reply':None,'discarded':True}
             for source_id in context.get('private_source_ids',[]):
                 from services import organization_sources
@@ -324,81 +392,68 @@ async def turn(owner,message,retry_id='',page=None,emit=None,reply_to=''):
             observations=[{**o,'name':rows.get(o.get('field_id'),{}).get('name','')} for o in (result.get('observations') or [])]
             d['messages']=(d['messages']+[msg('assistant',result['reply'],sources=result['sources'],private_source_ids=context.get('private_source_ids',[]),observations=observations,action=result.get('action'),action_id=result.get('action_id'),followups=result.get('followups',[]),dot=result.get('dot'),ui=result.get('ui',[]),checks=result.get('checks'),trace=result.get('trace',[]),external_offers=result.get('external_offers',[]))])[-100:]
             d['busy_until']=0;d['updated']=time.time();tx.put(c['id'],'conversation',owner,d)
-        return result
+            return result
+        return await stored(finish)
     except ConversationError as exc:
-        with db.transaction() as tx:
-            c=tx.get('conversation_'+owner)
-            if c and c['data'].get('turn_id')==turn_id and c['data']['version']==version:
-                for m in c['data']['messages']:
-                    if m['id']==target_id:m['failed']=True;m['error']=exc.code;m['error_message']=exc.message[:300];m['retryable']=exc.code in RETRYABLE
-                tx.put(c['id'],'conversation',owner,c['data'])
+        await execution.cleanup(_in_tx,_mark_failed(owner,turn_id,version,target_id,exc))
+        raise
+    except asyncio.CancelledError:
+        # Deadline, closed connection or shutdown: keep the message retryable. Stop already moved
+        # the conversation to a new version, so nothing is marked and no late answer is added.
+        ctx=execution.current()
+        if ctx and ctx.cancel_reason!='stop':
+            await execution.cleanup(_in_tx,_mark_failed(owner,turn_id,version,target_id,ctx.cancel_error()))
         raise
     finally:
-        with db.transaction() as tx:
-            c=tx.get('conversation_'+owner)
-            if c and c['data'].get('turn_id')==turn_id:c['data']['busy_until']=0;tx.put(c['id'],'conversation',owner,c['data'])
+        await execution.cleanup(_in_tx,_release_busy(owner,turn_id))
 
 log=logging.getLogger('labclear.chat')
-_BACKGROUND=set()
 
-def streamed(request,run):
-    """Run a turn. With Accept: application/x-ndjson the steps stream as they happen (one JSON
-    object per line) and the result or error arrives last; otherwise the plain JSON result."""
-    if 'application/x-ndjson' not in request.headers.get('accept',''):return run(None)
-    queue=asyncio.Queue()
-    async def emit(event):await queue.put(event)
-    async def work():
-        try:await queue.put({'type':'done','result':await run(emit)})
-        except ConversationError as exc:await queue.put({'type':'error','code':exc.code,'message':exc.message,'status':exc.status})
-        except Exception:
-            log.exception('streamed_turn_failed')
-            await queue.put({'type':'error','code':'server_error','message':'Something went wrong on our side. Please try again.','status':500})
-        finally:await queue.put(None)
-    async def lines():
-        # The work keeps running if the browser disconnects; Stop bumps the chat version so a
-        # late answer is not added.
-        task=asyncio.create_task(work());_BACKGROUND.add(task);task.add_done_callback(_BACKGROUND.discard)
-        while (item:=await queue.get()) is not None:yield json.dumps(item,ensure_ascii=False)+'\n'
-    async def response():
-        return StreamingResponse(lines(),media_type='application/x-ndjson',headers={'Cache-Control':'no-store','X-Accel-Buffering':'no'})
-    return response()
+def admitted(request,route,kind,owner):
+    """Admission for one AI workflow (services/execution.py): 503 server_busy before any work."""
+    return execution.start(route,kind,owner)
 
 @router.post('/chat')
 async def chat(body:Chat,request:Request):
     provider_authorize(request)
-    with db.transaction() as tx:u,_=session_row(tx,request)
+    u=await stored(lambda tx:session_row(tx,request)[0])
     page=body.page.model_dump() if body.page else None
     if page:page['compare_ids']=[i for i in page['compare_ids'] if re.fullmatch(r'P\d{2}',i)]
-    return await streamed(request,lambda emit:turn(u['id'],body.message,page=page,emit=emit))
+    ctx=admitted(request,'/chat','ai',u['id'])
+    return await execution.respond(request,ctx,lambda emit:turn(u['id'],body.message,page=page,emit=emit))
 
 @router.post('/chat/retry')
 async def chat_retry(body:RetryChat,request:Request):
     provider_authorize(request)
-    with db.transaction() as tx:u,_=session_row(tx,request)
-    return await streamed(request,lambda emit:turn(u['id'],'',body.message_id,emit=emit))
+    u=await stored(lambda tx:session_row(tx,request)[0])
+    ctx=admitted(request,'/chat/retry','ai',u['id'])
+    return await execution.respond(request,ctx,lambda emit:turn(u['id'],'',body.message_id,emit=emit))
 
 @router.post('/stop')
-async def stop(request:Request):
+def stop(request:Request):
     with db.transaction() as tx:
         u,_=session_row(tx,request);c=conversation(tx,u['id']);c['data']['version']+=1;c['data']['busy_until']=0;tx.put(c['id'],'conversation',u['id'],c['data'])
+    # The version moved first, so a late answer is never added; then the running work is cancelled
+    # (provider client closed, document worker killed, admission slot released).
+    execution.cancel_owner(u['id'],'stop')
     return {'ok':True}
 
 @router.post('/new-chat')
-async def new_chat(request:Request):
+def new_chat(request:Request):
     with db.transaction() as tx:u,_=session_row(tx,request);chats.new_chat(tx,u['id'])
     return {'ok':True}
 
 @router.get('/history')
-async def history(request:Request):
+def history(request:Request):
     with db.transaction() as tx:u,_=session_row(tx,request,False);return {'conversations':tx.find('archive',u['id'])}
 
 @router.post('/quotes')
-async def create_quote(body:PackageChoice,request:Request):
+def create_quote(body:PackageChoice,request:Request):
     with db.transaction() as tx:session_row(tx,request)
     return db.quote(body.package_ids)
 
 @router.get('/slots')
-async def slots(branch_id:str,date:str,request:Request):
+def slots(branch_id:str,date:str,request:Request):
     with db.transaction() as tx:
         session_row(tx,request,False)
         branch=ops.branch(tx,branch_id)
@@ -417,29 +472,34 @@ async def slots(branch_id:str,date:str,request:Request):
         return {'slots':result,'branch_id':branch_id,'date':date,'mode':'SIMULATED_INTEGRATION'}
 
 @router.post('/bookings')
-async def book(body:Book,request:Request):
+def book(body:Book,request:Request):
     with db.transaction() as tx:u,_=session_row(tx,request);return booking_create(tx,u['id'],body)
 
 @router.post('/confirm')
 async def confirm(body:ActionConfirm,request:Request):
-    with db.transaction() as tx:
+    def pending_payment(tx):
         u,_=session_row(tx,request);pending=tx.own(body.action_id,u['id'],'action')
         payment=pending['data']['action'] if pending['data']['action']['type']=='pay' else None
         if payment and (pending['data']['expires']<time.time() or pending['data']['version']!=conversation(tx,u['id'])['data']['version']):raise ConversationError('preview_expired','Ask for a fresh payment preview.',409)
+        return u,payment
+    u,payment=await stored(pending_payment)
     if payment:return await create_checkout(u['id'],payment['booking_id'],payment['method'])
-    with db.transaction() as tx:
-        u,_=session_row(tx,request);r=tx.own(body.action_id,u['id'],'action');a=r['data']['action'];c=conversation(tx,u['id'])
-        if r['state']=='done':return r['data']['result']
-        if r['data']['expires']<time.time() or r['data']['version']!=c['data']['version']:raise ConversationError('preview_expired','Ask for a fresh preview.',409)
-        if a['type'] in ['book','quote'] and db.quote(a['quote']['package_ids'],tx)!=a['quote']:raise ConversationError('quote_changed','The package changed. Ask for a fresh preview before confirming.',409)
-        if a['type']=='book':result=booking_create(tx,u['id'],Book(package_ids=a['quote']['package_ids'],branch_id=a['branch_id'],date=a['date'],time=a['time'],idempotency_key=body.action_id))
-        elif a['type']=='handoff':result=ticket_create(tx,u['id'],a['summary'])
-        elif a['type']=='quote':result={'quote':db.quote(a['quote']['package_ids'],tx)}
-        else:raise ConversationError('action_invalid','This action must be completed through its secure account flow.',409)
-        r['data']['result']=result;tx.put(r['id'],'action',u['id'],r['data'],'done');return result
+    return await stored(lambda tx:_confirm_action(tx,request,body))
+
+def _confirm_action(tx,request,body):
+    # Idempotent: a repeated confirmation returns the stored result (no second booking or handoff).
+    u,_=session_row(tx,request);r=tx.own(body.action_id,u['id'],'action');a=r['data']['action'];c=conversation(tx,u['id'])
+    if r['state']=='done':return r['data']['result']
+    if r['data']['expires']<time.time() or r['data']['version']!=c['data']['version']:raise ConversationError('preview_expired','Ask for a fresh preview.',409)
+    if a['type'] in ['book','quote'] and db.quote(a['quote']['package_ids'],tx)!=a['quote']:raise ConversationError('quote_changed','The package changed. Ask for a fresh preview before confirming.',409)
+    if a['type']=='book':result=booking_create(tx,u['id'],Book(package_ids=a['quote']['package_ids'],branch_id=a['branch_id'],date=a['date'],time=a['time'],idempotency_key=body.action_id))
+    elif a['type']=='handoff':result=ticket_create(tx,u['id'],a['summary'])
+    elif a['type']=='quote':result={'quote':db.quote(a['quote']['package_ids'],tx)}
+    else:raise ConversationError('action_invalid','This action must be completed through its secure account flow.',409)
+    r['data']['result']=result;tx.put(r['id'],'action',u['id'],r['data'],'done');return result
 
 @router.post('/bookings/{id}/change')
-async def change_booking(id:str,body:BookingChange,request:Request):
+def change_booking(id:str,body:BookingChange,request:Request):
     with db.transaction() as tx:
         u,_=session_row(tx,request);b=tx.own(id,u['id'],'booking');d=b['data']
         dt=datetime.strptime(d['date']+' '+d['time'],'%Y-%m-%d %H:%M').replace(tzinfo=TZ)
@@ -463,21 +523,21 @@ async def change_booking(id:str,body:BookingChange,request:Request):
         tx.audit(u['id'],'booking.'+body.operation,id);return result
 
 @router.post('/handoffs')
-async def handoff(body:TicketInput,request:Request):
+def handoff(body:TicketInput,request:Request):
     with db.transaction() as tx:u,_=session_row(tx,request);return ticket_create(tx,u['id'],body.summary)
 
 # ------------------------------------------------------------ plans, Lab Report and lab dashboard
 class PlanCheckout(Strict):method:str=Field(pattern='^(card|promptpay)$')
 
 @router.get('/plans')
-async def get_plans():return plans.plans()
+def get_plans():return plans.plans()
 
 @router.get('/subscription')
-async def get_subscription(request:Request):
+def get_subscription(request:Request):
     with db.transaction() as tx:u,_=session_row(tx,request,False);return plans.entitlement(tx,u['id'])
 
 @router.post('/subscriptions/checkout')
-async def subscription_checkout(body:PlanCheckout,request:Request):
+def subscription_checkout(body:PlanCheckout,request:Request):
     if ops.payment_mode()!='SIMULATED_INTEGRATION':
         raise ConversationError('payment_unavailable','Plus payments run only in the payment simulator in this prototype.',409)
     with db.transaction() as tx:
@@ -486,32 +546,37 @@ async def subscription_checkout(body:PlanCheckout,request:Request):
         return {'simulator_url':'/pay/sim/'+txn['id'],'txn':ops.sim_view(tx,txn),'subscription':plans.view(tx.get(sub['id'])),'mode':'SIMULATED_INTEGRATION'}
 
 @router.get('/reports/trends')
-async def report_trends(request:Request):
+def report_trends(request:Request):
     with db.transaction() as tx:u,_=session_row(tx,request,False);return plans.trends(tx,u['id'])
 
 @router.get('/reports/{id}/lab-report')
-async def get_lab_report(id:str,request:Request):
+def get_lab_report(id:str,request:Request):
     with db.transaction() as tx:u,_=session_row(tx,request,False);return plans.lab_report(tx,u['id'],id)
 
 @router.get('/reports/{id}')
-async def get_report(id:str,request:Request):
+def get_report(id:str,request:Request):
     with db.transaction() as tx:
         u,_=session_row(tx,request,False);r=tx.own(id,u['id'],'report');r['data'].pop('original',None);r['data'].pop('extra_originals',None)
         r['data']['critical_note']=critical_note(r['data'],'','') if r['data'].get('confirmed') else '';return r
 
 async def save_read_report(owner,raw,sample=False,emit=None):
     """Read one file, or up to three (Plus). A reading is reserved before any provider call and
-    returned if the reader fails. Synthetic samples are free and never count."""
+    returned if the reader fails. Synthetic samples are free and never count. The files are
+    rasterized once, by the document worker process (services/document_worker.py)."""
     raws=raw if isinstance(raw,list) else [raw]
-    images=all_images(raws)
-    with db.transaction() as tx:
+    async def step(state,label,detail=''):
+        if emit:await emit({'type':'step','id':'prepare','state':state,'label':label,'detail':detail})
+    await step('running','Preparing the report pages','A separate, time-limited process checks and renders the file.')
+    images=await document_worker.rasterize(raws)
+    await step('done','Report pages ready',f"{len(images)} page"+('' if len(images)==1 else 's'))
+    def reserve(tx):
         tx.own(owner,owner,'user')
         if len(tx.find('report',owner))>=20:raise ConversationError('report_limit','Remove an old report before adding another.',409)
         if not sample:plans.require_read(tx,owner,len(images));plans.count_read(tx,owner)
-    try:report=await read_report(raws if len(raws)>1 else raws[0],**({'emit':emit} if emit else {}))
+    await stored(reserve)
+    try:report=await read_report(images,**({'emit':emit} if emit else {}))
     except BaseException:
-        if not sample:
-            with db.transaction() as tx:plans.uncount_read(tx,owner)
+        if not sample:await execution.cleanup(_in_tx,lambda tx:plans.uncount_read(tx,owner))
         raise
     report.update(original=base64.b64encode(raws[0]).decode(),extra_originals=[base64.b64encode(r).decode() for r in raws[1:]],pages=len(images),
                   media_type='application/pdf' if raws[0].startswith(b'%PDF') else images[0][1],label='Unconfirmed report',same_person_confirmed=False,sample=sample,
@@ -519,27 +584,32 @@ async def save_read_report(owner,raw,sample=False,emit=None):
                   raw_fields=[dict(f) for f in report.get('fields',[])],
                   # Test environments only: exact bytes of a reviewed synthetic fixture (services/synthetic_fixtures.py).
                   synthetic_fixture='' if sample else synthetic_fixtures.trusted(raws))
-    with db.transaction() as tx:
+    def save(tx):
         r=tx.put('report_'+secrets.token_hex(12),'report',owner,report,'draft');tx.audit(owner,'report.read',r['id'])
         r['data'].pop('original',None);r['data'].pop('extra_originals',None);r['entitlement']=plans.entitlement(tx,owner);return r
+    return await stored(save)
 
 @router.post('/reports/read')
 async def upload_report(request:Request,file:UploadFile|None=File(None),files:list[UploadFile]|None=File(None)):
     provider_authorize(request)
     uploads=([file] if file else [])+list(files or [])
     if not 1<=len(uploads)<=3:raise ConversationError('file_count','Choose one to three files.',422)
-    with db.transaction() as tx:u,_=session_row(tx,request)
-    raws=[await f.read(3*1024*1024+1) for f in uploads]
-    return await save_read_report(u['id'],raws)
+    u=await stored(lambda tx:session_row(tx,request)[0])
+    raws=[await f.read(settings.IMAGE_MAX_BYTES+1) for f in uploads]
+    check_files(raws)
+    ctx=admitted(request,'/reports/read','ocr',u['id'])
+    return await execution.respond(request,ctx,lambda emit:save_read_report(u['id'],raws,emit=emit))
 
 @router.get('/demos')
-async def demos():return {'demos':[{'id':a,'title':b,'description':c} for a,b,c,_ in DEMOS]}
+def demos():return {'demos':[{'id':a,'title':b,'description':c} for a,b,c,_ in DEMOS]}
 @router.post('/demos/{id}/read')
 async def read_demo(id:str,request:Request):
     provider_authorize(request)
     if id not in {d[0] for d in DEMOS}:raise ConversationError('not_found','Unknown demo.',404)
-    with db.transaction() as tx:u,_=session_row(tx,request)
-    return await save_read_report(u['id'],(DEMO_ROOT/'png'/f'{id}.png').read_bytes(),sample=True)
+    u=await stored(lambda tx:session_row(tx,request)[0])
+    raw=(DEMO_ROOT/'png'/f'{id}.png').read_bytes()
+    ctx=admitted(request,'/demos/read','ocr',u['id'])
+    return await execution.respond(request,ctx,lambda emit:save_read_report(u['id'],raw,sample=True,emit=emit))
 
 # ------------------------------------------------------------ reports sent in the chat
 class ReportCard(Strict):message_id:str=Field(min_length=8,max_length=40)
@@ -554,24 +624,33 @@ async def read_into_chat(owner,raws,names,question,sample,emit):
     """Read an uploaded report inside the conversation: the user's message shows the file, and
     the assistant posts the values it read. Nothing is explained until the customer confirms them."""
     reading=secrets.token_hex(16)
-    with db.transaction() as tx:
+    def begin(tx):
         c=conversation(tx,owner);d=c['data']
         if d['mode']!='bot':raise ConversationError('staff_active','Our team has this conversation. Add the report on My reports instead.',409)
         if d.get('busy_until',0)>time.time():raise ConversationError('busy','Please wait for the previous message.',409)
-        version=d['version'];d.update(busy_until=time.time()+240,turn_id=reading);tx.put(c['id'],'conversation',owner,d)
+        version=d['version'];d.update(busy_until=time.time()+_hold(),turn_id=reading);tx.put(c['id'],'conversation',owner,d)
+        return version
+    version=await stored(begin)
+    def failed_upload(exc):
+        def run(tx):
+            c=tx.get('conversation_'+owner)
+            if not c or c['data'].get('turn_id')!=reading or c['data']['version']!=version:return
+            d=c['data']
+            d['messages']=(d['messages']+[msg('user',question,attachments=[{'report_id':'','name':n,'kind':'file'} for n in names],failed=True,error=exc.code,error_message=exc.message[:300],retryable=False,failure=_failure(exc))])[-100:]
+            if not d.get('title'):d['title']=chats.title_from(question) or 'Lab report'
+            d['updated']=time.time();tx.put(c['id'],'conversation',owner,d)
+        return run
     try:
         try:r=await save_read_report(owner,raws if len(raws)>1 else raws[0],sample,emit)
         except ConversationError as exc:
-            with db.transaction() as tx:
-                c=tx.get('conversation_'+owner)
-                if not c or c['data'].get('turn_id')!=reading or c['data']['version']!=version:raise
-                d=c['data']
-                d['messages']=(d['messages']+[msg('user',question,attachments=[{'report_id':'','name':n,'kind':'file'} for n in names],failed=True,error=exc.code,error_message=exc.message[:300],retryable=False)])[-100:]
-                if not d.get('title'):d['title']=chats.title_from(question) or 'Lab report'
-                d['updated']=time.time();tx.put(c['id'],'conversation',owner,d)
+            await execution.cleanup(_in_tx,failed_upload(exc))
+            raise
+        except asyncio.CancelledError:
+            ctx=execution.current()
+            if ctx and ctx.cancel_reason!='stop':await execution.cleanup(_in_tx,failed_upload(ctx.cancel_error()))
             raise
         pages=r['data'].get('pages',1);fields=r['data'].get('fields',[])
-        with db.transaction() as tx:
+        def finish(tx):
             c=tx.get('conversation_'+owner)
             if not c or c['data'].get('turn_id')!=reading or c['data']['version']!=version:
                 tx.delete(r['id']);return {'ok':True,'discarded':True}
@@ -581,11 +660,10 @@ async def read_into_chat(owner,raws,names,question,sample,emit):
             d['messages']=(d['messages']+[upload,card])[-100:];chats.use_report(d,r['id'])
             if not d.get('title'):d['title']=chats.title_from(question) or ('Sample report' if sample else 'Lab report')
             d['updated']=time.time();tx.put(c['id'],'conversation',owner,d);tx.audit(owner,'report.read_in_chat',r['id'])
-        return {'ok':True,'report_id':r['id'],'card_id':card['id'],'rows':len(fields),'entitlement':r.get('entitlement')}
+            return {'ok':True,'report_id':r['id'],'card_id':card['id'],'rows':len(fields),'entitlement':r.get('entitlement')}
+        return await stored(finish)
     finally:
-        with db.transaction() as tx:
-            c=tx.get('conversation_'+owner)
-            if c and c['data'].get('turn_id')==reading:c['data']['busy_until']=0;tx.put(c['id'],'conversation',owner,c['data'])
+        await execution.cleanup(_in_tx,_release_busy(owner,reading))
 
 @router.post('/chat/report')
 async def chat_report(request:Request,message:str=Form(default='',max_length=8000),demo_id:str=Form(default='',max_length=40),files:list[UploadFile]|None=File(None)):
@@ -595,16 +673,19 @@ async def chat_report(request:Request,message:str=Form(default='',max_length=800
         found=next((d for d in DEMOS if d[0]==demo_id),None)
         if not found or uploads:raise ConversationError('not_found','Unknown sample.',404)
     elif not 1<=len(uploads)<=3:raise ConversationError('file_count','Choose one to three files.',422)
-    with db.transaction() as tx:u,_=session_row(tx,request)
+    u=await stored(lambda tx:session_row(tx,request)[0])
     if demo_id:raws,names=[(DEMO_ROOT/'png'/f'{demo_id}.png').read_bytes()],[found[1]]
-    else:raws,names=[await f.read(3*1024*1024+1) for f in uploads],[re.sub(r'[^\w .()-]','',f.filename or 'report')[:80] or 'report' for f in uploads]
-    return await streamed(request,lambda emit:read_into_chat(u['id'],raws,names,message.strip(),bool(demo_id),emit))
+    else:
+        raws,names=[await f.read(settings.IMAGE_MAX_BYTES+1) for f in uploads],[re.sub(r'[^\w .()-]','',f.filename or 'report')[:80] or 'report' for f in uploads]
+        check_files(raws)
+    ctx=admitted(request,'/chat/report','ocr',u['id'])
+    return await execution.respond(request,ctx,lambda emit:read_into_chat(u['id'],raws,names,message.strip(),bool(demo_id),emit))
 
 @router.post('/chat/report/confirm')
 async def chat_report_confirm(body:ReportCardConfirm,request:Request):
     """One click: the values are right and the report belongs to this customer. Then answer."""
     provider_authorize(request)
-    with db.transaction() as tx:
+    def confirm(tx):
         u,_=session_row(tx,request);c=conversation(tx,u['id']);d=c['data'];card=_card(d,body.message_id)
         if card.get('state')!='draft':raise ConversationError('already_confirmed','This report was already confirmed.',409)
         if d.get('busy_until',0)>time.time():raise ConversationError('busy','Please wait for the previous message.',409)
@@ -616,17 +697,25 @@ async def chat_report_confirm(body:ReportCardConfirm,request:Request):
         card.update(state='confirmed',fields=fields,confirmed_at=time.time(),critical_note=critical_note(r['data'],'',card.get('question','')))
         d['report_id']=r['id'];chats.use_report(d,r['id']);d['version']+=1;tx.put(c['id'],'conversation',u['id'],d)
         tx.audit(u['id'],'report.confirmed',r['id'])
-    return await streamed(request,lambda emit:turn(u['id'],'Please explain this report.',emit=emit,reply_to=body.message_id))
+        return u
+    owner=await stored(lambda tx:session_row(tx,request)[0]['id'])
+    # Admission before the confirmation is stored: a busy server leaves the card unconfirmed.
+    ctx=admitted(request,'/chat/report/confirm','ai',owner)
+    try:u=await execution.bounded(ctx,stored(confirm))
+    except BaseException:
+        ctx.release();raise
+    return await execution.respond(request,ctx,lambda emit:turn(u['id'],'Please explain this report.',emit=emit,reply_to=body.message_id))
 
 @router.post('/chat/report/answer')
 async def chat_report_answer(body:ReportCard,request:Request):
     """Retry the answer for a confirmed report card after a failed reply."""
     provider_authorize(request)
-    with db.transaction() as tx:u,_=session_row(tx,request)
-    return await streamed(request,lambda emit:turn(u['id'],'Please explain this report.',emit=emit,reply_to=body.message_id))
+    u=await stored(lambda tx:session_row(tx,request)[0])
+    ctx=admitted(request,'/chat/report/answer','ai',u['id'])
+    return await execution.respond(request,ctx,lambda emit:turn(u['id'],'Please explain this report.',emit=emit,reply_to=body.message_id))
 
 @router.post('/chat/report/discard')
-async def chat_report_discard(body:ReportCard,request:Request):
+def chat_report_discard(body:ReportCard,request:Request):
     with db.transaction() as tx:
         u,_=session_row(tx,request);c=conversation(tx,u['id']);d=c['data'];card=_card(d,body.message_id)
         if card.get('state')!='draft':raise ConversationError('already_confirmed','Confirmed reports are removed on My reports.',409)
@@ -636,7 +725,7 @@ async def chat_report_discard(body:ReportCard,request:Request):
     return {'ok':True}
 
 @router.post('/reports/confirm')
-async def confirm_report(body:ConfirmReport,request:Request):
+def confirm_report(body:ConfirmReport,request:Request):
     with db.transaction() as tx:
         u,_=session_row(tx,request);r=tx.own(body.report_id,u['id'],'report')
         if not body.same_person_confirmed:raise ConversationError('confirmation_required','Confirm this report belongs to the person being discussed.',422)
@@ -648,7 +737,7 @@ async def confirm_report(body:ConfirmReport,request:Request):
     return {'ok':True}
 
 @router.post('/reports/select')
-async def select_report(body:ReportSelection,request:Request):
+def select_report(body:ReportSelection,request:Request):
     with db.transaction() as tx:
         u,_=session_row(tx,request)
         if body.report_id:
@@ -658,7 +747,7 @@ async def select_report(body:ReportSelection,request:Request):
     return {'ok':True}
 
 @router.post('/reports/compare')
-async def compare_report(body:ReportSelection,request:Request):
+def compare_report(body:ReportSelection,request:Request):
     with db.transaction() as tx:
         u,_=session_row(tx,request)
         if body.report_id:
@@ -668,7 +757,7 @@ async def compare_report(body:ReportSelection,request:Request):
     return {'ok':True}
 
 @router.delete('/reports/{id}')
-async def delete_report(id:str,request:Request):
+def delete_report(id:str,request:Request):
     with db.transaction() as tx:
         u,_=session_row(tx,request);tx.own(id,u['id'],'report');tx.delete(id)
         # Chats that used this report are cleared so its values cannot reenter a conversation.
@@ -677,20 +766,20 @@ async def delete_report(id:str,request:Request):
     return {'ok':True,'chats_cleared':cleared,'message':'Report removed, together with the chats that used it. Encrypted backup retention is managed by the deployment owner.'}
 
 @router.get('/staff/inbox')
-async def inbox(request:Request):
+def inbox(request:Request):
     with db.transaction() as tx:
         u=staff(tx,request);tickets=[t for t in tx.find('ticket') if u['data']['role']=='manager' or t['branch'] in ['',u['data'].get('branch')]]
         return {'tickets':tickets,'metrics':{'open':sum(t['state']!='closed' for t in tickets),'bookings':len(tx.find('booking')) if u['data']['role']=='manager' else None}}
 
 @router.get('/staff/tickets/{id}')
-async def ticket_view(id:str,request:Request):
+def ticket_view(id:str,request:Request):
     with db.transaction() as tx:
         u,t=staff_ticket(tx,request,id)
         if t['data'].get('assigned_to') not in ['',u['id']] and u['data']['role']!='manager':raise ConversationError('assigned','This case belongs to another staff member.',403)
         return {'ticket':t,'conversation':conversation(tx,t['owner'])['data'],'bookings':tx.find('booking',t['owner'])}
 
 @router.post('/staff/tickets/{id}/state')
-async def ticket_state(id:str,body:TicketChange,request:Request):
+def ticket_state(id:str,body:TicketChange,request:Request):
     with db.transaction() as tx:
         u,t=staff_ticket(tx,request,id)
         if t['data'].get('assigned_to') not in ['',u['id']] and u['data']['role']!='manager':raise ConversationError('assigned','Another staff member owns this case.',409)
@@ -702,7 +791,7 @@ async def ticket_state(id:str,body:TicketChange,request:Request):
     return {'ok':True}
 
 @router.post('/staff/tickets/{id}/messages')
-async def staff_send(id:str,body:StaffMessage,request:Request):
+def staff_send(id:str,body:StaffMessage,request:Request):
     with db.transaction() as tx:
         u,t=staff_ticket(tx,request,id)
         if t['state']!='staff' or t['data'].get('assigned_to')!=u['id']:raise ConversationError('takeover_required','Take over this case before replying.',409)
@@ -714,7 +803,7 @@ async def staff_send(id:str,body:StaffMessage,request:Request):
     return {'ok':True}
 
 @router.post('/staff/bookings/{id}/settle')
-async def settle(id:str,request:Request):
+def settle(id:str,request:Request):
     with db.transaction() as tx:
         u=staff(tx,request);b=tx.get(id)
         if not b or b['kind']!='booking' or (u['data']['role']!='manager' and b['branch']!=u['data'].get('branch')):raise ConversationError('not_found','Booking unavailable.',404)
@@ -727,48 +816,56 @@ async def settle(id:str,request:Request):
 
 async def create_checkout(owner,booking_id,method):
     from services.business_integrations import stripe_checkout
-    with db.transaction() as tx:
-        b=tx.own(booking_id,owner,'booking')
-        if b['state']=='requested':raise ConversationError('awaiting_confirmation','Payment opens after our team confirms this appointment.',409)
-        if b['state']!='confirmed' or b['data']['payment_status']!='pending':raise ConversationError('payment_state','This booking cannot start a payment.',409)
-        d=b['data']
-        if method!='center' and ops.payment_mode()=='SIMULATED_INTEGRATION':
-            txn=ops.sim_create(tx,b,method)
-            return {'simulator_url':'/pay/sim/'+txn['id'],'txn':ops.sim_view(tx,txn),'mode':'SIMULATED_INTEGRATION'}
-        if method=='center':
-            if d.get('checkout_method') or d.get('active_txn'):raise ConversationError('checkout_active','A checkout already exists. Cancel it or ask staff to change the payment method.',409)
-            d.update(payment_method='center');tx.put(b['id'],'booking',owner,d,b['state'],b['branch'])
-            return {'message':'Payment is due at the center.'}
-        if d.get('checkout_method') and d['checkout_method']!=method:raise ConversationError('checkout_active','A checkout with another method already exists.',409)
-        if d.get('checkout_url') and d.get('checkout_expires',0)>time.time():return {'url':d['checkout_url'],'session_id':d['checkout_session_id']}
-        if d.get('checkout_expires',0) and d['checkout_expires']<=time.time():raise ConversationError('checkout_expired','This checkout expired. Contact staff for a new order.',409)
-        d.update(checkout_method=method,checkout_expires=d.get('checkout_expires') or int(time.time())+1800)
-        b=tx.put(b['id'],'booking',owner,d,b['state'],b['branch'])
+    started=await stored(lambda tx:_checkout_start(tx,owner,booking_id,method))
+    if started[0]=='done':return started[1]
+    b=started[1]
     result=await stripe_checkout(b,method)
-    with db.transaction() as tx:
+    def remember(tx):
         b=tx.own(booking_id,owner,'booking')
         if b['state']=='cancelled' or b['data']['payment_status']!='pending':raise ConversationError('payment_state','The booking changed. Contact staff.',409)
         b['data'].update(payment_method=method,checkout_session_id=result['session_id'],checkout_url=result['url'])
         tx.put(b['id'],'booking',owner,b['data'],b['state'],b['branch'])
+    await stored(remember)
     return result
+
+def _checkout_start(tx,owner,booking_id,method):
+    """('done', response) when no payment provider call is needed, else ('stripe', booking)."""
+    b=tx.own(booking_id,owner,'booking')
+    if b['state']=='requested':raise ConversationError('awaiting_confirmation','Payment opens after our team confirms this appointment.',409)
+    if b['state']!='confirmed' or b['data']['payment_status']!='pending':raise ConversationError('payment_state','This booking cannot start a payment.',409)
+    d=b['data']
+    if method!='center' and ops.payment_mode()=='SIMULATED_INTEGRATION':
+        txn=ops.sim_create(tx,b,method)
+        return 'done',{'simulator_url':'/pay/sim/'+txn['id'],'txn':ops.sim_view(tx,txn),'mode':'SIMULATED_INTEGRATION'}
+    if method=='center':
+        if d.get('checkout_method') or d.get('active_txn'):raise ConversationError('checkout_active','A checkout already exists. Cancel it or ask staff to change the payment method.',409)
+        d.update(payment_method='center');tx.put(b['id'],'booking',owner,d,b['state'],b['branch'])
+        return 'done',{'message':'Payment is due at the center.'}
+    if d.get('checkout_method') and d['checkout_method']!=method:raise ConversationError('checkout_active','A checkout with another method already exists.',409)
+    if d.get('checkout_url') and d.get('checkout_expires',0)>time.time():return 'done',{'url':d['checkout_url'],'session_id':d['checkout_session_id']}
+    if d.get('checkout_expires',0) and d['checkout_expires']<=time.time():raise ConversationError('checkout_expired','This checkout expired. Contact staff for a new order.',409)
+    d.update(checkout_method=method,checkout_expires=d.get('checkout_expires') or int(time.time())+1800)
+    return 'stripe',tx.put(b['id'],'booking',owner,d,b['state'],b['branch'])
 
 @router.post('/payments/checkout')
 async def checkout(body:Checkout,request:Request):
-    with db.transaction() as tx:u,_=session_row(tx,request)
+    u=await stored(lambda tx:session_row(tx,request)[0])
     return await create_checkout(u['id'],body.booking_id,body.method)
 
 @router.post('/payments/webhook')
 async def payment_webhook(request:Request):
     from services.business_integrations import stripe_event,apply_stripe
-    return apply_stripe(stripe_event(await request.body(),request.headers.get('stripe-signature','')))
+    body=await request.body()
+    return await execution.offload(lambda:apply_stripe(stripe_event(body,request.headers.get('stripe-signature',''))))
 
 @router.post('/line/webhook')
 async def line_webhook(request:Request):
     from services.business_integrations import verify_line,enqueue_line
-    return enqueue_line(verify_line(await request.body(),request.headers.get('x-line-signature','')))
+    body=await request.body()
+    return await execution.offload(lambda:enqueue_line(verify_line(body,request.headers.get('x-line-signature',''))))
 
 @router.post('/account/line/link')
-async def link_account(body:LinkInput,request:Request):
+def link_account(body:LinkInput,request:Request):
     with db.transaction() as tx:
         u,session=session_row(tx,request)
         if time.time()-session['data'].get('auth_at',0)>600:raise ConversationError('reauth_required','Sign in again before linking this account.',401)
@@ -794,7 +891,7 @@ async def link_account(body:LinkInput,request:Request):
     return {'ok':True,'message':'LINE linked. Consented records imported; select and verify report context before comparing.'}
 
 @router.post('/account/line/unlink')
-async def unlink_account(request:Request):
+def unlink_account(request:Request):
     with db.transaction() as tx:
         u,_=session_row(tx,request)
         for row in tx.find('line_identity',u['id']):tx.delete(row['id'])
@@ -814,7 +911,7 @@ async def worker_run(request:Request):
 
 
 @router.get('/reports/{id}/source')
-async def report_source(id:str,request:Request,page:int=1):
+def report_source(id:str,request:Request,page:int=1):
     with db.transaction() as tx:
         u,_=session_row(tx,request,False);r=tx.own(id,u['id'],'report')
         raws=[base64.b64decode(x) for x in [r['data']['original'],*r['data'].get('extra_originals',[])]]
@@ -834,7 +931,7 @@ class CorporateQuote(Strict):
 class AcceptQuote(Strict):quote_id:str
 
 @router.get('/staff/operations')
-async def operations(request:Request):
+def operations(request:Request):
     with db.transaction() as tx:
         u=staff(tx,request);manager=u['data']['role']=='manager'
         bookings=[b for b in tx.find('booking') if manager or b['branch']==u['data'].get('branch')]
@@ -842,7 +939,7 @@ async def operations(request:Request):
         return {'bookings':bookings,'catalog':db.catalog(tx),'jobs':jobs,'role':u['data']['role']}
 
 @router.put('/staff/catalog/{id}')
-async def edit_catalog(id:str,body:CatalogEdit,request:Request):
+def edit_catalog(id:str,body:CatalogEdit,request:Request):
     with db.transaction() as tx:
         u=staff(tx,request)
         if u['data']['role']!='manager':raise ConversationError('forbidden','Manager access required.',403)
@@ -853,7 +950,7 @@ async def edit_catalog(id:str,body:CatalogEdit,request:Request):
         return {'ok':True,'version':catalog['version']}
 
 @router.post('/staff/quotes')
-async def corporate_quote(body:CorporateQuote,request:Request):
+def corporate_quote(body:CorporateQuote,request:Request):
     with db.transaction() as tx:
         u,t=staff_ticket(tx,request,body.ticket_id)
         if t['data'].get('assigned_to')!=u['id']:raise ConversationError('takeover_required','Take over the case before issuing a quote.',409)
@@ -878,7 +975,7 @@ async def corporate_quote(body:CorporateQuote,request:Request):
         return q
 
 @router.post('/quotes/accept')
-async def accept_quote(body:AcceptQuote,request:Request):
+def accept_quote(body:AcceptQuote,request:Request):
     with db.transaction() as tx:
         u,_=session_row(tx,request);q=tx.own(body.quote_id,u['id'],'corporate_quote')
         if not u['data'].get('password'):raise ConversationError('account_required','Sign in before accepting a quotation.',409)
@@ -894,6 +991,7 @@ async def accept_quote(body:AcceptQuote,request:Request):
 class RefundRequest(Strict):reason:str=Field(min_length=3,max_length=500)
 @router.post('/staff/bookings/{id}/refund')
 async def refund_booking(id:str,body:RefundRequest,request:Request):
+    # Staff-only and rare: storage stays inline here (docs/operations/resilience.md, known limits).
     with db.transaction() as tx:
         u=staff(tx,request)
         if u['data']['role']!='manager':raise ConversationError('forbidden','Manager approval is required.',403)
@@ -925,7 +1023,7 @@ async def refund_booking(id:str,body:RefundRequest,request:Request):
     return {'status':b['data']['payment_status']}
 
 @router.post('/staff/subscriptions/{id}/refund')
-async def refund_subscription(id:str,body:RefundRequest,request:Request):
+def refund_subscription(id:str,body:RefundRequest,request:Request):
     """Manager-approved simulated refund of a Plus period. Plus ends immediately."""
     with db.transaction() as tx:
         u=staff(tx,request)

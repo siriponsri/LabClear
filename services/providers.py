@@ -159,6 +159,10 @@ def _read_saved(tx=None) -> dict:
     if tx is not None:
         row = tx.get(SETTINGS_ID)
         return row["data"] if row else {}
+    from services import execution
+    ctx = execution.current()
+    if ctx is not None and ctx.providers is not None:
+        return ctx.providers  # one snapshot per request: consistent settings, no storage on the event loop
     with _lock:
         if _cache["data"] is not None and time.time() - _cache["at"] < CACHE_SECONDS:
             return _cache["data"]

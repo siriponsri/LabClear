@@ -25,7 +25,7 @@ class Membership(Strict):
 
 
 @router.put('/membership')
-async def membership(body: Membership, request: Request):
+def membership(body: Membership, request: Request):
     enabled()
     with db.transaction() as tx:
         actor = _manager(tx, request)
@@ -39,7 +39,7 @@ async def membership(body: Membership, request: Request):
 
 
 @router.get('')
-async def listing(request: Request):
+def listing(request: Request):
     enabled()
     with db.transaction() as tx:
         user, _ = session_row(tx, request, False)
@@ -54,7 +54,7 @@ class Search(Strict):
 
 
 @router.post('/search')
-async def search(body: Search, request: Request):
+def search(body: Search, request: Request):
     enabled()
     with db.transaction() as tx:
         user, _ = session_row(tx, request)
@@ -64,18 +64,26 @@ async def search(body: Search, request: Request):
 @router.post('')
 async def upload(request: Request, file: UploadFile = File(...), title: str = Form(..., min_length=1, max_length=160), previous_id: str = Form('')):
     enabled()
-    with db.transaction() as tx:
+    from services import execution
+    def allowed(tx):
         user, _ = session_row(tx, request)
         sources.scope(user, write=True)
+    await execution.offload(_in_tx, allowed)
     raw = await file.read(sources.MAX_BYTES + 1)
-    with db.transaction() as tx:
+    def store(tx):
         user, _ = session_row(tx, request)
         row = sources.upload(tx, user, file.filename or '', raw, title, previous_id or None)
         return {'id': row['id'], 'state': row['state'], 'preview': row['data']['text'], 'version': row['data']['version']}
+    return await execution.offload(_in_tx, store)
+
+
+def _in_tx(fn):
+    with db.transaction() as tx:
+        return fn(tx)
 
 
 @router.get('/{sid}/download')
-async def download(sid: str, request: Request):
+def download(sid: str, request: Request):
     enabled()
     with db.transaction() as tx:
         user, _ = session_row(tx, request, False)
@@ -84,7 +92,7 @@ async def download(sid: str, request: Request):
 
 
 @router.get('/{sid}')
-async def preview(sid: str, request: Request):
+def preview(sid: str, request: Request):
     enabled()
     with db.transaction() as tx:
         user, _ = session_row(tx, request, False)
@@ -93,7 +101,7 @@ async def preview(sid: str, request: Request):
 
 
 @router.post('/{sid}/{action}')
-async def transition(sid: str, action: Literal['approve', 'reject', 'revoke', 'delete'], request: Request):
+def transition(sid: str, action: Literal['approve', 'reject', 'revoke', 'delete'], request: Request):
     enabled()
     with db.transaction() as tx:
         user, _ = session_row(tx, request)

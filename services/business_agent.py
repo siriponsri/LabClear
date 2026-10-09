@@ -152,7 +152,8 @@ async def run(message,context,emit=None):
     trace=[]
     clock={}
     turn_start=time.perf_counter()
-    runtime_config=harness_config.load()
+    # Storage reads run in worker threads so the event loop keeps serving heartbeats and /health.
+    runtime_config=await asyncio.to_thread(harness_config.load)
     async def step(id,state,label,detail=''):
         now=time.perf_counter()
         if state=='running':clock[id]=now
@@ -170,8 +171,8 @@ async def run(message,context,emit=None):
     await step('safety_in','done','Your message passed the safety check',_label('guard'))
     from datetime import datetime
     from zoneinfo import ZoneInfo
-    biz={'catalog':catalog(),'branches':branches(),'policy':policies(),'NOW':datetime.now(ZoneInfo('Asia/Bangkok')).isoformat()}
-    roles=dots_mod.enabled()
+    biz=await asyncio.to_thread(lambda:{'catalog':catalog(),'branches':branches(),'policy':policies(),'NOW':datetime.now(ZoneInfo('Asia/Bangkok')).isoformat()})
+    roles=await asyncio.to_thread(dots_mod.enabled)
     if not roles:raise transport.ConversationError('assistant_paused','The assistant is paused by our team. Please contact our team or use the website directly.',503)
     history=context.get('history',[])[-12:]
     report=context.get('report')

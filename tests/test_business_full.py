@@ -283,7 +283,7 @@ def test_line_simulator_runs_through_adapter_queue_and_dedups(monkeypatch):
     outbox = manager.get(API + "/staff/line-simulator/outbox").json()
     assert len([j for j in outbox["jobs"] if j["kind"] == "line_job"]) == 1  # replayed event deduplicated
 
-    async def double(message, context):  # MOCKED_TEST_ONLY: agent double, not model evidence
+    async def double(message, context, emit=None):  # MOCKED_TEST_ONLY: agent double, not model evidence
         return {"reply": "Simulated assistant reply.", "sources": [], "action": None}
     monkeypatch.setattr(business.business_agent, "run", double)
     from config import settings
@@ -313,7 +313,7 @@ def test_failed_turn_is_marked_and_retry_does_not_duplicate(monkeypatch):
     from services.conversation_transport import ConversationError
     calls = []
 
-    async def flaky(message, context):  # MOCKED_TEST_ONLY
+    async def flaky(message, context, emit=None):  # MOCKED_TEST_ONLY
         calls.append(message)
         if len(calls) == 1:
             raise ConversationError("service_unavailable", "Temporary failure.", 502)
@@ -334,7 +334,7 @@ def test_failed_turn_is_marked_and_retry_does_not_duplicate(monkeypatch):
 def test_safety_block_is_not_retryable(monkeypatch):
     from services.conversation_transport import ConversationError
 
-    async def blocked(message, context):  # MOCKED_TEST_ONLY
+    async def blocked(message, context, emit=None):  # MOCKED_TEST_ONLY
         raise ConversationError("safety_blocked", "Blocked.", 422)
     monkeypatch.setattr(business.business_agent, "run", blocked)
     c = client()

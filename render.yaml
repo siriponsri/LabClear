@@ -13,8 +13,12 @@ services:
     # service is not in Oregon (Render's default) before syncing this Blueprint.
     plan: free
     buildCommand: pip install -r requirements.txt
+    # One Uvicorn process: Guest chats live in process memory. On SIGTERM it drains (see below).
     startCommand: python scripts/run_business.py
-    healthCheckPath: /health
+    # Readiness, not liveness: started, not draining, storage answering (read-only, < 1 s). It never
+    # calls an AI provider or OCR, so a provider outage does not restart the service. /health stays
+    # the plain liveness check. See docs/operations/resilience.md.
+    healthCheckPath: /ready
     envVars:
       - key: PYTHON_VERSION
         value: 3.12.10
@@ -30,6 +34,22 @@ services:
       - key: HOSPITAL_LINKS_ENABLED
         value: "true"
       # MEDICAL_HARNESS_ENABLED stays off: the analyzer/composer profile needs explicit model setup.
+      # Request resilience (docs/operations/resilience.md): per-instance limits for the free plan's single
+      # instance. Validated at startup; an invalid value stops the deploy before it takes traffic.
+      - key: CHAT_DEADLINE_SECONDS
+        value: "220"
+      - key: REPORT_DEADLINE_SECONDS
+        value: "150"
+      - key: STREAM_HEARTBEAT_SECONDS
+        value: "10"
+      - key: AI_MAX_IN_FLIGHT
+        value: "2"
+      - key: OCR_MAX_IN_FLIGHT
+        value: "1"
+      - key: PROVIDER_TRANSPORT_RETRIES
+        value: "0"
+      - key: SHUTDOWN_DRAIN_SECONDS
+        value: "20"
       # Storage
       - key: DATABASE_URL
         sync: false

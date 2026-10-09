@@ -72,7 +72,7 @@ def test_staff_payments_list_states_totals_and_center_receipts():
 
 def test_answer_receipt_and_verified_observations_are_stored_with_the_turn(monkeypatch):
     # Double: agent output shaped like business_agent.run; storage and rendering inputs are real.
-    async def agent(message, context):
+    async def agent(message, context, emit=None):
         f = context["report"]["fields"][0]
         return {"reply": "Your glucose [nlm-reading-results]", "sources": [{"id": "nlm-reading-results", "title": "t", "url": "https://medlineplus.gov/", "publisher": "p", "data_class": "public_education"}],
                 "action": None, "dot": {"id": "explainer", "name": "Report Explainer"}, "ui": [],

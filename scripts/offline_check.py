@@ -3,6 +3,7 @@
 Usage: python scripts/offline_check.py pytest -q
        python scripts/offline_check.py browser
        python scripts/offline_check.py benchmark <config.json>   (started by scripts/benchmark_labclear.py)
+       python scripts/offline_check.py resilience <config.json>  (started by scripts/benchmark_resilience.py)
 No .env, inherited application configuration, or production database is loaded.
 The benchmark mode serves the real app with provider test doubles behind an in-process
 httpx.MockTransport (tests/benchmark); outbound sockets stay denied exactly as in the other modes.
@@ -22,8 +23,8 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def main():
     mode, *args = sys.argv[1:] or ["pytest", "-q"]
-    if mode not in {"pytest", "browser", "evaluation", "boot", "benchmark"}:
-        raise SystemExit("Choose pytest, browser, evaluation, boot or benchmark")
+    if mode not in {"pytest", "browser", "evaluation", "boot", "benchmark", "resilience", "resilience-server"}:
+        raise SystemExit("Choose pytest, browser, evaluation, boot, benchmark, resilience or resilience-server")
     browser_port = int(args[0]) if mode == "browser" and args else 8098
     # Preserve only OS/tool operation variables, never provider/cloud credentials.
     keep = {"systemroot", "windir", "path", "pathext", "temp", "tmp", "userprofile",
@@ -76,6 +77,14 @@ def main():
             return 0
         if mode == "boot":
             runpy.run_path(str(ROOT / "scripts/boot_check.py"), run_name="__main__")
+            return 0
+        if mode in {"resilience", "resilience-server"}:
+            # scripts/benchmark_resilience.py: the server-side cases, or the server for the SIGTERM case.
+            if len(args) != 1:
+                raise SystemExit(mode + " needs the config file written by scripts/benchmark_resilience.py")
+            script = "suite.py" if mode == "resilience" else "server.py"
+            sys.argv = [str(ROOT / "tests/resilience" / script), str(Path(args[0]).resolve())]
+            runpy.run_path(sys.argv[0], run_name="__main__")
             return 0
         if mode == "benchmark":
             if len(args) != 1:

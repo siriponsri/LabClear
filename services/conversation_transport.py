@@ -40,13 +40,27 @@ def rejection_error(slot: str, status: int, detail: str = "", label: str = "") -
     # Provider errors can echo prompts, reports or credentials in arbitrary formats.
     # Keep metadata only: redacting key-like strings cannot protect Guest content.
     log.warning("provider_rejected slot=%s status=%s", slot, status)
+    if status == 429:
+        return ConversationError("upstream_rate_limited",
+            f"{name} is rate-limited (HTTP 429: {hint}). Please try again later.", 503, origin="upstream")
+    if status >= 500:
+        return ConversationError("upstream_unavailable",
+            f"{name} is temporarily unavailable (HTTP {status}: {hint}). Please try again shortly.", 502, origin="upstream")
     return ConversationError("provider_rejected",
-        f"{name} rejected the request (HTTP {status}: {hint}). Check its key, model and usage limit.", 502)
+        f"{name} rejected the request (HTTP {status}: {hint}). Check its key, model and usage limit.", 502, origin="upstream")
 
 
 class ConversationError(Exception):
-    def __init__(self, code: str, message: str, status: int = 503):
+    """An error LabClear answers itself, as JSON or a terminal stream event.
+
+    origin says where it started: "client" (the request or the user), "app" (LabClear's own checks,
+    limits or deadline) or "upstream" (an AI provider). A gateway failure never reaches this class:
+    it arrives at the browser as the platform's own response, without a LabClear request ID."""
+
+    def __init__(self, code: str, message: str, status: int = 503, *, origin: str = "", retry_after: int | None = None):
         self.code, self.message, self.status = code, message, status
+        self.origin = origin or ("client" if 400 <= status < 500 else "app")
+        self.retry_after = retry_after
         super().__init__(message)
 
 
@@ -69,7 +83,8 @@ def validate_server_url(url: str) -> str:
 async def reserve(slot: str):
     if not settings.PROVIDER_NETWORK_ENABLED:
         raise ConversationError("offline", "AI is not connected yet. The site owner needs to set PROVIDER_NETWORK_ENABLED=true.")
-    return _reserve_durable(slot)
+    from services import execution
+    return await execution.offload(_reserve_durable, slot)
 
 
 def _reserve_durable(slot: str):
@@ -112,9 +127,25 @@ def _settle_gate(gate, usage, outcome: str) -> None:
         free_policy.settle(gate, usage, outcome)
 
 
+def _settle(cost, gate, usage, outcome: str) -> None:
+    from services import cost_ledger
+    cost_ledger.settle(cost, usage, outcome)
+    _settle_gate(gate, usage, outcome)
+
+
 async def post_json(url: str, headers: dict[str, str], body: dict, slot: str, timeout: float,
                     price: dict | None = None, model: str = "", label: str = "") -> dict:
+    """One provider call, never retried (PROVIDER_TRANSPORT_RETRIES=0).
+
+    Inside a request (services/execution.py) the call gets at most the workflow's remaining time and
+    does not start without enough of it. A call that runs out of its own time is upstream_timeout;
+    one cut by the workflow deadline ends the workflow as request_timeout. Cancelled and timed-out
+    calls keep their full cost reservation: the provider may have processed and billed them."""
+    from services import execution
     endpoint = validate_server_url(url)
+    ctx = execution.current()
+    limit = min(timeout, 75)
+    call_timeout = ctx.call_timeout(limit) if ctx is not None else limit
     gate = None
     if settings.FREE_ONLY_POLICY_PATH:
         if not settings.PROVIDER_NETWORK_ENABLED:
@@ -125,39 +156,47 @@ async def post_json(url: str, headers: dict[str, str], body: dict, slot: str, ti
     await reserve(slot)
     from services import cost_ledger
     # THB reservation after the call-count gate; both must pass before any request.
-    cost = cost_ledger.reserve(model or str(body.get("model") or slot + "-service"), body, price)
+    cost = await execution.offload(cost_ledger.reserve, model or str(body.get("model") or slot + "-service"), body, price)
+    if ctx is not None:
+        ctx.attempts += 1
     try:
-        async with httpx.AsyncClient(timeout=min(timeout, 75), follow_redirects=False) as client:
-            async with client.stream("POST", endpoint, headers=headers, json=body) as response:
-                if response.status_code >= 300:
-                    detail = ""
-                    try:
-                        detail = (await response.aread())[:2000].decode("utf-8", "replace")
-                    except Exception:
-                        pass
-                    raise rejection_error(slot, response.status_code, detail, label)
-                data = bytearray()
-                async for chunk in response.aiter_bytes():
-                    data.extend(chunk)
-                    if len(data) > 1_000_000:
-                        raise ConversationError("provider_response_invalid", "A service returned an oversized response.", 502)
-                import json
-                result = json.loads(data)
-                if not isinstance(result, dict):
-                    raise ValueError
-        cost_ledger.settle(cost, result.get("usage"), "succeeded")
-        _settle_gate(gate, result.get("usage"), "succeeded")
-        return result
+        async with asyncio.timeout(call_timeout):
+            # httpx's own timeouts bound each connect/read; the asyncio timeout bounds the whole call,
+            # including a provider that keeps sending bytes slowly.
+            async with httpx.AsyncClient(timeout=limit, follow_redirects=False) as client:
+                async with client.stream("POST", endpoint, headers=headers, json=body) as response:
+                    if response.status_code >= 300:
+                        detail = ""
+                        try:
+                            detail = (await response.aread())[:2000].decode("utf-8", "replace")
+                        except Exception:
+                            pass
+                        raise rejection_error(slot, response.status_code, detail, label)
+                    data = bytearray()
+                    async for chunk in response.aiter_bytes():
+                        data.extend(chunk)
+                        if len(data) > 1_000_000:
+                            raise ConversationError("provider_response_invalid", "A service returned an oversized response.", 502, origin="upstream")
+                    import json
+                    result = json.loads(data)
+                    if not isinstance(result, dict):
+                        raise ValueError
     except asyncio.CancelledError:
-        cost_ledger.settle(cost, None, "cancelled")
-        _settle_gate(gate, None, "cancelled")
+        await execution.cleanup(_settle, cost, gate, None, "cancelled")
         raise
+    except (TimeoutError, httpx.TimeoutException):
+        await execution.cleanup(_settle, cost, gate, None, "cancelled")
+        log.warning("provider_timeout slot=%s", slot)
+        raise ConversationError("upstream_timeout", f"The {_name(slot)} did not answer in time. Please try again.", 504, origin="upstream") from None
     except (httpx.HTTPError, ValueError, ConversationError) as exc:
-        cost_ledger.settle(cost, None, "failed")
-        _settle_gate(gate, None, "failed")
+        await execution.cleanup(_settle, cost, gate, None, "failed")
         if isinstance(exc, ConversationError):
             raise
-        raise ConversationError("service_unavailable", "A connected service could not complete this request. Please try again.", 502) from None
+        if isinstance(exc, ValueError):
+            raise ConversationError("provider_response_invalid", "A connected service returned an unreadable response. Please try again.", 502, origin="upstream") from None
+        raise ConversationError("service_unavailable", "A connected service could not complete this request. Please try again.", 502, origin="upstream") from None
+    await execution.offload(_settle, cost, gate, result.get("usage"), "succeeded")
+    return result
 
 
 async def complete(messages: list[dict], *, slot: str = "llm", json_mode: bool = False, max_tokens: int = 2400) -> str:

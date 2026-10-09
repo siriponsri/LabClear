@@ -104,20 +104,44 @@
       if (scroll) list.scrollTop = list.scrollHeight;
     } catch (e) { list.replaceChildren(make('p', e.message, 'callout bad')); }
   }
+  // Same protocol as the workspace (static/js/stream.js): accepted, heartbeats, one terminal event,
+  // watchdogs, a classified failure, and the message kept on this page (memory only) to send again.
+  const setBusy = on => { busy = on; sendBtn.disabled = on; stopBtn.hidden = !on; panel.classList.toggle('turn-active', on); };
+  async function awake() {
+    if (!RSStream.stale()) return true;
+    const w = await RSStream.ensureReady({ onWaiting: () => { status.textContent = 'Starting LabClear. This can take up to a minute; your message will be sent once.'; } });
+    return w.ready;
+  }
+  const NOT_KEPT = ['busy', 'server_busy', 'server_draining', 'rate_limited', 'access_required', 'origin_rejected', 'login_required', 'csrf_rejected'];
+  // The message and the request reference as separate nodes, so each is translated on its own.
+  const showFailure = e => {
+    status.replaceChildren(document.createTextNode(e.message || ''));
+    if (e.requestId) { const c = make('code', e.requestId); c.setAttribute('translate', 'no'); status.append(document.createTextNode(' '), make('span', 'Request reference'), document.createTextNode(': '), c); }
+  };
   async function submit(text) {
     if (busy || !text.trim()) return;
-    busy = true; sendBtn.disabled = true; stopBtn.hidden = false; input.value = '';
+    setBusy(true); input.value = '';
     list.append(render({ role: 'user', content: text, at: Date.now() / 1000 }, {})); list.scrollTop = list.scrollHeight;
     status.textContent = 'Checking sources and safety before answering.';
     controller = new AbortController();
-    try { if (!RS.user) await RS.session(); await RS.call('/chat', { method: 'POST', body: JSON.stringify({ message: text, page: pageContext() }), signal: controller.signal }); status.textContent = ''; }
-    catch (e) { status.textContent = e.name === 'AbortError' ? 'Stopped. A late answer will not be added.' : e.message; }
-    finally { busy = false; sendBtn.disabled = false; stopBtn.hidden = true; controller = null; lastKey = ''; await refresh(true); input.focus(); }
+    let failed = null;
+    try {
+      if (!RS.user) await RS.session();
+      if (!await awake()) throw Object.assign(Error(RSStream.MESSAGES.gateway), { code: 'gateway', kind: 'gateway' });
+      await RS.stream('/chat', { method: 'POST', body: JSON.stringify({ message: text, page: pageContext() }), signal: controller.signal });
+      status.textContent = '';
+    }
+    catch (e) { if (e.kind === 'aborted' || e.name === 'AbortError') status.textContent = 'Stopped. A late answer will not be added.'; else { failed = e; showFailure(e); } }
+    finally {
+      setBusy(false); controller = null; lastKey = ''; await refresh(true); input.focus();
+      // Not kept by the server (it never got there, or was refused before starting): send it again from this page.
+      if (failed && (failed.kind !== 'app' || NOT_KEPT.includes(failed.code)) && !input.value.trim()) input.value = text;
+    }
   }
   async function retry(id) {
-    if (busy) return; busy = true; status.textContent = 'Retrying.';
-    try { await RS.post('/chat/retry', { message_id: id }); status.textContent = ''; } catch (e) { status.textContent = e.message; }
-    finally { busy = false; lastKey = ''; await refresh(true); }
+    if (busy) return; setBusy(true); status.textContent = 'Retrying.';
+    try { await RS.stream('/chat/retry', { method: 'POST', body: JSON.stringify({ message_id: id }) }); status.textContent = ''; } catch (e) { showFailure(e); }
+    finally { setBusy(false); lastKey = ''; await refresh(true); }
   }
   fetch('/api/business/modes').then(r => r.json()).then(d => { online = d.modes.assistant.mode === 'LIVE_MODEL'; }).catch(() => { online = null; });
   build();

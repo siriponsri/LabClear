@@ -160,7 +160,10 @@ def test_chat_streams_steps_then_the_result(monkeypatch):
     r = c.post(API + "/chat", json={"message": "Hi"}, headers=NDJSON)
     assert r.headers["content-type"].startswith("application/x-ndjson")
     events = lines(r)
-    assert events[0]["type"] == "step" and events[-1]["type"] == "done"
+    # Protocol (docs/api.md): accepted once admitted, then steps, then exactly one terminal event.
+    assert events[0]["type"] == "accepted" and events[0]["request_id"] == r.headers["x-request-id"]
+    assert events[1]["type"] == "step" and events[-1]["type"] == "done"
+    assert [e["type"] for e in events].count("done") == 1 and events[-1]["request_id"] == events[0]["request_id"]
     assert events[-1]["result"]["reply"] == "Answer to: Hi"
     stored = conv(c)["conversation"]["messages"][-1]
     assert stored["trace"] == [{"id": "plan", "label": "Plan", "detail": "test"}]
@@ -169,10 +172,14 @@ def test_chat_streams_steps_then_the_result(monkeypatch):
 def test_streamed_errors_arrive_as_an_event_and_mark_the_message(monkeypatch):
     agent(monkeypatch, fail=True)
     c = client()
-    events = lines(c.post(API + "/chat", json={"message": "Hi"}, headers=NDJSON))
-    assert events[-1] == {"type": "error", "code": "service_unavailable", "message": "Temporary failure.", "status": 502}
+    r = c.post(API + "/chat", json={"message": "Hi"}, headers=NDJSON)
+    events = lines(r)
+    assert events[-1] == {"type": "error", "code": "service_unavailable", "message": "Temporary failure.", "status": 502,
+                          "origin": "app", "request_id": r.headers["x-request-id"], "step": None}
+    assert [e["type"] for e in events].count("error") == 1
     m = conv(c)["conversation"]["messages"][-1]
     assert m["failed"] and m["retryable"] and m["error_message"] == "Temporary failure."
+    assert m["failure"]["request_id"] == r.headers["x-request-id"] and m["failure"]["code"] == "service_unavailable"
 
 
 def test_agent_reports_each_step_and_keeps_the_trace(monkeypatch):
@@ -199,7 +206,7 @@ def test_report_in_chat_needs_one_click_then_answers_the_question(monkeypatch):
     c = client()
     r = c.post(API + "/chat/report", data={"message": "Is my ALT fine?"}, files=[("files", ("lab.png", PNG, "image/png"))], headers=NDJSON)
     events = lines(r)
-    assert events[0]["id"] == "read" and events[-1]["type"] == "done"
+    assert events[0]["type"] == "accepted" and [e.get("id") for e in events[1:3]] == ["prepare", "prepare"] and any(e.get("id") == "read" for e in events) and events[-1]["type"] == "done"
     messages = conv(c)["conversation"]["messages"]
     upload, card = messages[-2:]
     assert upload["attachments"][0]["report_id"] == card["report_id"] and upload["content"] == "Is my ALT fine?"

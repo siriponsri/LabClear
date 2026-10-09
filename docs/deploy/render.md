@@ -13,8 +13,8 @@ views. There is no separate front-end service.
 | Deploys | `autoDeployTrigger: commit` (every commit to `main`) |
 | Build | `pip install -r requirements.txt` |
 | Start | `python scripts/run_business.py` |
-| Health check | `healthCheckPath: /health` |
-| Fixed values | `PYTHON_VERSION=3.12.10`, `APP_ENV=production`, `BUSINESS_EXTERNAL_ENABLED=false`, `RUNTIME_SKILLS_ENABLED=true`, `HOSPITAL_LINKS_ENABLED=true` |
+| Health check | `healthCheckPath: /ready` (readiness: started, not draining, storage answering; never an AI call) |
+| Fixed values | `PYTHON_VERSION=3.12.10`, `APP_ENV=production`, `BUSINESS_EXTERNAL_ENABLED=false`, `RUNTIME_SKILLS_ENABLED=true`, `HOSPITAL_LINKS_ENABLED=true`, and the request-resilience defaults (below) |
 | Secrets | Every other variable is `sync: false`: entered in the dashboard, never committed |
 | Region | Not set, so Render's default (Oregon) applies to a new service |
 
@@ -44,7 +44,7 @@ connected through `DATABASE_URL`.
    `PROJECT_BUDGET_PRIOR_SPEND_THB`. Render asks for `sync: false` values only when it creates them;
    values already set on an existing service are kept.
 6. **Apply.** The first build takes a few minutes.
-7. **Check health.** Open `https://<service>.onrender.com/health` (see [Health check](#health-check)).
+7. **Check health.** Open `https://<service>.onrender.com/health` and `/ready` (see [Health check](#health-check)).
 8. **Create a manager.** For a class demo, set `DEMO_ACCOUNTS=true`, redeploy, and sign in as
    `admin` / `1234`; set it back to `false` afterwards. For a personal account, run this on your
    computer against the **External Database URL** with the same key:
@@ -88,6 +88,13 @@ environment directly. Render sets `PORT`, `RENDER` and `RENDER_GIT_COMMIT` itsel
 | `BUSINESS_EXTERNAL_ENABLED` | `false` | Keep real payment and LINE integrations off |
 | `RUNTIME_SKILLS_ENABLED` | `true` | Default for runtime skills until a manager saves the Company Harness |
 | `HOSPITAL_LINKS_ENABLED` | `true` | Official hospital links page, API and chat links |
+| `CHAT_DEADLINE_SECONDS` | `220` | Whole chat workflow deadline, storage and every agent included |
+| `REPORT_DEADLINE_SECONDS` | `150` | Whole report-reading deadline (file preparation, OCR, rows) |
+| `STREAM_HEARTBEAT_SECONDS` | `10` | NDJSON heartbeat after this long without output |
+| `AI_MAX_IN_FLIGHT` | `2` | AI workflows at once on the instance; more get `503 server_busy` |
+| `OCR_MAX_IN_FLIGHT` | `1` | Report readings at once, inside the AI limit |
+| `PROVIDER_TRANSPORT_RETRIES` | `0` | Automatic retries are not implemented; only `0` is accepted |
+| `SHUTDOWN_DRAIN_SECONDS` | `20` | On SIGTERM, time for in-flight work before it is cancelled |
 | `DATABASE_URL` | secret | PostgreSQL URL (Internal Database URL) |
 | `BUSINESS_DATA_KEY` | secret | Fernet key for all stored data |
 | `PROVIDER_NETWORK_ENABLED` | `false` if unset | `true` allows AI calls |
@@ -119,32 +126,45 @@ environment directly. Render sets `PORT`, `RENDER` and `RENDER_GIT_COMMIT` itsel
 | `MEDICAL_HARNESS_ENABLED` | `false` | Medical analyzer and Thai composer (synthetic reports only) |
 | `LANDING_PREVIEW_ENABLED`, `ORG_DOCUMENTS_ENABLED`, `ORG_REFERENCE_INFERENCE_ENABLED` | `false` | Optional preview and organization-document features |
 | `BUSINESS_WORKER_ENABLED`, `BUSINESS_WORKER_SECRET` | off, empty | LINE worker in the same process; secret for `/api/business/worker/run` |
+| `DOCUMENT_WORKER_SECONDS`, `DOCUMENT_WORKER_MEMORY_MB` | `30`, `384` | Time and memory limits of the process that prepares uploaded report files |
 
 Not for Render: `FREE_ONLY_POLICY_PATH`, `FREE_ONLY_RUN_ID`, `FREE_ONLY_ALLOW_OFFLINE_DOUBLES` (set by
 benchmark trial servers), `SYNTHETIC_FIXTURE_MANIFEST` (test environments only),
 `BUSINESS_DB_PATH`, `BUSINESS_KEY_PATH` (local SQLite only).
 
 Settings saved by a manager on `/staff` → AI providers take precedence over the provider variables.
-Feature flags and budget values are read at startup; a change needs a redeploy or restart.
+Feature flags, budget values and the resilience settings are read and validated at startup; a change
+needs a redeploy or restart, and an invalid value stops the new deploy before it takes traffic.
+What each resilience setting does: [../operations/resilience.md](../operations/resilience.md).
 
 ## Health check
 
-`GET /health` returns:
+| Endpoint | Use | Answers |
+|---|---|---|
+| `GET /health` | Liveness: the process answers | Always 200 while running: `{"status": "ok", "app": "LabClear", "environment": "production", "version": "4.0.0-rc3", "commit": "<40-character SHA>"}` |
+| `GET /ready` | Readiness, Render's `healthCheckPath` | 200 when startup finished, the service is not draining and storage answers a read-only probe within 1 s; otherwise 503 with `checks.startup`, `checks.draining`, `checks.storage` (`ok`, `timeout`, `unavailable`, `unconfigured`) |
 
-```json
-{"status": "ok", "app": "LabClear", "environment": "production", "version": "4.0.0-rc3", "commit": "<40-character SHA>"}
-```
+`/ready` never calls an AI provider or OCR, so a provider outage cannot fail it or restart the service.
+It does depend on the database: without a reachable PostgreSQL a new deploy does not go live and the
+previous one keeps serving. Compare `commit` with the commit you expect: an HTTP 200 alone does not
+show which code is running, and a `live` deploy does not show that every AI flow works.
 
-Render uses it as the health check. Compare `commit` with the commit you expect: an HTTP 200 alone
-does not show which code is running. `/health` does not test the database; open `/app` and sign in
-to check storage.
+## Deploys, restarts and draining
+
+Render sends SIGTERM to the old instance during a deploy or restart. `scripts/run_business.py` then
+drains: `/ready` answers 503 and new AI requests get `503 server_draining` (`Retry-After: 5`) at once;
+in-flight chats and report readings get `SHUTDOWN_DRAIN_SECONDS` (20 s) to finish, the rest end with a
+terminal `server_draining` event; then the process exits with status 0, inside Render's default
+30-second shutdown window. Website pages keep working during the drain.
 
 ## Rollback
 
-1. In the dashboard, open the `labclear` service's deploy history and roll back to (or redeploy) the
-   previous successful commit.
-2. Keep `DATABASE_URL` and `BUSINESS_DATA_KEY` unchanged. A rollback does not change the database.
-3. Auto-deploy stays on, so the next commit to `main` deploys again. Revert the faulty commit on
+1. In the dashboard, open the `labclear` service's **Events**, choose the last good deploy and roll
+   back to (or redeploy) it.
+2. Check `/health` (`commit` is the expected one) and `/ready` (200), then send one synthetic chat
+   message and read one sample report.
+3. Keep `DATABASE_URL` and `BUSINESS_DATA_KEY` unchanged. A rollback does not change the database.
+4. Auto-deploy stays on, so the next commit to `main` deploys again. Revert the faulty commit on
    `main` before pushing anything else.
 
 To switch features off without a code rollback, set the flags to `false` and redeploy. A manager can
@@ -152,11 +172,17 @@ also restore an earlier Company Harness revision or pause records and tools on `
 
 ## Operating notes
 
-- Run one instance. Guest chats and rate limits live in process memory; a second instance would
-  return 401 for guest pages and split the limits.
-- Free web services spin down when idle; the first request afterwards takes about a minute.
+- Run one instance with one process. Guest chats, rate limits and the AI admission counters live in
+  process memory; a second instance would return 401 for guest pages and split the limits.
+- Free web services spin down after 15 minutes without traffic; the first request afterwards waits
+  about a minute and may fail at Render's proxy. The chat waits for `/ready` before sending after a
+  long pause, but cannot prevent the platform's own errors. Before a demo, open the site early and
+  check `/ready`. Keeping the instance awake needs a paid compute plan: an owner decision, taken with
+  the current price on Render's pricing page.
 - Never commit `.env`, keys or database URLs. Secrets belong in the Render dashboard or, for provider
   keys, on the AI providers page.
+- A user-visible "502": the request reference under the failed message (`req_…`) leads to the log
+  line; no reference means a platform failure. Runbook: [../operations/resilience.md](../operations/resilience.md#runbook-a-customer-reports-a-502).
 
 ## Troubleshooting
 
@@ -172,6 +198,12 @@ also restore an earlier Company Harness revision or pause records and tools on `
 | `… (HTTP 402)` or `(HTTP 429)` | The provider account is out of credit or over its rate limit |
 | `The safety check is not set up` | Configure the safety check on the AI providers page or with `GUARD_*` |
 | Report reading not connected | Turn on report reading and set its key (`VISION_ENABLED=true` or Admin) |
+| `server_busy` (503) | More simultaneous AI requests than `AI_MAX_IN_FLIGHT`; the browser asks to retry in a few seconds |
+| `request_timeout` / `upstream_timeout` (504) | A slow provider; the log line's `step` names it. Check the provider's status and latency |
+| `upstream_unavailable` / `upstream_rate_limited` | The provider answered 5xx / 429; check its status page and plan |
+| `storage_unavailable` (503) | PostgreSQL did not answer within the bounded wait; check the database instance |
+| `/ready` 503, `storage: unconfigured` | `DATABASE_URL` or `BUSINESS_DATA_KEY` missing or invalid |
+| Deploy fails right after start | A resilience variable outside its allowed range; the deploy log names it |
 
 ## Sign in with Google (optional)
 

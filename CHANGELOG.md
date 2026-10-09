@@ -32,8 +32,33 @@ This release.
   PNG and PDF files), a recorded demo rollout and `notebooks/LabClear_Harness_Demo.ipynb`. Recorded
   evidence in `docs/evidence/current` is OFFLINE only: coursework profiles A, B and C each 15/20
   automated pass; OCR file suite 0/12 fully correct, 217/252 exact values. LIVE_FREE was not run.
+- **Request resilience (P0-A to P0-D of the 502 handoff).** Every AI request runs in one execution
+  context with a request ID, a whole-workflow deadline (`CHAT_DEADLINE_SECONDS=220`,
+  `REPORT_DEADLINE_SECONDS=150`) that covers storage, every agent, the rewrite and JSON repair, and a
+  cancellation scope: Stop, a closed connection, the deadline and shutdown cancel the provider call
+  (cost reservation kept), kill the document worker and free the slot. Timeouts are
+  `request_timeout`/`upstream_timeout` (504); provider failures are classified with an `origin`
+  (`upstream_unavailable`, `upstream_rate_limited`, …); no automatic retries
+  (`PROVIDER_TRANSPORT_RETRIES=0`).
+  - NDJSON stream with `accepted`, 10-second heartbeats and exactly one terminal event; a bounded event
+    queue; interrupted steps shown with their state and duration in Process Explainability, with the
+    request reference.
+  - Admission: `AI_MAX_IN_FLIGHT=2`, `OCR_MAX_IN_FLIGHT=1`, otherwise `503 server_busy` with
+    `Retry-After: 5`, no queue. Upload limits are checked before any decoding; PDF and image work runs
+    in a killable worker process with time and memory limits and no secrets; storage runs off the
+    event loop with bounded waits.
+  - `GET /ready` (readiness, Render `healthCheckPath`), `/health` unchanged; graceful drain on SIGTERM
+    (`SHUTDOWN_DRAIN_SECONDS=20`); `X-Request-ID` on every response and in JSON errors and stream
+    events; structured JSON log lines without prompts, report data or keys.
+  - Browser client `static/js/stream.js`: gateway HTML, JSON errors, network resets, invalid lines and
+    early ends are classified and shown in plain Thai; 35-second idle and budget + 10 s watchdogs; the
+    message returns to the composer (page memory only); Retry is inert while a request runs; a wait
+    for `/ready` before sending after a pause. Scripts are served with content-hash URLs.
+  - Deterministic fault suite `scripts/benchmark_resilience.py` (R01–R12, virtual clock, provider
+    doubles, a real SIGTERM): 12/12. Runbook: `docs/operations/resilience.md`. Not implemented (P1):
+    circuit breaker, retry policy, durable jobs.
 - **Removed documentation.** `docs/ceo-upgrade/`, older release notes and older evidence folders.
-- Python tests: 345.
+- Python tests: 371.
 
 ## 4.0.0-rc2 (2026-10-09)
 

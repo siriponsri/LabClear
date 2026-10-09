@@ -30,13 +30,13 @@ def _owner(tx, request: Request, mutation: bool = True) -> str:
 
 
 @router.get("/chats")
-async def list_chats(request: Request):
+def list_chats(request: Request):
     with db.transaction() as tx:
         return chats.listing(tx, _owner(tx, request, False))
 
 
 @router.post("/chats")
-async def create_chat(body: NewChat, request: Request):
+def create_chat(body: NewChat, request: Request):
     with db.transaction() as tx:
         owner = _owner(tx, request)
         chats.new_chat(tx, owner, body.project_id)
@@ -44,7 +44,7 @@ async def create_chat(body: NewChat, request: Request):
 
 
 @router.post("/chats/{chat_id}/open")
-async def open_chat(chat_id: str, request: Request):
+def open_chat(chat_id: str, request: Request):
     with db.transaction() as tx:
         owner = _owner(tx, request)
         chats.open_chat(tx, owner, chat_id)
@@ -52,7 +52,7 @@ async def open_chat(chat_id: str, request: Request):
 
 
 @router.patch("/chats/{chat_id}")
-async def change_chat(chat_id: str, body: ChatChange, request: Request):
+def change_chat(chat_id: str, body: ChatChange, request: Request):
     with db.transaction() as tx:
         owner = _owner(tx, request)
         chats.update_chat(tx, owner, chat_id, body.title, body.project_id)
@@ -60,7 +60,7 @@ async def change_chat(chat_id: str, body: ChatChange, request: Request):
 
 
 @router.delete("/chats/{chat_id}")
-async def delete_chat(chat_id: str, request: Request):
+def delete_chat(chat_id: str, request: Request):
     with db.transaction() as tx:
         owner = _owner(tx, request)
         chats.delete_chat(tx, owner, chat_id)
@@ -69,7 +69,7 @@ async def delete_chat(chat_id: str, request: Request):
 
 
 @router.post("/projects")
-async def create_project(body: ProjectInput, request: Request):
+def create_project(body: ProjectInput, request: Request):
     with db.transaction() as tx:
         owner = _owner(tx, request)
         project = chats.create_project(tx, owner, body.name)
@@ -77,7 +77,7 @@ async def create_project(body: ProjectInput, request: Request):
 
 
 @router.patch("/projects/{project_id}")
-async def rename_project(project_id: str, body: ProjectInput, request: Request):
+def rename_project(project_id: str, body: ProjectInput, request: Request):
     with db.transaction() as tx:
         owner = _owner(tx, request)
         chats.rename_project(tx, owner, project_id, body.name)
@@ -85,7 +85,7 @@ async def rename_project(project_id: str, body: ProjectInput, request: Request):
 
 
 @router.delete("/projects/{project_id}")
-async def delete_project(project_id: str, request: Request):
+def delete_project(project_id: str, request: Request):
     with db.transaction() as tx:
         owner = _owner(tx, request)
         chats.delete_project(tx, owner, project_id)

@@ -184,7 +184,7 @@ async def _confirmed_report_rows(ctx: ToolContext, a: ConfirmedReportRows) -> di
 async def _preview_booking(ctx: ToolContext, a: PreviewBooking) -> dict:
     if "action:" + a.kind not in ctx.scopes:
         raise ConversationError("tool_forbidden", "This assistant role cannot prepare that preview.", 403)
-    quote = ctx.quote(list(a.package_ids))
+    quote = await asyncio.to_thread(ctx.quote, list(a.package_ids))  # storage off the event loop
     return {"preview": {"type": a.kind, "quote": quote, "branch_id": a.branch_id, "date": a.date, "time": a.time,
                         "confirmed": False}}
 

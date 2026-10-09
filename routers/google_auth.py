@@ -79,7 +79,7 @@ def _safe_next(value: str) -> str:
 
 
 @router.get("/start")
-async def start(request: Request, next: str = "/app"):
+def start(request: Request, next: str = "/app"):
     if not enabled():
         return _page("Google sign-in is not set up", "Sign in with your email and password instead.")
     state, verifier, nonce = secrets.token_urlsafe(24), secrets.token_urlsafe(48), secrets.token_urlsafe(16)
@@ -111,10 +111,13 @@ async def callback(request: Request, state: str = "", code: str = "", error: str
     cookie = request.cookies.get(STATE_COOKIE, "")
     if not enabled() or error or not code or not state or not cookie or not hmac.compare_digest(cookie, state):
         return failed
-    with db.transaction() as tx:
-        row = tx.get("oauth_" + db.digest(state))
-        if row:
-            tx.delete(row["id"])  # single use
+    def take(tx):
+        found = tx.get("oauth_" + db.digest(state))
+        if found:
+            tx.delete(found["id"])  # single use
+        return found
+    from services import execution
+    row = await execution.offload(_in_tx, take)
     if not row or row["data"]["expires"] < time.time():
         return failed
     flow = row["data"]
@@ -134,7 +137,8 @@ async def callback(request: Request, state: str = "", code: str = "", error: str
             or not isinstance(c.get('sub'),str) or not c['sub'].strip()
             or not hmac.compare_digest(str(c.get("nonce", "")), flow["nonce"]) or c.get("email_verified") not in (True, "true") or not email):
         return failed
-    with db.transaction() as tx:
+    def sign_in(tx):
+        # Storage in a worker thread: the event loop keeps serving other requests.
         index = "email_" + db.digest(email)
         found = tx.get(index)
         user = tx.get(found["owner"]) if found else None
@@ -151,5 +155,11 @@ async def callback(request: Request, state: str = "", code: str = "", error: str
             tx.audit(user["id"], "account.google_created", user["id"])
         response = _page("Signed in", "Taking you back to LabClear.", flow["next"], go=True)
         business.set_session(tx, response, user["id"])
-    response.delete_cookie(STATE_COOKIE, path="/api/business/auth/google")
-    return response
+        response.delete_cookie(STATE_COOKIE, path="/api/business/auth/google")
+        return response
+    return await execution.offload(_in_tx, sign_in)
+
+
+def _in_tx(fn):
+    with db.transaction() as tx:
+        return fn(tx)

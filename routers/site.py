@@ -31,7 +31,8 @@ def _asset_version() -> str:
     # Changes whenever the dictionary or the translator changes, so browsers can cache them for a year.
     import hashlib
     digest = hashlib.sha256()
-    for name in ("static/i18n/th.js", "static/js/i18n.js", "static/css/i18n.css", "static/css/base.css", "static/css/site.css", "static/css/workspace.css", "static/js/turns.js"):
+    for name in ("static/i18n/th.js", "static/js/i18n.js", "static/css/i18n.css", "static/css/base.css", "static/css/site.css", "static/css/workspace.css", "static/js/turns.js",
+                 "static/js/stream.js", "static/js/api.js", "static/js/dock.js", "static/js/workspace.js"):
         path = ROOT / name
         digest.update(path.read_bytes() if path.exists() else b"")
     return digest.hexdigest()[:12]
@@ -53,7 +54,7 @@ templates.env.globals.update(ui_lang=ui_lang, asset_version=_asset_version(), te
 
 
 @router.get('/preview/landing', response_class=HTMLResponse)
-async def landing_preview(request: Request):
+def landing_preview(request: Request):
     from config import settings
     if not settings.LANDING_PREVIEW_ENABLED:
         raise ConversationError('feature_disabled', 'Landing preview is disabled.', 404)
@@ -61,7 +62,7 @@ async def landing_preview(request: Request):
 
 
 @router.get('/organization-references', response_class=HTMLResponse)
-async def organization_references(request: Request):
+def organization_references(request: Request):
     from config import settings
     if not settings.ORG_DOCUMENTS_ENABLED:
         raise ConversationError('feature_disabled', 'Organization references are disabled.', 404)
@@ -69,7 +70,7 @@ async def organization_references(request: Request):
 
 
 @router.get('/hospital-links', response_class=HTMLResponse)
-async def hospital_links(request: Request):
+def hospital_links(request: Request):
     from config import settings
     from services.hospital_links import catalog
     if not settings.HOSPITAL_LINKS_ENABLED:
@@ -104,7 +105,7 @@ def _package_json(data) -> str:
 
 
 @router.get("/", response_class=HTMLResponse)
-async def home(request: Request):
+def home(request: Request):
     from services import business_dots
     data = _business()
     packages = [p for p in data["catalog"]["packages"] if p.get("active", True)]
@@ -143,7 +144,7 @@ def _plans() -> dict:
 
 
 @router.get("/lab-reports", response_class=HTMLResponse)
-async def lab_reports(request: Request):
+def lab_reports(request: Request):
     data = _business()
     sources = json.loads((ROOT / "knowledge/evidence/catalog.json").read_text(encoding="utf-8"))["records"]
     follow = [p for p in data["catalog"]["packages"] if p.get("active", True) and p["segment"] == "individual" and p.get("staff_review_required")]
@@ -153,14 +154,14 @@ async def lab_reports(request: Request):
 
 
 @router.get("/lab-report/{report_id}", response_class=HTMLResponse)
-async def lab_report_page(request: Request, report_id: str):
+def lab_report_page(request: Request, report_id: str):
     # Values load client-side with the owner's session cookie; the page itself holds no report data.
     return page(request, "site/lab_report.html", "Lab Report | LabClear",
                 "Your confirmed laboratory values on the ranges printed on your report.", report_id=report_id)
 
 
 @router.get("/packages", response_class=HTMLResponse)
-async def packages(request: Request, q: str = "", segment: str = "", branch_id: str = "", max_price: int | None = None,
+def packages(request: Request, q: str = "", segment: str = "", branch_id: str = "", max_price: int | None = None,
                    min_price: int | None = None, review: str = "", sort: str = "featured"):
     if segment not in ("", "individual", "organization"):
         segment = ""
@@ -174,7 +175,7 @@ async def packages(request: Request, q: str = "", segment: str = "", branch_id: 
 
 
 @router.get("/packages/{package_id}", response_class=HTMLResponse)
-async def package_detail(request: Request, package_id: str):
+def package_detail(request: Request, package_id: str):
     try:
         detail = ops.package_detail(None, package_id)
         related = [p for p in db.catalog()["packages"] if p.get("active", True) and p["id"] != package_id
@@ -188,7 +189,7 @@ async def package_detail(request: Request, package_id: str):
 
 
 @router.get("/compare", response_class=HTMLResponse)
-async def compare(request: Request, ids: str = ""):
+def compare(request: Request, ids: str = ""):
     error = ""
     comparison = None
     try:
@@ -200,7 +201,7 @@ async def compare(request: Request, ids: str = ""):
 
 
 @router.get("/centers", response_class=HTMLResponse)
-async def centers(request: Request):
+def centers(request: Request):
     data = _business()
     import os
     return page(request, "site/centers.html", "Our centers | LabClear",
@@ -209,7 +210,7 @@ async def centers(request: Request):
 
 
 @router.get("/organizations", response_class=HTMLResponse)
-async def organizations(request: Request):
+def organizations(request: Request):
     data = _business()
     org = [p for p in data["catalog"]["packages"] if p["segment"] == "organization" and p.get("active", True)]
     return page(request, "site/organizations.html", "Health checks for organizations | LabClear",
@@ -218,7 +219,7 @@ async def organizations(request: Request):
 
 
 @router.get("/help", response_class=HTMLResponse)
-async def help_page(request: Request):
+def help_page(request: Request):
     data = _business()
     return page(request, "site/help.html", "Help and policies | LabClear",
                 "How booking, payments, reports and the assistant work in this coursework simulation.",
@@ -226,13 +227,13 @@ async def help_page(request: Request):
 
 
 @router.get("/privacy", response_class=HTMLResponse)
-async def privacy(request: Request):
+def privacy(request: Request):
     return page(request, "site/privacy.html", "Privacy | LabClear", "How this coursework simulation handles data.",
                 policies=_business()["policies"])
 
 
 @router.get("/sources", response_class=HTMLResponse)
-async def sources(request: Request):
+def sources(request: Request):
     from services.knowledge_admin import active_records
     evidence = json.loads((ROOT / "knowledge/evidence/catalog.json").read_text(encoding="utf-8"))
     # Only records the assistant can currently search (a manager may pause one in Admin).
@@ -247,7 +248,7 @@ async def sources(request: Request):
 
 
 @router.get("/pay/sim/{txn_id}", response_class=HTMLResponse)
-async def pay_simulator(request: Request, txn_id: str):
+def pay_simulator(request: Request, txn_id: str):
     # Data loads client-side with the session cookie; the page itself holds no transaction data.
     return page(request, "site/pay_sim.html", "Test payment simulator | LabClear",
                 "Simulated payment page. No real money can be paid here.", txn_id=txn_id)

@@ -450,3 +450,12 @@ table.data td .sub{display:block;font-size:12px;color:var(--color-fg-muted)}
 .sidebar-bottom{position:relative}
 .account-menu{position:absolute;right:0;top:calc(100% + 8px);z-index:60;display:grid;min-width:232px;padding:6px;background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-lg);box-shadow:var(--shadow-float);font-family:var(--font-sans);animation:pop var(--dur-base) var(--ease-out)}
 .sidebar .account-menu{top:auto;bottom:calc(100% + 8px);left:0;right:auto;width:100%}
+/* Resilience: interrupted steps, the request reference, and Retry inert while a workflow runs */
+.step.failed .step-label{color:var(--color-fg)}
+.step-note.ref,.failure-steps .ref{color:var(--color-fg-muted);font-size:12.5px}
+.step-note.ref code,.failure-steps .ref code{font:500 12px var(--font-mono,ui-monospace,monospace);overflow-wrap:anywhere}
+.failure-steps{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:4px;font-size:13px}
+.failure-steps .step-label,.failure-steps .step-detail{display:inline}
+.failure-steps .step-detail{margin-left:6px;color:var(--color-bad)}
+.turn-active .failure .btn{pointer-events:none;opacity:.5}
+

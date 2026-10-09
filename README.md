@@ -34,6 +34,7 @@ request after an idle period is slow).
 | Official hospital links | Reviewed links to real hospital package pages, kept separate from LabClear's simulated catalog |
 | Interface language | Thai by default, TH/EN switch on every page, IBM Plex Sans Thai and Trirong self-hosted |
 | Spending controls | AI off by default, durable call cap, project-total THB ledger, optional free-only policy |
+| Request resilience | Whole-workflow deadlines, admission limits, cancellation on Stop or disconnect, NDJSON heartbeats, request IDs, readiness and graceful drain; fault suite R01–R12 at 12/12 ([details](docs/operations/resilience.md)) |
 | Security | Same-origin checks, CSRF tokens, role and ownership checks, rate limits, encrypted storage |
 
 ## Architecture in brief
@@ -119,8 +120,11 @@ flags off. Never deploy this script.
 
 The repository deploys as a single Render web service named `labclear` from the
 [`render.yaml`](render.yaml) Blueprint. Render deploys automatically on every commit to `main` and
-checks `/health`. Secrets (`DATABASE_URL`, `BUSINESS_DATA_KEY`, provider keys) are entered in the
-Render dashboard and never committed. Step-by-step runbook: [docs/deploy/render.md](docs/deploy/render.md).
+checks readiness at `/ready` (`/health` stays the liveness check). On SIGTERM the service drains
+in-flight requests before it exits. Secrets (`DATABASE_URL`, `BUSINESS_DATA_KEY`, provider keys) are
+entered in the Render dashboard and never committed. Step-by-step guide:
+[docs/deploy/render.md](docs/deploy/render.md); failures, timeouts and the 502 runbook:
+[docs/operations/resilience.md](docs/operations/resilience.md).
 
 ## Testing
 
@@ -129,7 +133,7 @@ pip install -r requirements-dev.txt
 python scripts/offline_check.py pytest -q
 ```
 
-The Python suite (345 tests at 4.0.0-rc3) runs with isolated storage, no `.env` and outbound
+The Python suite (371 tests at 4.0.0-rc3) runs with isolated storage, no `.env` and outbound
 sockets denied. Browser suites use Playwright (`npm install`, then `npx playwright install chromium`):
 
 | Suite | Command |
@@ -137,6 +141,7 @@ sockets denied. Browser suites use Playwright (`npm install`, then `npx playwrig
 | Business UAT | `TEST_PYTHON=.venv/bin/python npm run uat` |
 | Upgrade scenarios | `TEST_PYTHON=.venv/bin/python UAT_OUT=test-results/upgrade node tests/browser/upgrade.cjs` |
 | TH/EN language audit | start `scripts/dev_mock_api.py`, then `node tests/browser/i18n_audit.mjs` |
+| Chat recovery (gateway pages, cut streams) | `TEST_PYTHON=.venv/bin/python node tests/browser/resilience.cjs` |
 
 More detail: [docs/testing.md](docs/testing.md).
 
@@ -146,7 +151,8 @@ More detail: [docs/testing.md](docs/testing.md).
 |---|---|
 | [`scripts/benchmark_labclear.py`](scripts/benchmark_labclear.py) | Runs the frozen coursework suite (10 questions, 5 images, 5 safety cases) and the OCR file suite in OFFLINE, REPLAY or LIVE_FREE mode through the public API; also `preflight`, `resume`, `compare`, `report` |
 | [`scripts/score_benchmark.py`](scripts/score_benchmark.py) | Deterministic scorer of a recorded run: no network, model judge, clock or randomness; re-scoring gives byte-identical output |
-| [`notebooks/LabClear_Harness_Demo.ipynb`](notebooks/LabClear_Harness_Demo.ipynb) | Executable walkthrough of the pipeline with offline doubles; needs `requirements-eval.txt` (`python scripts/execute_notebook.py notebooks/LabClear_Harness_Demo.ipynb`) |
+| [`scripts/benchmark_resilience.py`](scripts/benchmark_resilience.py) | Deterministic fault suite R01–R12 (`--offline --seed N --json-out PATH`): provider doubles, a virtual clock, synthetic files, a real SIGTERM; exit code 0 only at 12/12 |
+| [`notebooks/LabClear_Harness_Demo.ipynb`](notebooks/LabClear_Harness_Demo.ipynb) | Executable walkthrough of the pipeline with offline doubles, including a successful run, a provider timeout and a cancellation; needs `requirements-eval.txt` (`python scripts/execute_notebook.py notebooks/LabClear_Harness_Demo.ipynb`) |
 
 Recorded evidence is in [docs/evidence/current](docs/evidence/current/README.md). All recorded runs
 are **OFFLINE**: the real application with provider doubles and a Tesseract stand-in for OCR.
@@ -161,11 +167,15 @@ are **OFFLINE**: the real application with provider doubles and a Tesseract stan
 These numbers describe the offline pipeline. They are not Thai API scores, latency or clinical
 quality. LIVE_FREE has not been run because no provider keys were available.
 
+The resilience fault suite scores 100 (12/12 cases, 0 skipped, 0 outbound connections); see
+[docs/evidence/current/resilience](docs/evidence/current/resilience/README.md). It is the pass rate of
+deterministic fault cases, not uptime or latency on Render.
+
 ## Repository layout
 
 | Path | Contents |
 |---|---|
-| `main.py`, `config.py` | FastAPI app, security headers, `/health`, `/app`, `/staff`; settings and feature flags |
+| `main.py`, `config.py` | FastAPI app, request IDs and security headers, `/health`, `/ready`, `/app`, `/staff`; settings and feature flags |
 | `routers/` | Website pages and the JSON API (business, chats, staff, admin, public site data) |
 | `services/` | Agent pipeline, typed tools, guards, providers, report reader, storage, harness config |
 | `templates/`, `static/` | Jinja pages, CSS, JavaScript, self-hosted fonts and vendor scripts |
@@ -192,6 +202,7 @@ quality. LIVE_FREE has not been run because no provider keys were available.
 | Admin guide for managers | [docs/admin.md](docs/admin.md) |
 | AI providers and spending | [docs/ai-providers.md](docs/ai-providers.md) |
 | Deploy to Render | [docs/deploy/render.md](docs/deploy/render.md) |
+| Resilience and the 502 runbook | [docs/operations/resilience.md](docs/operations/resilience.md) |
 | Testing | [docs/testing.md](docs/testing.md) |
 | Knowledge library | [knowledge/README.md](knowledge/README.md) |
 | Changes | [CHANGELOG.md](CHANGELOG.md) |
@@ -207,8 +218,11 @@ quality. LIVE_FREE has not been run because no provider keys were available.
   or lay-reader review.
 - Benchmark evidence is OFFLINE. It does not measure live Thai API quality, latency or clinical
   accuracy.
-- Single-process design. Guest chats and the request rate limit live in process memory, so the
-  service runs as one instance.
+- Single-process design. Guest chats, the request rate limit and the AI admission limits live in
+  process memory, so the service runs as one instance with one process.
+- The free Render plan sleeps after 15 idle minutes and can restart; its proxy can then answer 502
+  before LabClear sees the request. The chat recovers cleanly, but only the platform plan can remove
+  those failures.
 
 ## Notices
 

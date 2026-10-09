@@ -121,7 +121,7 @@ def test_page_context_reaches_planner_and_dot_label_is_stored(monkeypatch):
     from routers import business
     seen = {}
 
-    async def agent(message, context):  # MOCKED_TEST_ONLY
+    async def agent(message, context, emit=None):  # MOCKED_TEST_ONLY
         seen.update(context)
         return {"reply": "ok", "sources": [], "action": None, "dot": {"id": "advisor", "name": "Health-check Advisor"},
                 "ui": [{"type": "open_package", "args": {"package_id": "P02", "name": "Workday Check"}}]}

@@ -7,6 +7,7 @@ Quality is checked at three levels. None of the automated levels calls a real AI
 | Python suite | `python scripts/offline_check.py pytest -q` | No (scripted model replies) | Business rules, permissions, storage, safety checks in code, model-output parsing, benchmark harness |
 | Browser suites | `tests/browser/uat.cjs`, `tests/browser/upgrade.cjs`, `tests/browser/i18n_audit.mjs` | No (model and OCR doubles) | Screens and flows, layouts at phone, tablet and desktop widths, both interface languages, no JavaScript errors |
 | Evaluation benchmark | `scripts/benchmark_labclear.py`, scored by `scripts/score_benchmark.py` | OFFLINE and REPLAY: no. LIVE_FREE: yes, not run yet | The coursework test sets through the real application pipeline |
+| Resilience fault suite | `scripts/benchmark_resilience.py --offline` | No (provider doubles, virtual clock) | Deadlines, cancellation, admission, stream recovery, bad files, slow storage, SIGTERM drain, request IDs: cases R01–R12 |
 
 Exact commands for Windows PowerShell and macOS/Linux are at the end of this page.
 
@@ -18,7 +19,7 @@ Exact commands for Windows PowerShell and macOS/Linux are at the end of this pag
 - It sets `APP_ENV=test`, `PROVIDER_NETWORK_ENABLED=false`, an empty `DATABASE_URL`, and points storage at a SQLite database and key file in a temporary directory that is deleted afterwards.
 - It denies outbound network: `socket.connect`, `connect_ex`, `create_connection` and `getaddrinfo` raise `OFFLINE_CHECK: outbound network forbidden`. Only the event loop's internal `socketpair` is allowed.
 
-The same script has other modes: `browser [port]` (fixture server for the UAT suites), `evaluation` (`scripts/evaluate_upgrade.py`, scripted fixture checks, never inference), `boot` (`scripts/boot_check.py`, real Uvicorn start-up on an OS-assigned local port) and `benchmark` (started by the benchmark runner).
+The same script has other modes: `browser [port]` (fixture server for the UAT suites), `evaluation` (`scripts/evaluate_upgrade.py`, scripted fixture checks, never inference), `boot` (`scripts/boot_check.py`, real Uvicorn start-up on an OS-assigned local port), `benchmark` (started by the benchmark runner) and `resilience` / `resilience-server` (started by the resilience runner).
 
 Results: [`docs/evidence/current/pytest.txt`](evidence/current/pytest.txt) records an earlier run with 331 passed and 1 skipped. A run on 2026-10-09 during this documentation update reported 345 passed.
 
@@ -35,6 +36,27 @@ All three use Playwright (`npm install`, then `npx playwright install chromium`)
 `upgrade.cjs` defaults to the Windows interpreter path `.venv/Scripts/python.exe`; on macOS/Linux set `TEST_PYTHON=.venv/bin/python`. The i18n audit's Thai line-break judge needs PyThaiNLP (`pip install pythainlp`); without it that check is reported `NOT_RUN`.
 
 No browser-suite results are recorded in `docs/evidence/current/`.
+
+## Resilience fault suite
+
+[`scripts/benchmark_resilience.py`](../scripts/benchmark_resilience.py) checks how LabClear behaves
+when providers, the network, files, storage or the platform misbehave (cases R01–R12 of
+[operations/resilience.md](operations/resilience.md#verification)). It needs Python and Node.js; no
+browser, key or network:
+
+| Part | Runs | Clock |
+|---|---|---|
+| Server cases (R01, R02, R04–R08, R10–R12) | [`tests/resilience/suite.py`](../tests/resilience/suite.py) inside `offline_check.py resilience`: the real app driven in-process, provider doubles that hang, trickle, fail or answer, synthetic PNG/PDF files, storage in strict mode (a transaction on the event loop fails the case) | Virtual ([`vclock.py`](../tests/resilience/vclock.py)): a 220 s deadline runs in milliseconds and in the same order every time; real work in threads and worker processes still runs at real speed |
+| Client cases (R03, R04, R10, R11) | [`tests/resilience/client_cases.mjs`](../tests/resilience/client_cases.mjs): `static/js/stream.js` with a fake fetch | Fake |
+| SIGTERM (R09) | [`tests/resilience/server.py`](../tests/resilience/server.py): the real entry point in its own process, a chat and a report read in flight, then a real signal | Real seconds |
+| Regression (R12) | pytest: business, Guest privacy, Guard, cost ledger, chat and resilience unit tests | Real |
+
+`--seed` shuffles the order of the server cases; results must not depend on it. The run writes the
+JSON report (`--json-out`) and, next to it, `artifacts/` with logs and a `<case>-failure.json` for any
+failed case. Exit code 0 only for 12/12 with no case skipped and no outbound connection attempt.
+`tests/browser/resilience.cjs` adds browser evidence (gateway pages, cut streams, reset connections
+shown to a customer) and `scripts/measure_resilience.py` local timings and memory; neither is part of
+the score.
 
 ## Evaluation benchmark
 
@@ -212,6 +234,11 @@ python scripts/score_benchmark.py docs/evidence/current/owner-ocr-C
 python scripts/benchmark_labclear.py compare --before <run-id> --after <run-id>
 python scripts/benchmark_labclear.py preflight --profile-letter B --policy eval/policies/free_only.example.json --dry-run
 
+# Resilience (R01–R12), browser recovery check, local measurements
+python scripts/benchmark_resilience.py --offline --seed 20261010 --json-out eval_runs/resilience/resilience-benchmark.json
+TEST_PYTHON=.venv/bin/python UAT_OUT=test-results/resilience-ui node tests/browser/resilience.cjs
+python scripts/measure_resilience.py --json-out eval_runs/resilience/local-measurements.json
+
 # Notebook
 pip install -r requirements-eval.txt
 python scripts/execute_notebook.py notebooks/LabClear_Harness_Demo.ipynb
@@ -248,6 +275,10 @@ python scripts/score_benchmark.py eval_runs/<run-id> --out eval_runs/<run-id>/sc
 python scripts/score_benchmark.py docs/evidence/current/owner-ocr-C
 python scripts/benchmark_labclear.py compare --before <run-id> --after <run-id>
 python scripts/benchmark_labclear.py preflight --profile-letter B --policy eval/policies/free_only.example.json --dry-run
+
+# Resilience (R01–R12; R09 sends CTRL_BREAK_EVENT on Windows), browser recovery check
+python scripts/benchmark_resilience.py --offline --seed 20261010 --json-out eval_runs/resilience/resilience-benchmark.json
+$env:UAT_OUT = "test-results/resilience-ui"; node tests/browser/resilience.cjs; Remove-Item Env:UAT_OUT
 
 # Notebook
 pip install -r requirements-eval.txt

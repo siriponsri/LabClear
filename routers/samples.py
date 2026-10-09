@@ -45,7 +45,7 @@ def authorize(request: Request) -> None:
 
 
 @router.get("/{demo_id}/{format}")
-async def sample_file(demo_id: str, format: str):
+def sample_file(demo_id: str, format: str):
     if demo_id not in {d[0] for d in DEMOS} or format not in {"png", "pdf"}:
         raise ConversationError("demo_not_found", "That sample report is unavailable.", 404)
     return FileResponse(DEMO_ROOT / format / f"{demo_id}.{format}",

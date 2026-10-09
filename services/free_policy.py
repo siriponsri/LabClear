@@ -228,7 +228,7 @@ async def admit(url: str, model: str, body: dict) -> Gate:
     cost = decisions(body) if e.family == "guard" else 1
     waited = 0.0
     while True:
-        pause = _try_acquire(policy, e, run_id, cost)
+        pause = await asyncio.to_thread(_try_acquire, policy, e, run_id, cost)  # storage off the event loop
         if not pause:
             break
         if waited + pause > MAX_WAIT_SECONDS:

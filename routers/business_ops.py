@@ -29,7 +29,7 @@ router = APIRouter(prefix="/api/business")
 # ------------------------------------------------------------ catalog (public)
 
 @router.get("/catalog/search")
-async def catalog_search(q: str = "", segment: str = "", branch_id: str = "", max_price: int | None = None,
+def catalog_search(q: str = "", segment: str = "", branch_id: str = "", max_price: int | None = None,
                          min_price: int | None = None, review: str = "", sort: str = "featured"):
     if segment not in ("", "individual", "organization") or review not in ("", "excluded", "only"):
         raise ConversationError("filter_invalid", "Unknown filter value.", 422)
@@ -37,22 +37,22 @@ async def catalog_search(q: str = "", segment: str = "", branch_id: str = "", ma
 
 
 @router.get("/catalog/compare")
-async def catalog_compare(ids: str = ""):
+def catalog_compare(ids: str = ""):
     return ops.compare(None, [i.strip() for i in ids.split(",")])
 
 
 @router.get("/catalog/{package_id}")
-async def catalog_detail(package_id: str):
+def catalog_detail(package_id: str):
     return ops.package_detail(None, package_id)
 
 
 @router.get("/modes")
-async def integration_modes():
+def integration_modes():
     return {"modes": ops.modes(), "is_demo": True}
 
 
 @router.get("/dots")
-async def dots_roster():
+def dots_roster():
     from services import business_dots
     return {"dots": business_dots.public_roster(), "routing": "automatic", "is_demo": True}
 
@@ -62,7 +62,7 @@ class DotToggle(Strict):
 
 
 @router.put("/staff/dots/{dot_id}")
-async def toggle_dot(dot_id: str, body: DotToggle, request: Request):
+def toggle_dot(dot_id: str, body: DotToggle, request: Request):
     from services import business_dots
     with db.transaction() as tx:
         user = staff(tx, request)
@@ -80,7 +80,7 @@ async def toggle_dot(dot_id: str, body: DotToggle, request: Request):
 
 
 @router.get("/staff/budget")
-async def budget_status(request: Request):
+def budget_status(request: Request):
     from config import settings
     from services import cost_ledger
     with db.transaction() as tx:
@@ -112,14 +112,14 @@ def _audiences(tx, request, mutation: bool) -> list[str]:
 
 @router.get("/notifications")
 @router.get("/staff/notifications")
-async def notifications(request: Request):
+def notifications(request: Request):
     with db.transaction() as tx:
         return ops.list_notifications(tx, _audiences(tx, request, False))
 
 
 @router.post("/notifications/read")
 @router.post("/staff/notifications/read")
-async def notifications_read(body: ReadNotices, request: Request):
+def notifications_read(body: ReadNotices, request: Request):
     with db.transaction() as tx:
         return {"updated": ops.mark_read(tx, _audiences(tx, request, True), body.ids)}
 
@@ -132,7 +132,7 @@ class Decision(Strict):
 
 
 @router.post("/staff/bookings/{booking_id}/decision")
-async def booking_decision(booking_id: str, body: Decision, request: Request):
+def booking_decision(booking_id: str, body: Decision, request: Request):
     with db.transaction() as tx:
         user = staff(tx, request)
         booking = tx.get(booking_id)
@@ -162,7 +162,7 @@ async def booking_decision(booking_id: str, body: Decision, request: Request):
 
 
 @router.get("/bookings/{booking_id}/calendar.ics")
-async def booking_calendar(booking_id: str, request: Request):
+def booking_calendar(booking_id: str, request: Request):
     with db.transaction() as tx:
         user, _ = session_row(tx, request, False)
         booking = tx.own(booking_id, user["id"], "booking")
@@ -188,7 +188,7 @@ class Inquiry(Strict):
 
 
 @router.post("/organizations/inquiries")
-async def organization_inquiry(body: Inquiry, request: Request):
+def organization_inquiry(body: Inquiry, request: Request):
     with db.transaction() as tx:
         user, _ = session_row(tx, request)
         if not user["data"].get("password"):
@@ -216,14 +216,14 @@ async def organization_inquiry(body: Inquiry, request: Request):
 
 
 @router.get("/organizations/inquiries")
-async def my_inquiries(request: Request):
+def my_inquiries(request: Request):
     with db.transaction() as tx:
         user, _ = session_row(tx, request, False)
         return {"inquiries": tx.find("org_inquiry", user["id"])}
 
 
 @router.get("/staff/tickets/{ticket_id}/inquiry")
-async def ticket_inquiry(ticket_id: str, request: Request):
+def ticket_inquiry(ticket_id: str, request: Request):
     with db.transaction() as tx:
         _, ticket = staff_ticket(tx, request, ticket_id)
         inquiry = tx.get(ticket["data"].get("inquiry_id", "")) if ticket["data"].get("inquiry_id") else None
@@ -232,7 +232,7 @@ async def ticket_inquiry(ticket_id: str, request: Request):
 
 
 @router.get("/quotes/{quote_id}/document.pdf")
-async def quote_document(quote_id: str, request: Request):
+def quote_document(quote_id: str, request: Request):
     with db.transaction() as tx:
         user, _ = session_row(tx, request, False)
         quote = tx.get(quote_id)
@@ -255,7 +255,7 @@ class SimOutcome(Strict):
 
 
 @router.get("/payments/simulator/{txn_id}")
-async def sim_status(txn_id: str, request: Request):
+def sim_status(txn_id: str, request: Request):
     with db.transaction() as tx:
         user, _ = session_row(tx, request, False)
         txn = tx.own(txn_id, user["id"], "payment_txn")
@@ -263,7 +263,7 @@ async def sim_status(txn_id: str, request: Request):
 
 
 @router.post("/payments/simulator/{txn_id}/events")
-async def sim_trigger(txn_id: str, body: SimOutcome, request: Request):
+def sim_trigger(txn_id: str, body: SimOutcome, request: Request):
     """The simulator panel acts as the payer's test bank app and sends a signed event."""
     with db.transaction() as tx:
         user, _ = session_row(tx, request)
@@ -279,7 +279,9 @@ async def sim_trigger(txn_id: str, body: SimOutcome, request: Request):
 
 @router.post("/payments/simulator/webhook")
 async def sim_webhook(request: Request):
-    return ops.sim_apply(await request.body(), request.headers.get("x-simulator-signature", ""))
+    from services import execution
+    body = await request.body()
+    return await execution.offload(ops.sim_apply, body, request.headers.get("x-simulator-signature", ""))
 
 
 # ------------------------------------------------------------ LINE simulator (staff/manager)
@@ -291,7 +293,7 @@ class LineSimMessage(Strict):
 
 
 @router.post("/staff/line-simulator/events")
-async def line_sim_event(body: LineSimMessage, request: Request):
+def line_sim_event(body: LineSimMessage, request: Request):
     """Builds a LINE-shaped webhook event, signs it with the simulator secret and feeds the
     same verify -> enqueue path as the real webhook. Delivery goes to the simulated transport."""
     with db.transaction() as tx:
@@ -312,7 +314,7 @@ async def line_sim_event(body: LineSimMessage, request: Request):
 
 
 @router.get("/staff/line-simulator/outbox")
-async def line_sim_outbox(request: Request):
+def line_sim_outbox(request: Request):
     with db.transaction() as tx:
         user = staff(tx, request)
         if user["data"]["role"] != "manager":
@@ -344,7 +346,7 @@ def _scope(tx, user: dict, branch: str) -> set[str]:
 
 
 @router.get("/staff/dashboard")
-async def dashboard(request: Request, branch: str = "", days: int = 7):
+def dashboard(request: Request, branch: str = "", days: int = 7):
     """Operational metrics computed from stored records. Money values are simulated."""
     from datetime import timedelta
     days = max(1, min(days, 30))
@@ -420,7 +422,7 @@ async def dashboard(request: Request, branch: str = "", days: int = 7):
 
 
 @router.get("/staff/audit")
-async def audit_log(request: Request, limit: int = 100):
+def audit_log(request: Request, limit: int = 100):
     with db.transaction() as tx:
         user = staff(tx, request)
         if user["data"]["role"] != "manager":
@@ -442,7 +444,7 @@ class BranchEdit(Strict):
 
 
 @router.put("/staff/branches/{branch_id}")
-async def edit_branch(branch_id: str, body: BranchEdit, request: Request):
+def edit_branch(branch_id: str, body: BranchEdit, request: Request):
     with db.transaction() as tx:
         user = staff(tx, request)
         if user["data"]["role"] != "manager":
@@ -476,7 +478,7 @@ def _in_scope(record: dict, scope: set[str], user: dict) -> bool:
 
 
 @router.get("/staff/customers")
-async def staff_customers(request: Request, branch: str = "", q: str = ""):
+def staff_customers(request: Request, branch: str = "", q: str = ""):
     """Customers with at least one appointment, case, quotation or payment in the staff member's scope."""
     q = q.strip().lower()[:80]
     with db.transaction() as tx:
@@ -508,7 +510,7 @@ async def staff_customers(request: Request, branch: str = "", q: str = ""):
 
 
 @router.get("/staff/customers/{owner}")
-async def staff_customer(owner: str, request: Request):
+def staff_customer(owner: str, request: Request):
     """One customer's service history inside the staff scope. Report values and chat text are not included;
     staff read a conversation only through its case."""
     with db.transaction() as tx:
@@ -539,7 +541,7 @@ async def staff_customer(owner: str, request: Request):
 
 
 @router.get("/staff/payments")
-async def staff_payments(request: Request, branch: str = "", state: str = ""):
+def staff_payments(request: Request, branch: str = "", state: str = ""):
     """Test-payment transactions and center receipts in scope. No real money moves in this release."""
     if state not in ("", "pending", "succeeded", "failed", "expired", "cancelled", "refunded", "center"):
         raise ConversationError("filter_invalid", "Unknown payment state.", 422)

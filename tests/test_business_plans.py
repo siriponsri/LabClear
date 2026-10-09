@@ -18,7 +18,7 @@ PNG = (business.DEMO_ROOT / "png" / "01_A_Liver.png").read_bytes()
 
 
 def reader(monkeypatch, value="42", fail=False):
-    async def read(raw):
+    async def read(raw, emit=None):
         if fail:
             from services.conversation_transport import ConversationError
             raise ConversationError("provider_rejected", "test double failure", 502)

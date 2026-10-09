@@ -101,8 +101,51 @@ def _purge_legacy_guests(tx):
                 if row['data'].get('object_id') in removed or row['data'].get('ref') in removed:tx.delete(row['id'])
     tx.put(marker,'migration','system',{'legacy_guests_removed':len(guests),'at':time.time()})
 
+# Storage waits are bounded: a slow connection, query or lock ends as storage_unavailable (503)
+# instead of holding a request. Async routes run transactions in worker threads (services/execution.py
+# offload); STRICT_EVENT_LOOP makes the resilience suite fail if one runs on the event loop thread.
+PG_OPTIONS='-c statement_timeout=15000 -c lock_timeout=10000'
+SQLITE_BUSY_SECONDS=10
+STRICT_EVENT_LOOP=False
+_loop_warned=set()
+
+def _db_path():
+    return Path(os.getenv('BUSINESS_DB_PATH',str(ROOT/'data/business.sqlite3')))
+
+def _check_thread():
+    import asyncio
+    try:asyncio.get_running_loop()
+    except RuntimeError:return
+    import traceback
+    where=next((f'{f.filename.rsplit("/",1)[-1]}:{f.lineno}' for f in reversed(traceback.extract_stack()[:-3]) if 'contextlib' not in f.filename),'?')
+    if STRICT_EVENT_LOOP:raise RuntimeError('storage transaction on the event loop thread at '+where)
+    if where not in _loop_warned:
+        _loop_warned.add(where)
+        import logging;logging.getLogger('labclear.storage').warning('storage_on_event_loop at=%s',where)
+
+def probe(timeout=1):
+    """Read-only readiness probe: connect and SELECT 1. Never creates tables or runs migrations."""
+    url=os.getenv('DATABASE_URL','')
+    cipher()  # configuration: a valid data key (or the local key file)
+    if url:
+        if not url.startswith(('postgres://','postgresql://')):raise ConversationError('storage_setup','DATABASE_URL must use PostgreSQL.')
+        import psycopg
+        with psycopg.connect(url,connect_timeout=max(2,int(timeout+0.999)),options=f'-c statement_timeout={int(timeout*1000)}') as c:
+            c.execute('SELECT 1').fetchone()
+        return 'postgresql'
+    if cloud():raise ConversationError('storage_setup','Hosted business features require a durable PostgreSQL DATABASE_URL.')
+    c=sqlite3.connect(f'file:{_db_path()}?mode=ro',uri=True,timeout=timeout)
+    try:c.execute('SELECT 1').fetchone()
+    finally:c.close()
+    return 'sqlite'
+
+def ensure_schema():
+    """Startup: create the tables once (every transaction also creates them if missing)."""
+    with transaction():pass
+
 @contextmanager
 def transaction():
+    _check_thread()
     url=os.getenv('DATABASE_URL','')
     pg=bool(url)
     if pg:
@@ -110,12 +153,12 @@ def transaction():
         try:
             import psycopg
             from psycopg.rows import dict_row
-            c=psycopg.connect(url,connect_timeout=10,row_factory=dict_row)
+            c=psycopg.connect(url,connect_timeout=10,row_factory=dict_row,options=PG_OPTIONS)
         except Exception:raise ConversationError('storage_unavailable','The business database is unavailable.') from None
     else:
         if cloud():raise ConversationError('storage_setup','Hosted business features require a durable PostgreSQL DATABASE_URL.')
-        p=Path(os.getenv('BUSINESS_DB_PATH',str(ROOT/'data/business.sqlite3')));p.parent.mkdir(parents=True,exist_ok=True)
-        c=sqlite3.connect(p,timeout=20);c.row_factory=sqlite3.Row
+        p=_db_path();p.parent.mkdir(parents=True,exist_ok=True)
+        c=sqlite3.connect(p,timeout=SQLITE_BUSY_SECONDS);c.row_factory=sqlite3.Row
     try:
         c.execute('CREATE TABLE IF NOT EXISTS rs_mutex(id INTEGER PRIMARY KEY)')
         c.execute('INSERT INTO rs_mutex(id) VALUES(1) ON CONFLICT(id) DO NOTHING')
@@ -133,9 +176,19 @@ def transaction():
             c.commit()
             tx.commit_guest()
             _PURGED.add(identity)
-    except Exception:
-        c.rollback();raise
+    except Exception as exc:
+        try:c.rollback()
+        except Exception:pass
+        if _storage_failure(exc,pg):raise ConversationError('storage_unavailable','The business database is busy or unavailable. Please try again.') from None
+        raise
     finally:c.close()
+
+def _storage_failure(exc,pg):
+    """A connection, timeout or lock failure of the database itself (not of the data or the code)."""
+    if pg:
+        import psycopg
+        return isinstance(exc,psycopg.OperationalError)
+    return isinstance(exc,sqlite3.OperationalError) and ('locked' in str(exc) or 'busy' in str(exc) or 'unable to open' in str(exc))
 
 def derived_secret(purpose:str)->bytes:
     """Purpose-bound secret derived from the stable data key (never the key itself)."""

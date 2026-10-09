@@ -41,7 +41,7 @@ def _slot(slot: str) -> str:
 
 
 @router.get("")
-async def view(request: Request):
+def view(request: Request):
     with db.transaction() as tx:
         _manager(tx, request)
         data = providers.public_view(tx)
@@ -57,7 +57,7 @@ async def view(request: Request):
 
 
 @router.get('/registry')
-async def candidate_registry(request: Request):
+def candidate_registry(request: Request):
     with db.transaction() as tx:
         _manager(tx, request)
     from services.model_registry import registry
@@ -65,7 +65,7 @@ async def candidate_registry(request: Request):
 
 
 @router.put("/{slot}")
-async def update(slot: str, body: ProviderInput, request: Request):
+def update(slot: str, body: ProviderInput, request: Request):
     with db.transaction() as tx:
         user = _manager(tx, request)
         try:
@@ -78,7 +78,7 @@ async def update(slot: str, body: ProviderInput, request: Request):
 
 
 @router.delete("/{slot}")
-async def remove(slot: str, request: Request):
+def remove(slot: str, request: Request):
     with db.transaction() as tx:
         user = _manager(tx, request)
         providers.reset(tx, _slot(slot))
@@ -88,17 +88,32 @@ async def remove(slot: str, request: Request):
 
 @router.post("/{slot}/test")
 async def test(slot: str, request: Request):
-    """One small real call through the normal cap and THB ledger. Runs outside the DB transaction."""
-    with db.transaction() as tx:
-        _manager(tx, request)
+    """One small real call through the normal cap and THB ledger. Runs outside the DB transaction,
+    as an admitted workflow with its own deadline (services/execution.py)."""
+    from services import execution
+    def manager(tx):
+        return _manager(tx, request)["id"]
+    owner = await execution.offload(_in_tx, manager)
     slot = _slot(slot)
+    ctx = execution.start("/api/business/staff/ai-providers/test", "ai", owner)
+    return await execution.respond(request, ctx, lambda emit: _test(slot, request))
+
+
+def _in_tx(fn):
+    with db.transaction() as tx:
+        return fn(tx)
+
+
+async def _test(slot: str, request: Request):
+    from services import execution
     provider = providers.runtime(slot)
     identity = {"provider": provider.preset, "model": provider.model}
-    def receipt(ok):
-        with db.transaction() as tx:
-            user = _manager(tx, request)
-            providers.record_test(tx, slot, provider, ok)
-            tx.audit(user['id'], 'ai_provider.test.'+('passed' if ok else 'failed'), slot)
+    def record(ok, tx):
+        user = _manager(tx, request)
+        providers.record_test(tx, slot, provider, ok)
+        tx.audit(user['id'], 'ai_provider.test.'+('passed' if ok else 'failed'), slot)
+    async def receipt(ok):
+        await execution.offload(_in_tx, lambda tx: record(ok, tx))
     from services import conversation_guard, conversation_transport as transport
     if providers.kind_of(slot) == "llm":
         # The chat needs JSON replies, so test exactly that rather than free text.
@@ -111,7 +126,7 @@ async def test(slot: str, request: Request):
             ok = extract_json(raw).get("ok") in (True, "true")
         except ValueError:
             ok = False
-        receipt(ok)
+        await receipt(ok)
         if ok:
             return {"ok": True, "status": "LIVE_TESTED", **identity,
                     "message": "The model returned valid JSON for this test only. Medical accuracy and role suitability are not verified."}
@@ -119,7 +134,7 @@ async def test(slot: str, request: Request):
                                         "Try another model for this provider."}
     if slot == "guard":
         await conversation_guard.check("What does an HbA1c test measure?", "input")
-        receipt(True)
+        await receipt(True)
         return {"ok": True, "status": "LIVE_TESTED", **identity, "message": "The safety check classified one normal question as safe; broader safety evaluation is not verified."}
     return {"ok": False, "status": "NOT_RUN", **identity,
             "message": "OCR was not called. To test it explicitly, open My reports and use a synthetic sample; provider charges may apply."}

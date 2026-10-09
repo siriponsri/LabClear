@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from pydantic import Field, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -79,6 +80,28 @@ class Settings(BaseSettings):
     FREE_ONLY_POLICY_PATH: str = ""
     FREE_ONLY_RUN_ID: str = ""
     FREE_ONLY_ALLOW_OFFLINE_DOUBLES: bool = False
+
+    # Request resilience (docs/operations/resilience.md). One single-process service: these limits
+    # are per instance. A deadline covers the whole workflow (admission, storage, providers, OCR and
+    # finalization); a bounded cleanup runs after it.
+    CHAT_DEADLINE_SECONDS: float = Field(220.0, ge=30, le=600)
+    REPORT_DEADLINE_SECONDS: float = Field(150.0, ge=30, le=600)
+    STREAM_HEARTBEAT_SECONDS: float = Field(10.0, ge=2, le=30)
+    AI_MAX_IN_FLIGHT: int = Field(2, ge=1, le=16)
+    OCR_MAX_IN_FLIGHT: int = Field(1, ge=1, le=16)
+    # Automatic transport retries are not implemented (P1: idempotency first); only 0 is accepted.
+    PROVIDER_TRANSPORT_RETRIES: int = Field(0, ge=0, le=0)
+    # Report files are rasterized in a separate, killable process with these limits.
+    DOCUMENT_WORKER_SECONDS: float = Field(30.0, ge=2, le=120)
+    DOCUMENT_WORKER_MEMORY_MB: int = Field(384, ge=192, le=4096)
+    # On SIGTERM: stop admitting work, let in-flight requests finish, cancel what remains after this.
+    SHUTDOWN_DRAIN_SECONDS: float = Field(20.0, ge=1, le=25)
+
+    @model_validator(mode="after")
+    def _resilience_limits(self):
+        if self.OCR_MAX_IN_FLIGHT > self.AI_MAX_IN_FLIGHT:
+            raise ValueError("OCR_MAX_IN_FLIGHT must not exceed AI_MAX_IN_FLIGHT: report reading counts toward the AI limit.")
+        return self
 
     model_config = SettingsConfigDict(
         env_file=".env",

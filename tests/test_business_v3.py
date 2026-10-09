@@ -147,19 +147,19 @@ def test_staff_requires_role_and_takeover():
     assert work['conversation']['mode']=='staff'
 
 def test_staff_queue_does_not_call_llm(monkeypatch):
-    async def fail(*args):raise AssertionError('Model must not run during staff mode')
+    async def fail(*args,**kw):raise AssertionError('Model must not run during staff mode')
     monkeypatch.setattr(business.business_agent,'run',fail)
     c=client();c.post('/api/business/handoffs',json={'summary':'Staff please'})
     assert c.post('/api/business/chat',json={'message':'Hello team'}).json()['queued_for_staff']
 
 def test_llm_failure_does_not_create_transaction(monkeypatch):
-    async def fail(*args):raise business.ConversationError('guard_unavailable','Guard unavailable')
+    async def fail(*args,**kw):raise business.ConversationError('guard_unavailable','Guard unavailable')
     monkeypatch.setattr(business.business_agent,'run',fail);c=client();r=c.post('/api/business/chat',json={'message':'book anything'})
     assert r.status_code==503
     assert c.get('/api/business/workspace').json()['bookings']==[]
 
 def test_llm_proposal_needs_explicit_confirmation(monkeypatch):
-    async def agent(*args):return {'reply':'A booking preview.','sources':[],'followups':[],'action':{'type':'book','quote':db.quote(['P02']),'branch_id':'BKK01','date':slot(),'time':'09:00'}}
+    async def agent(*args,**kw):return {'reply':'A booking preview.','sources':[],'followups':[],'action':{'type':'book','quote':db.quote(['P02']),'branch_id':'BKK01','date':slot(),'time':'09:00'}}
     monkeypatch.setattr(business.business_agent,'run',agent);c=client();r=c.post('/api/business/chat',json={'message':'Book P02'}).json()
     assert c.get('/api/business/workspace').json()['bookings']==[]
     assert c.post('/api/business/confirm',json={'action_id':r['action_id']}).status_code==200
@@ -167,7 +167,7 @@ def test_llm_proposal_needs_explicit_confirmation(monkeypatch):
     assert len(c.get('/api/business/workspace').json()['bookings'])==1
 
 def test_stop_invalidates_preview(monkeypatch):
-    async def agent(*args):return {'reply':'Preview','sources':[],'action':{'type':'quote','quote':db.quote(['P01'])}}
+    async def agent(*args,**kw):return {'reply':'Preview','sources':[],'action':{'type':'quote','quote':db.quote(['P01'])}}
     monkeypatch.setattr(business.business_agent,'run',agent);c=client();r=c.post('/api/business/chat',json={'message':'Quote'}).json();c.post('/api/business/stop')
     assert c.post('/api/business/confirm',json={'action_id':r['action_id']}).status_code==409
 
@@ -220,7 +220,7 @@ def promote(c,role='manager'):
     return uid
 
 def test_manager_catalog_and_stale_quote(monkeypatch):
-    async def agent(*args):return {'reply':'Preview','sources':[],'action':{'type':'book','quote':db.quote(['P02']),'branch_id':'BKK01','date':slot(),'time':'09:00'}}
+    async def agent(*args,**kw):return {'reply':'Preview','sources':[],'action':{'type':'book','quote':db.quote(['P02']),'branch_id':'BKK01','date':slot(),'time':'09:00'}}
     monkeypatch.setattr(business.business_agent,'run',agent);c=client();r=c.post('/api/business/chat',json={'message':'Book P02'}).json()
     assert c.put('/api/business/staff/catalog/P02',json={'price_thb':1990,'active':True}).status_code==403
     s=client();promote(s);assert s.put('/api/business/staff/catalog/P02',json={'price_thb':1990,'active':True}).status_code==200
@@ -282,7 +282,7 @@ def test_delayed_stripe_events_preserve_refund_state(status,event_type):
     assert c.get('/api/business/workspace').json()['bookings'][0]['data']['payment_status']==status
 
 def test_staff_takeover_discards_inflight_model(monkeypatch):
-    async def agent(message,context):
+    async def agent(message,context,emit=None):
         with db.transaction() as tx:
             c=tx.find('conversation')[0];c['data']['mode']='staff';c['data']['version']+=1;tx.put(c['id'],'conversation',c['owner'],c['data'])
         return {'reply':'This draft must never be delivered','sources':[],'action':None}

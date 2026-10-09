@@ -71,12 +71,12 @@ def features() -> dict:
 
 
 @router.get("/features")
-async def feature_flags():
+def feature_flags():
     return features()
 
 
 @router.get("/common")
-async def common():
+def common():
     """Everything most pages need in one call: catalog, centers, policies, plans and roles."""
     src = _sources()
     return {"version": VERSION, "catalog": db.catalog(), "branches": db.branches()["branches"], "policies": db.policies(),
@@ -86,7 +86,7 @@ async def common():
 
 
 @router.get("/home")
-async def home():
+def home():
     catalog = db.catalog()
     branches = db.branches()["branches"]
     packages = [p for p in catalog["packages"] if p.get("active", True)]
@@ -112,7 +112,7 @@ async def home():
 
 
 @router.get("/sources")
-async def sources():
+def sources():
     from services.knowledge_admin import active_records
     src = _sources()
     # Records a manager paused in Admin are not searched, so they are not listed either.
@@ -124,7 +124,7 @@ async def sources():
 
 
 @router.get("/packages/{package_id}")
-async def package(package_id: str):
+def package(package_id: str):
     detail = ops.package_detail(None, package_id)
     related = [p for p in db.catalog()["packages"] if p.get("active", True) and p["id"] != package_id
                and p["segment"] == detail["package"]["segment"]][:3]
@@ -132,7 +132,7 @@ async def package(package_id: str):
 
 
 @router.get("/compare")
-async def compare(ids: str = ""):
+def compare(ids: str = ""):
     try:
         return {"comparison": ops.compare(None, [i.strip() for i in ids.split(",")]), "error": ""}
     except ConversationError as exc:
@@ -140,7 +140,7 @@ async def compare(ids: str = ""):
 
 
 @router.get("/hospital-links")
-async def hospital_links():
+def hospital_links():
     """Official external hospital pages (Codex HOSPITAL_LINKS_ENABLED). Never booking or clinical advice."""
     if not settings.HOSPITAL_LINKS_ENABLED:
         raise ConversationError("feature_disabled", "Hospital links are disabled.", 404)
@@ -151,7 +151,7 @@ async def hospital_links():
 
 
 @router.get("/membership")
-async def membership(request: Request):
+def membership(request: Request):
     """The caller's own organization role (reader/editor) or none. Never another user's data."""
     if not settings.ORG_DOCUMENTS_ENABLED:
         return {"enabled": False, "member": False, "role": ""}

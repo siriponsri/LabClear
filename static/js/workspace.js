@@ -20,10 +20,13 @@
   const isStaff = () => STAFF_ROLES.includes(user?.role);
   const isManager = () => user?.role === 'manager';
   function notice(text, tone) { const n = $('notice'); n.textContent = text; n.className = 'toast' + (tone === 'bad' ? ' bad' : ''); n.hidden = false; clearTimeout(notice.t); notice.t = setTimeout(() => { n.hidden = true; }, 7000); }
-  async function request(path, options = {}, accept = 'application/json') {
+  function requestInit(options = {}, accept = 'application/json') {
     const headers = { 'X-Business-CSRF': csrf, ...(guestToken ? { 'X-LabClear-Guest': guestToken } : {}), Accept: accept, ...(accessCode ? { 'X-LabClear-Access': accessCode } : {}), ...options.headers };
     if (options.body && !(options.body instanceof FormData)) headers['Content-Type'] = 'application/json';
-    try { return await fetch('/api/business' + path, { credentials: 'same-origin', ...options, headers }); }
+    return { credentials: 'same-origin', ...options, headers };
+  }
+  async function request(path, options = {}, accept = 'application/json') {
+    try { return await fetch('/api/business' + path, requestInit(options, accept)); }
     catch (e) { if (e.name === 'AbortError') throw e; throw Object.assign(Error('You appear to be offline. Check your connection and try again.'), { code: 'network' }); }
   }
   const sourceImages = new Map();
@@ -41,6 +44,13 @@
   });
   addEventListener('pageshow', e => { if (e.persisted) location.reload(); });
   async function readJson(r) {
+    // A gateway's HTML error page (or any non-JSON reply) is never parsed or shown.
+    if (!(r.headers.get('content-type') || '').includes('application/json')) {
+      try { await r.body?.cancel(); } catch { /* closed */ }
+      const kind = r.ok ? 'unexpected' : 'gateway';
+      throw Object.assign(Error(RSStream.MESSAGES[kind]), { code: kind, kind, status: r.status });
+    }
+    RSStream.touch();
     let d; try { d = await r.json(); } catch { throw Error('The server response could not be read.'); }
     if (!r.ok) {
       let message = d.message || 'The request could not be completed.';
@@ -50,27 +60,14 @@
     return d;
   }
   async function api(path, options = {}) { return readJson(await request(path, options)); }
-  /* A turn whose steps stream as they happen (one JSON object per line). onStep receives each
-     step; the result (or the error) arrives last. */
-  async function stream(path, options, onStep) {
-    const r = await request(path, options, 'application/x-ndjson');
-    if (!(r.headers.get('content-type') || '').includes('ndjson')) return readJson(r);
-    const reader = r.body.getReader(), dec = new TextDecoder(); let buf = '', result = null, failure = null;
-    const line = text => {
-      if (!text.trim()) return; const ev = JSON.parse(text);
-      if (ev.type === 'step') onStep?.(ev);
-      else if (ev.type === 'done') result = ev.result;
-      else if (ev.type === 'error') failure = Object.assign(Error(ev.message), { code: ev.code, status: ev.status });
-    };
-    for (;;) {
-      const { value, done } = await reader.read(); if (done) break;
-      buf += dec.decode(value, { stream: true }); let i;
-      while ((i = buf.indexOf('\n')) >= 0) { line(buf.slice(0, i)); buf = buf.slice(i + 1); }
-    }
-    line(buf);
-    if (failure) throw failure;
-    if (!result) throw Object.assign(Error('The reply was interrupted. Please try again.'), { code: 'interrupted' });
-    return result;
+  /* An AI workflow: steps stream as they happen (NDJSON) and the result or a classified failure
+     arrives last (static/js/stream.js). Failures throw an Error with code, kind and requestId. */
+  async function stream(path, options, onStep, budgetMs) {
+    const r = await RSStream.run('/api/business' + path, requestInit(options, 'application/x-ndjson'), { onStep, budgetMs });
+    if (r.ok) return r.result;
+    let message = r.message || 'The request could not be completed.';
+    if (Array.isArray(r.detail)) message = 'Please check: ' + r.detail.map(x => (x.loc || []).slice(-1)[0]).filter(Boolean).join(', ') + '.';
+    throw Object.assign(Error(message), { code: r.code, kind: r.kind, status: r.status, requestId: r.requestId, step: r.step, origin: r.origin, retryAfter: r.retryAfter });
   }
   const post = (path, data = {}) => api(path, { method: 'POST', body: JSON.stringify(data) });
   function button(text, run, cls = 'btn sm') {
@@ -326,6 +323,8 @@
   /* ------------------------------------------------------------ live steps while the assistant works */
   /* Shown while a reply is being prepared and removed when it arrives. The finished steps stay
      with the answer under "Process Explainability". */
+  /* What a step that did not finish turned into (server: services/execution.py). */
+  const STEP_END = { timeout: 'Timed out', cancelled: 'Cancelled', unavailable: 'Temporarily unavailable', blocked: 'Blocked by the safety check', error: 'Failed', interrupted: 'Interrupted' };
   function thinking() {
     const turn = el('article', null, 'turn ai thinking'), head = el('div', null, 'turn-head');
     const dot = el('span', null, 'speaker-dot'); dot.setAttribute('aria-hidden', 'true');
@@ -336,15 +335,32 @@
     const set = ev => {
       let li = rows.get(ev.id);
       if (!li) { li = el('li'); li.append(el('span', null, 'step-icon'), el('div', null, 'step-text')); rows.set(ev.id, li); list.append(li); }
-      li.className = 'step ' + ev.state;
-      const t = li.lastChild; t.replaceChildren(el('span', ev.label, 'step-label')); if (ev.detail) t.append(el('span', ev.detail, 'step-detail'));
+      const ended = STEP_END[ev.state];
+      li.className = 'step ' + (ended ? 'failed ' + ev.state : ev.state);
+      const t = li.lastChild; t.replaceChildren(el('span', ev.label, 'step-label'));
+      if (ended) {
+        const d = el('span', null, 'step-detail'); d.append(el('span', ended));
+        if (ev.duration_ms !== undefined) d.append(document.createTextNode(' · ' + (ev.duration_ms / 1000).toFixed(1) + ' s'));
+        t.append(d);
+      } else if (ev.detail) t.append(el('span', ev.detail, 'step-detail'));
       toBottom();
     };
     set({ id: 'send', state: 'running', label: 'Sending' });
     return {
       node: turn,
       step: ev => { const s = rows.get('send'); if (s) { s.remove(); rows.delete('send'); } set(ev); },
-      fail: message => { rows.forEach(li => { if (li.classList.contains('running')) li.className = 'step failed'; }); status.textContent = 'Stopped'; if (message) list.append(el('li', message, 'step-note')); toBottom(); },
+      // A failed or interrupted turn: steps still running are marked, never shown as a checked answer.
+      fail: (message, err) => {
+        rows.forEach((li, id) => { if (li.classList.contains('running')) set({ id, state: 'interrupted', label: li.querySelector('.step-label')?.textContent || '' }); });
+        status.textContent = err?.kind === 'aborted' ? 'Stopped' : 'Not answered';
+        turn.classList.add('ended');
+        if (message) list.append(el('li', message, 'step-note'));
+        if (err?.requestId) {
+          const ref = el('li', null, 'step-note ref'), code = el('code', err.requestId); code.setAttribute('translate', 'no');
+          ref.append(el('span', 'Request reference'), document.createTextNode(': '), code); list.append(ref);
+        }
+        toBottom();
+      },
     };
   }
 
@@ -391,7 +407,31 @@
   const defaultQuestion = () => (window.LabClearI18n?.language || navigator.language || '').toLowerCase().startsWith('th') ? 'ช่วยอ่านและอธิบายผลแล็บนี้ให้หน่อย' : 'Please read this report and explain it.';
   async function finishTurn() {
     busy = false; $('send').disabled = false; $('stop').hidden = true; $('chat-status').textContent = ''; controller = null;
+    document.body.classList.remove('turn-active');
     lastMessages = ''; await refresh().catch(() => {}); $('message').focus({ preventScroll: true });
+  }
+  function startTurn() {
+    busy = true; $('send').disabled = true; $('stop').hidden = false; controller = new AbortController();
+    document.body.classList.add('turn-active');   // Retry buttons are inert while a workflow runs
+  }
+  /* After a failure the message stays on this page (in memory only, never in browser storage):
+     unless the server kept it as a retryable message, the text and the chosen files go back into the
+     composer, and the failed steps stay visible with the request reference. */
+  function keepDraft(question, typed, files, sample, live) {
+    const last = state?.conversation?.messages?.slice(-1)[0];
+    const kept = last && last.role === 'user' && last.content === question && last.failed && last.retryable;
+    if (live && !kept) $('messages').append(live.node);
+    if (!kept && typed && !$('message').value.trim()) { $('message').value = typed; window.rsGrow?.(); }
+    if (files.length || sample) { draft.files = files; draft.sample = sample; renderDraft(); }
+    toBottom();
+  }
+  /* A free instance sleeps after 15 idle minutes: before sending after a long pause, wait for /ready
+     (GET only) so the message itself is posted once. */
+  async function awake() {
+    if (!RSStream.stale()) return true;
+    const w = await RSStream.ensureReady({ onWaiting: () => { $('chat-status').textContent = 'Starting LabClear. This can take up to a minute; your message will be sent once.'; } });
+    $('chat-status').textContent = '';
+    return w.ready;
   }
   async function send(text) {
     text = (text || '').trim();
@@ -400,8 +440,7 @@
     if (view !== 'chat') await navigate('chat');
     const human = state && state.conversation.mode !== 'bot';
     if (withReport && human) { notice('Our team has this conversation. Add the report on My reports instead.', 'bad'); return; }
-    busy = true; $('send').disabled = true; $('stop').hidden = false;
-    controller = new AbortController(); $('message').value = ''; window.rsGrow?.();
+    startTurn(); $('message').value = ''; window.rsGrow?.();
     const question = text || (withReport ? defaultQuestion() : '');
     const box = $('messages'); box.querySelector('.welcome, .state-box')?.remove();
     const att = files.map(f => ({ preview: f.preview, name: f.name })).concat(sample ? [{ preview: sample.preview, name: sample.title }] : []);
@@ -410,24 +449,37 @@
     if (live) box.append(live.node); else $('chat-status').textContent = 'Sending to our team…';
     toBottom();
     if (withReport) { draft.files = []; draft.sample = null; renderDraft(); }
+    let failed = null;
     try {
+      if (!await awake()) throw Object.assign(Error(RSStream.MESSAGES.gateway), { code: 'gateway', kind: 'gateway' });
       if (withReport) {
         const form = new FormData(); files.forEach(f => form.append('files', f.file)); form.append('message', question); if (sample) form.append('demo_id', sample.id);
-        const r = await stream('/chat/report', { method: 'POST', body: form, signal: controller.signal }, live?.step);
+        const r = await stream('/chat/report', { method: 'POST', body: form, signal: controller.signal }, live?.step, 150000);
         if (r.entitlement && state) { state.plan = r.entitlement; syncFileInput(); }
       } else await stream('/chat', { method: 'POST', body: JSON.stringify({ message: question, page: { path: '/app', view } }), signal: controller.signal }, live?.step);
     } catch (e) {
-      if (e.name !== 'AbortError') { live?.fail(e.message); if (e.code === 'subscription_required') upgradeDialog(e.message); else notice(e.message, 'bad'); }
-    } finally { await finishTurn(); }
+      if (e.kind !== 'aborted' && e.name !== 'AbortError') { failed = e; live?.fail(e.message, e); if (e.code === 'subscription_required') upgradeDialog(e.message); else notice(e.message, 'bad'); }
+    } finally {
+      await finishTurn();
+      if (failed && failed.code !== 'subscription_required') keepDraft(question, text, files, sample, live);
+    }
   }
   /* Retries and report confirmations: no new user message, the live steps follow the last turn. */
   async function runTurn(path, body) {
     if (busy) return;
-    busy = true; $('send').disabled = true; $('stop').hidden = false; controller = new AbortController();
+    startTurn();
     const live = thinking(); $('messages').append(live.node); toBottom();
-    try { await stream(path, { method: 'POST', body: JSON.stringify(body), signal: controller.signal }, live.step); }
-    catch (e) { if (e.name !== 'AbortError') { live.fail(e.message); notice(e.message, 'bad'); } }
-    finally { await finishTurn(); }
+    let failed = null;
+    try {
+      if (!await awake()) throw Object.assign(Error(RSStream.MESSAGES.gateway), { code: 'gateway', kind: 'gateway' });
+      await stream(path, { method: 'POST', body: JSON.stringify(body), signal: controller.signal }, live.step);
+    }
+    catch (e) { if (e.kind !== 'aborted' && e.name !== 'AbortError') { failed = e; live.fail(e.message, e); notice(e.message, 'bad'); } }
+    finally {
+      await finishTurn();
+      // The server keeps retryable failures with their own Retry; show the failed steps for the rest.
+      if (failed && !['app'].includes(failed.kind)) { $('messages').append(live.node); toBottom(); }
+    }
   }
   const retry = id => runTurn('/chat/retry', { message_id: id });
   const cardRetry = id => runTurn('/chat/report/answer', { message_id: id });

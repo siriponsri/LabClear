@@ -20,8 +20,9 @@ Documentation for LabClear 4.0.0-rc3. Start with the [project README](../README.
 
 - [admin.md](admin.md): no-code admin guide for managers on `/staff`.
 - [deploy/render.md](deploy/render.md): Render Blueprint runbook, environment variables, migration and rollback.
+- [operations/resilience.md](operations/resilience.md): deadlines, admission, cancellation, the stream protocol, readiness and drain, request IDs, and the 502 runbook.
 - [testing.md](testing.md): Python and browser suites, benchmark modes and recorded evidence.
-- [evidence/current/README.md](evidence/current/README.md): recorded OFFLINE benchmark results.
+- [evidence/current/README.md](evidence/current/README.md): recorded OFFLINE benchmark results and the resilience fault suite.
 
 ## Data and notices
 

@@ -10,14 +10,14 @@ router = APIRouter(prefix='/api/business/staff/harness')
 
 
 @router.get('')
-async def view(request: Request):
+def view(request: Request):
     with db.transaction() as tx:
         _manager(tx, request)
         return harness_config.public_view(tx)
 
 
 @router.put('')
-async def update(request: Request, body: harness_config.HarnessInput):
+def update(request: Request, body: harness_config.HarnessInput):
     with db.transaction() as tx:
         user = _manager(tx, request)
         harness_config.save(tx, user['id'], body)
@@ -30,7 +30,7 @@ class Restore(harness_config.Strict):
 
 
 @router.post('/restore')
-async def restore(request: Request, body: Restore):
+def restore(request: Request, body: Restore):
     with db.transaction() as tx:
         user = _manager(tx, request)
         row = tx.get(f'harness_revision_{body.target_revision}')

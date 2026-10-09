@@ -185,6 +185,8 @@ async def complete_json(messages: list[dict], model, *, step: str, max_tokens: i
     except ConversationError as exc:
         if exc.code != "answer_invalid":
             raise
+        from services import execution
+        execution.checkpoint("json_repair")  # the corrective call shares the workflow deadline and quota
         retry = [*messages, {"role": "user", "content": (
             f"Your previous reply could not be used: {exc.message} Reply again with only the JSON object "
             "described in the instructions, using only the allowed values. Keep the reply short enough to finish.")}]
