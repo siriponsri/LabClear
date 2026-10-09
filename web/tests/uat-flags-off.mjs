@@ -6,7 +6,7 @@
  *   API_ORIGIN=http://127.0.0.1:8000 npm run start:render  # web/, :3000
  *   node tests/uat-flags-off.mjs
  *
- * MOCKED_TEST_ONLY AI (no model is called). Writes docs/evidence/integration-4.0-rc1/web-uat-flags-off/uat.json.
+ * MOCKED_TEST_ONLY AI (no model is called). Writes docs/evidence/integration-4.0-rc2/web-uat-flags-off/uat.json.
  */
 import { chromium } from "playwright-core";
 import fs from "node:fs";
@@ -18,7 +18,7 @@ const WEB = path.resolve(HERE, "..");
 const ROOT = path.resolve(WEB, "..");
 const BASE = (process.env.BASE || "http://localhost:3000").replace(/\/$/, "");
 const API = BASE + "/api/business";
-const OUT = process.env.UAT_OUT ? path.resolve(process.env.UAT_OUT) : path.join(ROOT, "docs/evidence/integration-4.0-rc1/web-uat-flags-off");
+const OUT = process.env.UAT_OUT ? path.resolve(process.env.UAT_OUT) : path.join(ROOT, "docs/evidence/integration-4.0-rc2/web-uat-flags-off");
 fs.mkdirSync(OUT, { recursive: true });
 const DICT = JSON.parse(fs.readFileSync(path.join(WEB, "lib/i18n/dict.th.json"), "utf8"));
 const T = (en) => DICT[en] ?? en;

@@ -17,7 +17,7 @@
  * report reader are test doubles, so this is UI/flow evidence (real routes, storage, sessions, CSRF,
  * permissions and state machines), never model or OCR quality evidence.
  *
- * Writes docs/evidence/integration-4.0-rc1/web-uat/uat.json and screenshots (UAT_OUT overrides);
+ * Writes docs/evidence/integration-4.0-rc2/web-uat/uat.json and screenshots (UAT_OUT overrides);
  * exits 1 on any failure. The pages run in Thai (the default); selectors use the app's own
  * dictionary (lib/i18n/dict.th.json) through T("English source text").
  *
@@ -43,7 +43,7 @@ const BASE = (process.env.BASE || "http://localhost:3000").replace(/\/$/, "");
 const API = BASE + "/api/business";
 const ONLY = (process.env.UAT_ONLY || "").split(",").map((s) => s.trim()).filter(Boolean);
 // A partial run (UAT_ONLY) must not replace the release evidence: it writes to a temp folder.
-const OUT = process.env.UAT_OUT ? path.resolve(process.env.UAT_OUT) : ONLY.length ? path.join(os.tmpdir(), "labclear-uat-partial") : path.join(ROOT, "docs/evidence/integration-4.0-rc1/web-uat");
+const OUT = process.env.UAT_OUT ? path.resolve(process.env.UAT_OUT) : ONLY.length ? path.join(os.tmpdir(), "labclear-uat-partial") : path.join(ROOT, "docs/evidence/integration-4.0-rc2/web-uat");
 const AUTH_DIR = !process.env.UAT_REUSE_AUTH ? "" : process.env.UAT_REUSE_AUTH === "1" ? path.join(os.tmpdir(), "labclear-uat-auth") : path.resolve(process.env.UAT_REUSE_AUTH);
 const DEBUG_DIR = path.join(os.tmpdir(), "labclear-uat-debug");
 const RUN = Date.now().toString(36).slice(-6);
