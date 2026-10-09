@@ -224,9 +224,13 @@ async def run(message,context,emit=None):
     payload={'USER_TEXT':message,'ROLE':role,'REPORT':role_report,'PREVIOUS_REPORTS':context.get('previous_reports',[]) if role_report else [],'EVIDENCE':evidence,'ACTION':action,'decision':plan.model_dump(exclude={'ui'}),'customer_state':customer_state}
     writer=_agent(dot['id'])
     instructions=ANSWER
+    skills=None
     if settings.RUNTIME_SKILLS_ENABLED:
-        from services.runtime_skills import bundle
-        instructions += '\n\n' + bundle('medical' if role_report else 'general')['instructions']
+        # Reviewed modules chosen per task by the server (role capability, action, report, evidence, tools).
+        from services.runtime_skills import select
+        chosen=select(dot,plan.action,bool(role_report),{e.get('data_class') for e in evidence},[a['tool'] for a in tools.audit if a.get('ok')])
+        instructions += '\n\n' + chosen['instructions']
+        skills={'package':chosen['id']+' '+chosen['version'],'modules':[m['id'] for m in chosen['modules']],'sha256':chosen['sha256'][:16]}
     if settings.MEDICAL_HARNESS_ENABLED and role_report:
         from services.model_harness import analyze, packet_from_payload
         from services.providers import runtime
@@ -287,4 +291,4 @@ async def run(message,context,emit=None):
     await guard.check(answer.reply+'\n'+'\n'.join(answer.followups)+'\n'+json.dumps(action,ensure_ascii=False)+'\n'+plan.reason,'output',message)
     await step('safety_out','done','The answer passed the safety check',_label('guard'))
     sources=[{k:e.get(k) for k in ['id','title','url','publisher','data_class','version','section','sha256']} for e in evidence if e['id'] in answer.evidence_ids]
-    return {'reply':answer.reply,'sources':sources,'observations':[o.model_dump() for o in answer.observations],'followups':answer.followups,'action':action,'retrieval':retrieval,'dot':{'id':dot['id'],'name':dot['name']},'rerouted_from':rerouted,'ui':ui,'checks':{'rewrite_count':attempt,'input_safety':'passed','citations_validated':len(sources),'independent_review':'passed','output_safety':'passed','observations':len(answer.observations),'tools':tools.audit},'trace':trace}
+    return {'reply':answer.reply,'sources':sources,'observations':[o.model_dump() for o in answer.observations],'followups':answer.followups,'action':action,'retrieval':retrieval,'dot':{'id':dot['id'],'name':dot['name']},'rerouted_from':rerouted,'ui':ui,'checks':{'rewrite_count':attempt,'input_safety':'passed','citations_validated':len(sources),'independent_review':'passed','output_safety':'passed','observations':len(answer.observations),'tools':tools.audit,'skills':skills},'trace':trace}

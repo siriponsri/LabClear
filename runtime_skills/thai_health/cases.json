@@ -1,0 +1,29 @@
+{
+ "version": "0.3.0",
+ "note": "Selection and boundary cases for each runtime module. They are run by tests/test_runtime_skills_select.py. They check which reviewed instructions reach a task, not the quality of Thai wording.",
+ "cases": [
+  {"id": "RS-01", "about": "greeting, no evidence", "role": "advisor", "action": "answer", "has_report": false, "evidence": [],
+   "must_include": ["core.md", "thai-style.md"], "must_exclude": ["evidence-citation.md", "package-advice.md", "lay-explanation.md", "patient-explanation.md", "scope-uncertainty.md"]},
+  {"id": "RS-02", "about": "package price question (Q01)", "role": "advisor", "action": "answer", "has_report": false, "evidence": ["synthetic_business"],
+   "must_include": ["evidence-citation.md", "package-advice.md"], "must_exclude": ["lay-explanation.md", "patient-explanation.md", "scope-uncertainty.md"]},
+  {"id": "RS-03", "about": "advisor explains a test (Q08 as routed live in round 2)", "role": "advisor", "action": "answer", "has_report": false,
+   "evidence": ["synthetic_business", "public_education"],
+   "must_include": ["lay-explanation.md", "scope-uncertainty.md", "evidence-citation.md"], "must_exclude": ["patient-explanation.md"]},
+  {"id": "RS-04", "about": "report explainer answers a knowledge question without a report (Q09 as routed live in round 2)", "role": "explainer",
+   "action": "answer", "has_report": false, "evidence": ["synthetic_business", "public_reference"],
+   "must_include": ["lay-explanation.md", "scope-uncertainty.md"], "must_exclude": ["package-advice.md", "package-compare.md", "patient-explanation.md"]},
+  {"id": "RS-05", "about": "confirmed report explanation (images)", "role": "explainer", "action": "answer", "has_report": true,
+   "evidence": ["public_reference", "synthetic_business"],
+   "must_include": ["patient-explanation.md", "scope-uncertainty.md", "evidence-citation.md"], "must_exclude": ["lay-explanation.md", "package-advice.md"]},
+  {"id": "RS-06", "about": "deterministic package comparison", "role": "advisor", "action": "answer", "has_report": false,
+   "evidence": ["synthetic_business"], "tools": ["compare_packages"],
+   "must_include": ["package-compare.md", "package-advice.md"], "must_exclude": ["patient-explanation.md"]},
+  {"id": "RS-07", "about": "comparison tool output can never give a no-sales role a sales module", "role": "explainer", "action": "answer",
+   "has_report": false, "evidence": ["synthetic_business"], "tools": ["compare_packages"],
+   "must_include": ["core.md"], "must_exclude": ["package-compare.md", "package-advice.md"]},
+  {"id": "RS-08", "about": "urgent action without medical evidence", "role": "advisor", "action": "urgent", "has_report": false,
+   "evidence": ["synthetic_business"], "must_include": ["scope-uncertainty.md"], "must_exclude": ["patient-explanation.md"]},
+  {"id": "RS-09", "about": "clarifying question about a package", "role": "advisor", "action": "clarify", "has_report": false,
+   "evidence": ["synthetic_business"], "must_include": ["scope-uncertainty.md", "package-advice.md"], "must_exclude": ["lay-explanation.md"]}
+ ]
+}

@@ -1,12 +1,84 @@
 {
   "id": "labclear-thai-health-communication",
-  "version": "0.2.0-offline",
+  "version": "0.3.0-offline",
   "clinical_validation": "NOT_RUN",
+  "language_review": "PENDING (no native-speaker or lay-reader review yet)",
+  "selection": "Per task by services/runtime_skills.select from server facts: role capabilities, planned action, confirmed report, evidence classes and tools that ran. Model output, user text and documents cannot select, install or edit modules.",
   "modules": {
-    "core.md": "b098db355cbb49b0361a41580b9ac5d20a8d175899436a80be7966a26a64f2bd",
-    "package-advice.md": "140953c844ff2207d6f10b75f37536bdf47c2e6d629353a3b73e36597105ee80",
-    "patient-explanation.md": "7f3dcb5ad4952dd35dcc96863e4d541561b0b92ccc0e8249e1fe1cccdf0e307a",
     "SOURCES.md": "51c4d7b080181d881599add7133c730d85d713a43a44cc588e9c567b15112fa5",
+    "core.md": "b098db355cbb49b0361a41580b9ac5d20a8d175899436a80be7966a26a64f2bd",
+    "evidence-citation.md": "e6a818eb514755d4c89cc5c7ae936059186e7293d678c36882cac1f8e31322ed",
+    "lay-explanation.md": "13f01fdf04f2b4675ae3c0ea721332e2eba4bd301b14eaf3a7f621a5f416d44f",
+    "package-advice.md": "140953c844ff2207d6f10b75f37536bdf47c2e6d629353a3b73e36597105ee80",
+    "package-compare.md": "3aabd716f90740301a5934282a06c348eab3ff34ba2bd95dc4cb944e89f703f9",
+    "patient-explanation.md": "7f3dcb5ad4952dd35dcc96863e4d541561b0b92ccc0e8249e1fe1cccdf0e307a",
+    "scope-uncertainty.md": "356394f93d7efc9a178f3417643852e7d87a8844daad73aa6bdbb2035c64c77c",
     "thai-style.md": "760a7bc48210a81a662574fa9e09dedce3a6015309c42d11219a11cd9544ca63"
-  }
+  },
+  "module_meta": {
+    "core.md": {
+      "id": "core",
+      "version": "0.2.0",
+      "requires": {},
+      "boundary": "Input: role, evidence, confirmed observations. Output: grounded answer in the caller's JSON shape. Never: secrets, invented sources, diagnoses, doses."
+    },
+    "thai-style.md": {
+      "id": "thai-style",
+      "version": "0.2.0",
+      "requires": {},
+      "boundary": "Input: any answer draft. Output: plain Thai (or the language the user asked for) with numbers, units, negation and uncertainty unchanged."
+    },
+    "evidence-citation.md": {
+      "id": "evidence-citation",
+      "version": "0.3.0",
+      "requires": {},
+      "boundary": "Input: EVIDENCE records. Output: [id] citations that the cited record's own content supports; exact numbers and units."
+    },
+    "scope-uncertainty.md": {
+      "id": "scope-uncertainty",
+      "version": "0.3.0",
+      "requires": {},
+      "boundary": "Input: medical evidence, a report or an urgent/clarify action. Output: in-scope answer with evidence-strength wording and the host's next step."
+    },
+    "lay-explanation.md": {
+      "id": "lay-explanation",
+      "version": "0.3.0",
+      "requires": {},
+      "boundary": "Input: medical evidence without a confirmed report. Output: general explanation of a test; no personal conclusion from typed values."
+    },
+    "patient-explanation.md": {
+      "id": "patient-explanation",
+      "version": "0.2.0",
+      "requires": {
+        "reads_any": [
+          "report"
+        ]
+      },
+      "boundary": "Input: confirmed report rows and evidence. Output: explanation tied to the printed ranges; roles that read reports only."
+    },
+    "package-advice.md": {
+      "id": "package-advice",
+      "version": "0.2.0",
+      "requires": {
+        "actions_any": [
+          "quote"
+        ]
+      },
+      "boundary": "Input: catalog records. Output: package information and tradeoffs; roles that may quote only; never clinical indications."
+    },
+    "package-compare.md": {
+      "id": "package-compare",
+      "version": "0.3.0",
+      "requires": {
+        "actions_any": [
+          "quote"
+        ]
+      },
+      "boundary": "Input: the deterministic rs-compare table. Output: the practical difference without recomputing; roles that may quote only."
+    }
+  },
+  "not_instructions": [
+    "SOURCES.md"
+  ],
+  "cases": "cases.json"
 }
