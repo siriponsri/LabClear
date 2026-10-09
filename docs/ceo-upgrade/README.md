@@ -12,6 +12,15 @@ software behavior, not model quality or clinical suitability.
 | [SOURCE_REVIEW.md](SOURCE_REVIEW.md) | Acquisition queue and public offer verification |
 | [Thai report addendum](../report/LabClear_CEO_Upgrade_Report_TH.md) | Current implementation and evidence |
 | [evidence/](evidence/) | Isolated tests, screenshots and fixture evaluation |
+| [FREE_PROVIDER_PREFLIGHT.md](FREE_PROVIDER_PREFLIGHT.md) | Integration rc2: free-only policy, OFFLINE/REPLAY/LIVE_FREE modes, preflight and owner runbook |
+| [COURSEWORK_BENCHMARK_REPORT_TH.md](COURSEWORK_BENCHMARK_REPORT_TH.md) | Integration rc2: 10 + 5 + 5 benchmark, three before/after improvements, real results and blockers |
+
+> Integration note (Claude, 2026-10-09). This directory is Codex's record of the `c970410`
+> candidate and is kept as written. The integrated candidate built on top of it (branch
+> `integration/labclear-4.0-rc1`, version 4.0.0-rc2) adds typed tools, per-task runtime skills,
+> synthetic-fixture uploads, a free-only provider policy and the coursework benchmark; its
+> own evidence is in `../evidence/integration-4.0-rc2/` and `../evidence/free-first/`, and
+> its summary in `../integration/CLAUDE_INTEGRATION_REPORT.md`.
 
 The owner-provided `intake-20261008-overnight/` and root task remain local source
 material. Selected task, authorization, gates and harness requirements are retained

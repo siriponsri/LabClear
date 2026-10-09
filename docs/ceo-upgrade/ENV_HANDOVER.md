@@ -91,3 +91,29 @@ code commit is an owner operation (see MORNING_HANDOFF); no database rollback is
 introduced here. Already approved organization records remain encrypted but inaccessible
 while the feature is disabled. Existing baseline schema initialization and one-time
 legacy Guest purge are unchanged, not newly introduced migrations.
+
+## Integration 4.0 additions (Claude integration branch, rc1 and rc2)
+
+Added on `integration/labclear-4.0-rc1` after `c970410`; every value below defaults to the
+baseline behaviour, and none needs to be set on the existing Render API service.
+
+| Actual setting | Source | Default | Boot required / sensitive | Admin override | Apply / disable |
+|---|---|---|---|---|---|
+| TRUSTED_ORIGINS | config.py, services/trusted_origins.py | empty | no / no | none | exact `scheme://host[:port]` of an optional Next.js web service in front of the API; empty keeps the Origin == Host rule (docs/deploy/render-web.md) |
+| SYNTHETIC_FIXTURE_MANIFEST | config.py, services/synthetic_fixtures.py | empty | no / no | none | honoured only when APP_ENV=test; extra author-generated synthetic fixture hashes the medical harness may accept as uploads |
+| FREE_ONLY_POLICY_PATH | config.py, services/free_policy.py | empty | no / no | none | free-first trial only; set by the benchmark trial servers, not on Render. When set, every provider call must match an exact verified-free endpoint/model and the shared trial quota before the call cap, ledger and network |
+| FREE_ONLY_RUN_ID / FREE_ONLY_ALLOW_OFFLINE_DOUBLES | same | empty / false | no / no | none | set by `scripts/live_free_server.py` and the offline benchmark server; never needed in production |
+
+Precedence is unchanged: a saved Admin slot still wins over ENV. The free-only policy does
+not change which slot is resolved; it refuses to call any resolved endpoint that is not on
+the reviewed list, so a leftover paid Admin slot fails closed instead of being called. The
+benchmark preflight resolves effective slots in a clean process (no `.env`, fresh database)
+and blocks a live run when any slot that would be called is outside the policy.
+
+Item 7 above is narrowed, not removed: with APP_ENV=test the medical harness also accepts the
+exact bytes of the reviewed synthetic reports (and an optional fixture manifest) sent as a
+normal multipart upload. Development and production still accept only the built-in sample.
+Raw OCR rows are stored beside confirmed rows (`raw_fields`) and never become model context.
+
+Free-first trial runbook and current blocker evidence: [FREE_PROVIDER_PREFLIGHT.md](FREE_PROVIDER_PREFLIGHT.md).
+Benchmark design and results: [COURSEWORK_BENCHMARK_REPORT_TH.md](COURSEWORK_BENCHMARK_REPORT_TH.md).

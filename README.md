@@ -2,6 +2,10 @@
 
 The 2026-10-08 upgrade is a disabled-by-default software candidate. Its current scope, evidence, configuration and remaining owner gates are recorded in the [upgrade index](docs/ceo-upgrade/README.md). Earlier release counts and screenshots below are historical; they do not establish live model or clinical validation.
 
+<!-- integration-4.0 -->
+
+**Integration candidate 4.0.0-rc2** (branch `integration/labclear-4.0-rc1`, on top of Codex `c970410`). Hosting target: the existing Render API service, plus an optional Render web service for the Thai-first TH/EN Next.js site in [`web/`](web/) ([guide](docs/deploy/render-web.md)); the Cloudflare Workers work is kept as a deferred option in [`deploy/cloudflare/`](deploy/cloudflare/README.md). The free-first trial profile (Typhoon text/OCR + iApp OpenThai-SystemOne) adds typed tools, per-task runtime skills, a free-only provider policy and a coursework benchmark with OFFLINE / REPLAY / LIVE_FREE modes. **LIVE_FREE has not been run**: no provider key or verified free-tier account was available in the build environment. Start with the [integration report](docs/integration/CLAUDE_INTEGRATION_REPORT.md), the [benchmark report](docs/ceo-upgrade/COURSEWORK_BENCHMARK_REPORT_TH.md) and the [free-only runbook](docs/ceo-upgrade/FREE_PROVIDER_PREFLIGHT.md).
+
 <div align="center">
 
 <br>
