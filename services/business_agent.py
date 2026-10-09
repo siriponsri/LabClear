@@ -9,6 +9,7 @@ from services.conversation_agent import Answer,EvidenceReview,complete_json,vali
 from services.business_store import catalog,branches,policies,quote
 from services import business_dots as dots_mod
 from services import answer_checks
+from services import agent_tools
 from services.business_plans import plans as plan_catalog
 import logging
 from config import settings
@@ -169,6 +170,9 @@ async def run(message,context,emit=None):
     await step('plan','done',f"Plan: {ACTION_TEXT.get(plan.action,plan.action)}, as the {dot['name']}",
                (plan.reason+' ' if plan.reason else '')+(f"(Moved from the {roles[rerouted]['name']}, which cannot do this.)" if rerouted else ''))
     evidence=[]
+    # Typed tools: the server decides which data this role may read; the model only proposed the plan.
+    tools=agent_tools.ToolContext.for_role(dot,biz=biz,report=report,
+        search=lambda query,limit:evidence_search.search(query,limit),quote=lambda ids:quote(ids))
     private_sources=context.get('organization_sources',[]) if settings.ORG_REFERENCE_INFERENCE_ENABLED else []
     if private_sources:
         from services.providers import runtime
@@ -180,22 +184,29 @@ async def run(message,context,emit=None):
                 raise transport.ConversationError('data_policy','Organization reference providers require explicit configuration and data-policy review.',409)
         evidence.extend(private_sources)
     if 'catalog' in reads:
-        evidence+=[{'id':'rs-'+p['id'].lower(),'title':p['name'],'content':json.dumps(p,ensure_ascii=False),'data_class':'synthetic_business','url':'/packages/'+p['id'],'publisher':'LabClear demo','reviewed_at':'2026-10-05'} for p in biz['catalog']['packages'] if p.get('active',True)]
-    if 'branches' in reads:evidence.append({'id':'rs-branches','title':'Demo centers','content':json.dumps(biz['branches']),'data_class':'synthetic_business','url':'/centers','publisher':'LabClear demo'})
-    if 'policies' in reads:evidence.append({'id':'rs-policy','title':'Demo service policy','content':json.dumps(biz['policy']),'data_class':'synthetic_business','url':'/help','publisher':'LabClear demo'})
+        evidence+=(await agent_tools.invoke(tools,'lookup_packages',{}))['records']
+        compare_ids=list(dict.fromkeys(plan.package_ids))
+        if 2<=len(compare_ids)<=4:
+            try:evidence+=(await agent_tools.invoke(tools,'compare_packages',{'package_ids':compare_ids}))['records']
+            except transport.ConversationError:pass  # an invalid proposal only loses the comparison table
+    if 'branches' in reads:evidence+=(await agent_tools.invoke(tools,'lookup_branches',{}))['records']
+    if 'policies' in reads:evidence+=(await agent_tools.invoke(tools,'lookup_policies',{}))['records']
     retrieval='catalog' if 'catalog' in reads else 'none'
     used=[x for x,k in (('catalog','catalog'),('centers','branches'),('policies','policies')) if k in reads]
     if used:await step('data','done','Loaded business data the '+dot['name']+' may use',', '.join(used))
     if plan.query and 'medical' in reads:
         await step('search','running','Searching the medical knowledge base',plan.query[:120])
-        medical,retrieval=await evidence_search.search(plan.query);evidence+=medical
+        found=await agent_tools.invoke(tools,'retrieve_evidence',{'query':plan.query})
+        medical,retrieval=found['records'],found['mode'];evidence+=medical
         await step('search','done',f"Found {len(medical)} medical source"+('' if len(medical)==1 else 's')+f' for "{plan.query[:80]}"','; '.join(m['title'] for m in medical[:4]))
-    role_report=report if 'report' in reads else None
+    role_report=(await agent_tools.invoke(tools,'get_confirmed_report_rows',{}))['report'] if report and 'report' in reads else None
     customer_state=context.get('customer_state',{}) if 'customer_bookings' in reads else {}
     action=None
     if plan.action in ['book','quote'] and plan.package_ids:
         try:
-            action={'type':plan.action,'quote':quote(plan.package_ids),'branch_id':plan.branch_id,'date':plan.date,'time':plan.time}
+            preview=(await agent_tools.invoke(tools,'preview_booking',{'kind':plan.action,'package_ids':plan.package_ids,
+                'branch_id':plan.branch_id,'date':plan.date,'time':plan.time}))['preview']
+            action={'type':plan.action,'quote':preview['quote'],'branch_id':plan.branch_id,'date':plan.date,'time':plan.time}
             if action['quote']['staff_review_required']:
                 action={'type':'handoff','summary':'Review requested for '+', '.join(plan.package_ids)}
             if plan.action=='book' and (plan.branch_id not in {b['id'] for b in biz['branches']['branches']} or not plan.date or not plan.time):
@@ -276,4 +287,4 @@ async def run(message,context,emit=None):
     await guard.check(answer.reply+'\n'+'\n'.join(answer.followups)+'\n'+json.dumps(action,ensure_ascii=False)+'\n'+plan.reason,'output',message)
     await step('safety_out','done','The answer passed the safety check',_label('guard'))
     sources=[{k:e.get(k) for k in ['id','title','url','publisher','data_class','version','section','sha256']} for e in evidence if e['id'] in answer.evidence_ids]
-    return {'reply':answer.reply,'sources':sources,'observations':[o.model_dump() for o in answer.observations],'followups':answer.followups,'action':action,'retrieval':retrieval,'dot':{'id':dot['id'],'name':dot['name']},'rerouted_from':rerouted,'ui':ui,'checks':{'rewrite_count':attempt,'input_safety':'passed','citations_validated':len(sources),'independent_review':'passed','output_safety':'passed','observations':len(answer.observations)},'trace':trace}
+    return {'reply':answer.reply,'sources':sources,'observations':[o.model_dump() for o in answer.observations],'followups':answer.followups,'action':action,'retrieval':retrieval,'dot':{'id':dot['id'],'name':dot['name']},'rerouted_from':rerouted,'ui':ui,'checks':{'rewrite_count':attempt,'input_safety':'passed','citations_validated':len(sources),'independent_review':'passed','output_safety':'passed','observations':len(answer.observations),'tools':tools.audit},'trace':trace}
