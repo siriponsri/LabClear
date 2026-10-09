@@ -1,4 +1,4 @@
-# เว็บ Next.js บน Render (บริการที่สอง) — integration 4.0.0-rc1
+# เว็บ Next.js บน Render (บริการที่สอง) — integration 4.0.0-rc2
 
 **เป้าหมาย deploy ของรุ่นรวมคือ Render เดิม** บริการ API `labclear` ตาม [`render.yaml`](../../render.yaml) และ [render.md](render.md) ไม่เปลี่ยน
 เว็บ Next.js จาก Claude branch (`web/`) เป็น **บริการ Web Service ตัวที่สองแบบเลือกได้** ที่ส่ง `/api/*` และ `/health` ต่อไปยังบริการ API เดิม
@@ -60,7 +60,7 @@ Environment ของบริการเว็บ (ไม่มีความ
 
 ## ขั้นที่ 3 ตรวจรับ
 
-1. `https://labclear-web.onrender.com/health` ต้องแสดง `version` เป็น `4.0.0-rc1` และ `commit` ตรงกับ git
+1. `https://labclear-web.onrender.com/health` ต้องแสดง `version` เป็น `4.0.0-rc2` และ `commit` ตรงกับ git
 2. เปิดหน้าแรก แชตแบบผู้เยี่ยมชม Refresh แล้วแชตต้องหาย
 3. สมัครบัญชีทดสอบ (ข้อมูลจำลอง) ถ้า POST ได้ 403 `origin_rejected` แปลว่า `TRUSTED_ORIGINS` ของ API ยังไม่ตรง
 4. ใน `/staff` ตรวจว่า AI providers แสดง 6 agents และบทบาทใหม่ 2 ตัวยังปิด

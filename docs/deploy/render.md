@@ -11,7 +11,7 @@ encryption key, prior spend and counters. No ENV change is authorized by publica
 
 The 2026-10-08 upgrade is a disabled-by-default software candidate. Its current scope, evidence, configuration and remaining owner gates are recorded in the [upgrade index](../ceo-upgrade/README.md). Earlier release counts and screenshots below are historical; they do not establish live model or clinical validation.
 
-> **Integration 4.0.0-rc1:** Render remains the deployment target and this service is unchanged.
+> **Integration 4.0.0-rc2:** Render remains the deployment target and this service is unchanged.
 > The Next.js website from the Claude branch is an optional second Render service that proxies
 > `/api` to this one: see [render-web.md](render-web.md). The Cloudflare work is deferred:
 > [cloudflare.md](cloudflare.md).

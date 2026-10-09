@@ -24,7 +24,7 @@ for education only and were not clinically approved for this project.
 | `medical_sources.json`, `hospital_research.json` | Codex upgrade discovery lists (official metadata only) | `NOT_APPROVED` until rights and clinical review |
 | `claude_candidates_400.json` | 90 records drafted on the Claude 4.0.0 branch (77 that had been in its catalog and 13 from its `pending.json`), from 26 publishers | `OFFLINE_AUTHORED_NOT_FETCHED`, `NOT_APPROVED` |
 
-Integration 4.0.0-rc1 keeps the active corpus at the 58 reviewed records. A candidate enters
+Integration 4.0.0-rc2 keeps the active corpus at the 58 reviewed records. A candidate enters
 `evidence/catalog.json` only after a person opens its page, confirms the paraphrase, the rights and
 the clinical accuracy, and records that review. `scripts/verify_sources.py` (from the Claude
 branch) only checks that URLs answer; HTTP 200 is not a review.

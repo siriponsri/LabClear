@@ -1,6 +1,6 @@
 # Cloudflare deployment — DEFERRED
 
-**Integration 4.0.0-rc1 deploys to the existing Render service.** This folder keeps the Cloudflare
+**Integration 4.0.0-rc2 deploys to the existing Render service.** This folder keeps the Cloudflare
 work from the Claude 4.0.0 branch (commit `95bf3d7`, which extended the 3.1.0 preparation in
 `994fe6e`) as a later option, as the owner asked. Nothing here is used by Render, by the tests or by
 the delivery bundle's verification. It was not re-tested against the integrated Codex backend.

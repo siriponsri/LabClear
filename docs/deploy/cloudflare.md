@@ -1,4 +1,4 @@
-> **สถานะ: งานที่เลื่อนไว้ (DEFERRED) — ไม่ใช่เป้าหมาย deploy ของ integration 4.0.0-rc1**
+> **สถานะ: งานที่เลื่อนไว้ (DEFERRED) — ไม่ใช่เป้าหมาย deploy ของ integration 4.0.0-rc2**
 >
 > เป้าหมายปัจจุบันคือ **Render เดิม** ตาม [render.md](render.md) และเว็บ Next.js แบบบริการที่สองตาม [render-web.md](render-web.md)
 > คู่มือนี้เป็นงานของ Claude branch 4.0.0 (Workers Paid + Containers) เก็บไว้เป็นทางเลือกภายหลังตามคำสั่งเจ้าของ ไม่ได้ทดสอบกับ backend ของ Codex

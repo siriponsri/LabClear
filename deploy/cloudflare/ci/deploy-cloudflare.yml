@@ -1,4 +1,4 @@
-# INACTIVE COPY (integration 4.0.0-rc1). Deployment target is Render; Cloudflare is deferred.
+# INACTIVE COPY (integration 4.0.0-rc2). Deployment target is Render; Cloudflare is deferred.
 # This file used to live at .github/workflows/deploy-cloudflare.yml on the Claude 4.0.0 branch and
 # deployed on every push to main. It is kept here, outside .github/workflows, so GitHub never runs
 # it. Before moving it back: read deploy/cloudflare/README.md and drop the push trigger.
