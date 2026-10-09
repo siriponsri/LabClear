@@ -169,12 +169,13 @@ Each API request produces at most two JSON log lines on the `labclear.request` l
 `request_id`:
 
 ```json
-{"event":"workflow","at":1791567508.92,"request_id":"req_15aa9526daf239f9","route":"/chat","kind":"ai","stream":true,
+{"event":"workflow","at":1791567508.92,"request_id":"req_15aa9526daf239f9","turn_id":"9c1d…","route":"/chat","kind":"ai","stream":true,
  "outcome":"cancelled","status":503,"code":"server_draining","origin":"app","step":"plan","duration_ms":3594,"attempts":2,"dropped_events":0}
 {"event":"http","at":1791567508.92,"request_id":"req_15aa9526daf239f9","method":"POST","route":"/api/business/chat","status":200,"duration_ms":3597}
 ```
 
-`attempts` counts provider calls made by the request (a JSON repair or a rewrite counts). Other events:
+`turn_id` is the conversation turn the request ran (random, not personal). `attempts` counts provider
+calls made by the request (a JSON repair or a rewrite counts). Other events:
 `admission_refused`, `document_worker` (`ok`, `timeout`, `crashed`, `cancelled`), `drain_started`,
 `drain_finished`, `startup`, `cleanup_incomplete`. `http` lines are written for every non-GET API
 request and every API error. Only the documented keys are written: never prompts, messages, report

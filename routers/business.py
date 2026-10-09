@@ -314,6 +314,7 @@ async def turn(owner,message,retry_id='',page=None,emit=None,reply_to=''):
     Storage work runs in worker threads; the route's Execution bounds the whole turn."""
     if not message.strip() and not retry_id and not reply_to:raise ConversationError('empty_message','Type a message.',422)
     turn_id=secrets.token_hex(16)
+    if execution.current():execution.current().turn_id=turn_id
     def prepare(tx):
         nonlocal message
         c=conversation(tx,owner);d=c['data']
@@ -624,6 +625,7 @@ async def read_into_chat(owner,raws,names,question,sample,emit):
     """Read an uploaded report inside the conversation: the user's message shows the file, and
     the assistant posts the values it read. Nothing is explained until the customer confirms them."""
     reading=secrets.token_hex(16)
+    if execution.current():execution.current().turn_id=reading
     def begin(tx):
         c=conversation(tx,owner);d=c['data']
         if d['mode']!='bot':raise ConversationError('staff_active','Our team has this conversation. Add the report on My reports instead.',409)

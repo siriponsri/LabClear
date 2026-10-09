@@ -651,7 +651,8 @@ async def r12(app, provider, logs, loop):
     workflow = {e["request_id"]: e for e in lines if e.get("event") == "workflow"}
     http = {e["request_id"]: e for e in lines if e.get("event") == "http"}
     ok, bad = workflow.get(rid, {}), workflow.get(rid2, {})
-    c.check("one structured workflow line per request, linked by request ID", ok.get("outcome") == "done" and bad.get("outcome") == "error" and rid in http and rid2 in http, {"ok": ok, "bad": bad})
+    c.check("one structured workflow line per request, linked by request ID (and the turn ID)", ok.get("outcome") == "done" and bad.get("outcome") == "error" and rid in http and rid2 in http
+            and ok.get("turn_id") and bad.get("turn_id") and ok["turn_id"] != bad["turn_id"], {"ok": ok, "bad": bad})
     c.check("the line records route, status, outcome, code, origin, step, duration and attempts",
             bad.get("route") == "/chat" and bad.get("code") == "upstream_unavailable" and bad.get("origin") == "upstream" and bad.get("step") == "plan"
             and bad.get("attempts") == 2 and isinstance(bad.get("duration_ms"), int) and bad.get("status") == 502, bad)
@@ -660,7 +661,7 @@ async def r12(app, provider, logs, loop):
     c.check("no message text in any log line", "RESILIENCE-CANARY" not in text and "ข้อความทดสอบ" not in text)
     c.check("no bearer token or report image data in any log line", "Bearer " not in text and "data:image" not in text and "base64" not in text)
     c.check("every labclear.request line is JSON with only the documented keys",
-            all(set(e) <= {"event", "at", "request_id", "route", "kind", "stream", "outcome", "status", "code", "origin", "step", "duration_ms", "attempts",
+            all(set(e) <= {"event", "at", "request_id", "turn_id", "route", "kind", "stream", "outcome", "status", "code", "origin", "step", "duration_ms", "attempts",
                            "dropped_events", "method", "in_flight", "ai", "ocr", "cancelled", "still_running", "reason", "storage", "worker", "pages", "returncode"} for e in lines))
     return c
 

@@ -3,7 +3,7 @@
 Every AI workflow (chat answers and report reading) runs inside an ``Execution`` created by its
 route, and every part of it (Guard, Planner, Tools, Writer, Reviewer, OCR) shares it:
 
-* ``request_id`` is returned as ``X-Request-ID``, in JSON errors, in the ``accepted`` stream event
+* ``request_id`` (with the conversation ``turn_id``) is returned as ``X-Request-ID``, in JSON errors, in the ``accepted`` stream event
   and in the terminal event, and is written to the structured log line of the request;
 * the deadline is monotonic (event-loop clock) and covers the whole workflow: admission, storage,
   provider calls, OCR and finalization. A step does not start without time left
@@ -173,6 +173,7 @@ class Execution:
         self.budget = float(budget)
         self.started = self.loop.time()
         self.deadline = self.started + self.budget
+        self.turn_id = ""          # the conversation turn this request runs (set by the chat and report routes)
         self.slot: Slot | None = None
         self.task: asyncio.Task | None = None
         self.cancel_reason = ""
@@ -268,7 +269,7 @@ class Execution:
             self.code, self.origin, self.status = exc.code, exc.origin, exc.status
 
     def summary(self, stream: bool) -> dict:
-        return {"request_id": self.request_id, "route": self.route, "kind": self.kind, "stream": stream,
+        return {"request_id": self.request_id, "turn_id": self.turn_id or None, "route": self.route, "kind": self.kind, "stream": stream,
                 "outcome": self.outcome, "status": self.status, "code": self.code or None, "origin": self.origin or None,
                 "step": self.last_step or None, "duration_ms": self.elapsed_ms(), "attempts": self.attempts,
                 "dropped_events": self.dropped_events}
@@ -480,7 +481,7 @@ async def _watch_disconnect(request, ctx: Execution) -> None:
 
 # ------------------------------------------------------------------ structured logs
 
-_LOG_KEYS = {"request_id", "route", "kind", "stream", "outcome", "status", "code", "origin", "step", "duration_ms",
+_LOG_KEYS = {"request_id", "turn_id", "route", "kind", "stream", "outcome", "status", "code", "origin", "step", "duration_ms",
              "attempts", "dropped_events", "method", "in_flight", "ai", "ocr", "cancelled", "still_running", "reason",
              "storage", "worker", "pages", "returncode"}
 
