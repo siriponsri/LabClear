@@ -51,12 +51,22 @@ def tokens(text: str) -> list[str]:
     return latin + [word[i:i+2] for word in thai for i in range(len(word)-1)]
 
 
-def lexical(query: str, limit: int = 6) -> list[dict]:
-    docs = corpus()
+@lru_cache(maxsize=4)
+def _index(serialized: str):
+    """Build token frequencies once per corpus version, not for every query term."""
+    docs = json.loads(serialized)
     vectors = [Counter(tokens(r["title"] + " " + " ".join(r.get("aliases", [])) + " " + r["content"])) for r in docs]
-    n = len(docs)
     lengths = [sum(d.values()) for d in vectors]
-    avg = sum(lengths) / max(1, n)
+    frequencies = Counter(term for vector in vectors for term in vector)
+    return vectors, lengths, frequencies
+
+
+def lexical(query: str, limit: int = 6) -> list[dict]:
+    from services.knowledge_admin import active_records
+    docs = active_records(corpus())
+    vectors, lengths, frequencies = _index(json.dumps(docs,sort_keys=True,ensure_ascii=False))
+    n = len(docs)
+    avg = sum(lengths) / max(1,n)
     q = set(tokens(query))
     scores = []
     for index, vector in enumerate(vectors):
@@ -65,7 +75,7 @@ def lexical(query: str, limit: int = 6) -> list[dict]:
             freq = vector[term]
             if not freq:
                 continue
-            df = sum(term in v for v in vectors)
+            df = frequencies[term]
             idf = math.log(1 + (n - df + .5) / (df + .5))
             score += idf * (freq * 2.5) / (freq + 1.5 * (.25 + .75 * lengths[index] / max(1, avg)))
         if score > 0:

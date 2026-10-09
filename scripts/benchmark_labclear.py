@@ -52,12 +52,13 @@ DATA = ROOT / "eval" / "coursework"
 RUNS = ROOT / "eval_runs"
 PY = sys.executable
 SUITES = {
+    "ocr-files": None,
     "smoke": ["Q01", "Q08", "I01", "S01", "B02"],
     "coursework": None,      # split rubric_regression (10 + 5 + 5)
     "regression": None,      # coursework + benign controls + development conversations
     "benign": None, "holdout": None, "development": None, "all": None,
 }
-SPLIT_OF_SUITE = {"coursework": {"rubric_regression"}, "regression": {"rubric_regression", "benign_control", "development"},
+SPLIT_OF_SUITE = {"ocr-files": {"ocr_files"}, "coursework": {"rubric_regression"}, "regression": {"rubric_regression", "benign_control", "development"},
                   "benign": {"benign_control"}, "holdout": {"holdout"}, "development": {"development"},
                   "all": {"rubric_regression", "benign_control", "holdout", "development"}}
 INFRA_CODES = {"service_unavailable", "provider_rejected", "provider_not_configured", "offline", "budget_exhausted",
@@ -128,11 +129,14 @@ def provenance() -> dict:
             "business_knowledge_digest": sha256_text(json.dumps(business, sort_keys=True))}
 
 
-def load_dataset() -> tuple[dict, dict, dict]:
+def load_dataset(suite=None) -> tuple[dict, dict, dict]:
     dataset = json.loads((DATA / "dataset.json").read_text(encoding="utf-8"))
     rubric = json.loads((DATA / "rubric.json").read_text(encoding="utf-8"))
     manifest_path = DATA / "MANIFEST.json"
     manifest = json.loads(manifest_path.read_text(encoding="utf-8")) if manifest_path.exists() else {}
+    if suite == "ocr-files":
+        extension = json.loads((ROOT / "eval/ocr_files/dataset.json").read_text(encoding="utf-8"))
+        dataset["cases"].extend(extension["cases"])
     return dataset, rubric, manifest
 
 
@@ -147,7 +151,7 @@ def dataset_files() -> dict:
     return files
 
 
-def verify_manifest() -> dict:
+def verify_manifest(suite=None) -> dict:
     _, _, manifest = load_dataset()
     actual = dataset_files()
     expected = manifest.get("files", {})
@@ -159,8 +163,15 @@ def verify_manifest() -> dict:
     for case in dataset["cases"]:
         if case.get("image_sha256") and case["image_sha256"] != actual[case["image"]]:
             raise SystemExit(f"Image hash mismatch for {case['id']}")
-    return {"dataset_id": manifest["dataset_id"], "dataset_version": manifest["dataset_version"],
-            "dataset_digest": sha256_text(json.dumps(actual, sort_keys=True))}
+    result = {"dataset_id": manifest["dataset_id"], "dataset_version": manifest["dataset_version"],
+              "dataset_digest": sha256_text(json.dumps(actual, sort_keys=True))}
+    if suite == "ocr-files":
+        ext = json.loads((ROOT / "eval/ocr_files/MANIFEST.json").read_text(encoding="utf-8"))
+        if any(sha256_file(ROOT / p) != h for p,h in ext["files"].items()):
+            raise SystemExit("Owner OCR fixture integrity check failed")
+        result = {"dataset_id": ext["dataset_id"], "dataset_version": ext["dataset_version"],
+                  "dataset_digest": sha256_text(json.dumps({**actual,**ext["files"]},sort_keys=True))}
+    return result
 
 
 def check_course_eval_compatibility(dataset: dict) -> None:
@@ -231,7 +242,7 @@ class Server:
                 raise SystemExit(f"Server exited early; see {self.run_dir / 'server.log'}")
             if (self.run_dir / ".ready").exists():
                 try:
-                    if httpx.get(f"http://127.0.0.1:{self.port}/health", timeout=2).status_code == 200:
+                    if httpx.get(f"http://127.0.0.1:{self.port}/health", timeout=2, trust_env=False).status_code == 200:
                         break
                 except httpx.HTTPError:
                     pass
@@ -299,7 +310,7 @@ PACER = Pacer()
 class Client:
     def __init__(self, base: str):
         self.base = base
-        self.c = httpx.Client(timeout=httpx.Timeout(300.0, connect=10.0), follow_redirects=False)
+        self.c = httpx.Client(timeout=httpx.Timeout(300.0, connect=10.0), follow_redirects=False, trust_env=False)
         self.csrf = self.guest = ""
 
     def headers(self) -> dict:
@@ -391,7 +402,7 @@ class Staff:
     """Synthetic manager of the isolated trial database: reads the app's own call/cost/quota ledger."""
 
     def __init__(self, base: str, password: str):
-        self.c = httpx.Client(base_url=base, timeout=30)
+        self.c = httpx.Client(base_url=base, timeout=30, trust_env=False)
         r = self.c.get("/api/business/session")
         body = r.json()
         self.csrf = body["csrf"]
@@ -577,7 +588,7 @@ def run_case(server: Server, staff: Staff | None, case: dict, rule: dict, gold: 
         if case["kind"] == "image":
             image = ROOT / case["image"]
             read = client.stream("/chat/report", data={"message": case["turns"][0]},
-                                 files=[("files", (image.name, image.read_bytes(), "image/png"))])
+                                 files=[("files", (image.name, image.read_bytes(), "application/pdf" if image.suffix.lower() == ".pdf" else "image/png"))])
             outcomes.append(read)
             row["upload_path"] = "multipart"
             row["ocr_ms_if_applicable"] = read["step_ms"].get("read")
@@ -712,7 +723,7 @@ def new_run_id(mode: str, profile: str) -> str:
 
 
 def execute(run_dir: Path, run: dict, cases: list[dict], done: set[str]) -> None:
-    dataset, rubric, _ = load_dataset()
+    dataset, rubric, _ = load_dataset(run["suite"])
     gold = {c["file"]: c for c in json.loads((ROOT / rubric["images"]["gold_file"]).read_text(encoding="utf-8"))["cases"]}
     server = Server(run_dir, run["mode"], run)
     server.start()
@@ -745,8 +756,8 @@ def execute(run_dir: Path, run: dict, cases: list[dict], done: set[str]) -> None
 
 
 def cmd_run(args) -> int:
-    dataset, rubric, _ = load_dataset()
-    ds = verify_manifest()
+    dataset, rubric, _ = load_dataset(args.suite)
+    ds = verify_manifest(args.suite)
     check_course_eval_compatibility(dataset)
     mode = {"offline": "OFFLINE", "replay": "REPLAY", "live-free": "LIVE_FREE"}[args.mode]
     cases = select_cases(dataset, args.suite, args.only)
@@ -800,11 +811,11 @@ def cmd_resume(args) -> int:
     run = json.loads((run_dir / "run.json").read_text(encoding="utf-8"))
     if run["mode"] == "REPLAY":
         raise SystemExit("A REPLAY run serves responses in recorded order; start a new REPLAY run instead of resuming.")
-    if run["dataset"] != verify_manifest():
+    if run["dataset"] != verify_manifest(run["suite"]):
         raise SystemExit("Dataset changed since this run started; start a new run instead of resuming.")
     rows = [json.loads(line) for line in (run_dir / "raw.jsonl").read_text(encoding="utf-8").splitlines() if line.strip()] if (run_dir / "raw.jsonl").exists() else []
     done = {r["case_id"] for r in rows if r["execution_status"] in ("COMPLETED", "BLOCKED_POLICY", "INVALID_RESULT")}
-    dataset, _, _ = load_dataset()
+    dataset, _, _ = load_dataset(run["suite"])
     cases = [c for c in dataset["cases"] if c["id"] in run["case_ids"]]
     run.setdefault("resumed_at", []).append(now())
     if run["mode"] == "LIVE_FREE":
@@ -1068,7 +1079,7 @@ def preflight(policy_path: str | None, profile: str, cases: list[dict], write: P
 
 
 def cmd_preflight(args) -> int:
-    dataset, _, _ = load_dataset()
+    dataset, _, _ = load_dataset(args.suite)
     cases = select_cases(dataset, args.suite, args.only)
     report = preflight(args.policy, args.profile_letter, cases, Path(args.json) if args.json else None)
     print(json.dumps(report, ensure_ascii=False, indent=1))

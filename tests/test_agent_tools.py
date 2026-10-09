@@ -138,7 +138,8 @@ def test_pipeline_returns_tool_audit_and_keeps_evidence(isolated, monkeypatch): 
            reply="Essential Check 1,190 บาท [rs-p01]\n\nHbA1c is explained in the cited source [nlm-x]", evidence_ids=("rs-p01", "nlm-x"))
     out = asyncio.run(business_agent.run("Essential กับ Workday ต่างกันอย่างไร HbA1c", {}))
     names = [a["tool"] for a in out["checks"]["tools"]]
-    assert names[:2] == ["lookup_packages", "compare_packages"]
+    # Independent lookups run together first; the comparison follows the catalog lookup.
+    assert names[0] == "lookup_packages" and names.index("compare_packages") > names.index("lookup_packages")
     assert {"lookup_branches", "lookup_policies", "retrieve_evidence"} <= set(names)
     assert all(a["ok"] for a in out["checks"]["tools"])
 

@@ -119,7 +119,7 @@ def content_issues(reply: str, evidence: list[dict], report: dict | None = None)
         issues.append('personal_disease_staging')
     for line in plain.splitlines():
         ids = re.findall(r'\[([a-z0-9][a-z0-9_-]+)\]', line)
-        business = [i for i in ids if sources.get(i, {}).get('data_class') == 'synthetic_business']
+        business = [i for i in ids if sources.get(i, {}).get('data_class') in {'synthetic_business', 'official_external'}]
         words = re.sub(r'\[[^\]]+\]', '', line)
         # A test word alone is not a medical claim: e.g. blood collection at
         # home or viewing results online are service facts (live Q10).

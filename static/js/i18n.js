@@ -29,7 +29,7 @@
   const LATIN = /[A-Za-z]/;
   const THAI = /[ก-ฺเ-๛]/;
   const ATTRS = ['aria-label', 'placeholder', 'title', 'alt'];
-  const SKIP = 'script,style,noscript,template,textarea,code,pre,kbd,[translate="no"],[contenteditable=""],[contenteditable="true"]';
+  const SKIP = 'script,style,noscript,template,textarea,code,pre,kbd,[translate="no"],[data-no-translate],[contenteditable=""],[contenteditable="true"]';
 
   /* ---------------------------------------------------------------- dictionary lookups */
   const norm = s => s.replace(/\s+/g, ' ').trim();
@@ -91,7 +91,7 @@
   const texts = new WeakMap();   // Text -> { en, th }
   const attrs = new WeakMap();   // Element -> { attr: { en, th } }
   function foreign(el) {
-    if (el.closest('[translate="no"]')) return true;
+    if (el.closest('[translate="no"],[data-no-translate]')) return true;
     const own = el.closest('[lang]');
     return !!own && own !== root;   // a region that declares its own language keeps it
   }

@@ -94,6 +94,11 @@ async def test(slot: str, request: Request):
     slot = _slot(slot)
     provider = providers.runtime(slot)
     identity = {"provider": provider.preset, "model": provider.model}
+    def receipt(ok):
+        with db.transaction() as tx:
+            user = _manager(tx, request)
+            providers.record_test(tx, slot, provider, ok)
+            tx.audit(user['id'], 'ai_provider.test.'+('passed' if ok else 'failed'), slot)
     from services import conversation_guard, conversation_transport as transport
     if providers.kind_of(slot) == "llm":
         # The chat needs JSON replies, so test exactly that rather than free text.
@@ -106,6 +111,7 @@ async def test(slot: str, request: Request):
             ok = extract_json(raw).get("ok") in (True, "true")
         except ValueError:
             ok = False
+        receipt(ok)
         if ok:
             return {"ok": True, "status": "LIVE_TESTED", **identity,
                     "message": "The model returned valid JSON for this test only. Medical accuracy and role suitability are not verified."}
@@ -113,6 +119,7 @@ async def test(slot: str, request: Request):
                                         "Try another model for this provider."}
     if slot == "guard":
         await conversation_guard.check("What does an HbA1c test measure?", "input")
+        receipt(True)
         return {"ok": True, "status": "LIVE_TESTED", **identity, "message": "The safety check classified one normal question as safe; broader safety evaluation is not verified."}
     return {"ok": False, "status": "NOT_RUN", **identity,
             "message": "OCR was not called. To test it explicitly, open My reports and use a synthetic sample; provider charges may apply."}

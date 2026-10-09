@@ -1,0 +1,46 @@
+[
+  {
+    "run": "owner-coursework-A",
+    "mode": "OFFLINE",
+    "profile": "A",
+    "planned": 20,
+    "pass": 15,
+    "score": 75.0,
+    "ocr_exact": 88,
+    "ocr_expected": 93,
+    "requests": 115
+  },
+  {
+    "run": "owner-coursework-B2",
+    "mode": "OFFLINE",
+    "profile": "B",
+    "planned": 20,
+    "pass": 15,
+    "score": 75.0,
+    "ocr_exact": 88,
+    "ocr_expected": 93,
+    "requests": 115
+  },
+  {
+    "run": "owner-coursework-C",
+    "mode": "OFFLINE",
+    "profile": "C",
+    "planned": 20,
+    "pass": 15,
+    "score": 75.0,
+    "ocr_exact": 88,
+    "ocr_expected": 93,
+    "requests": 120
+  },
+  {
+    "run": "owner-ocr-C",
+    "mode": "OFFLINE",
+    "profile": "C",
+    "planned": 12,
+    "pass": 0,
+    "score": 0.0,
+    "ocr_exact": 217,
+    "ocr_expected": 252,
+    "requests": 120
+  }
+]

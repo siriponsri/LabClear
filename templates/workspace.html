@@ -16,6 +16,7 @@
 <link rel="stylesheet" href="/static/css/base.css?v={{ asset_version }}">
 <link rel="stylesheet" href="/static/css/site.css?v={{ asset_version }}">
 <link rel="stylesheet" href="/static/css/workspace.css?v={{ asset_version }}">
+<link rel="stylesheet" href="/static/css/admin.css?v={{ asset_version }}">
 <link rel="stylesheet" href="/static/css/i18n.css?v={{ asset_version }}">
 </head>
 <body class="workspace {{ 'staff' if staff_mode else 'customer' }}" data-staff="{{ 'true' if staff_mode else 'false' }}">
@@ -35,6 +36,8 @@
     <button class="nav-item" data-view="catalog-admin" type="button" data-manager-only hidden>Catalog and prices</button>
     <button class="nav-item" data-view="centers" type="button" data-manager-only hidden>Centers and capacity</button>
     <button class="nav-item" data-view="roles" type="button" data-manager-only hidden>Assistant roles</button>
+    <button class="nav-item" data-view="harness" type="button" data-manager-only hidden>Company Harness</button>
+    <button class="nav-item" data-view="knowledge" type="button" data-manager-only hidden>Knowledge library</button>
     <button class="nav-item" data-view="ai" type="button" data-manager-only hidden>AI providers</button>
     <button class="nav-item" data-view="channels" type="button" data-manager-only hidden>Channels and budget</button>
     <button class="nav-item" data-view="audit" type="button" data-manager-only hidden>Audit log</button>
@@ -140,6 +143,8 @@
 <script src="/static/vendor/marked.min.js"></script>
 <script src="/static/vendor/purify.min.js"></script>
 <script src="/static/js/turns.js?v={{ asset_version }}"></script>
+<script src="/static/js/ocr-table.js?v={{ asset_version }}"></script>
+<script src="/static/js/admin-harness.js?v={{ asset_version }}"></script>
 <script src="/static/js/workspace.js" defer></script>
 </body>
 </html>

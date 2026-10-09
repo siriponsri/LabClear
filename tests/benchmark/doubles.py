@@ -220,6 +220,17 @@ def _writer(messages) -> dict:
                         lines.append(f"- {key}: {value} [rs-policy]")
             except ValueError:
                 pass
+    for e in evidence:
+        # Official hospital pages (HOSPITAL_LINKS_ENABLED): a dated published price, never a booking.
+        if e.get("data_class") != "official_external":
+            continue
+        try:
+            o = json.loads(e["content"])
+        except ValueError:
+            continue
+        price = o.get("advertised_price_thb")
+        shown = f"ราคาที่เผยแพร่ {price:,} บาท" if price else "ไม่ระบุราคาปัจจุบัน"
+        lines.append(f"- {o.get('hospital')} · {o.get('variant')}: {shown} (ตรวจข้อมูลเมื่อ {o.get('checked_at')}) [{e['id']}]")
     reply = "\n".join(lines)[:6000]
     return {"reply": reply, "evidence_ids": [], "observations": observations, "followups": []}
 
@@ -339,6 +350,15 @@ def make_handler(recorder: Recorder, replay=None) -> Handler:
             content, row["double"] = json.dumps(_analyzer(messages), ensure_ascii=False), "ANALYZER_COPY"
         else:
             content, row["double"] = "safe", "OTHER_SAFE"
+        if getattr(wrapper, 'prompt_trace', None):
+            safe_messages=[]
+            for message in messages:
+                clean=dict(message)
+                if isinstance(clean.get('content'),list):
+                    clean['content']=[({'type':'image','omitted':'Synthetic image bytes; see fixture SHA-256'} if p.get('type')=='image_url' else p) for p in clean['content']]
+                safe_messages.append(clean)
+            with wrapper.prompt_trace.open('a',encoding='utf-8') as out:
+                out.write(json.dumps({'stage':stage,'model':model,'mode':'OFFLINE_DOUBLE','messages':safe_messages,'output':content},ensure_ascii=False)+'\n')
         row["completion_chars"] = len(content)
         recorder.write(row)
         if replay is None and wrapper.record_to:

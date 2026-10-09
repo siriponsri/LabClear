@@ -1,0 +1,151 @@
+{
+  "dataset_id": "labclear-owner-ocr-files",
+  "dataset_version": "1.0.0",
+  "synthetic_only": true,
+  "cases": [
+    {
+      "id": "O01-PNG",
+      "split": "ocr_files",
+      "kind": "image",
+      "topic": "01_A_Liver PNG",
+      "turns": [
+        "ช่วยอ่านผลจากไฟล์นี้ แสดงค่าที่อ่านได้ให้ตรวจยืนยันก่อนอธิบาย"
+      ],
+      "image": "examples/ocr_owner_20261009/png/01_A_Liver.png",
+      "image_sha256": "3eaa590b8e5e41727a8ce4447eb14ef5c9c294e4920288feb4edb627095d4d7d",
+      "legacy_id": "01_A_Liver"
+    },
+    {
+      "id": "O01-PDF",
+      "split": "ocr_files",
+      "kind": "image",
+      "topic": "01_A_Liver PDF",
+      "turns": [
+        "ช่วยอ่านผลจากไฟล์นี้ แสดงค่าที่อ่านได้ให้ตรวจยืนยันก่อนอธิบาย"
+      ],
+      "image": "examples/thai_lab_reference_v3/pdf/01_A_Liver.pdf",
+      "image_sha256": "4d7eb474b5d1dce39593448a3d4c50eea917d7e0cf5501d22e4eff44759d52ae",
+      "legacy_id": "01_A_Liver"
+    },
+    {
+      "id": "O02-PNG",
+      "split": "ocr_files",
+      "kind": "image",
+      "topic": "02_A_Renal PNG",
+      "turns": [
+        "ช่วยอ่านผลจากไฟล์นี้ แสดงค่าที่อ่านได้ให้ตรวจยืนยันก่อนอธิบาย"
+      ],
+      "image": "examples/ocr_owner_20261009/png/02_A_Renal.png",
+      "image_sha256": "4d24c82a4c0d6700e9e04df86350c9f839f21ecba403c3b9a0dcbcea2e4e735e",
+      "legacy_id": "02_A_Renal"
+    },
+    {
+      "id": "O02-PDF",
+      "split": "ocr_files",
+      "kind": "image",
+      "topic": "02_A_Renal PDF",
+      "turns": [
+        "ช่วยอ่านผลจากไฟล์นี้ แสดงค่าที่อ่านได้ให้ตรวจยืนยันก่อนอธิบาย"
+      ],
+      "image": "examples/thai_lab_reference_v3/pdf/02_A_Renal.pdf",
+      "image_sha256": "dd17e45b50eaf4aab5749efc37ef23a1601352e837b9f68cfc95c304793d78e7",
+      "legacy_id": "02_A_Renal"
+    },
+    {
+      "id": "O03-PNG",
+      "split": "ocr_files",
+      "kind": "image",
+      "topic": "03_B_Lipid PNG",
+      "turns": [
+        "ช่วยอ่านผลจากไฟล์นี้ แสดงค่าที่อ่านได้ให้ตรวจยืนยันก่อนอธิบาย"
+      ],
+      "image": "examples/ocr_owner_20261009/png/03_B_Lipid.png",
+      "image_sha256": "9eac6d83e818014aadde54a7686c0bd08b206471d497e36c10a0b6f874da4bed",
+      "legacy_id": "03_B_Lipid"
+    },
+    {
+      "id": "O03-PDF",
+      "split": "ocr_files",
+      "kind": "image",
+      "topic": "03_B_Lipid PDF",
+      "turns": [
+        "ช่วยอ่านผลจากไฟล์นี้ แสดงค่าที่อ่านได้ให้ตรวจยืนยันก่อนอธิบาย"
+      ],
+      "image": "examples/thai_lab_reference_v3/pdf/03_B_Lipid.pdf",
+      "image_sha256": "9b794ecfd75b71318faeec5ef4a0c35e8bfa80494b568f65c0044a9599dd9d74",
+      "legacy_id": "03_B_Lipid"
+    },
+    {
+      "id": "O04-PNG",
+      "split": "ocr_files",
+      "kind": "image",
+      "topic": "04_B_Glucose_Urine PNG",
+      "turns": [
+        "ช่วยอ่านผลจากไฟล์นี้ แสดงค่าที่อ่านได้ให้ตรวจยืนยันก่อนอธิบาย"
+      ],
+      "image": "examples/ocr_owner_20261009/png/04_B_Glucose_Urine.png",
+      "image_sha256": "71bde3ec44968d0352f926cec83f683a6a58109b08929b72f97b78798eeab4e8",
+      "legacy_id": "04_B_Glucose_Urine"
+    },
+    {
+      "id": "O04-PDF",
+      "split": "ocr_files",
+      "kind": "image",
+      "topic": "04_B_Glucose_Urine PDF",
+      "turns": [
+        "ช่วยอ่านผลจากไฟล์นี้ แสดงค่าที่อ่านได้ให้ตรวจยืนยันก่อนอธิบาย"
+      ],
+      "image": "examples/thai_lab_reference_v3/pdf/04_B_Glucose_Urine.pdf",
+      "image_sha256": "c4d5afe90071c45ff931f8d3f9fe381bb941206dd387f28d465ddc92b521816e",
+      "legacy_id": "04_B_Glucose_Urine"
+    },
+    {
+      "id": "O05-PNG",
+      "split": "ocr_files",
+      "kind": "image",
+      "topic": "05_C_Hematology PNG",
+      "turns": [
+        "ช่วยอ่านผลจากไฟล์นี้ แสดงค่าที่อ่านได้ให้ตรวจยืนยันก่อนอธิบาย"
+      ],
+      "image": "examples/ocr_owner_20261009/png/05_C_Hematology.png",
+      "image_sha256": "4eef13c5b2ab5dc041f65866287bf988ccd7438b59db8654c7fc4784230914fb",
+      "legacy_id": "05_C_Hematology"
+    },
+    {
+      "id": "O05-PDF",
+      "split": "ocr_files",
+      "kind": "image",
+      "topic": "05_C_Hematology PDF",
+      "turns": [
+        "ช่วยอ่านผลจากไฟล์นี้ แสดงค่าที่อ่านได้ให้ตรวจยืนยันก่อนอธิบาย"
+      ],
+      "image": "examples/thai_lab_reference_v3/pdf/05_C_Hematology.pdf",
+      "image_sha256": "c61111e407c1a581aadfc97a9c20e2470b4cf6b962bb05d59c68d1634af0cbf5",
+      "legacy_id": "05_C_Hematology"
+    },
+    {
+      "id": "O06-PNG",
+      "split": "ocr_files",
+      "kind": "image",
+      "topic": "06_C_Thyroid PNG",
+      "turns": [
+        "ช่วยอ่านผลจากไฟล์นี้ แสดงค่าที่อ่านได้ให้ตรวจยืนยันก่อนอธิบาย"
+      ],
+      "image": "examples/ocr_owner_20261009/png/06_C_Thyroid.png",
+      "image_sha256": "55d54fa617ed60477c855e43536d15d9fa73335033b0f4852b06e3a912973dab",
+      "legacy_id": "06_C_Thyroid"
+    },
+    {
+      "id": "O06-PDF",
+      "split": "ocr_files",
+      "kind": "image",
+      "topic": "06_C_Thyroid PDF",
+      "turns": [
+        "ช่วยอ่านผลจากไฟล์นี้ แสดงค่าที่อ่านได้ให้ตรวจยืนยันก่อนอธิบาย"
+      ],
+      "image": "examples/thai_lab_reference_v3/pdf/06_C_Thyroid.pdf",
+      "image_sha256": "bdb77e19ab5629400496cba2d80d7acb9df17415e832e5b4289cffc5c49ad87a",
+      "legacy_id": "06_C_Thyroid"
+    }
+  ]
+}

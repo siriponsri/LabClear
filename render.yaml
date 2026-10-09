@@ -1,9 +1,16 @@
-# Render Blueprint. See docs/deploy/render.md.
-# Values marked `sync: false` are entered in the Render dashboard and never committed.
+# Render Blueprint: one Python web service (the FastAPI website, API and admin) at
+# https://labclear.onrender.com, deployed automatically on every commit to main.
+# See docs/deploy/render.md. Values marked `sync: false` are entered in the Render dashboard and
+# never committed. Render matches the service by name; review the plan it shows before Apply.
 services:
   - type: web
     name: labclear
     runtime: python
+    repo: https://github.com/siriponsri/LabClear
+    branch: main
+    autoDeployTrigger: commit
+    # region is fixed when a service is created. Add `region: <current region>` if the existing
+    # service is not in Oregon (Render's default) before syncing this Blueprint.
     plan: free
     buildCommand: pip install -r requirements.txt
     startCommand: python scripts/run_business.py
@@ -15,6 +22,14 @@ services:
         value: production
       - key: BUSINESS_EXTERNAL_ENABLED
         value: "false"
+      # Company Harness: reviewed runtime skills are on; typed tools always run server-side.
+      # A manager can tune both on /staff → Company Harness (saved per revision in the database).
+      - key: RUNTIME_SKILLS_ENABLED
+        value: "true"
+      # Official hospital package links (reviewed pages, no booking or partnership).
+      - key: HOSPITAL_LINKS_ENABLED
+        value: "true"
+      # MEDICAL_HARNESS_ENABLED stays off: the analyzer/composer profile needs explicit model setup.
       # Storage
       - key: DATABASE_URL
         sync: false

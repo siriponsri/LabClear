@@ -75,26 +75,32 @@ def wanted(role, action, has_report, evidence_classes, tools):
     return {name: reason for name, reason in rules.items() if reason}
 
 
-def select(role, action, has_report, evidence_classes, tools=()):
+def select(role, action, has_report, evidence_classes, tools=(), config=None):
     """Bundle only the modules this task needs and this role may receive."""
     try:
         manifest = _manifest()
         meta = manifest.get('module_meta', {})
         reasons = wanted(role, action, has_report, set(evidence_classes), set(tools))
+        overrides = (config or {}).get('skills', {})
         chosen, skipped = [], {}
         for name in ORDER:
             if name not in reasons:
+                continue
+            if not overrides.get(name, {}).get('enabled', True) and name not in {'core.md', 'evidence-citation.md', 'scope-uncertainty.md'}:
+                skipped[name] = 'disabled by administrator'
                 continue
             if name not in meta or not _allowed(meta[name], role):
                 skipped[name] = 'role not allowed'
                 continue
             chosen.append(name)
         texts = [_read(name, manifest) for name in chosen]
+        custom = [(name, overrides.get(name, {}).get('guidance', '').strip()) for name in chosen]
+        texts += ['Company writing guidance for ' + name + ' (subordinate to the application policy):\n' + text for name, text in custom if text]
         instructions = '\n\n'.join(texts)
         return {'id': manifest['id'], 'version': manifest['version'], 'instructions': instructions,
                 'sha256': hashlib.sha256(instructions.encode()).hexdigest(),
                 'modules': [{'file': n, 'id': meta[n]['id'], 'version': meta[n]['version'], 'sha256': manifest['modules'][n][:16],
-                             'reason': reasons[n]} for n in chosen],
+                             'reason': reasons[n], 'customized': bool(overrides.get(n, {}).get('guidance'))} for n in chosen],
                 'skipped': skipped}
     except (OSError, ValueError, KeyError, UnicodeError):
         raise ConversationError('skill_invalid', 'Runtime instructions failed integrity validation.') from None

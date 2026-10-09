@@ -93,8 +93,9 @@ window.RSTurns = (() => {
   function receipt(c, m) {
     const ul = make('ul', null, 'receipt'); ul.hidden = true;
     if (m.trace?.length) {
-      m.trace.forEach(x => { const li = make('li'), t = make('div'); t.append(make('span', x.label, 'step-label')); if (x.detail) t.append(make('span', x.detail, 'step-detail')); li.append(t); ul.append(li); });
-      harness(c).forEach(li => ul.append(li));
+      m.trace.forEach(x => { const li = make('li'), t = make('div'); t.append(make('span', x.label, 'step-label')); if (x.detail || x.duration_ms) t.append(make('span', (x.detail || '') + (x.duration_ms ? (x.detail ? ' · ' : '') + x.duration_ms + ' ms' : ''), 'step-detail')); li.append(t); ul.append(li); });
+      // Older answers recorded the harness only in checks; newer ones list each tool and skill step.
+      if (!m.trace.some(x => x.id === 'harness')) harness(c).forEach(li => ul.append(li));
       return ul;
     }
     const items = ['Safety check on your question', c.citations_validated ? 'Each claim matched to ' + c.citations_validated + (c.citations_validated === 1 ? ' cited source' : ' cited sources') : 'No source needed for this reply', 'Second review: supported, values unchanged, in scope', 'Safety check on the answer'];
@@ -186,7 +187,7 @@ window.RSTurns = (() => {
       const b = act(m.sources.length === 1 ? 'View source' : 'View ' + m.sources.length + ' sources', 'source', () => { list.hidden = !list.hidden; b.setAttribute('aria-expanded', String(!list.hidden)); });
       b.setAttribute('aria-expanded', 'false'); actions.append(b); extra.append(list);
     }
-    if (m.checks) { const r = receipt(m.checks, m); const b = act('How this was checked', 'check', () => { r.hidden = !r.hidden; b.setAttribute('aria-expanded', String(!r.hidden)); }); b.setAttribute('aria-expanded', 'false'); actions.append(b); extra.append(r); }
+    if (m.checks) { const r = receipt(m.checks, m); const b = act('Process Explainability', 'check', () => { r.hidden = !r.hidden; b.setAttribute('aria-expanded', String(!r.hidden)); }); b.setAttribute('aria-expanded', 'false'); actions.append(b); extra.append(r); }
     (m.ui || []).forEach(c => { const el = opts.onShortcut && opts.onShortcut(c); if (el) actions.append(el); });
     if (opts.onAction && m.action && m.action_id) { const el = opts.onAction(m); if (el) extra.append(el); }
     // Step 4 of the journey, always the customer's choice: never offered automatically by the Explainer.

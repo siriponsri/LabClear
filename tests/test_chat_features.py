@@ -183,8 +183,9 @@ def test_agent_reports_each_step_and_keeps_the_trace(monkeypatch):
         events.append(e)
     out = asyncio.run(business_agent.run("What is glucose?", {}, emit=emit))
     done = [e["id"] for e in events if e["state"] == "done"]
-    # "tools" names the typed tools the server ran for the role (process explainability).
-    assert done == ["safety_in", "plan", "data", "search", "tools", "draft", "review", "safety_out"]
+    # Process explainability: the harness revision first, then every typed tool the server ran.
+    assert done == ["harness", "safety_in", "plan", "tool_lookup_packages", "tool_lookup_branches", "tool_lookup_policies",
+                    "data", "tool_retrieve_evidence", "search", "draft", "review", "safety_out"]
     assert [t["id"] for t in out["trace"]] == done
     assert "A lab question." in next(t for t in out["trace"] if t["id"] == "plan")["detail"]
     assert len(calls) == 3

@@ -2,7 +2,7 @@
  "schema_version": "1.0",
  "catalog_date": "2026-10-09",
  "timezone": "Asia/Bangkok",
- "purpose": "Candidate records drafted on the Claude 4.0.0 branch (catalog 2026-10-08 grew to 135 records). Integration 4.0 keeps the Codex active corpus at 58 reviewed records; these are NOT searched by the assistant and are NOT an approved clinical knowledge base.",
+ "purpose": "Provenance snapshot for 90 offline-authored summaries activated by owner approval on 2026-10-09. Original drafting and verification metadata retained.",
  "source_commit": "95bf3d7 (release/4.0.0, knowledge/evidence/catalog.json and pending.json)",
  "how_authored": "Paraphrases written offline without fetching the pages in that session (verification.url_checked=false on every record). A reviewer must open each URL, confirm the text, rights and clinical accuracy, then move an approved record into knowledge/evidence/catalog.json through the normal review.",
  "full_documents_redistributed": false,
@@ -3727,5 +3727,7 @@
    "ingested": false,
    "current_review_status": "PENDING_SOURCE_RIGHTS_AND_CLINICAL_REVIEW"
   }
- ]
+ ],
+ "active_catalog": "knowledge/evidence/catalog.json",
+ "ingestion_decision": "OWNER_APPROVED_2026-10-09"
 }

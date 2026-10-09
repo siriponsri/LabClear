@@ -12,6 +12,8 @@ from fastapi.staticfiles import StaticFiles
 from config import settings
 from services.release_info import VERSION, build_commit
 from routers.ai_admin import router as ai_admin_router
+from routers.harness_admin import router as harness_admin_router
+from routers.knowledge_admin import router as knowledge_admin_router
 from routers.business import router as business_router
 from routers.google_auth import router as google_auth_router
 from routers.chats import router as chats_router
@@ -59,6 +61,8 @@ app.mount("/static", StaticFiles(directory=BASE_DIR / "static"), name="static")
 from routers.site import templates  # noqa: E402
 app.include_router(samples_router)
 app.include_router(ai_admin_router)
+app.include_router(harness_admin_router)
+app.include_router(knowledge_admin_router)
 app.include_router(google_auth_router)
 app.include_router(business_router)
 app.include_router(chats_router)

@@ -388,7 +388,7 @@
   }
 
   /* ------------------------------------------------------------ sending */
-  const defaultQuestion = () => (navigator.language || '').toLowerCase().startsWith('th') ? 'ช่วยอ่านและอธิบายผลแล็บนี้ให้หน่อย' : 'Please read this report and explain it.';
+  const defaultQuestion = () => (window.LabClearI18n?.language || navigator.language || '').toLowerCase().startsWith('th') ? 'ช่วยอ่านและอธิบายผลแล็บนี้ให้หน่อย' : 'Please read this report and explain it.';
   async function finishTurn() {
     busy = false; $('send').disabled = false; $('stop').hidden = true; $('chat-status').textContent = ''; controller = null;
     lastMessages = ''; await refresh().catch(() => {}); $('message').focus({ preventScroll: true });
@@ -443,18 +443,15 @@
     if (m.critical_note) c.append(el('p', m.critical_note, 'callout warn'));
     if (m.state === 'discarded') { c.append(el('p', 'These values were not saved or used.', 'small muted')); return c; }
     if (m.sample) c.append(el('p', 'Synthetic sample, not a patient record.', 'tiny muted'));
-    const wrap = el('div', null, 'table-wrap'), t = el('table', null, 'data rc-table'), hr = el('tr');
-    ['Test', 'Result', 'Printed range', 'Compared with range'].forEach(x => hr.append(el('th', x))); t.append(hr);
-    const STATUS_TEXT = { high: ['Above', 'warn'], low: ['Below', 'warn'], within: ['Within', 'ok'] };
-    (m.fields || []).forEach(f => {
-      const tr = el('tr'), st = STATUS_TEXT[f.status], td = el('td');
-      const nameCell = el('td', f.name); nameCell.setAttribute('translate', 'no');   // test name as read from the report
-      tr.append(nameCell, el('td', (f.value + ' ' + (f.unit || '')).trim(), 'num'), el('td', f.reference || 'None printed', f.reference ? '' : 'muted'));
-      if (st) td.append(badge(st[0], st[1])); else td.append(el('span', 'Not compared', 'tiny muted'));
-      if (f.printed_flag) td.append(el('span', ' flag ' + f.printed_flag, 'tiny muted'));
-      tr.append(td); t.append(tr);
-    });
-    wrap.append(t); c.append(wrap);
+    c.append(window.LabClearOCRTable(m.fields || [], { onSource: () => {
+      const src = '/api/business/reports/' + encodeURIComponent(m.report_id) + '/source?page=1';
+      const box = el('div', null, 'ocr-source-view'), img = el('img', null, 'report-preview');
+      img.alt = 'Original report. Compare extracted values before confirming.'; loadImage(img, src);
+      let zoom = 1; const controls = el('div', null, 'row');
+      const resize = amount => { zoom = Math.max(.75, Math.min(3, zoom + amount)); img.style.width = (zoom * 100) + '%'; img.style.maxWidth = 'none'; };
+      controls.append(button('Zoom out', () => resize(-.25), 'btn sm'), button('Zoom in', () => resize(.25), 'btn sm'));
+      const scroll = el('div', null, 'ocr-source-scroll'); scroll.append(img); box.append(controls, scroll); modal('Original report', box);
+    }}));
     if (m.warnings?.length) c.append(el('p', m.warnings.join(' · '), 'callout warn small'));
     if (m.state === 'draft' && interactive) {
       c.append(el('p', 'Compare them with your image. Nothing is explained or saved to your dashboard until you confirm.', 'small muted'));
@@ -1589,9 +1586,10 @@
   }
 
   /* ------------------------------------------------------------ navigation */
-  const TITLES = { customers: 'Customers', payments: 'Payments', chat: 'Conversation', packages: 'Health checks', book: 'Request an appointment', bookings: 'My appointments', reports: 'My reports', labs: 'Lab dashboard', plan: 'Plan', history: 'Past conversations', notifications: 'Notifications', overview: 'Overview', staff: 'Inbox', operations: 'Appointments', 'catalog-admin': 'Catalog', centers: 'Centers', roles: 'Assistant roles', ai: 'AI providers', channels: 'Channels and budget', audit: 'Audit log' };
-  const FACTORIES = { customers: customersView, payments: paymentsView, packages, book: bookView, bookings, reports, labs: labsView, plan: planView, history: historyView, notifications, overview, staff: staffView, operations: operationsView, 'catalog-admin': catalogAdmin, centers: centersAdmin, roles: rolesAdmin, ai: aiProviders, channels, audit: auditView };
-  const STAFF_ONLY = ['staff', 'customers', 'payments', 'overview', 'operations', 'catalog-admin', 'centers', 'roles', 'ai', 'channels', 'audit'];
+  const adminViews = window.LabClearAdmin({el, field, button, api, post, notice, request});
+  const TITLES = { harness: 'Company Harness', knowledge: 'Knowledge library', customers: 'Customers', payments: 'Payments', chat: 'Conversation', packages: 'Health checks', book: 'Request an appointment', bookings: 'My appointments', reports: 'My reports', labs: 'Lab dashboard', plan: 'Plan', history: 'Past conversations', notifications: 'Notifications', overview: 'Overview', staff: 'Inbox', operations: 'Appointments', 'catalog-admin': 'Catalog', centers: 'Centers', roles: 'Assistant roles', ai: 'AI providers', channels: 'Channels and budget', audit: 'Audit log' };
+  const FACTORIES = { harness: adminViews.harness, knowledge: adminViews.knowledge, customers: customersView, payments: paymentsView, packages, book: bookView, bookings, reports, labs: labsView, plan: planView, history: historyView, notifications, overview, staff: staffView, operations: operationsView, 'catalog-admin': catalogAdmin, centers: centersAdmin, roles: rolesAdmin, ai: aiProviders, channels, audit: auditView };
+  const STAFF_ONLY = ['harness', 'knowledge','staff', 'customers', 'payments', 'overview', 'operations', 'catalog-admin', 'centers', 'roles', 'ai', 'channels', 'audit'];
   const mobile = matchMedia(STAFF_MODE ? '(max-width:860px)' : '(max-width:1100px)');
   function setMenu(open) { $('sidebar').classList.toggle('open', open); $('sidebar').inert = mobile.matches && !open; $('menu-toggle').setAttribute('aria-expanded', String(open)); $('menu-toggle').setAttribute('aria-label', open ? 'Close navigation' : 'Open navigation'); }
   let navigationId = 0;

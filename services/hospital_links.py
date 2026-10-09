@@ -22,9 +22,11 @@ def present(row, today=None):
     result = {**row, 'url': safe_url(row['url']), 'mode': 'OFFICIAL_EXTERNAL', 'booking_confirmed': False,
               'detail_url': safe_url(row['detail_url']) if row.get('detail_url') else None,
               'partnership_verified': False, 'clinical_recommendation_approved': False}
+    result['advertised_price_thb'] = row.get('price_thb')
+    result['price_note'] = 'Published price observed on ' + row['checked_at'] + '; verify current terms with the hospital.'
     state = row['review_status']
     if state == 'REVOKED':
-        result.update(state='REVOKED', price_thb=None, current_offer=False)
+        result.update(state='REVOKED', price_thb=None, advertised_price_thb=None, current_offer=False)
         return result
     if row.get('sale_until') and date.fromisoformat(row['sale_until']) < today:
         state = 'EXPIRED_SALE'
@@ -39,6 +41,8 @@ def present(row, today=None):
     result.update(state=state, current_offer=state == 'VERIFIED')
     if state != 'VERIFIED':
         result['price_thb'] = None
+    if state in {'EXPIRED_SALE', 'EXPIRED_SERVICE'}:
+        result['advertised_price_thb'] = None
     return result
 
 

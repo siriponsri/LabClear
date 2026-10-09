@@ -21,14 +21,14 @@ import asyncio
 import hashlib
 import json
 import time
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from typing import Any, Awaitable, Callable, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, ValidationError, constr
 
 from services.conversation_transport import ConversationError
 
-SCHEMA_VERSION = "labclear-tools-1.0.0"
+SCHEMA_VERSION = "labclear-tools-1.1.0"
 PackageId = constr(pattern=r"^P\d{2}$")
 
 
@@ -42,7 +42,7 @@ class Record(BaseModel):
     id: str = Field(min_length=1, max_length=120)
     title: str = Field(max_length=300)
     content: str = Field(max_length=20000)
-    data_class: Literal["synthetic_business", "public_reference", "public_education", "organization_private"]
+    data_class: Literal["synthetic_business", "public_reference", "public_education", "organization_private", "official_external"]
 
 
 class Records(BaseModel):
@@ -95,6 +95,8 @@ class ToolContext:
     search: Callable[[str, int], Awaitable[tuple[list[dict], str]]] | None = None
     quote: Callable[[list[str]], dict] | None = None
     audit: list[dict] = field(default_factory=list)
+    config: dict = field(default_factory=dict)
+    emit: Callable | None = None
 
     @staticmethod
     def for_role(dot: dict, **kwargs) -> "ToolContext":
@@ -194,8 +196,17 @@ async def _hospital_offer(ctx: ToolContext, a: HospitalOffer) -> dict:
         raise ConversationError("feature_disabled", "Official hospital links are not enabled.", 409)
     offers = [o for o in hospital_links.catalog() if not a.offer_id or o.get("id") == a.offer_id]
     # External offers are never clinical evidence, never a booking and never a partnership claim.
-    return {"offers": [{k: o.get(k) for k in ("id", "hospital", "branch", "variant", "url", "detail_url", "state", "price_thb",
-                                               "checked_at", "booking_confirmed", "partnership_verified")} for o in offers]}
+    # The model reads only the reviewed facts below (no reviewer notes or internal mappings).
+    facts = ("hospital", "branch", "variant", "state", "current_offer", "price_thb", "advertised_price_thb", "price_note",
+             "eligibility", "fees", "sale_until", "service_until", "checked_at", "booking_confirmed", "partnership_verified")
+    links = ("id", "hospital", "branch", "variant", "url", "detail_url", "state", "price_thb", "advertised_price_thb",
+             "checked_at", "booking_confirmed", "partnership_verified")
+    return {"offers": [{k: o.get(k) for k in links} for o in offers], "records": [{
+        "id": o['id'].lower(), "title": o['hospital'] + ' — ' + o['variant'],
+        "content": json.dumps({k: o.get(k) for k in facts}, ensure_ascii=False), "url": o['url'],
+        "publisher": o['hospital'], "data_class": "official_external", "reviewed_at": o['checked_at'],
+        "verification_status": o['state'], "version": o.get('checked_at')
+    } for o in offers]}
 
 
 TOOLS: dict[str, Tool] = {t.name: t for t in [
@@ -241,11 +252,19 @@ async def invoke(ctx: ToolContext, name: str, arguments: dict | None = None) -> 
     entry = {"tool": name, "version": tool.version if tool else None, "scope": tool.scope if tool else None,
              "role": ctx.role_id, "args_sha256": hashlib.sha256(args_json.encode()).hexdigest()[:16], "ok": False}
     started = time.perf_counter()
+    event_id = 'tool_' + name
     try:
         if tool is None:
             raise ConversationError("tool_unknown", "Unknown tool.", 500)
         if tool.scope not in ctx.scopes:
             raise ConversationError("tool_forbidden", "This assistant role cannot use that data.", 403)
+        option = ctx.config.get('tools', {}).get(name, {})
+        if not option.get('enabled', True):
+            raise ConversationError('tool_disabled', 'This tool is paused by the administrator: ' + name, 409)
+        tool = replace(tool, timeout_seconds=min(tool.timeout_seconds, option.get('timeout_seconds', tool.timeout_seconds)),
+                       max_items=min(tool.max_items, option.get('max_items', tool.max_items)))
+        if ctx.emit:
+            await ctx.emit(event_id, 'running', 'Tool: ' + name, tool.description)
         try:
             parsed = tool.arguments.model_validate(arguments or {})
         except ValidationError:
@@ -268,3 +287,7 @@ async def invoke(ctx: ToolContext, name: str, arguments: dict | None = None) -> 
     finally:
         entry["ms"] = round((time.perf_counter() - started) * 1000, 1)
         ctx.audit.append(entry)
+        if ctx.emit:
+            await ctx.emit(event_id, 'done' if entry['ok'] else 'error', 'Tool: ' + name,
+                           (f"{entry.get('items', 0)} " + ('item' if entry.get('items', 0) == 1 else 'items') + f" · {entry['ms']} ms"
+                            + ('' if entry['ok'] else ' · ' + entry.get('code', 'error'))))

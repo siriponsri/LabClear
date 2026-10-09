@@ -1,0 +1,8 @@
+{
+  "owner_ground_truth": "examples/thai_lab_reference_v3/expected_results.json",
+  "owner_upload_sha256": "251545d5fe53e957bd5c7545cb41159546cc5f5c1661ef10144ff695801304c8",
+  "byte_identical_to_repository": true,
+  "pdfs_byte_identical": true,
+  "pngs": "Owner uploads resized to 1448x2048; separately hashed in eval/ocr_files/MANIFEST.json. Original manifest PNGs are 1654x2339.",
+  "evaluated_rows_per_format": 126
+}

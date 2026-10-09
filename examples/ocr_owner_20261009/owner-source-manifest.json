@@ -1,0 +1,87 @@
+[
+  {
+    "file": "Thai_Lab_Reports_Reference_v3_A4.pdf",
+    "bytes": 227299,
+    "sha256": "6850e07b9198a1dac3dd7581bda704a1a078a5002506a3aa0b81c8b7358ff3d2"
+  },
+  {
+    "file": "README_TH.md",
+    "bytes": 9272,
+    "sha256": "0fab358ae7848b50fed69b3962117b9472fcd561589dae50a10bd78bed5aa593"
+  },
+  {
+    "file": "expected_results.json",
+    "bytes": 60199,
+    "sha256": "251545d5fe53e957bd5c7545cb41159546cc5f5c1661ef10144ff695801304c8"
+  },
+  {
+    "file": "Preview_3_Templates.png",
+    "bytes": 546681,
+    "sha256": "2de59da4a2f3e6660191edf40acc1979cc70992c6ba030827f2b0cc97b822445"
+  },
+  {
+    "file": "Preview_All_6.png",
+    "bytes": 773211,
+    "sha256": "1c367b309f416c9d356d5b6dd1f25006fa46fe4d04bf885161311b966441b9e9"
+  },
+  {
+    "file": "pdf/01_A_Liver.pdf",
+    "bytes": 37638,
+    "sha256": "4d7eb474b5d1dce39593448a3d4c50eea917d7e0cf5501d22e4eff44759d52ae"
+  },
+  {
+    "file": "pdf/02_A_Renal.pdf",
+    "bytes": 39090,
+    "sha256": "dd17e45b50eaf4aab5749efc37ef23a1601352e837b9f68cfc95c304793d78e7"
+  },
+  {
+    "file": "pdf/03_B_Lipid.pdf",
+    "bytes": 33834,
+    "sha256": "9b794ecfd75b71318faeec5ef4a0c35e8bfa80494b568f65c0044a9599dd9d74"
+  },
+  {
+    "file": "pdf/04_B_Glucose_Urine.pdf",
+    "bytes": 34104,
+    "sha256": "c4d5afe90071c45ff931f8d3f9fe381bb941206dd387f28d465ddc92b521816e"
+  },
+  {
+    "file": "pdf/05_C_Hematology.pdf",
+    "bytes": 42697,
+    "sha256": "c61111e407c1a581aadfc97a9c20e2470b4cf6b962bb05d59c68d1634af0cbf5"
+  },
+  {
+    "file": "pdf/06_C_Thyroid.pdf",
+    "bytes": 42802,
+    "sha256": "bdb77e19ab5629400496cba2d80d7acb9df17415e832e5b4289cffc5c49ad87a"
+  },
+  {
+    "file": "png/01_A_Liver.png",
+    "bytes": 324347,
+    "sha256": "5a67c936b795a16c51207caee3c5e20f4f6e2899a2ba5c5ab3f7e5b655ec50e7"
+  },
+  {
+    "file": "png/02_A_Renal.png",
+    "bytes": 329685,
+    "sha256": "d4508a0501809cf1b97baec16bd32f9efe74cf8fd6ae81ec6009462bc72c307f"
+  },
+  {
+    "file": "png/03_B_Lipid.png",
+    "bytes": 326910,
+    "sha256": "02e129d36910fe0e405ec9c458e3bb2d7f260d1a1520737039cab6b6c3948155"
+  },
+  {
+    "file": "png/04_B_Glucose_Urine.png",
+    "bytes": 314078,
+    "sha256": "5f7dce75a4cf5a62c515d4f8ec03170e0f659ad77de7d85cd449fb770953e874"
+  },
+  {
+    "file": "png/05_C_Hematology.png",
+    "bytes": 502290,
+    "sha256": "dd10636b44e4c6285c52fbb9800cdf7a24053420f14c4e7379024e210daaf134"
+  },
+  {
+    "file": "png/06_C_Thyroid.png",
+    "bytes": 500361,
+    "sha256": "59e2b2b9957b418d265ff87c9b590bcee74cadf7be047ba7a331cf9a8200f65f"
+  }
+]

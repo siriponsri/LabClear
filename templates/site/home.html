@@ -20,7 +20,7 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg>
       <input id="hero-search" name="q" type="search" maxlength="80" placeholder="Search a test, for example HbA1c">
     </form>
-    <p class="hero-credit tiny" data-reveal style="--i:5">Answers cite <a href="/sources">{{ source_count }} reviewed public records</a>. Coursework simulation, not a clinic.</p>
+    <p class="hero-credit tiny" data-reveal style="--i:5">Answers cite <a href="/sources">{{ source_count }} approved reference records</a>. Coursework simulation, not a clinic.</p>
   </div>
 
   <div class="deck" data-deck data-reveal="scale" aria-label="What LabClear does">
@@ -114,7 +114,8 @@
 </section>
 
 <section class="band sources-band" aria-labelledby="proof-title">
-  <p id="proof-title" class="band-label tiny">Answers cite {{ source_count }} reviewed public records from</p>
+  <p id="proof-title" class="band-label tiny">Answers cite {{ source_count }} approved reference records from</p>
+  <p class="tiny muted band-note">Includes summaries approved by the owner whose source check is still pending. <a href="/sources">See the status of each record</a>.</p>
   <ul class="source-grid">
     {% for name, n in publishers[:8] %}<li data-reveal style="--i:{{ loop.index0 }}"><span class="source-name">{{ name }}</span><span class="num muted tiny">{{ n }} {{ 'record' if n == 1 else 'records' }}</span></li>{% endfor %}
   </ul>

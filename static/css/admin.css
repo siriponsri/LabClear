@@ -1,0 +1,90 @@
+/* Admin: Company Harness (no-code skills and tools), Knowledge library (PDF display) and the
+   OCR result table. Uses the design tokens in base.css, so light and dark themes both apply. */
+
+/* ---------------------------------------------------------------- shared */
+.admin-intro{display:grid;gap:6px;margin-bottom:24px;max-width:760px}
+.admin-intro h2{font:600 clamp(1.4rem,1rem + 1vw,1.75rem)/1.25 var(--font-display);letter-spacing:-.01em;margin:0}
+.admin-intro p{margin:0;max-width:680px}
+.admin-disclosure{border-top:1px solid var(--color-border);padding:4px 0}
+.admin-disclosure:last-of-type{border-bottom:1px solid var(--color-border)}
+.admin-disclosure>summary{display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;list-style:none;padding:14px 2px;font:500 var(--text-sm) var(--font-sans);color:var(--color-fg)}
+.admin-disclosure>summary::-webkit-details-marker{display:none}
+.admin-disclosure>summary::after{content:"";flex:none;width:7px;height:7px;border-right:1.5px solid var(--color-fg-muted);border-bottom:1.5px solid var(--color-fg-muted);transform:rotate(45deg) translateY(-2px);transition:transform var(--dur-fast) var(--ease-out)}
+.admin-disclosure[open]>summary::after{transform:rotate(-135deg) translateY(-2px)}
+.admin-disclosure>summary:focus-visible{outline:2px solid var(--color-focus);outline-offset:2px;border-radius:var(--radius-sm)}
+.admin-disclosure>div,.admin-disclosure>.stack{padding:4px 2px 18px}
+.admin-disclosure .badge{margin-left:auto}
+
+/* ---------------------------------------------------------------- Company Harness */
+.admin-harness{max-width:920px}
+.admin-harness h3{font:600 var(--text-base)/1.4 var(--font-sans);margin:24px 0 4px}
+.harness-settings{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px 24px;align-items:end}
+.admin-harness label.check{display:flex;align-items:center;gap:8px;font-size:var(--text-sm);min-height:40px}
+.admin-harness label.check input{width:16px;height:16px;accent-color:var(--color-primary)}
+.admin-harness label.check input:disabled+span::after{content:" · locked";color:var(--color-fg-muted);font-size:12px}
+.skill-source{margin:0;font:12px/1.7 var(--font-mono);white-space:pre-wrap;overflow-wrap:anywhere;max-height:260px;overflow:auto;background:var(--color-bg-subtle);border:1px solid var(--color-border);border-radius:var(--radius-md);padding:14px 16px;color:var(--color-fg-muted)}
+.harness-save{position:sticky;bottom:0;z-index:2;display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:14px 0;margin-top:8px;background:var(--color-bg);border-top:1px solid var(--color-border)}
+
+/* ---------------------------------------------------------------- Knowledge library */
+.knowledge-admin{max-width:1180px}
+.knowledge-layout{display:grid;grid-template-columns:minmax(240px,320px) minmax(0,1fr);gap:28px;margin-top:16px;align-items:start}
+.knowledge-list{display:grid;max-height:78vh;overflow:auto;border:1px solid var(--color-border);border-radius:var(--radius-md);background:var(--color-surface)}
+.knowledge-list>p{margin:0;padding:10px 14px;border-bottom:1px solid var(--color-border);position:sticky;top:0;background:var(--color-surface);z-index:1}
+.knowledge-item{display:grid;gap:2px;width:100%;border:0;border-bottom:1px solid var(--color-border);padding:12px 14px;background:transparent;color:var(--color-fg);text-align:left;font:inherit;cursor:pointer}
+.knowledge-item:last-child{border-bottom:0}
+.knowledge-item:hover{background:var(--color-bg-subtle)}
+.knowledge-item[aria-pressed=true]{background:var(--color-surface-2);box-shadow:inset 2px 0 0 var(--color-fg)}
+.knowledge-item:focus-visible{outline:2px solid var(--color-focus);outline-offset:-2px}
+.knowledge-item strong{font-weight:500;font-size:13.5px;line-height:1.45}
+.knowledge-item span{overflow-wrap:anywhere;color:var(--color-fg-muted)}
+.knowledge-viewer{min-width:0;display:grid;gap:12px}
+.knowledge-meta{display:grid;gap:8px;padding-bottom:16px;border-bottom:1px solid var(--color-border)}
+.knowledge-meta h3{font:600 1.25rem/1.35 var(--font-display);margin:0}
+.knowledge-meta p{margin:0}
+.knowledge-meta .row{gap:8px;flex-wrap:wrap}
+.pdf-toolbar{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;padding:8px 0}
+.pdf-toolbar span{font-variant-numeric:tabular-nums}
+.pdf-stage{background:var(--color-surface-2);border:1px solid var(--color-border);border-radius:var(--radius-md);padding:clamp(8px,2.5vw,24px);overflow:auto;max-height:82vh}
+.pdf-page{display:block;width:100%;max-width:794px;height:auto;margin:0 auto;background:#fff;box-shadow:0 1px 2px oklch(0% 0 0 / .06),0 8px 24px oklch(0% 0 0 / .08);border-radius:2px}
+
+/* ---------------------------------------------------------------- OCR results table */
+.ocr-results{margin:16px 0;border:1px solid var(--color-border);border-radius:var(--radius-lg);overflow:hidden;background:var(--color-surface)}
+.ocr-toolbar{display:flex;align-items:center;gap:8px;padding:10px 12px;background:var(--color-bg-subtle);border-bottom:1px solid var(--color-border);flex-wrap:wrap}
+.ocr-toolbar input{flex:1;min-width:150px}
+.ocr-toolbar input,.ocr-toolbar select{font:inherit;font-size:13px;border:1px solid var(--color-border);background:var(--color-surface);color:inherit;border-radius:var(--radius-sm);padding:8px 10px;min-height:36px}
+.ocr-count{font-size:12px;font-variant-numeric:tabular-nums;color:var(--color-fg-muted);white-space:nowrap}
+.ocr-scroll{max-height:460px;overflow:auto;overscroll-behavior:contain}
+.ocr-table{width:100%;margin:0!important;font-size:13px;border-collapse:collapse}
+.ocr-table caption{text-align:left;padding:10px 16px;font-size:12px;color:var(--color-fg-muted);caption-side:top}
+.ocr-table thead{position:sticky;top:0;z-index:1;background:var(--color-surface);box-shadow:0 1px 0 var(--color-border)}
+.ocr-table th,.ocr-table td{padding:11px 16px!important;text-align:left;border-bottom:1px solid var(--color-border);vertical-align:top}
+.ocr-table thead th{font-weight:500;color:var(--color-fg-muted);font-size:12px;white-space:nowrap}
+.ocr-table tbody th{font-weight:500}
+.ocr-table tbody tr:hover{background:var(--color-bg-subtle)}
+.ocr-table .ocr-value{font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+.ocr-unit,.ocr-reference{color:var(--color-fg-muted)}
+.ocr-status{display:inline-flex;align-items:center;gap:6px;border-radius:var(--radius-sm);padding:2px 8px;font-size:11.5px;background:var(--color-ok-bg);color:var(--color-ok);white-space:nowrap}
+.ocr-status::before{content:"";width:5px;height:5px;border-radius:50%;background:currentColor}
+.ocr-status.high,.ocr-status.low{background:var(--color-warn-bg);color:var(--color-warn)}
+.ocr-status.unknown{background:var(--color-surface-2);color:var(--color-fg-muted)}
+.ocr-printed-flag{display:block;font-size:11px;margin-top:4px;color:var(--color-fg-muted)}
+.ocr-page-label{display:block;font-size:11px;font-weight:400;color:var(--color-fg-muted)}
+.ocr-empty{text-align:center!important;padding:28px!important;color:var(--color-fg-muted)}
+.ocr-footer{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 16px;border-top:1px solid var(--color-border)}
+.ocr-sort{border:0;background:none;padding:0;color:inherit;font:inherit;cursor:pointer}
+.ocr-sort::after{content:" ↕";color:var(--color-fg-soft)}
+.ocr-source-scroll{overflow:auto;max-height:65vh;margin-top:12px}
+.ocr-source-scroll img{display:block}
+.ocr-source-view{min-width:0}
+
+@media (max-width:860px){
+  .harness-settings{grid-template-columns:1fr}
+  .knowledge-layout{grid-template-columns:1fr;gap:16px}
+  .knowledge-list{max-height:280px}
+}
+@media (max-width:600px){
+  .ocr-toolbar input{flex-basis:100%}
+  .ocr-table th,.ocr-table td{padding:9px 12px!important}
+  .ocr-footer{align-items:flex-start;flex-direction:column}
+}
+@media (prefers-reduced-motion:reduce){.admin-disclosure>summary::after{transition:none}}

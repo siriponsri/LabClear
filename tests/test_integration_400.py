@@ -16,14 +16,16 @@ SITE = '/api/business/site'
 def test_public_site_api_reads_the_reviewed_corpus_and_catalog():
     c = TestClient(app)
     common = c.get(SITE + '/common').json()
-    assert common['sources'] == {'count': 58, 'publishers': 4, 'publisher_types': {'thai_hospital': 49, 'international_reference': 9}}
+    assert common['sources'] == {'count': 148, 'publishers': 29, 'publisher_types': {
+        'international_reference': 41, 'thai_hospital': 62, 'international_agency': 27, 'thai_professional_society': 13, 'thai_government': 5}}
     assert common['catalog']['packages'] and common['branches'] and common['plans']
     assert common['features'] == {'org_documents': False, 'org_reference_inference': False, 'hospital_links': False, 'landing_preview': False}
     home = c.get(SITE + '/home').json()
-    assert home['source_count'] == 58 and home['featured']['id'] == 'P02'
+    assert home['source_count'] == 148 and home['featured']['id'] == 'P02'
     sources = c.get(SITE + '/sources').json()
-    assert len(sources['records']) == 58
-    assert {r['publisher_type'] for r in sources['records']} == {'thai_hospital', 'international_reference'}
+    assert len(sources['records']) == 148
+    assert {r['publisher_type'] for r in sources['records']} == {
+        'thai_hospital', 'international_reference', 'international_agency', 'thai_professional_society', 'thai_government'}
     assert c.get(SITE + '/packages/P02').json()['package']['id'] == 'P02'
     assert c.get(SITE + '/compare', params={'ids': 'P01,P02'}).json()['comparison']
     assert c.get(SITE + '/compare', params={'ids': 'P01'}).json()['comparison'] is None
@@ -117,16 +119,21 @@ def test_membership_reports_only_the_callers_own_role(monkeypatch):
     assert other.get(SITE + '/membership').json()['member'] is False
 
 
-def test_claude_knowledge_records_are_candidates_not_active_evidence():
+def test_owner_approved_summaries_are_searched_and_labelled_as_pending_source_check():
+    """2026-10-09: the owner approved the 90 offline-authored summaries for retrieval. They are
+    searched like the 58 reviewed records but stay labelled: owner approval is not a source check."""
     import json
     from pathlib import Path
     from services import evidence_search
     root = Path(__file__).resolve().parents[1]
     active = json.loads((root / 'knowledge/evidence/catalog.json').read_text(encoding='utf-8'))['records']
     queue = json.loads((root / 'knowledge/acquisition/claude_candidates_400.json').read_text(encoding='utf-8'))
-    assert len(active) == 58 and queue['candidate_count'] == len(queue['entries']) == 90
-    assert not {r['id'] for r in active} & {e['id'] for e in queue['entries']}
-    assert all(e['rag_approval'] == 'NOT_APPROVED' and e['ingested'] is False for e in queue['entries'])
-    # A topic that exists only among the candidates (USPSTF colorectal screening) finds nothing active.
+    assert queue['candidate_count'] == len(queue['entries']) == 90 and queue['baseline_record_count'] == 58
+    approved = {r['id']: r for r in active if r.get('rag_approval') == 'OWNER_APPROVED'}
+    assert len(active) == 148 and set(approved) == {e['id'] for e in queue['entries']}
+    for r in approved.values():
+        assert r['verification_status'] == 'OFFLINE_AUTHORED_NOT_FETCHED' and r['verification']['url_checked'] is False
+        assert r['current_review_status'] == 'OWNER_APPROVED_SOURCE_CHECK_PENDING' and r['url'].startswith('https://')
+    # A topic that exists only among the approved summaries (USPSTF colorectal screening) is now found.
     found = {r['id'] for r in evidence_search.lexical('USPSTF colorectal cancer screening FIT', limit=8)}
-    assert not found & {e['id'] for e in queue['entries']}
+    assert found & set(approved)

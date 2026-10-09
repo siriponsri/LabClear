@@ -249,10 +249,30 @@ def _view(p: RuntimeProvider, label: str) -> dict:
             "price_in": p.price["input_per_mtok"], "price_out": p.price["output_per_mtok"]}
 
 
+def test_identity(p):
+    # Never expose a credential or persist the request body in a test receipt.
+    import hashlib
+    return hashlib.sha256((p.preset+'|'+p.model+'|'+p.base_url+'|'+p.api_key).encode()).hexdigest()
+
+
+def record_test(tx, slot, provider, ok):
+    row = tx.get('configuration_provider_tests')
+    records = row['data'] if row else {}
+    records[slot] = {'identity':test_identity(provider), 'status':'LIVE_TESTED' if ok else 'LIVE_TEST_FAILED',
+                     'tested_at':time.time(), 'scope':'One connectivity/schema probe; model quality not established.'}
+    tx.put('configuration_provider_tests','configuration','system',records)
+
+
 def public_view(tx) -> dict:
     slots = {slot: _view(runtime(slot, tx), label) for slot, label in SLOTS.items()}
     agents = {agent: {**_view(runtime(agent_slot(agent), tx), label), "slot": agent_slot(agent), "help": help_text}
               for agent, (label, help_text) in AGENTS.items()}
+    saved_tests = tx.get('configuration_provider_tests')
+    receipts = saved_tests['data'] if saved_tests else {}
+    for slot, view in [*slots.items(), *((v['slot'],v) for v in agents.values())]:
+        receipt = receipts.get(slot,{})
+        if receipt.get('identity') == test_identity(runtime(slot,tx)):
+            view.update(live_test_status=receipt['status'], tested_at=receipt['tested_at'])
     presets = [{"id": x.id, "label": x.label, "slots": list(x.slots), "default_model": x.default_model,
                 "vision_model": x.vision_model, "price_in": x.price_in, "price_out": x.price_out,
                 "key_url": x.key_url} for x in PRESETS.values()]

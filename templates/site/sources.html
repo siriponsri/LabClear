@@ -3,14 +3,18 @@
 <div class="wrap page-head">
   <nav class="crumbs small" aria-label="Breadcrumb"><a href="/">Home</a> / <span aria-current="page">Medical sources</span></nav>
   <h1>Medical sources</h1>
-  <p class="muted">The assistant may cite only these {{ records|length }} reviewed public records (catalog {{ version }}). Business information comes from our simulated catalog and policies instead.</p>
+  <p class="muted">The assistant may cite only these {{ records|length }} public records. Business information comes from our simulated catalog and policies instead.</p>
+  <p class="small muted">{{ records|length - approved }} records were reviewed against their source. {{ approved }} are summaries approved by the owner on 9 October 2026; their source check is still pending. Approval makes a record searchable; it does not establish clinical accuracy.</p>
 </div>
 <div class="wrap stack">
-  <div class="row small">{% for name, n in publishers.items() %}<span class="badge neutral">{{ name }} · {{ n }}</span>{% endfor %}</div>
+  <details class="publisher-list small">
+    <summary>{{ publishers|length }} publishers</summary>
+    <div class="row">{% for name, n in publishers.items() %}<span class="badge neutral" translate="no" lang="{{ text_lang(name) }}">{{ name }} · {{ n }}</span>{% endfor %}</div>
+  </details>
   <div class="table-wrap">
     <table class="data sources-table">
-      <thead><tr><th scope="col">Title</th><th scope="col">Publisher</th><th scope="col">Reviewed</th></tr></thead>
-      <tbody>{% for r in records %}<tr><td><a href="{{ r.url }}" target="_blank" rel="noopener noreferrer" lang="{{ r.language or text_lang(r.title) }}">{{ r.title }}</a><div class="tiny muted mono" translate="no">{{ r.id }}</div></td><td class="small">{{ r.publisher }}</td><td class="small">{{ r.reviewed_at }}</td></tr>{% endfor %}</tbody>
+      <thead><tr><th scope="col">Title</th><th scope="col">Publisher</th><th scope="col">Status</th></tr></thead>
+      <tbody>{% for r in records %}<tr><td><a href="{{ r.url }}" target="_blank" rel="noopener noreferrer" lang="{{ r.language or text_lang(r.title) }}">{{ r.title }}</a><div class="tiny muted mono" translate="no">{{ r.id }}</div></td><td class="small" translate="no" lang="{{ text_lang(r.publisher) }}">{{ r.publisher }}</td><td class="small">{% if r.rag_approval == 'OWNER_APPROVED' %}<span class="badge warn">Source check pending</span>{% else %}<span>Reviewed</span> <span class="num">{{ r.reviewed_at or '' }}</span>{% endif %}</td></tr>{% endfor %}</tbody>
     </table>
   </div>
   <p class="small muted">Reference intervals in these sources are context, not personal decision limits. Ranges printed on your own report take precedence. Synthetic test reports are never used as medical knowledge.</p>

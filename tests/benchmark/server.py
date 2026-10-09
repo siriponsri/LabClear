@@ -37,6 +37,7 @@ TEXT_MODEL = "typhoon-v2.5-30b-a3b-instruct"
 def main(config_path: str) -> None:
     config = json.loads(Path(config_path).read_text(encoding="utf-8"))
     canary = config["canary_key"]
+    settings.SYNTHETIC_FIXTURE_MANIFEST = str(ROOT / "examples/ocr_owner_20261009/fixtures.json")
     # Provider configuration exactly as an owner would set it with environment variables.
     settings.LLM_PROVIDER, settings.LLM_API_KEY, settings.LLM_MODEL = "typhoon", canary, ""
     settings.VISION_ENABLED, settings.VISION_PROVIDER, settings.VISION_API_KEY = True, "typhoon_ocr", canary
@@ -46,6 +47,8 @@ def main(config_path: str) -> None:
     settings.PROJECT_BUDGET_PRIOR_SPEND_THB = "0"  # isolated synthetic database with no prior spend
     for name, value in PROFILES[config["profile"]].items():
         setattr(settings, name, value)
+    # Optional, for demonstrations only (the frozen A/B/C profiles leave it off).
+    settings.HOSPITAL_LINKS_ENABLED = bool(config.get("hospital_links", False))
     if config.get("free_only_policy") and hasattr(settings, "FREE_ONLY_POLICY_PATH"):
         settings.FREE_ONLY_POLICY_PATH = config["free_only_policy"]
         settings.FREE_ONLY_RUN_ID = config["cycle"]
@@ -57,6 +60,8 @@ def main(config_path: str) -> None:
     recorder = doubles.Recorder(Path(config["recorder"]), policy)
     replay = doubles.ReplayQueue(Path(config["replay_from"])) if config.get("replay_from") else None
     handler = doubles.make_handler(recorder, replay)
+    if config.get('prompt_trace'):
+        handler.prompt_trace = Path(config['prompt_trace'])
     if config.get("record_replay_to"):
         handler.record_to = doubles.ReplayWriter(Path(config["record_replay_to"]))
     doubles.load_skill_headers(ROOT / "runtime_skills" / "thai_health")

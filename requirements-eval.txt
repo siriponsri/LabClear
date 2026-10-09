@@ -1,0 +1,4 @@
+-r requirements-dev.txt
+nbformat==5.10.4
+ipython>=9,<10
+ipykernel>=6,<8

@@ -2,6 +2,8 @@
 from __future__ import annotations
 import json
 import re
+import asyncio
+import time
 from typing import Literal
 from pydantic import BaseModel,ConfigDict,Field,model_validator
 from services import conversation_guard as guard, conversation_transport as transport,evidence_search
@@ -9,7 +11,7 @@ from services.conversation_agent import Answer,EvidenceReview,complete_json,vali
 from services.business_store import catalog,branches,policies,quote
 from services import business_dots as dots_mod
 from services import answer_checks
-from services import agent_tools
+from services import agent_tools, harness_config
 from services.business_plans import plans as plan_catalog
 import logging
 from config import settings
@@ -112,6 +114,8 @@ def _agent(name):
     from services.providers import agent_slot,is_agent
     return agent_slot(name) if is_agent(agent_slot(name)) else 'llm'
 
+# Names a real hospital (not just the city: LabClear's simulated centers are in Bangkok too).
+HOSPITAL_TALK=re.compile(r'โรงพยาบาล|โรง\s*พยาบาล|รพ\.|hospital|สมิติเวช|วิชัยยุทธ|พญาไท|บำรุงราษฎร์|คริสเตียน|samitivej|vichaiyut|phyathai|bumrungrad|christian',re.I)
 PACKAGE_TALK=re.compile(r'แพ็กเกจ|แพคเกจ|แพ็คเกจ|ตรวจสุขภาพ|โปรแกรมตรวจ|โรงพยาบาล|package|check-?up|health check|hospital',re.I)
 
 
@@ -146,9 +150,21 @@ async def run(message,context,emit=None):
             if not configured.ready or configured.model.endswith(':free'):
                 raise transport.ConversationError('data_policy','Configure and review every provider that receives organization context before enabling private reference inference.',409)
     trace=[]
+    clock={}
+    turn_start=time.perf_counter()
+    runtime_config=harness_config.load()
     async def step(id,state,label,detail=''):
-        if state=='done':trace.append({'id':id,'label':label,'detail':detail})
-        if emit:await emit({'type':'step','id':id,'state':state,'label':label,'detail':detail})
+        now=time.perf_counter()
+        if state=='running':clock[id]=now
+        event={'id':id,'state':state,'label':label,'detail':detail,
+               'elapsed_ms':round((now-turn_start)*1000,1)}
+        if state in {'done','error'}:
+            event['duration_ms']=round((now-clock.get(id,now))*1000,1)
+            trace.append(event)
+        if emit:await emit({'type':'step',**event})
+    await step('harness','done','Company Harness',
+               f"Typed tools {agent_tools.SCHEMA_VERSION} · configuration r{runtime_config['revision']} · "
+               + ('runtime skills enabled' if runtime_config['skills_enabled'] else 'base instructions only'))
     await step('safety_in','running','Checking your message for safety',_label('guard'))
     await guard.check(message,'input')
     await step('safety_in','done','Your message passed the safety check',_label('guard'))
@@ -193,7 +209,8 @@ async def run(message,context,emit=None):
     evidence=[]
     # Typed tools: the server decides which data this role may read; the model only proposed the plan.
     tools=agent_tools.ToolContext.for_role(dot,biz=biz,report=report,
-        search=lambda query,limit:evidence_search.search(query,limit),quote=lambda ids:quote(ids))
+        search=lambda query,limit:evidence_search.search(query,limit),quote=lambda ids:quote(ids),
+        config=runtime_config,emit=step)
     private_sources=context.get('organization_sources',[]) if settings.ORG_REFERENCE_INFERENCE_ENABLED else []
     if private_sources:
         from services.providers import runtime
@@ -204,20 +221,28 @@ async def run(message,context,emit=None):
             if not configured.ready or configured.model.endswith(':free'):
                 raise transport.ConversationError('data_policy','Organization reference providers require explicit configuration and data-policy review.',409)
         evidence.extend(private_sources)
+    # Independent local lookups run together. No extra LLM agents are spent on exact data.
+    lookups=[name for scope,name in [('catalog','lookup_packages'),('branches','lookup_branches'),('policies','lookup_policies')] if scope in reads]
+    for result in await asyncio.gather(*(agent_tools.invoke(tools,name,{}) for name in lookups)):
+        evidence += result['records']
     if 'catalog' in reads:
-        evidence+=(await agent_tools.invoke(tools,'lookup_packages',{}))['records']
         compare_ids=list(dict.fromkeys(plan.package_ids))
         if 2<=len(compare_ids)<=4:
             try:evidence+=(await agent_tools.invoke(tools,'compare_packages',{'package_ids':compare_ids}))['records']
             except transport.ConversationError:pass  # an invalid proposal only loses the comparison table
-    if 'branches' in reads:evidence+=(await agent_tools.invoke(tools,'lookup_branches',{}))['records']
-    if 'policies' in reads:evidence+=(await agent_tools.invoke(tools,'lookup_policies',{}))['records']
+    hospital_records=[]
+    if 'catalog' in reads and settings.HOSPITAL_LINKS_ENABLED and HOSPITAL_TALK.search(message):
+        # A question about real hospitals: their reviewed offers become cited evidence ([hosp-...]).
+        try:
+            external=await agent_tools.invoke(tools,'get_external_hospital_offer',{})
+            hospital_records=external['offers'];evidence+=external['records']
+        except transport.ConversationError:pass  # paused by an administrator: answer without them
     retrieval='catalog' if 'catalog' in reads else 'none'
     used=[x for x,k in (('catalog','catalog'),('centers','branches'),('policies','policies')) if k in reads]
     if used:await step('data','done','Loaded business data the '+dot['name']+' may use',', '.join(used))
     if plan.query and 'medical' in reads:
         await step('search','running','Searching the medical knowledge base',plan.query[:120])
-        found=await agent_tools.invoke(tools,'retrieve_evidence',{'query':plan.query})
+        found=await agent_tools.invoke(tools,'retrieve_evidence',{'query':plan.query,'limit':runtime_config['retrieval_limit']})
         medical,retrieval=found['records'],found['mode'];evidence+=medical
         await step('search','done',f"Found {len(medical)} medical source"+('' if len(medical)==1 else 's')+f' for "{plan.query[:80]}"','; '.join(m['title'] for m in medical[:4]))
     role_report=(await agent_tools.invoke(tools,'get_confirmed_report_rows',{}))['report'] if report and 'report' in reads else None
@@ -243,19 +268,19 @@ async def run(message,context,emit=None):
     role={'id':dot['id'],'name':dot['name'],'summary':dot['summary'],'rule':'You are this AI role of LabClear, not a person or clinician. Stay within the role.'+(' You have no sales, pricing or booking tools: never name, price or recommend packages; offer the Health-check Advisor instead.' if 'quote' not in dot['actions'] else '')}
     if role_report:await step('report','done','Using your confirmed report',f"{len(role_report.get('fields',[]))} values, compared only with the ranges printed on it")
     payload={'USER_TEXT':message,'ROLE':role,'REPORT':role_report,'PREVIOUS_REPORTS':context.get('previous_reports',[]) if role_report else [],'EVIDENCE':evidence,'ACTION':action,'decision':plan.model_dump(exclude={'ui'}),'customer_state':customer_state}
-    # Process explainability: name the typed tools the server ran for this role (no arguments, no data).
-    ran=[a['tool'] for a in tools.audit if a.get('ok')]
-    if ran:await step('tools','done','Typed tools used',', '.join(dict.fromkeys(ran)))
     writer=_agent(dot['id'])
     instructions=ANSWER
     skills=None
-    if settings.RUNTIME_SKILLS_ENABLED:
+    if runtime_config['skills_enabled']:
         # Reviewed modules chosen per task by the server (role capability, action, report, evidence, tools).
         from services.runtime_skills import select
-        chosen=select(dot,plan.action,bool(role_report),{e.get('data_class') for e in evidence},[a['tool'] for a in tools.audit if a.get('ok')])
+        await step('skills','running','Selecting runtime skills','Role, task, report and evidence determine which instructions are loaded.')
+        chosen=select(dot,plan.action,bool(role_report),{e.get('data_class') for e in evidence},[a['tool'] for a in tools.audit if a.get('ok')],config=runtime_config)
         instructions += '\n\n' + chosen['instructions']
-        skills={'package':chosen['id']+' '+chosen['version'],'modules':[m['id'] for m in chosen['modules']],'sha256':chosen['sha256'][:16]}
-        await step('skills','done','Runtime skills selected',', '.join(skills['modules']))
+        skills={'package':chosen['id']+' '+chosen['version'],'modules':[m['id'] for m in chosen['modules']],'sha256':chosen['sha256'][:16], 'selection':chosen['modules']}
+        await step('skills','done','Runtime skills loaded',', '.join(skills['modules'])+' · '+skills['sha256'])
+    if hospital_records:
+        instructions += '\nOfficial external hospital records are public service links, separate from the simulated catalog. Cite [hosp-...] IDs. Never claim booking or partnership. Expired offers cannot be recommended for new purchase. State the source-check date and unknown price/conditions. Use advertised_price_thb only as a dated published price, never guarantee current availability.'
     if settings.MEDICAL_HARNESS_ENABLED and role_report:
         from services.model_harness import analyze, packet_from_payload
         from services.providers import runtime
@@ -264,14 +289,16 @@ async def run(message,context,emit=None):
         if not runtime('agent_thai_composer').ready:
             raise transport.ConversationError('provider_not_configured', 'Configure the Thai composer before enabling medical analysis.')
         packet=packet_from_payload(payload)
+        await step('analyze','running','Medical analyzer: protected evidence packet',_label('agent_medical_analyzer'))
         analysis=await analyze(packet)
+        await step('analyze','done','Structured analysis validated','Observation values and source references preserved.')
         payload['VALIDATED_ANALYSIS']=analysis.model_dump()
         payload['ORIGINAL_EVIDENCE_PACKET']=packet.model_dump()
         writer='agent_thai_composer'
     await step('draft','running','Writing the answer',_label(writer))
     draft=[{'role':'system','content':instructions},*history,{'role':'user','content':json.dumps(payload,ensure_ascii=False)}]
-    answer=await complete_json(draft,Answer,step='answer',max_tokens=4000,slot=writer)
-    plan_prices=[p['price_thb'] for p in plan_catalog()['plans']]
+    answer=await complete_json(draft,Answer,step='answer',max_tokens=runtime_config['writer_max_tokens'],slot=writer)
+    plan_prices=[p['price_thb'] for p in plan_catalog()['plans']]+[p['advertised_price_thb'] for p in hospital_records if p.get('advertised_price_thb') is not None]
     # At most ONE rewrite across price, citation, role, prose and reviewer checks.
     # The corrected answer repeats every check. Guard failures are never bypassed.
     for attempt in range(2):
@@ -310,11 +337,13 @@ async def run(message,context,emit=None):
                 'evidence_missing':'Medical explanations need a relevant medical EVIDENCE citation. If the supplied sources do not answer the question, state that limit.'}.get(exc.code,'Use only the supplied evidence.')
             await step('draft','running','Revising the answer after a check',exc.code)
             answer=await complete_json([*draft,{'role':'assistant','content':json.dumps(answer.model_dump(),ensure_ascii=False)},
-                {'role':'user','content':repair+' Rewrite concisely using the same JSON shape. Every previous safety and evidence rule still applies.'}],Answer,step='answer',max_tokens=4000,slot=writer)
+                {'role':'user','content':repair+' Rewrite concisely using the same JSON shape. Every previous safety and evidence rule still applies.'}],Answer,step='answer',max_tokens=runtime_config['writer_max_tokens'],slot=writer)
     await step('review','done','Second review passed','supported by the sources, values unchanged, within scope')
     await step('safety_out','running','Checking the answer for safety',_label('guard'))
     await guard.check(answer.reply+'\n'+'\n'.join(answer.followups)+'\n'+json.dumps(action,ensure_ascii=False)+'\n'+plan.reason,'output',message)
     await step('safety_out','done','The answer passed the safety check',_label('guard'))
     sources=[{k:e.get(k) for k in ['id','title','url','publisher','data_class','version','section','sha256']} for e in evidence if e['id'] in answer.evidence_ids]
-    external_offers=await _hospital_offers(tools,plan,message,reads,step)
-    return {'reply':answer.reply,'sources':sources,'observations':[o.model_dump() for o in answer.observations],'followups':answer.followups,'action':action,'retrieval':retrieval,'dot':{'id':dot['id'],'name':dot['name']},'rerouted_from':rerouted,'ui':ui,'external_offers':external_offers,'checks':{'rewrite_count':attempt,'input_safety':'passed','citations_validated':len(sources),'independent_review':'passed','output_safety':'passed','observations':len(answer.observations),'tools':tools.audit,'skills':skills},'trace':trace}
+    # Generic package questions: official hospital pages are attached after every check (VERIFIED only).
+    # Questions that name a hospital already received its records as cited evidence above.
+    external_offers=[] if hospital_records else await _hospital_offers(tools,plan,message,reads,step)
+    return {'reply':answer.reply,'sources':sources,'observations':[o.model_dump() for o in answer.observations],'followups':answer.followups,'action':action,'retrieval':retrieval,'dot':{'id':dot['id'],'name':dot['name']},'rerouted_from':rerouted,'ui':ui,'external_offers':external_offers,'checks':{'rewrite_count':attempt,'input_safety':'passed','citations_validated':len(sources),'independent_review':'passed','output_safety':'passed','observations':len(answer.observations),'tools':tools.audit,'skills':skills,'harness':{'revision':runtime_config['revision'],'sha256':harness_config.digest(runtime_config),'elapsed_ms':round((time.perf_counter()-turn_start)*1000)}},'trace':trace}

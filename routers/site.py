@@ -233,14 +233,17 @@ async def privacy(request: Request):
 
 @router.get("/sources", response_class=HTMLResponse)
 async def sources(request: Request):
+    from services.knowledge_admin import active_records
     evidence = json.loads((ROOT / "knowledge/evidence/catalog.json").read_text(encoding="utf-8"))
-    records = sorted(evidence["records"], key=lambda r: (r.get("publisher", ""), r.get("title", "")))
+    # Only records the assistant can currently search (a manager may pause one in Admin).
+    records = sorted(active_records(evidence["records"]), key=lambda r: (r.get("publisher", ""), r.get("title", "")))
+    approved = sum(1 for r in records if r.get("rag_approval") == "OWNER_APPROVED")
     publishers: dict[str, int] = {}
     for r in records:
         publishers[r.get("publisher", "")] = publishers.get(r.get("publisher", ""), 0) + 1
     return page(request, "site/sources.html", "Medical sources | LabClear",
-                "Public references the assistant may cite, with review dates.", records=records, publishers=publishers,
-                version=evidence.get("version", ""))
+                "Public references the assistant may cite, with their review status.", records=records, publishers=publishers,
+                version=evidence.get("version", ""), approved=approved)
 
 
 @router.get("/pay/sim/{txn_id}", response_class=HTMLResponse)
