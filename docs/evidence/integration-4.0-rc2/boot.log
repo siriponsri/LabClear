@@ -1,0 +1,10 @@
+2026-10-09 08:57:49,939 INFO httpx: HTTP Request: GET http://testserver/health "HTTP/1.1 200 OK"
+2026-10-09 08:57:49,994 INFO httpx: HTTP Request: GET http://testserver/ "HTTP/1.1 200 OK"
+2026-10-09 08:57:50,000 INFO httpx: HTTP Request: GET http://testserver/app "HTTP/1.1 200 OK"
+2026-10-09 08:57:50,002 INFO httpx: HTTP Request: GET http://testserver/staff "HTTP/1.1 200 OK"
+2026-10-09 08:57:50,013 INFO httpx: HTTP Request: GET http://testserver/packages "HTTP/1.1 200 OK"
+2026-10-09 08:57:50,015 INFO httpx: HTTP Request: GET http://testserver/preview/landing "HTTP/1.1 404 Not Found"
+2026-10-09 08:57:50,017 INFO httpx: HTTP Request: GET http://testserver/hospital-links "HTTP/1.1 404 Not Found"
+2026-10-09 08:57:50,018 INFO httpx: HTTP Request: GET http://testserver/organization-references "HTTP/1.1 404 Not Found"
+PASS: Render entrypoint started and stopped; 8 route checks; no new keys or provider network.
+exit 0

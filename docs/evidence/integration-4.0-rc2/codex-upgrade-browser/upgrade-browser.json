@@ -1,0 +1,101 @@
+{
+  "mode": "SOFTWARE_TESTS_WITH_DOUBLES",
+  "candidate_sha": "d4b102562a04d740a1ace31cdba55b0ac955a86f",
+  "working_tree": true,
+  "at": "2026-10-09T01:57:48.666Z",
+  "records": [
+    {
+      "name": "baseline home timing 390",
+      "ms": 1518,
+      "scope": "local fixture navigation + screenshot; not production performance"
+    },
+    {
+      "name": "baseline home 390",
+      "status": "PASS"
+    },
+    {
+      "name": "preview timing 390",
+      "ms": 1197,
+      "scope": "local fixture interaction + screenshots"
+    },
+    {
+      "name": "interactive Thai preview 390",
+      "status": "PASS"
+    },
+    {
+      "name": "official external links 390",
+      "status": "PASS"
+    },
+    {
+      "name": "baseline home timing 768",
+      "ms": 1323,
+      "scope": "local fixture navigation + screenshot; not production performance"
+    },
+    {
+      "name": "baseline home 768",
+      "status": "PASS"
+    },
+    {
+      "name": "preview timing 768",
+      "ms": 1105,
+      "scope": "local fixture interaction + screenshots"
+    },
+    {
+      "name": "interactive Thai preview 768",
+      "status": "PASS"
+    },
+    {
+      "name": "official external links 768",
+      "status": "PASS"
+    },
+    {
+      "name": "baseline home timing 1440",
+      "ms": 1556,
+      "scope": "local fixture navigation + screenshot; not production performance"
+    },
+    {
+      "name": "baseline home 1440",
+      "status": "PASS"
+    },
+    {
+      "name": "preview timing 1440",
+      "ms": 1093,
+      "scope": "local fixture interaction + screenshots"
+    },
+    {
+      "name": "interactive Thai preview 1440",
+      "status": "PASS"
+    },
+    {
+      "name": "official external links 1440",
+      "status": "PASS"
+    },
+    {
+      "name": "synthetic organization upload review cite revoke",
+      "status": "PASS"
+    }
+  ],
+  "screenshots": [
+    "baseline-home-390.png",
+    "preview-th-390.png",
+    "preview-en-390.png",
+    "hospital-links-390.png",
+    "baseline-home-768.png",
+    "preview-th-768.png",
+    "preview-en-768.png",
+    "hospital-links-768.png",
+    "baseline-home-1440.png",
+    "preview-th-1440.png",
+    "preview-en-1440.png",
+    "hospital-links-1440.png",
+    "admin-agents-390.png",
+    "admin-agents-768.png",
+    "admin-agents-1440.png",
+    "organization-draft-1440.png",
+    "organization-approved-390.png",
+    "organization-approved-768.png",
+    "organization-approved-1440.png",
+    "organization-revoked-1440.png"
+  ],
+  "browserErrors": []
+}

@@ -1,0 +1,8 @@
+PASS OFF-01 Feature endpoint reports every new Codex flag off (97 ms)
+PASS OFF-02 /hospital-links is a 404 and the footer has no hospital link (883 ms)
+PASS OFF-03 /app does not list My organization; the view explains it is off; the API answers 404 (1137 ms)
+PASS OFF-04 Codex Jinja preview pages stay off on the API (45 ms)
+PASS OFF-05 No console or page errors (1 ms)
+
+5 passed, 0 failed -> /home/claude/codex-main/docs/evidence/integration-4.0-rc2/web-uat-flags-off/uat.json
+exit 0

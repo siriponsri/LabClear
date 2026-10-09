@@ -1,0 +1,37 @@
+PASS UI-01 Home: segmented tabs keyboard, comparison audience toggle, theme toggle persists, search routes to filtered catalog, no overflow
+PASS UI-02 Catalog: filter, URL state, chip removal, empty state, reset, sort, back/forward
+PASS UI-02b Catalog: network error shows recoverable error state
+PASS UI-03 Compare: tray limit, compare table, assistant hand-off link, clear
+PASS UI-04 Package detail CTA leads to booking view; guest must create an account
+PASS UI-05 Account: create account, label updates, survives reload
+PASS UI-06 Booking form: center, date, live slots, request created as awaiting confirmation
+PASS UI-07 Chat: proposal does not book; sending request creates exactly one more request
+PASS UI-08 Chat: failed reply is marked, retry answers without duplicating the message; sources render
+PASS UI-09 Reports: upload (OCR double), source image, edit, explicit confirmation, context chip, reload
+PASS UI-10 Organization page: inquiry form validation and submission for the signed-in account
+PASS UI-11 Staff: separate session sign-in, inbox shows organization request with details
+PASS UI-12 Staff: take over, issue quotation v1 then revision v2
+PASS UI-13 Staff: confirm one request, decline another with a reason
+PASS UI-14 Customer: notifications from events, calendar file, quotation versions and PDF, accept latest
+PASS UI-15 Payment simulator: PromptPay test payment, signed success, paid state persists
+PASS UI-16 Website handoff: customer asks for team, staff takes over, reply reaches customer, assistant paused
+PASS UI-17 Manager: price edit persists and reaches the public catalog; branch staff cannot see manager tools
+PASS UI-18 Channels: LINE simulator event through adapter, worker run, simulated delivery recorded
+PASS UI-28 Manager: AI providers page saves a provider, masks the key, never returns it
+PASS UI-23 Staff dashboard: numbers from records, capacity table, centers edit, roles pause/resume, audit log
+PASS UI-25 Staff customers and payments: list from records, customer history dialog, payment state filter
+PASS UI-24 Assistant dock on public pages: page-aware, role label, shortcut goes straight to the booking form
+PASS UI-19 Permission: customer cannot use staff APIs; staff views ask to sign in
+PASS UI-20 Keyboard and dialogs: visible focus, Escape closes dialog
+PASS UI-26 AI Lab Report: free reading, upgrade prompt, Plus via signed test payment, multi-image reading, lab dashboard over time, printable Lab Report
+PASS UI-27 Website v5: product deck tabs, search dialog (Ctrl K), nav dropdown, AI Lab Report page
+PASS UI-29 Sign-in: demo accounts by typing (not listed), admin goes to the service desk and AI providers, test-02 has Plus
+PASS UI-30 Report in the chat: thumbnail before and after sending, live steps, values card, one-click confirm answers the question
+PASS UI-31 Chats and projects: new chat, project, rename, switch back, drawer on mobile
+PASS UI-32 Website: sign in from the header with a typed demo account, account menu, sign out; journey section; agents on AI providers
+PASS UI-33 Guest: upload/image preview, no persisted token, reload revokes chat and image, no history after signup
+PASS UI-34 Navigation: delayed view cannot overwrite latest click; booking fields survive sign-in; customer staff URL stays private
+PASS UI-21-tablet tablet: pages without horizontal overflow, navigation drawer, filters toggle, reduced motion
+PASS UI-21-mobile mobile: pages without horizontal overflow, navigation drawer, filters toggle, reduced motion
+PASS UI-22 No uncaught browser JavaScript errors
+exit 0
