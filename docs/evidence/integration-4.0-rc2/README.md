@@ -54,6 +54,10 @@ would apply to `scripts/run_business.py` (uvicorn defaults); it is not changed i
 
 ## Notes that affect interpretation
 
+- Windows: on a checkout with `core.autocrlf=true` (the Git for Windows default) the owner got 2 failed /
+  326 passed, because the SHA-256-frozen coursework files were converted to CRLF. `812895f` marks them
+  `-text` in `.gitattributes` and adds a test; a `core.autocrlf=true` clone of `812895f` passes 329/329.
+
 - `docs/ceo-upgrade/evidence/` (Codex's own evidence) is unchanged: the evaluation and boot scripts
   write there, so their outputs were copied here and the folder restored with `git checkout`.
 - rc1 results (`../integration-4.0-rc1/`, commit `c8f3547`) and the Claude 4.0.0 branch results

@@ -65,6 +65,7 @@ Backend FastAPI, session/CSRF/origin/rate limit, Fernet store, Guest privacy (�
 | `efd8f57`, `6f41a78` | UI TH/EN ของ harness, รุ่น 4.0.0-rc2, ทำเครื่องหมาย BASELINE/DEFERRED ใน registry |
 | `3a7d4f4`, `d4b1025` | path หลักฐาน rc2, `compare` แยกตัวแปรที่ทดสอบจาก confound |
 | `a4aec07` | API จำลองของ web UAT เก็บการเชื่อมต่อว่าง 65 วินาที (แก้ UI-22 ที่ไม่ผ่านสองรอบ) ไม่แตะโค้ดของระบบหรือ entrypoint ของ Render |
+| `812895f` | ผู้ใช้รันบน Windows ได้ 2 failed / 326 passed: Git (`core.autocrlf=true`) แปลงไฟล์ชุดข้อมูลที่ล็อก SHA-256 เป็น CRLF จึงเพิ่มไฟล์เหล่านั้นใน `.gitattributes` (`-text`) แบบเดียวกับ `knowledge/**` และเพิ่มเทสต์กันซ้ำ ทดสอบด้วย clone แบบ `core.autocrlf=true` ได้ 329 passed เนื้อหาชุดข้อมูลไม่เปลี่ยน |
 | `991252f` และ commit หลังจากนั้น | แผนภาพ หลักฐาน รายงาน สไลด์ release notes และป้ายรุ่นในเอกสาร deploy เท่านั้น |
 
 โมเดล OpenRouter/DeepSeek/Luna/Santé/Clef/embeddings: **DEFERRED_FOR_THIS_BENCHMARK** ไม่ได้ลบและไม่ได้สรุปว่าไม่เหมาะ
