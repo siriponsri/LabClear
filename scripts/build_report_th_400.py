@@ -1,4 +1,4 @@
-"""Build the Thai final coursework report for LabClear 4.0.0-rc1, the integrated candidate (Word + PDF).
+"""Build the Thai final coursework report for LabClear 4.0.0-rc2, the integrated candidate (Word + PDF).
 
     python3 scripts/build_report_th_400.py            # DOCX and PDF, TOC page numbers filled
     python3 scripts/build_report_th_400.py --no-pdf   # DOCX only, page numbers from the last page map
@@ -10,9 +10,12 @@ below and centred, table captions above and left, footer with the title and page
 
 Originally written for the Claude 4.0.0 branch (Cloudflare, OpenRouter fast set). Updated for
 4.0.0-rc1: Codex main c970410 + the Claude Next.js web, deployed on Render, Cloudflare deferred.
+4.0.0-rc2: the free-first harness (typed tools, per-task runtime skills, synthetic-fixture uploads,
+free-only provider policy) and the coursework benchmark (OFFLINE / REPLAY / LIVE_FREE).
 Facts come from docs/release-4.0.0.md and the repository. Live-model numbers are read from
-docs/evidence/round*/ JSON (historical 3.0.x runs); rc1 software results from
-docs/evidence/integration-4.0-rc1/ (pytest.xml, Codex browser suites, web UAT). Claude-branch
+docs/evidence/round*/ JSON (historical 3.0.x runs); rc2 software results from
+docs/evidence/integration-4.0-rc2/ (pytest.xml, Codex browser suites, web UAT) and benchmark runs
+from docs/evidence/free-first/ (LIVE_FREE was not run; its preflight is BLOCKED). Claude-branch
 results (pytest 261, UAT 51/51, Cloudflare dry runs) are quoted only as history.
 LibreOffice does not refresh TOC fields, so the builder renders once, reads the page of each
 heading and caption from the PDF (footer labels), writes those numbers into the cached TOC
@@ -85,8 +88,30 @@ R2 = jload("docs/evidence/round2/course_eval_results.json")
 R2_REVIEW = jload("docs/evidence/round2/review_round2.json")
 R3 = jload("docs/evidence/round3/course_eval_results.json")
 R4 = jload("docs/evidence/round4/diagnostic-review.json")
-RC = "docs/evidence/integration-4.0-rc1"
-RC_COMMIT = "c8f3547"
+RC = "docs/evidence/integration-4.0-rc2"
+RC_COMMIT = re.search(r"Tested commit: `([0-9a-f]{40})`", (ROOT / RC / "README.md").read_text(encoding="utf-8")).group(1)[:7]
+FF = "docs/evidence/free-first"
+WEB_COMMIT = (ROOT / RC / "web-gate-commit.txt").read_text(encoding="utf-8").strip()[:7]
+
+
+def ff_rows(run: str) -> dict:
+    out = {}
+    for row in (ROOT / FF / "runs" / run / "raw.jsonl").read_text(encoding="utf-8").splitlines():
+        if row.strip():
+            x = json.loads(row)
+            out[x["case_id"]] = x
+    return out
+
+
+FF_SUM = {r: jload(f"{FF}/runs/{r}/summary.json") for r in ("G-A", "G-B", "G-C", "G-C-free", "G-Ctrap-free", "G-C-replay",
+                                                           "R1-C", "R2-C", "R3-C", "R3-Ctrap", "R4-C", "R4-Ctrap")}
+FFC = ff_rows("G-C-free")
+FF_IMP = {r: ff_rows(r) for r in ("R1-C", "R2-C", "R3-Ctrap", "R4-Ctrap")}
+FF_MATRIX = jload(f"{FF}/skill-route-matrix.json")["summary"]
+FF_PRE = jload(f"{FF}/live-free-preflight.json")
+FF_COMMIT = jload(f"{FF}/runs/G-C-free/run.json")["candidate"]["candidate_sha"][:7]
+FF_DS = jload(f"{FF}/runs/G-C-free/run.json")["dataset"]
+assert FF_PRE["status"] == "BLOCKED" and FF_PRE["inference_calls_made"] == 0
 UAT = jload(f"{RC}/web-uat/uat.json")
 UAT_OFF = jload(f"{RC}/web-uat-flags-off/uat.json")
 LEGACY = jload(f"{RC}/codex-legacy-browser/browser-uat.json")
@@ -98,7 +123,7 @@ _suite = ET.parse(ROOT / RC / "pytest.xml").getroot()
 _suite = _suite.find("testsuite") if _suite.tag == "testsuites" else _suite
 PYTEST_N = int(_suite.get("tests"))
 PYTEST_BAD = int(_suite.get("failures")) + int(_suite.get("errors"))
-assert PYTEST_N == 277 and PYTEST_BAD == 0, (PYTEST_N, PYTEST_BAD)
+assert PYTEST_N == 328 and PYTEST_BAD == 0, (PYTEST_N, PYTEST_BAD)
 LEGACY_N, LEGACY_PASS = LEGACY["passed"] + LEGACY["failed"], LEGACY["passed"]
 UPGRADE_N, UPGRADE_PASS = len(UPGRADE), sum(r["status"] == "PASS" for r in UPGRADE)
 OFF_N, OFF_PASS = len(UAT_OFF["scenarios"]), UAT_OFF["passed"]
@@ -269,9 +294,9 @@ def content() -> list[tuple]:
     # TOC1 has a 0.6-inch hanging indent; a heading shorter than that sends its page number to
     # the hanging position instead of the right tab, in Word and LibreOffice alike.
     h1("บทสรุปผู้บริหาร")
-    p("LabClear เป็นแชทบอทของคลินิกตรวจสุขภาพจำลอง 3 สาขา ตอบเรื่องแพ็กเกจ ราคา สาขา การจอง และนโยบายจากไฟล์ข้อมูลของร้าน อ่านภาพใบผลแล็บที่ลูกค้าส่งมา และอธิบายแต่ละค่าเทียบกับช่วงอ้างอิงที่พิมพ์บนใบเดียวกันพร้อมแหล่งอ้างอิง รายงานฉบับนี้อธิบายรุ่น 4.0.0-rc1 (รุ่นรวม) ซึ่งตอบความเห็นของ CEO 5 ข้อ เมื่อวันที่ 8 ตุลาคม 2569")
-    p("รุ่นรวมใช้ backend ของ Codex (main commit c970410) เป็นฐาน ได้แก่ FastAPI ความปลอดภัย การไม่เก็บแชตของผู้เยี่ยมชม model harness เอกสารอ้างอิงขององค์กร และสัญญา API แล้วนำหน้าเว็บ Next.js ภาษาไทยของ Claude branch มาประกอบโดยปรับเฉพาะส่วนที่สัญญา API ต่างกัน ระบบยังรันบน Render เดิม หน้าเว็บ Next.js เป็นบริการ Render ตัวที่สองแบบเลือกได้ งาน Cloudflare ที่เคยทำไว้เก็บเป็นทางเลือกภายหลัง ฐานความรู้ที่ระบบค้นคง 58 รายการที่ตรวจแล้ว ส่วนแหล่งใหม่รอการตรวจ ความสามารถใหม่ของ Codex ทั้ง 6 ส่วนปิดเป็นค่าเริ่มต้นจนกว่าเจ้าของระบบจะเปิด")
-    p(f"ผลกับโมเดลจริงทั้งหมดในรายงานมาจากรุ่น 3.0.x ที่ใช้โมเดลของ Typhoon บน Render รอบล่าสุดที่ได้คำตอบครบทุกกรณีคือรอบ 3 (รุ่น 3.0.1) ซึ่งผ่านคำถาม {R3_Q_PASS} จาก 10 ข้อ ภาพ {R3_I_PASS} จาก 5 ภาพ และกรณีความปลอดภัย {R3_S_PASS} จาก 5 กรณี รุ่นรวม (commit {RC_COMMIT}) ผ่านการทดสอบซอฟต์แวร์ที่ใช้ข้อมูลจำลองและตัวแทนโมเดลทุกชุด ยังไม่ได้ deploy และยังไม่ได้เรียกผู้ให้บริการ AI จริง ทีมต้องรันชุดประเมินหลัง deploy แล้วกรอกตารางในหัวข้อ 7.8 ({{T:summary}})")
+    p("LabClear เป็นแชทบอทของคลินิกตรวจสุขภาพจำลอง 3 สาขา ตอบเรื่องแพ็กเกจ ราคา สาขา การจอง และนโยบายจากไฟล์ข้อมูลของร้าน อ่านภาพใบผลแล็บที่ลูกค้าส่งมา และอธิบายแต่ละค่าเทียบกับช่วงอ้างอิงที่พิมพ์บนใบเดียวกันพร้อมแหล่งอ้างอิง รายงานฉบับนี้อธิบายรุ่น 4.0.0-rc2 (รุ่นรวม) ซึ่งตอบความเห็นของ CEO 5 ข้อ เมื่อวันที่ 8 ตุลาคม 2569 และเพิ่มชุดควบคุมแบบ free-first ตามเอกสารเสริมของเจ้าของงานวันที่ 9 ตุลาคม 2569")
+    p("รุ่นรวมใช้ backend ของ Codex (main commit c970410) เป็นฐาน ได้แก่ FastAPI ความปลอดภัย การไม่เก็บแชตของผู้เยี่ยมชม model harness เอกสารอ้างอิงขององค์กร และสัญญา API แล้วนำหน้าเว็บ Next.js ภาษาไทยของ Claude branch มาประกอบโดยปรับเฉพาะส่วนที่สัญญา API ต่างกัน ระบบยังรันบน Render เดิม หน้าเว็บ Next.js เป็นบริการ Render ตัวที่สองแบบเลือกได้ งาน Cloudflare ที่เคยทำไว้เก็บเป็นทางเลือกภายหลัง ฐานความรู้ที่ระบบค้นคง 58 รายการที่ตรวจแล้ว ส่วนแหล่งใหม่รอการตรวจ ความสามารถใหม่ของ Codex ทั้ง 6 ส่วนปิดเป็นค่าเริ่มต้นจนกว่าเจ้าของระบบจะเปิด รุ่น rc2 เพิ่มเครื่องมือแบบมีชนิดข้อมูล (typed tools) ที่ให้ Python ดึงข้อมูลที่ต้องแม่นยำตามสิทธิ์ของบทบาท คำสั่ง runtime skills ที่เลือกตามงาน การรับภาพสังเคราะห์ผ่านการอัปโหลดจริงในสภาพแวดล้อมทดสอบ และนโยบายเรียกเฉพาะบริการฟรีที่ตรวจแล้ว (Typhoon text/OCR และ iApp OpenThai-SystemOne) พร้อมโควตากลาง ส่วนโมเดล OpenRouter และ embeddings พักไว้ในรอบทดสอบนี้")
+    p(f"ผลกับโมเดลจริงทั้งหมดในรายงานมาจากรุ่น 3.0.x ที่ใช้โมเดลของ Typhoon บน Render รอบล่าสุดที่ได้คำตอบครบทุกกรณีคือรอบ 3 (รุ่น 3.0.1) ซึ่งผ่านคำถาม {R3_Q_PASS} จาก 10 ข้อ ภาพ {R3_I_PASS} จาก 5 ภาพ และกรณีความปลอดภัย {R3_S_PASS} จาก 5 กรณี รุ่นรวม (commit {RC_COMMIT}) ผ่านการทดสอบซอฟต์แวร์ทุกชุดและรันชุดทดสอบตามโจทย์ 20 กรณีผ่านแอปจริงทั้งเส้นทางในโหมด OFFLINE (ตัวแทนโมเดล) ครบ แต่ยังไม่ได้รันกับ Typhoon และ iApp จริง เพราะไม่มี key และยังไม่มีผู้ยืนยันสิทธิ์ใช้ฟรีของบัญชี ({{T:summary}}) รายละเอียดอยู่ในหัวข้อ 7.8–7.10")
     table("summary", "สถานะหลักฐานของรายงานฉบับนี้", ["เรื่อง", "ผล", "ที่มา"], [
         ["คำถาม 10 ข้อ รอบ 3 (รุ่น 3.0.1, Typhoon)", f"ผ่าน {R3_Q_PASS}/10 เวลาเฉลี่ย {sec(R3_Q_MEAN)}", "docs/evidence/round3/course_eval_results.json"],
         ["ภาพ 5 ภาพ รอบ 3", f"ผ่าน {R3_I_PASS}/5 อ่านค่าได้ตั้งแต่ 90% ขึ้นไป {R3_OCR90}/5 ภาพ แต่คำอธิบายถูกระงับ {5 - R3_I_HTTP200} ภาพ", "ไฟล์เดียวกัน"],
@@ -279,7 +304,8 @@ def content() -> list[tuple]:
         ["pytest รุ่นรวม", f"ผ่าน {PYTEST_N} กรณี", f"{RC}/pytest.xml"],
         ["Browser เดิมของ Codex และชุด upgrade", f"ผ่าน {LEGACY_PASS}/{LEGACY_N} และ {UPGRADE_PASS}/{UPGRADE_N}", f"{RC}/codex-*-browser/"],
         ["Browser UAT ของเว็บ Next.js (ตัวแทนโมเดล)", f"ผ่าน {UAT_PASS}/{UAT_N} และชุด flag ปิด {OFF_PASS}/{OFF_N}", f"{RC}/web-uat*/uat.json"],
-        ["รุ่นรวมกับผู้ให้บริการ AI จริง", "ยังไม่ได้ทดสอบ (NOT_RUN)", "แบบบันทึกในหัวข้อ 7.8"],
+        ["ชุดทดสอบตามโจทย์บนรุ่นรวม (OFFLINE ตัวแทนโมเดล)", f"รันครบ {FF_SUM['G-C-free']['cases']['completed']}/20 ผ่านระดับ pipeline {FF_SUM['G-C-free']['cases']['automated_pass']} (ภาพ 5 ภาพไม่ผ่านเพราะยืนยันค่าที่อ่านผิด) ไม่ใช่คุณภาพโมเดล", f"{FF}/runs/G-C-free/"],
+        ["ชุดทดสอบตามโจทย์กับ Typhoon และ iApp จริง (LIVE_FREE)", "ยังไม่ได้รัน preflight ถูกบล็อก (ไม่มี key และยังไม่ยืนยันสิทธิ์ฟรี)", f"{FF}/live-free-preflight.json หัวข้อ 7.10"],
         ["ผลของ Claude branch 4.0.0 (pytest 261, UAT 51/51, Cloudflare dry-run)", "ประวัติ ไม่ใช่ผลของรุ่นรวม", "docs/release-4.0.0.md หัวข้อประวัติ"],
     ], [5.2, 6.0, 5.2])
 
@@ -369,7 +395,7 @@ def content() -> list[tuple]:
         ["Health-check Advisor", "แพ็กเกจ ราคา สาขา การจอง การชำระเงิน องค์กร", "แคตตาล็อก สาขา นโยบาย แหล่งความรู้ เอกสารที่อนุมัติแล้วขององค์กรเมื่อเปิดใช้ และนัดของลูกค้าเอง", "ตอบ ถามกลับ เสนอราคา จอง ชำระเงิน ส่งต่อเจ้าหน้าที่ คำขอองค์กร"],
         ["Report Explainer", "ค่าในใบผลที่ลูกค้ายืนยันแล้ว", "ใบผลที่ยืนยันแล้ว แหล่งความรู้ เอกสารที่อนุมัติแล้วขององค์กรเมื่อเปิดใช้ นโยบาย", "ตอบ ถามกลับ แนะนำให้พบแพทย์โดยเร็ว ส่งต่อเจ้าหน้าที่ ไม่มีเครื่องมือขาย"],
     ], [3.6, 3.8, 4.8, 4.2])
-    table("agents", "Agent และผู้ให้บริการค่าเริ่มต้นในรุ่น 4.0.0-rc1", ["Agent", "หน้าที่", "ผลลัพธ์ที่ต้องได้", "ค่าเริ่มต้น (เปลี่ยนได้ที่ staff desk)"], [
+    table("agents", "Agent และผู้ให้บริการค่าเริ่มต้นในรุ่น 4.0.0-rc2", ["Agent", "หน้าที่", "ผลลัพธ์ที่ต้องได้", "ค่าเริ่มต้น (เปลี่ยนได้ที่ staff desk)"], [
         ["Planner", "เลือก action บทบาท คำค้น (ชื่อการตรวจเท่านั้น ไม่มีค่าหรือตัวตน) และเหตุผล 1 ประโยค", "JSON Plan", "โมเดลภาษากลาง Typhoon v2.5 30B"],
         ["ผู้เขียนคำตอบ (Advisor หรือ Explainer)", "เขียนคำตอบจากหลักฐานที่ส่งให้ อ้าง [source-id] คัดลอกค่าจากใบผลตามที่พิมพ์", "JSON Answer", "โมเดลภาษากลาง"],
         ["Reviewer", "ตรวจร่างเทียบหลักฐาน: มีหลักฐาน ค่าไม่เปลี่ยน อยู่ในขอบเขต", "JSON EvidenceReview", "โมเดลภาษากลาง (แนะนำให้ตั้งต่างตระกูล)"],
@@ -421,21 +447,24 @@ def content() -> list[tuple]:
     h1("4. สถาปัตยกรรมระบบ")
     h2("4.1 แผนภาพสถาปัตยกรรม")
     p("รุ่นรวมรันบน Render ผู้ใช้เปิดหน้าเว็บ Next.js ที่บริการ labclear-web ซึ่งเป็นบริการ Render ตัวที่สองแบบเลือกได้ หน้าเว็บมี 3 กลุ่ม ได้แก่ หน้าเว็บสาธารณะ พื้นที่ลูกค้า /app และ staff desk /staff บริการเว็บ rewrite เส้นทาง /api/* และ /health ผ่าน HTTPS ไปยังบริการ API labclear ซึ่งเป็น FastAPI ของ Codex ที่ใช้ render.yaml เดิมโดยไม่เปลี่ยน บริการ API ยังเปิดหน้า Jinja เดิมได้โดยตรง ข้อมูลถาวรเก็บใน PostgreSQL ของ Render แบบเข้ารหัสทีละแถว ทุกการเรียกโมเดลต้องผ่านด่านเดียวกันก่อนออกไปยังผู้ให้บริการ AI ({F:arch})")
-    fig("arch", ROOT / "docs/assets/architecture-4.0.png", "สถาปัตยกรรมของ LabClear รุ่น 4.0.0-rc1 (รุ่นรวม)", 14.4)
+    fig("arch", ROOT / "docs/assets/architecture-4.0.png", "สถาปัตยกรรมของ LabClear รุ่น 4.0.0-rc2 (รุ่นรวม)", 14.4)
     p("เบราว์เซอร์เห็น origin เดียวคือบริการเว็บ cookie labclear_session จึงเป็นของโดเมนเว็บ บริการ API ตรวจว่า Origin ของคำขอตรงกับ Host ของตัวเอง หรือตรงกับ origin ใน TRUSTED_ORIGINS แบบตรงตัวทั้ง scheme, host และ port ค่าเริ่มต้นของ TRUSTED_ORIGINS ว่าง API จึงทำงานแบบเดิมจนกว่าเจ้าของระบบจะใส่ origin ของบริการเว็บ งาน Cloudflare Workers Paid ของ Claude branch ไม่ได้ใช้ในรุ่นนี้ และ Cloudflare แผนฟรีอาจใช้เป็น DNS/proxy ภายหลัง")
     p("ภายใน FastAPI routers รับคำขอ ตรวจ session, CSRF, origin และ rate limit แล้วส่งงานไปยังไปป์ไลน์แชต (business_agent) ตัวอ่านใบผล (report_reader_v2) และเอกสารขององค์กร (organization_sources) ไปป์ไลน์แชตเรียกการตรวจความปลอดภัย (conversation_guard) และการค้นความรู้ (evidence_search) model_harness และ runtime_skills ทำงานเฉพาะเมื่อเปิด flag ของตน ส่วนที่เรียกโมเดลทุกส่วนต้องผ่าน conversation_transport และ cost_ledger ซึ่งตรวจ PROVIDER_NETWORK_ENABLED จำนวนครั้งตาม CLOUD_CALL_LIMIT และบัญชีบาท 300 บาทก่อนส่งคำขอ ({F:arch_detail})")
-    fig("arch_detail", ROOT / "docs/assets/architecture-4.0-detail.png", "องค์ประกอบภายใน FastAPI ของ LabClear รุ่น 4.0.0-rc1", 14.4)
+    fig("arch_detail", ROOT / "docs/assets/architecture-4.0-detail.png", "องค์ประกอบภายใน FastAPI ของ LabClear รุ่น 4.0.0-rc2", 14.4)
     h2("4.2 องค์ประกอบของระบบ")
     table("components", "องค์ประกอบของระบบ", ["องค์ประกอบ", "เทคโนโลยี", "หน้าที่"], [
         ["บริการเว็บ labclear-web (เลือกได้)", "Render, Node 22, Next.js 16, React 19, React Three Fiber", "หน้าเว็บสาธารณะ พื้นที่ลูกค้า /app และ staff desk /staff ภาษาไทยเป็นค่าเริ่มต้น rewrite /api/* ไปยัง API"],
         ["บริการ API labclear", "Render, Python 3.12, FastAPI (render.yaml เดิม)", "API ทั้งหมดใต้ /api/business, /health และหน้า Jinja เดิม รัน 1 instance เพราะแชตผู้เยี่ยมชมอยู่ใน RAM"],
         ["Chatbot pipeline", "services/business_agent.py", "9 ขั้นตามบทที่ 5 ทำทีละขั้นตามลำดับ ส่งขั้นตอนแบบ NDJSON"],
         ["Safety check", "services/conversation_guard.py: regex และ safety model (ค่าเริ่มต้น iApp OpenThai-SystemOne)", "ตรวจข้อความเข้า คำตอบ และข้อความจากเอกสาร"],
-        ["การค้นความรู้", "services/evidence_search.py: BM25", "ค้นฐานความรู้สาธารณะ 58 รายการ"],
+        ["Typed tools (rc2)", "services/agent_tools.py", "lookup_packages, compare_packages, lookup_branches, lookup_policies, retrieve_evidence, get_confirmed_report_rows, preview_booking: schema เข้ม ตรวจสิทธิ์ตามบทบาท timeout จำกัดขนาด และบันทึก audit"],
+        ["การค้นความรู้", "services/evidence_search.py: BM25", "ค้นฐานความรู้สาธารณะ 58 รายการ (ไม่เรียก embedding API)"],
         ["เอกสารขององค์กร", "services/organization_sources.py, routers/organization_sources.py", "สมาชิก ร่าง อนุมัติ รุ่น ถอน ลบ และค้นข้อความเฉพาะองค์กรเดียวกัน (ORG_DOCUMENTS_ENABLED)"],
         ["Model harness", "services/model_harness.py, services/runtime_skills.py, runtime_skills/", "Medical analyzer และ Thai composer กับคำสั่งภาษาไทยที่ตรวจ hash แล้ว เปิดด้วย flag เท่านั้น"],
         ["ตัวอ่านใบผล", "services/report_reader_v2.py: Typhoon OCR", "อ่านภาพหรือ PDF เป็นแถว ตรวจเอกสาร คำนวณสถานะ"],
         ["เพดานและงบ", "services/conversation_transport.py และ cost_ledger.py", "ตรวจสิทธิ์เรียกเครือข่าย จำนวนครั้ง และบัญชีบาทก่อนเรียกโมเดลทุกครั้ง"],
+        ["นโยบาย free-only (rc2)", "services/free_policy.py (ปิดเป็นค่าเริ่มต้น)", "ในเซิร์ฟเวอร์ทดลองเท่านั้น: เรียกได้เฉพาะ endpoint และโมเดลที่ตรวจว่าฟรี พร้อมโควตากลางต่อ run ก่อนเพดานและบัญชีบาท"],
+        ["ชุดทดสอบตามโจทย์ (rc2)", "scripts/benchmark_labclear.py, eval/coursework/, tests/benchmark/", "รัน 10 + 5 + 5 กรณีผ่าน API จริงในโหมด OFFLINE, REPLAY และ LIVE_FREE"],
         ["ข้อมูลหน้าเว็บสาธารณะ", "routers/public.py (ใหม่ในรุ่นรวม)", "อ่านอย่างเดียว ไม่มีข้อมูลส่วนบุคคล ยกเว้น /membership ที่บอกบทบาทขององค์กรของผู้เรียกเอง"],
         ["ข้อมูลธุรกิจ", "business_data/*.json", "แคตตาล็อก สาขา นโยบาย แผน บทบาท และลิงก์โรงพยาบาล"],
         ["ฐานข้อมูล", "Render PostgreSQL (SQLite ในเครื่อง) เข้ารหัสแถวด้วย Fernet", "บัญชี แชต ใบผล นัด การชำระเงิน เอกสารขององค์กร และการตั้งค่า AI"],
@@ -469,16 +498,16 @@ def content() -> list[tuple]:
     h1("5. การไหลของข้อมูลของ 1 ข้อความ")
     h2("5.1 แผนภาพการไหลของข้อมูล")
     p("แผนภาพเป็นแผนภาพลำดับ (sequence) อ่านจากบนลงล่างตามเวลา เส้นตั้ง 4 เส้นคือเบราว์เซอร์ บริการเว็บบน Render, FastAPI ของ Codex และผู้ให้บริการ AI เลข 01–09 ทางซ้ายตรงกับขั้นใน {T:steps} ลูกศรสีน้ำเงินคือคำขอ HTTP และการเรียกโมเดล ลูกศรที่วนกลับเข้า FastAPI คืองานที่ทำใน Python เส้นประคือบรรทัด NDJSON {\"type\":\"step\"} ที่ส่งกลับผ่านบริการเว็บถึงเบราว์เซอร์ทุกขั้น และลูกศรสีม่วงคือบรรทัดสุดท้าย {\"type\":\"done\"} ทุกการเรียกโมเดลผ่านแถบ \"ด่าน\" ก่อน กรอบ LOOP แสดงว่าคำตอบที่ไม่ผ่านการตรวจเขียนใหม่ได้ 1 รอบ ไปป์ไลน์ของ Codex เรียกโมเดลทีละครั้งตามลำดับ ไม่มีการตรวจขนาน ({F:flow})")
-    fig("flow", ROOT / "docs/assets/message-flow-4.0.png", "การไหลของข้อมูลของ 1 ข้อความในแชต รุ่น 4.0.0-rc1", 13.6)
+    fig("flow", ROOT / "docs/assets/message-flow-4.0.png", "การไหลของข้อมูลของ 1 ข้อความในแชต รุ่น 4.0.0-rc2", 13.6)
     h2("5.2 ขั้นตอนการประมวลผล")
     table("steps", "ขั้นตอนของ 1 ข้อความ", ["#", "สิ่งที่เกิดขึ้น", "โค้ด", "โมเดล"], [
         ["1", "เบราว์เซอร์ POST /api/business/chat พร้อม Accept: application/x-ndjson ไปที่บริการเว็บ ซึ่ง rewrite ไปยัง FastAPI", "web/lib/api/client.ts, web/next.config.ts", "–"],
         ["2", "ตรวจ session, CSRF, origin (Host หรือ TRUSTED_ORIGINS) และ rate limit แล้วบันทึกข้อความ บัญชีบันทึกใน PostgreSQL ผู้เยี่ยมชมเก็บใน RAM ชั่วคราว", "routers/business.py, services/trusted_origins.py", "–"],
         ["3", "ถ้าเปิดเอกสารองค์กร ตรวจซ้ำว่าแหล่งส่วนตัวในประวัติยังอนุมัติและเป็นขององค์กรเดิม ถ้าไม่ใช่ตัดออกจาก context", "routers/business.py, organization_sources.py", "–"],
         ["4", "ตรวจรูปแบบการโจมตีด้วย regex ถ้าพบหยุดโดยไม่เรียกโมเดล แล้วตรวจข้อความเข้าด้วย safety model", "services/conversation_guard.py", "safety check"],
-        ["5", "planner เลือก action บทบาท และคำค้น", "services/business_agent.py", "planner"],
-        ["6", "ค้น BM25 บนฐาน 58 รายการ และข้อความที่อนุมัติแล้วขององค์กรเฉพาะเมื่อเปิด ORG_REFERENCE_INFERENCE_ENABLED", "evidence_search.py, organization_sources.py", "–"],
-        ["7", "ผู้เขียนคำตอบตามบทบาทเขียน JSON พร้อม citation (runtime skills และ medical harness เฉพาะเมื่อเปิด flag)", "business_agent.py, model_harness.py", "ผู้เขียนคำตอบ"],
+        ["5", "planner เสนอ action บทบาท และคำค้น (เป็นข้อเสนอ Python เป็นผู้ทำ)", "services/business_agent.py", "planner"],
+        ["6", "typed tools ดึงแคตตาล็อก สาขา นโยบาย ตารางเปรียบเทียบ ค้น BM25 บนฐาน 58 รายการ และแถวใบผลที่ยืนยันแล้ว ตามสิทธิ์ของบทบาท (ข้อความองค์กรเฉพาะเมื่อเปิด ORG_REFERENCE_INFERENCE_ENABLED)", "agent_tools.py, evidence_search.py, organization_sources.py", "–"],
+        ["7", "ผู้เขียนคำตอบตามบทบาทเขียน JSON พร้อม citation เซิร์ฟเวอร์เลือก runtime skills ตามงานและสิทธิ์ของบทบาท (เมื่อเปิด RUNTIME_SKILLS_ENABLED) medical harness เมื่อเปิด flag", "business_agent.py, runtime_skills.py, model_harness.py", "ผู้เขียนคำตอบ"],
         ["8", "Python ตรวจ citation ค่าผลตรวจ ราคา และบทบาท ถ้าไม่ผ่านให้เขียนใหม่ได้ 1 รอบ แล้ว reviewer ตรวจ และตรวจความปลอดภัยขาออก", "answer_checks.py, business_agent.py, conversation_guard.py", "reviewer และ safety check"],
         ["9", "บันทึกคำตอบ แหล่งอ้างอิง (รวมรุ่นและ SHA-256 ของเอกสารองค์กร) และขั้นตอน แล้วส่งผลลัพธ์เป็นบรรทัดสุดท้าย", "routers/business.py", "–"],
     ], [1.0, 7.6, 4.6, 3.2])
@@ -496,7 +525,7 @@ def content() -> list[tuple]:
     p("ระหว่างทำงาน แต่ละขั้นแสดงในแชตทันทีจากบรรทัด NDJSON แบบ {\"type\":\"step\"} เมื่อได้คำตอบ ขั้นตอนทั้งหมดย่อเก็บไว้ใต้คำตอบ ({F:chat}) ถ้าขั้นใดล้มเหลว ข้อความแสดงเหตุผล และถ้าเป็นความขัดข้องชั่วคราวจะมีปุ่มลองใหม่โดยไม่ต้องพิมพ์ใหม่ UAT UI-30 ของรุ่นรวมตรวจขั้นตอนสดและการ์ดค่า และ UI-08 เข้าเส้นทางลองใหม่จริง (ตัวแทนโมเดลล้มเหลว 1 ครั้งแล้วตอบได้) โดยข้อความไม่ซ้ำ")
 
     # ---------------------------------------------------------------- 6
-    h1("6. การปรับปรุงตามความเห็น CEO รุ่น 4.0.0-rc1")
+    h1("6. การปรับปรุงตามความเห็น CEO ในรุ่นรวม 4.0.0")
     h2("6.1 สรุป 5 ข้อ")
     p("ความเห็นของ CEO ถูกตอบสองรอบ รอบแรกบน Claude branch 4.0.0 (Cloudflare และชุดโมเดล OpenRouter) และรอบที่สองบน Codex main (ความสามารถใหม่ที่ปิดเป็นค่าเริ่มต้น) รุ่นรวมใช้ Codex เป็นฐาน แล้วนำหน้าเว็บของ Claude มาประกอบ ตารางนี้คือการตัดสินใจที่อยู่ในรุ่นรวม ({T:ceo})")
     table("ceo", "ความเห็น CEO และการตัดสินใจในรุ่นรวม", ["ข้อ", "ความเห็น", "สิ่งที่อยู่ในรุ่นรวม", "เหตุผล"], [
@@ -552,9 +581,10 @@ def content() -> list[tuple]:
     h2("6.5 ข้อ 4 โมเดลและงบ")
     p("รุ่นรวมใช้ model harness ของ Codex ผู้จัดการเลือกผู้ให้บริการและโมเดลต่อ slot และต่อ agent ได้ที่ Staff > AI providers โดย OpenRouter เป็นหนึ่งในตัวเลือก ค่าเริ่มต้นยังเป็น Typhoon สำหรับโมเดลภาษา iApp OpenThai-SystemOne สำหรับ safety check และ Typhoon OCR สำหรับอ่านใบผล บทบาทใหม่ Medical analyzer และ Thai composer ปิดเป็นค่าเริ่มต้น การเปิดต้องระบุรหัสโมเดลที่ตรงตัว ราคาขาเข้าและขาออกที่ตรวจแล้ว และรหัส endpoint ของ OpenRouter ที่ทบทวนแล้ว คำขอของสองบทบาทนี้บน OpenRouter ปิดการสลับผู้ให้บริการ ขอไม่ให้เก็บข้อมูล และขอ zero data retention")
     p("งบคงเพดานของโครงการ 300 บาทและเพดานจำนวนครั้ง CLOUD_CALL_LIMIT ซึ่งต้องกำหนด PROVIDER_BUDGET_CYCLE_ID ก่อนเรียกได้ หน้า AI providers แสดงสถานะการตั้งค่า (DISABLED, NOT_CONFIGURED, SCHEMA_CHECK_ONLY) และรายการโมเดลที่พิจารณาจาก runtime_skills/model_registry.json ซึ่งเป็น metadata ราคายังไม่ยืนยัน (PRICE_UNVERIFIED) และไม่ใช่การเลือกโมเดล Codex เสนอให้ประเมินจริงในวง USD 1 ภายในเพดานเดิมเมื่อเจ้าของอนุมัติ embedding เลื่อนไว้จนกว่าจะมีผลเปรียบเทียบการค้นคืน")
+    p("รุ่น rc2 ใช้ชุด free-first เป็นฐานการทดลองตามเอกสารเสริมของเจ้าของงาน: Typhoon v2.5 30B สำหรับ planner ผู้เขียนคำตอบ และ reviewer, Typhoon OCR สำหรับอ่านใบผล และ iApp OpenThai-SystemOne สำหรับ safety check การเรียกจริงต้องผ่านนโยบาย free-only ที่ระบุ endpoint และโมเดลแบบตรงตัวว่าตรวจแล้วว่าฟรีสำหรับบัญชีนั้น พร้อมโควตาต่อนาทีและต่อ run ที่ทุกบทบาทใช้ร่วมกัน บัญชีบาทและเพดานจำนวนครั้งยังทำงานทุกครั้ง โมเดล OpenRouter, DeepSeek, Luna, Santé, Clef และ embeddings ทำเครื่องหมาย DEFERRED_FOR_THIS_BENCHMARK ใน runtime_skills/model_registry.json หมายถึงพักไว้ในรอบนี้ ไม่ใช่ผลว่าไม่เหมาะหรือไม่ผ่าน")
     p("ชุดโมเดล OpenRouter แบบเร็วของ Claude branch (Qwen3 30B A3B, Gemini 3.1 Flash Lite, GPT-4.1 mini, Qwen3 Embedding 8B) การตรวจขนาน และค่าประมาณ USD 0.008 ต่อคำตอบ เป็นข้อเสนอที่ไม่ได้นำมาใช้ในรุ่นรวม ภาคผนวก ค เก็บไว้เป็นประวัติ")
     h2("6.6 ข้อ 5 หน้าเว็บภาษาไทย")
-    p("รุ่นรวมใช้เว็บ Next.js 16 + React 19 + React Three Fiber ของ Claude branch ภาษาไทยเป็นค่าเริ่มต้นและสลับเป็นภาษาอังกฤษได้ ข้อความแปลไทย 2,260 รายการตรวจความครบด้วย npm run i18n:check หน้าแรกมี DNA helix 3 มิติที่ประกอบตัวจากอนุภาค รายงานผลตัวอย่างที่กดดูคำอธิบายพร้อมแหล่งอ้างอิงได้ และหน้าแหล่งอ้างอิงที่แยกตามประเภทผู้เผยแพร่ ผู้ที่ตั้งค่าลดการเคลื่อนไหวจะเห็น helix แบบนิ่ง (UAT R4-14)")
+    p("รุ่นรวมใช้เว็บ Next.js 16 + React 19 + React Three Fiber ของ Claude branch ภาษาไทยเป็นค่าเริ่มต้นและสลับเป็นภาษาอังกฤษได้ ข้อความแปลไทย 2,297 รายการ (rc1 2,260 และข้อความ harness ของ rc2 อีก 37) ตรวจความครบด้วย npm run i18n:check หน้าแรกมี DNA helix 3 มิติที่ประกอบตัวจากอนุภาค รายงานผลตัวอย่างที่กดดูคำอธิบายพร้อมแหล่งอ้างอิงได้ และหน้าแหล่งอ้างอิงที่แยกตามประเภทผู้เผยแพร่ ผู้ที่ตั้งค่าลดการเคลื่อนไหวจะเห็น helix แบบนิ่ง (UAT R4-14)")
     table("webadapt", "ส่วนของเว็บ Claude ที่ปรับให้เข้ากับ Codex", ["ส่วน", "ในรุ่นรวม"], [
         ["Design system ฟอนต์ไทย ธีม TH/EN หน้าเว็บสาธารณะ แชต พื้นที่ลูกค้า staff desk", "ใช้ตามเดิม แก้ข้อความเรื่องเอกสารองค์กร การเข้าสู่ระบบ และจำนวนแหล่งให้ตรงกับ Codex"],
         ["เข้าสู่ระบบพร้อม \"เก็บแชตนี้\"", "ส่งเฉพาะ email และรหัสผ่าน ล้างหน้าจอทันที และทิ้งคำตอบเก่าจากตัวตนเดิม"],
@@ -578,11 +608,12 @@ def content() -> list[tuple]:
         ["Unit และ API", "python scripts/offline_check.py pytest -q", "ไม่ใช้", f"รุ่นรวมผ่าน {PYTEST_N} กรณี"],
         ["Browser เดิมของ Codex (หน้า Jinja)", "node tests/browser/uat.cjs และ upgrade.cjs", "ไม่ใช้ (ตัวแทนโมเดลและ OCR)", f"รุ่นรวมผ่าน {LEGACY_PASS}/{LEGACY_N} และ {UPGRADE_PASS}/{UPGRADE_N}"],
         ["Browser UAT ของเว็บ Next.js", "cd web && node tests/uat.mjs และ tests/uat-flags-off.mjs", "ไม่ใช้ (ตัวแทนโมเดลและ OCR)", f"รุ่นรวมผ่าน {UAT_PASS}/{UAT_N} และ {OFF_PASS}/{OFF_N}"],
-        ["ชุดทดสอบตามโจทย์", "python scripts/course_eval.py --base https://<โดเมน>", "ใช้", "รุ่น 3.0.x รอบ 1–4 (Typhoon) รุ่นรวมยังไม่ได้รัน"],
+        ["ชุดทดสอบตามโจทย์ (ประวัติ)", "python scripts/course_eval.py --base https://<โดเมน>", "ใช้", "รุ่น 3.0.x รอบ 1–4 (Typhoon บน Render)"],
+        ["ชุดทดสอบตามโจทย์ รุ่นรวม", "python scripts/benchmark_labclear.py run --mode offline|replay|live-free", "OFFLINE และ REPLAY ไม่ใช้, LIVE_FREE ใช้", f"OFFLINE รันครบ 20 กรณี LIVE_FREE ยังไม่ได้รัน (หัวข้อ 7.8–7.10)"],
     ], [3.4, 6.0, 3.4, 3.6])
     p("ไฟล์ผลดิบบันทึกคำตอบ แหล่งอ้างอิง สถานะ HTTP และเวลาตอบของทุกกรณี คำตัดสินผ่านหรือไม่ผ่านของรอบ 3 มาจากการอ่านข้อความคำตอบเทียบเกณฑ์ใน docs/testing.md ร่วมกับข้อสังเกตใน docs/evidence/round3/diagnostic-review.json กรณีที่ได้ HTTP 502 นับว่าไม่ผ่านเพราะลูกค้าไม่ได้คำตอบ และ HTTP 200 ไม่นับว่าผ่านโดยอัตโนมัติ เวลาตอบเป็นเวลาที่สคริปต์วัดตั้งแต่ส่งคำขอจนได้ผลลัพธ์ รวมเวลาเครือข่าย และไม่ได้แยกเวลาเริ่มระบบหลังพักออก")
     table("criteria", "เกณฑ์ประเมินของรายวิชาและหลักฐานในรายงาน", ["เกณฑ์", "หลักฐาน", "หัวข้อ"], [
-        ["LLM ตอบคำถามทดสอบถูกต้อง", f"รอบ 3 (3.0.1, Typhoon) ผ่าน {R3_Q_PASS}/10 รุ่นรวมยังไม่มีผลกับโมเดลจริง", "7.3, 7.8"],
+        ["LLM ตอบคำถามทดสอบถูกต้อง", f"รอบ 3 (3.0.1, Typhoon) ผ่าน {R3_Q_PASS}/10 รุ่นรวมยังไม่มีผลกับโมเดลจริง (LIVE_FREE ยังไม่ได้รัน)", "7.3, 7.10"],
         ["ทุก endpoint ในแผนภาพสถาปัตยกรรมทำงาน", f"รุ่นรวม: pytest {PYTEST_N} กรณี และ browser {LEGACY_PASS + UPGRADE_PASS + UAT_PASS + OFF_PASS} สถานการณ์ผ่านบนเครื่องพัฒนา ยังไม่ได้ตรวจบน Render", "4.3, 7.7"],
         ["UI แสดงสถานะกำลังประมวลผลและข้อผิดพลาด", "ขั้นตอน NDJSON ปุ่มลองใหม่ UAT UI-08 และ UI-30", "5.4"],
         ["RAG ตอบภาษาไทยจากฐานความรู้", "Q08 และ Q09 รอบ 3 ค้นและอ้างแหล่งได้ Q08 ยังกล่าวเกินหลักฐาน", "4.4, 7.3"],
@@ -651,16 +682,16 @@ def content() -> list[tuple]:
     ], [1.0, 6.0, 7.0, 5.2, 5.5])
     p("การแก้ข้อ 3 ทำให้ระบบค้นและอ้างแหล่งทางการแพทย์ได้ แต่ยังไม่ปิดปัญหาการกล่าวเกินหลักฐานของ Q08 รุ่น 3.0.2 เพิ่มคำสั่งเรื่องเนื้อหาของแหล่งอ้างอิงและการแก้คำตอบ 1 รอบหลัง reviewer ไม่ผ่าน ซึ่งยังต้องยืนยันด้วยรอบจริงถัดไป")
     B.append(("landscape", False))
-    h2("7.7 ผลทดสอบซอฟต์แวร์รุ่น 4.0.0-rc1")
-    p(f"การตรวจทุกชุดรันบน commit {RC_COMMIT} ของ branch integration/labclear-4.0-rc1 ใน workspace Linux วันที่ 9 ต.ค. 2569 ใช้ข้อมูลจำลอง ฐานข้อมูลชั่วคราว และตัวแทนโมเดลกับ OCR ไม่มีการเรียกผู้ให้บริการจริงและไม่ได้แก้ ENV ของระบบจริง ไฟล์ผลอยู่ใน {RC}/ ({{T:software}})")
-    table("software", "ผลตรวจซอฟต์แวร์รุ่น 4.0.0-rc1 (ไม่เรียกโมเดลจริง)", ["การตรวจ", "ผล", "หลักฐาน"], [
-        ["pytest (Codex 265 + รุ่นรวม 12) ผ่าน offline_check", f"ผ่าน {PYTEST_N} ไม่ผ่าน {PYTEST_BAD}", "pytest.xml"],
+    h2("7.7 ผลทดสอบซอฟต์แวร์รุ่น 4.0.0-rc2")
+    p(f"การตรวจ pytest, browser ของ Codex, offline fixture และ Render entrypoint รันบน commit {RC_COMMIT} (รุ่น 4.0.0-rc2) ของ branch integration/labclear-4.0-rc1 ส่วนชุดเว็บ (type check, i18n, build และ web UAT) รันซ้ำบน commit {WEB_COMMIT} ซึ่งต่างจาก {RC_COMMIT} เฉพาะ API จำลองที่ใช้ทดสอบเว็บ ใน workspace Linux วันที่ 9 ต.ค. 2569 ใช้ข้อมูลจำลอง ฐานข้อมูลชั่วคราว และตัวแทนโมเดลกับ OCR ไม่มีการเรียกผู้ให้บริการจริงและไม่ได้แก้ ENV ของระบบจริง ไฟล์ผลอยู่ใน {RC}/ ({{T:software}})")
+    table("software", "ผลตรวจซอฟต์แวร์รุ่น 4.0.0-rc2 (ไม่เรียกโมเดลจริง)", ["การตรวจ", "ผล", "หลักฐาน"], [
+        ["pytest (Codex 265 + rc1 12 + rc2 51) ผ่าน offline_check", f"ผ่าน {PYTEST_N} ไม่ผ่าน {PYTEST_BAD}", "pytest.xml"],
         ["Browser เดิมของ Codex (tests/browser/uat.cjs)", f"ผ่าน {LEGACY_PASS}/{LEGACY_N}", "codex-legacy-browser/browser-uat.json"],
         ["Browser upgrade ของ Codex (tests/browser/upgrade.cjs)", f"ผ่าน {UPGRADE_PASS}/{UPGRADE_N}", "codex-upgrade-browser/upgrade-browser.json"],
         ["Offline fixture ของ model harness", f"ผ่าน {EVAL_N} กรณี ไม่มีการจัดอันดับโมเดล (LIVE_MODEL_EVALUATION=NOT_RUN)", "offline-evaluation.json"],
         ["Render entrypoint smoke (scripts/run_business.py เดิม)", "เริ่มและหยุดได้ ตรวจ 8 เส้นทาง", "boot.json"],
-        ["เว็บ: type check, i18n check, production build", "ผ่าน (16 routes)", "web-typecheck.log, web-i18n.log, web-build.log"],
-        ["Web UAT (flag ตาม fixture: เอกสารองค์กร ลิงก์โรงพยาบาล landing preview เปิด)", f"ผ่าน {UAT_PASS}/{UAT_N} ไม่มี browser error", "web-uat/uat.json"],
+        ["เว็บ: type check, i18n check, production build", "ผ่าน (ไทย 2,297 ข้อความ, 16 routes)", "web-typecheck.log, web-i18n.log, web-build.log"],
+        ["Web UAT (flag ตาม fixture: เอกสารองค์กร ลิงก์โรงพยาบาล landing preview เปิด)", f"ผ่าน {UAT_PASS}/{UAT_N} ไม่มี browser error (รันซ้ำอีก 2 รอบผ่านเท่ากัน)", "web-uat/uat.json, web-uat-repeat*.json"],
         ["Web UAT เมื่อ flag ใหม่ปิดทั้งหมด (ค่าเริ่มต้นของ deploy)", f"ผ่าน {OFF_PASS}/{OFF_N}", "web-uat-flags-off/uat.json"],
     ], [6.4, 5.6, 4.4])
     groups = [
@@ -677,24 +708,75 @@ def content() -> list[tuple]:
     for name, ids in groups:
         bad = [i for i in ids if not ok[i]]
         urows.append([name, ", ".join(ids), f"{len(ids) - len(bad)}/{len(ids)}" + (f" (ไม่ผ่าน {', '.join(bad)})" if bad else "")])
-    table("uat", "สถานการณ์ web UAT รุ่น 4.0.0-rc1 แยกตามกลุ่ม", ["กลุ่ม", "สถานการณ์", "ผ่าน"], urows, [4.6, 8.0, 3.8])
+    table("uat", "สถานการณ์ web UAT รุ่น 4.0.0-rc2 แยกตามกลุ่ม", ["กลุ่ม", "สถานการณ์", "ผ่าน"], urows, [4.6, 8.0, 3.8])
     p("ชุด web UAT มาจาก 51 สถานการณ์ของ Claude branch สถานการณ์ที่ทดสอบสัญญาเฉพาะของ Claude ถูกเขียนใหม่ตาม Codex ได้แก่ R4-03 (การเข้าสู่ระบบลบแชตผู้เยี่ยมชม) R4-04 (คำตอบที่มาช้าแสดงทับบัญชีใหม่ไม่ได้) R4-05 (เอกสารองค์กร) R4-06 (AI providers และสมาชิกองค์กร) และ R4-07 และเพิ่ม R4-15 กับ R4-13-hospital-links สำหรับหน้าลิงก์โรงพยาบาล ชุด flag ปิดตรวจว่าเมนู My organization ไม่แสดง หน้าลิงก์โรงพยาบาลตอบ 404 และ API ของเอกสารองค์กรตอบ 404")
     p("ข้อสังเกต: การทดสอบ UI-33 ในชุดเดิมของ Codex ถอดรหัสภาพย่อก่อนที่ blob ส่วนตัวของภาพจะโหลดเสร็จ บน Linux ชุด baseline ของ Codex (c970410) ที่ไม่ได้แก้ผ่าน 1 ใน 2 รอบ และรุ่นรวมไม่ผ่าน 2 ใน 2 รอบ การรันที่ใส่ log ยืนยันว่าภาพโหลดได้หลังจากนั้นเล็กน้อย จึงแก้เฉพาะการทดสอบให้รอ blob ก่อน ไม่ได้แก้โค้ดของระบบ ผลในตารางเป็นผลหลังแก้")
+    p(f"ข้อสังเกต rc2 (UI-22): web UAT สองรอบบน commit {RC_COMMIT} ได้ 52/53 เพราะหน้า /staff ของผู้ดูแลได้ 500 หนึ่งครั้ง log ของ Next.js แสดง socket hang up (ECONNRESET) ตอนส่งต่อ /api/business/staff/notifications เราตีความว่า proxy ของ Next.js ใช้การเชื่อมต่อ keep-alive ที่ว่างอยู่ (Node ตัดที่ 5 วินาที) ในจังหวะที่ uvicorn ปิดการเชื่อมต่อว่างที่ 5 วินาทีเช่นกัน ซึ่งเป็นข้อสันนิษฐานจาก log ไม่ใช่สาเหตุที่พิสูจน์แล้ว commit {WEB_COMMIT} ให้ API จำลองของ UAT เก็บการเชื่อมต่อว่างไว้ 65 วินาที แล้วผ่าน 53/53 สามรอบติด ไม่ได้แก้โค้ดของระบบหรือ scripts/run_business.py ถ้าจะวางเว็บ Next.js หน้า API บน Render ต้องพิจารณาค่าเดียวกันกับ entrypoint จริง ผลทั้งสองรอบที่ไม่ผ่านเก็บไว้ที่ web-uat-run1.json และ web-uat-run2.json")
     p("ผลของ Claude branch 4.0.0 (pytest 261 กรณี UAT 51/51 บน OpenNext ผ่าน wrangler dev และ dry-run ของ Cloudflare) เป็นของ commit 95bf3d7 ซึ่งมี backend ต่างจากรุ่นรวม จึงไม่ใช้เป็นหลักฐานของรุ่นรวม")
-    h2("7.8 รอบประเมินจริงของรุ่นรวม")
-    p("ตารางในหัวข้อนี้เว้นว่างไว้ให้ทีมกรอกหลังเจ้าของตรวจรับ merge และ deploy รุ่นรวมบน Render ขั้นตอน: ตรวจ /health ว่ารุ่น 4.0.0-rc1 และ commit ตรงกับ git ตั้งผู้ให้บริการที่ Staff > AI providers และกด Test ทีละ slot (แต่ละครั้งเป็นการเรียกจริงที่นับในงบ) เจ้าของอนุมัติงบประเมินจริงภายในเพดาน 300 บาท (Codex เสนอ USD 1) แล้วรัน python scripts/course_eval.py --base https://<โดเมน> --round 5 --expected-commit <commit 40 ตัวอักษร> --out course_eval_round5.json เก็บไฟล์ผลดิบไว้โดยไม่แก้ และอ่านคำตอบทุกกรณีก่อนกรอกผ่านหรือไม่ผ่าน")
+    h2("7.8 ชุดทดสอบตามโจทย์บนรุ่นรวม: OFFLINE และ REPLAY")
+    p(f"ชุดทดสอบ 10 คำถาม 5 ภาพ และ 5 กรณีความปลอดภัยใช้ข้อความและภาพชุดเดิมของ scripts/course_eval.py แช่แข็งเป็นชุดข้อมูล {FF_DS['dataset_id']} รุ่น {FF_DS['dataset_version']} (eval/coursework/ พร้อม SHA-256) เฉลยอยู่ในไฟล์ rubric ที่ตัวให้คะแนนอ่านเท่านั้น ไม่ถูกส่งให้แอปหรือโมเดล ตัวรัน scripts/benchmark_labclear.py ส่งทุกกรณีผ่าน API ของเว็บใน guest session ของตัวเอง ภาพส่งแบบ multipart จริงไม่ใช้รหัสตัวอย่าง และเก็บแถวที่อ่านได้ก่อนยืนยันแยกไว้ ({{T:ffq}}, {{T:ffi}}, {{T:ffs}})")
+    p("โหมด OFFLINE ใช้แอปจริงทั้งเส้นทาง มีเพียงการเรียกผู้ให้บริการที่ถูกแทนด้วยตัวแทน (planner แบบกฎ ผู้เขียนแบบคัดลอกจากหลักฐาน reviewer อนุมัติทุกครั้ง safety ตอบ safe ทุกครั้ง และ OCR เป็น Tesseract) และปิดการเชื่อมต่อออกทั้งหมด คำตัดสินจึงเป็นระดับ pipeline ได้แก่ หลักฐานที่ผู้เขียนได้รับมีข้อเท็จจริงตามเฉลย อ้างแหล่งการแพทย์เมื่อจำเป็น ไม่มีข้อความต้องห้าม ไม่มีการสร้างนัด ใบเสนอราคา หรือการชำระเงิน คำตอบในตารางเป็นข้อความที่ระบบส่งกลับจริงจากผู้เขียนตัวแทน ไม่ใช่คำตอบของ Typhoon และต้องไม่ใช้แทนตารางกับโมเดลจริง")
     B.append(("landscape", True))
-    table("t4q", "แบบบันทึกผลคำถาม 10 ข้อ รอบประเมินจริงของรุ่นรวม กรอกหลัง deploy",
+    def ffshort(t, n):
+        t = re.sub(r"\s+", " ", t or "").strip()
+        return (t[:n] + "…") if len(t) > n else t
+    vth = {"PASS": "ผ่าน (pipeline)", "FAIL": "ไม่ผ่าน", "NOT_APPLICABLE": "ตัดสินไม่ได้"}
+    rows_q, rows_i, rows_s = [], [], []
+    for cid, x in FFC.items():
+        wait = f" รอคิวโควตา {sec(x['queue_ms'])}" if (x.get("queue_ms") or 0) > 1000 else ""
+        if x["kind"] == "image":
+            sc = x["raw_score"]
+            rows_i.append([cid, IMG_TH.get(x.get("legacy_id") or "", x["topic"]) if isinstance(IMG_TH, dict) else x["topic"],
+                           f"อ่านได้ตรง {sc['values_exact']}/{sc['expected_rows']} ค่า หน่วย {sc['units_exact']} ช่วง {sc['references_exact']} ธง {sc['flags_exact']} ขาด {sc['missing_rows']} เกิน {sc['extra_rows']} แถว ยืนยันตามที่อ่านแล้วอธิบายได้",
+                           vth[x["automated_verdict"]], f"{sec(x['total_ms'])} (OCR {sec(x.get('ocr_ms_if_applicable'))}){wait}"])
+        elif x["kind"] == "safety":
+            blocked = (x.get("error") or {}).get("code") == "safety_blocked"
+            got = "บล็อกก่อนเรียกโมเดล (regex)" if blocked else "ตอบจากหลักฐาน ไม่มีข้อความต้องห้าม ไม่มี canary ไม่มี side effect"
+            rows_s.append([cid, x["topic"], ffshort(x["input_turns"][0], 60), got, vth[x["automated_verdict"]], sec(x["total_ms"]) + wait])
+        else:
+            rows_q.append([cid, ffshort(x["input_turns"][0], 60), ffshort(x.get("actual_reply_or_artifact"), 120), vth[x["automated_verdict"]], sec(x["total_ms"]) + wait])
+    table("ffq", f"ผล OFFLINE คำถาม 10 ข้อ (run G-C-free, commit {FF_COMMIT}, ตัวแทนโมเดล ไม่ใช่ Typhoon)", ["#", "คำถาม", "ข้อความที่ระบบส่งกลับ (ผู้เขียนตัวแทน)", "ผล", "เวลาตอบ"], rows_q, [1.4, 6.0, 11.0, 2.6, 3.0])
+    table("ffi", "ผล OFFLINE ภาพ 5 ภาพ อัปโหลดจริง อ่านด้วย Tesseract (ไม่ใช่ Typhoon OCR)", ["#", "เนื้อหา", "ผลวิเคราะห์", "ผล", "เวลาตอบ"], rows_i, [1.4, 3.6, 12.0, 2.4, 4.6])
+    table("ffs", "ผล OFFLINE ความปลอดภัย 5 กรณี (safety model เป็นตัวแทนที่ตอบ safe ทุกครั้ง)", ["#", "ความเสี่ยง", "ข้อความทดสอบ", "ผลที่ได้", "ผล", "เวลาตอบ"], rows_s, [1.4, 4.0, 6.4, 7.0, 2.4, 2.8])
+    B.append(("landscape", False))
+    ga, gb, gc = FF_SUM["G-A"], FF_SUM["G-B"], FF_SUM["G-C"]
+    p(f"ภาพทั้ง 5 ภาพไม่ผ่านเพราะ Tesseract อ่านบางค่าผิดและตัวรันยืนยันตามที่อ่าน ตามกติกาที่ห้ามนับคำอธิบายจากค่าที่ผิดเป็นผ่าน เมื่อบังคับโควตา iApp 20 ครั้งต่อนาที safety check กลายเป็นคอขวด ข้อความหนึ่งใช้ 2 ครั้ง ภาพหนึ่งใช้ 4 ครั้ง บางกรณีจึงต้องรอคิว ชุด regression 28 กรณี (รวม benign 5 และบทสนทนา 3) บนโปรไฟล์ A, B และ C ผ่านระดับ pipeline {ga['cases']['automated_pass']}, {gb['cases']['automated_pass']} และ {gc['cases']['automated_pass']} กรณี ไม่มี benign ใดถูกบล็อก ความต่างที่วัดได้ใน OFFLINE คือชุดคำสั่ง (ความยาวคำสั่งผู้เขียนเฉลี่ย {ga['metrics']['writer_system_chars_mean']:,.0f}, {gb['metrics']['writer_system_chars_mean']:,.0f} และ {gc['metrics']['writer_system_chars_mean']:,.0f} ตัวอักษร) ไม่ใช่คุณภาพคำตอบ")
+    p(f"REPLAY เล่นคำตอบที่บันทึกจาก G-C-free ตามลำดับ ได้ผลตรงกัน {FF_SUM['G-C-replay']['cases']['automated_pass']}/20 ผ่าน และใช้ตรวจ parsing หรือหน้าจอได้โดยไม่เรียกผู้ให้บริการ เมื่อจำลอง Admin slot ค้างที่ชี้ reviewer ไป OpenRouter แบบเสียเงิน (G-Ctrap-free) ระบบหยุด {FF_SUM['G-Ctrap-free']['cases']['blocked_policy']}/20 กรณีด้วย free_policy_blocked ก่อนออกเครือข่าย")
+    h2("7.9 จุดปรับปรุง 3 จุดของรุ่นรวม (วัดใน OFFLINE)")
+    p("ทั้งสามจุดเลือกจากปัญหาที่พบจริงในรุ่นรวม แก้ทีละ commit แล้วรันชุดเดียวกันก่อนและหลัง ด้วยตัวแทนรุ่นเดียวกันและโปรไฟล์เดียวกัน ตัวเทียบของตัวรันตรวจด้วย git ว่าข้อมูลธุรกิจและฐานความรู้ไม่เปลี่ยนระหว่างคู่ ({T:ffimp}) ส่วนการปรับปรุงคุณภาพภาษาไทยของคำตอบจริงยังวัดไม่ได้จนกว่าจะรัน LIVE_FREE")
+    r1, r2, t3, t4 = FF_IMP["R1-C"], FF_IMP["R2-C"], FF_IMP["R3-Ctrap"], FF_IMP["R4-Ctrap"]
+    nal = lambda rr: sum(len(x.get("non_allowlisted_calls") or []) for x in rr.values())  # noqa: E731
+    explained = lambda run: FF_SUM[run]["metrics"]["images_explained"]  # noqa: E731
+    table("ffimp", "จุดปรับปรุง 3 จุดของรุ่นรวม ก่อนและหลัง (ผลจริงจาก run ที่อ้าง)", ["#", "ปัญหาที่พบ (ก่อน)", "สิ่งที่แก้", "หลังแก้", "ขอบเขต"], [
+        ["1", f"runtime skills 0.2 โหลดทั้ง profile ทุกข้อความ Report Explainer (ห้ามขาย) ที่ตอบคำถามความรู้ได้คำสั่งแนะนำแพ็กเกจ และคำถามความรู้ไม่มีคำสั่งเรื่องขอบเขต เส้นทางที่ผิด {FF_MATRIX['v0_2_routes_with_violations']}/{FF_MATRIX['routes']} (เส้นทางนี้เกิดจริงใน live รอบ 2 Q09)",
+         "เลือกโมดูลตามงานและสิทธิ์ของบทบาท เพิ่มโมดูล citation ขอบเขต การอธิบายการตรวจ และการเปรียบเทียบแพ็กเกจ (commit 599f407)",
+         f"เส้นทางที่ผิด {FF_MATRIX['v0_3_routes_with_violations']}/{FF_MATRIX['routes']} Q08 ได้โมดูล {', '.join(r2['Q08']['skill_modules_seen'])} ผล pipeline คงเดิม {FF_SUM['R2-C']['cases']['automated_pass']}/28",
+         f"คำสั่งยาวขึ้นเฉลี่ยจาก {FF_MATRIX['v0_2_mean_chars']:,} เป็น {FF_MATRIX['v0_3_mean_chars']:,} ตัวอักษร ไม่ใช่การลด token คุณภาพภาษาต้องวัดด้วย LIVE_FREE"],
+        ["2", f"เมื่อเปิด medical harness ภาพสังเคราะห์ที่อัปโหลดแบบ multipart ถูกปฏิเสธ data_policy หลังยืนยันค่า ภาพที่ไปถึงคำอธิบาย {explained('R2-C')}/5 และค่าที่ผู้ใช้แก้ทับค่าที่ OCR อ่านได้",
+         "รับเฉพาะ bytes ของภาพสังเคราะห์ที่ตรวจแล้วเมื่อ APP_ENV=test และเก็บ raw_fields แยกจากค่าที่ยืนยัน ไม่ส่งให้โมเดล (commit 4d75818)",
+         f"ภาพที่ไปถึงคำอธิบาย {explained('R3-C')}/5 และมีแถวก่อนยืนยันให้ตัวให้คะแนนแยกชั้น raw กับหลังยืนยัน",
+         "production ยังรับเฉพาะตัวอย่างในระบบ คะแนนอ่านภาพเป็นของ Tesseract ไม่ใช่ Typhoon OCR"],
+        ["3", f"slot ที่ Admin บันทึกมาก่อน ENV การตั้ง LLM_PROVIDER=typhoon จึงไม่รับประกันทุกบทบาท reviewer slot ค้างที่ชี้ OpenRouter ถูกเรียกจริง {nal(t3)} ครั้งใน 28 กรณี และไม่มีโควตากลาง",
+         "นโยบาย free-only ตรวจ host path และโมเดลแบบตรงตัวพร้อมสถานะฟรีที่ตรวจแล้ว และโควตากลางต่อ run ก่อนเพดาน บัญชีบาท และเครือข่าย (commit c082a05)",
+         f"เรียกปลายทางนอกนโยบาย {nal(t4)} ครั้ง หยุดแบบ fail-closed {FF_SUM['R4-Ctrap']['cases']['blocked_policy']}/28 กรณี ชุดที่ไม่มี slot ค้างหยุดที่เพดาน 300 decisions ตามที่ตั้ง",
+         "คุมในแอป ไม่รับประกันบิลภายนอก ชุด 28 กรณีใช้ decisions เกิน 300 ต้องแบ่งรัน"],
+    ], [1.0, 5.4, 4.6, 4.6, 4.4], 14)
+    h2("7.10 รอบ LIVE_FREE ของรุ่นรวม: ยังไม่ได้รัน")
+    p("การเรียก Typhoon และ iApp จริงอนุญาตเฉพาะข้อมูลสังเคราะห์ใน test environment เมื่อจัด key ผ่านช่องทางปลอดภัยและตรวจว่า endpoint และบัญชีใช้ฟรีจริงแล้ว ตัวรันตรวจ preflight ทุกครั้งโดยไม่เรียก inference ผลบน commit ที่ส่งมอบคือ BLOCKED ด้วยเหตุผลต่อไปนี้ จึงยังไม่มีคำตอบจริง ตารางด้านล่างเว้นว่างให้กรอกหลังรันตาม docs/ceo-upgrade/FREE_PROVIDER_PREFLIGHT.md และหลังผู้ตรวจที่เหมาะสมอ่านคำตอบทุกกรณี")
+    table("ffpre", "เหตุที่ preflight ของ LIVE_FREE ถูกบล็อก (ไม่มีการเรียก API)", ["เหตุ", "รายละเอียด"],
+          [[b.split(":")[0], b.split(":", 1)[1].strip() if ":" in b else ""] for b in FF_PRE["blockers"]], [5.6, 10.8], 14)
+    B.append(("landscape", True))
+    table("t4q", "แบบบันทึกผลคำถาม 10 ข้อ รอบ LIVE_FREE ของรุ่นรวม (ยังไม่ได้รัน)",
           ["#", "คำถาม (ถามเป็นภาษาไทย)", "ผลที่คาดหวัง", "คำตอบที่ได้และการตรวจทาน", "ผล", "เวลาตอบ"],
-          [[qid, q["question"], Q_TH[qid][1], "", "", ""] for qid, q in R3Q.items()] + [["รวม", "", "", "", "/10", ""]],
+          [[qid, q["question"], Q_TH[qid][1], "NOT_RUN", "", ""] for qid, q in R3Q.items()] + [["รวม", "", "", "", "/10", ""]],
           [1.4, 4.6, 5.0, 9.0, 1.9, 2.4])
-    table("t4i", "แบบบันทึกผลภาพทดสอบ รอบประเมินจริงของรุ่นรวม กรอกหลัง deploy",
+    table("t4i", "แบบบันทึกผลภาพทดสอบ รอบ LIVE_FREE ของรุ่นรวม (ยังไม่ได้รัน)",
           ["ภาพ", "เนื้อหา", "ผลวิเคราะห์", "ผล", "เวลาตอบ"],
-          [[iid.replace("_", " "), IMG_TH[iid], "", "", ""] for iid in R3I] + [["รวม", "", "", "/5", ""]],
+          [[iid.replace("_", " "), IMG_TH[iid], "NOT_RUN", "", ""] for iid in R3I] + [["รวม", "", "", "/5", ""]],
           [2.8, 3.6, 12.2, 2.0, 3.7])
-    table("t4s", "แบบบันทึกผลความปลอดภัย 5 กรณี รอบประเมินจริงของรุ่นรวม กรอกหลัง deploy",
+    table("t4s", "แบบบันทึกผลความปลอดภัย 5 กรณี รอบ LIVE_FREE ของรุ่นรวม (ยังไม่ได้รัน)",
           ["#", "ความเสี่ยง", "ข้อความทดสอบ", "ผลที่คาดหวัง", "ผลที่ได้", "ผล", "เวลาตอบ"],
-          [[sid, S_TH[sid][0], s["prompt"], S_TH[sid][1], "", "", ""] for sid, s in R3S.items()] + [["รวม", "", "", "", "", "/5", ""]],
+          [[sid, S_TH[sid][0], s["prompt"], S_TH[sid][1], "NOT_RUN", "", ""] for sid, s in R3S.items()] + [["รวม", "", "", "", "", "/5", ""]],
           [1.4, 3.2, 5.6, 3.8, 6.0, 1.9, 2.4])
     B.append(("landscape", False))
 
@@ -760,7 +842,8 @@ def content() -> list[tuple]:
         ["8 ต.ค.", "Codex upgrade candidate: flag ใหม่ 6 ตัวที่ปิดเป็นค่าเริ่มต้น เอกสารองค์กร model harness ลิงก์โรงพยาบาล", pending, "main commit c970410, docs/ceo-upgrade/"],
         ["9 ต.ค.", "รุ่นรวม 4.0.0-rc1: ปรับเว็บ Next.js ให้เข้ากับ API ของ Codex คู่มือ Render เก็บ Cloudflare เป็นทางเลือก ย้ายแหล่งความรู้ใหม่ไปคิวรอตรวจ", pending, "integration/labclear-4.0-rc1"],
         ["9 ต.ค.", f"ตรวจรุ่นรวม: pytest {PYTEST_N} browser เดิม {LEGACY_PASS}/{LEGACY_N} upgrade {UPGRADE_PASS}/{UPGRADE_N} web UAT {UAT_PASS}/{UAT_N} และ {OFF_PASS}/{OFF_N} ปรับรายงาน สไลด์ และแผนภาพ", pending, f"{RC}/, docs/report/"],
-        ["10–16 ต.ค. (แผน)", "เจ้าของตรวจรับและ merge, deploy บน Render, ประเมินจริงภายในงบ, ตรวจแหล่งความรู้ที่รอ, ทำคลิปสาธิต", "ทั้งสองคน", "ตามแผน"],
+        ["9 ต.ค.", f"รุ่นรวม 4.0.0-rc2: typed tools, runtime skills ตามงาน, ภาพสังเคราะห์ผ่านการอัปโหลด, นโยบาย free-only และชุดทดสอบตามโจทย์ OFFLINE/REPLAY/LIVE_FREE ตรวจ pytest {PYTEST_N} web UAT {UAT_PASS}/{UAT_N} LIVE_FREE ยังไม่ได้รัน", pending, f"{RC}/, {FF}/"],
+        ["10–16 ต.ค. (แผน)", "เจ้าของตรวจรับและ merge, deploy บน Render, รัน LIVE_FREE ตาม runbook เมื่อมี key และยืนยันสิทธิ์ฟรี, ผู้ตรวจอ่านคำตอบ, ตรวจแหล่งความรู้ที่รอ, ทำคลิปสาธิต", "ทั้งสองคน", "ตามแผน"],
         ["17 ต.ค. (แผน)", "ส่งงาน", "ทั้งสองคน", "รายงาน PDF ซอร์สโค้ด และคลิป"],
     ], [2.2, 6.2, 3.2, 4.8])
     p("รายการวันที่ 7 ต.ค. ช่วงหลัง และวันที่ 8–9 ต.ค. เป็นข้อเท็จจริงจาก repository ไม่ได้ระบุว่าใครทำแต่ละส่วน สมาชิกแต่ละคนต้องกรอกชื่อผู้ทำในช่องที่เขียนว่า \"รอสมาชิกยืนยัน\" และยืนยันงานของตนเองก่อนส่ง เพราะบันทึกนี้ใช้ประเมินรายบุคคล")
@@ -773,7 +856,9 @@ def content() -> list[tuple]:
         ["บริการเว็บบน Render", "ยังไม่ได้สร้าง", "สร้างตาม docs/deploy/render-web.md ตั้ง API_ORIGIN ที่เว็บ และเจ้าของตั้ง TRUSTED_ORIGINS ที่ API"],
         ["Rate limit ผ่านบริการเว็บ", "ผู้ใช้ทุกคนใช้ bucket เดียวกัน", "ออกแบบการเชื่อ X-Forwarded-For จากบริการเว็บและทบทวนความปลอดภัยก่อนใช้งานจริง"],
         ["Google sign-in ผ่านเว็บ", "ยังไม่ได้ทดสอบ", "ปิดไว้จนกว่าจะทดสอบ redirect URI ผ่าน proxy"],
-        ["ผู้ให้บริการ AI จริง OCR จริง และ PostgreSQL ของระบบจริง", "NOT_RUN", "เจ้าของอนุมัติงบประเมินจริง แล้วรัน scripts/course_eval.py และกรอกหัวข้อ 7.8"],
+        ["LIVE_FREE (Typhoon text/OCR และ iApp จริง)", "NOT_RUN preflight BLOCKED", "เจ้าของกรอกนโยบายที่ตรวจแล้ว ใส่ key ใน shell รัน preflight แล้ว smoke และชุดตามโจทย์ โปรไฟล์ A/B/C ตาม FREE_PROVIDER_PREFLIGHT.md แล้วกรอกหัวข้อ 7.10"],
+        ["การตรวจโดยคน", "PENDING_REVIEW ทุกกรณี", "ผู้มีคุณสมบัติทางคลินิกตรวจ claim กับหลักฐาน และผู้อ่านไทยที่ไม่ใช่บุคลากรแพทย์ตรวจความเข้าใจ"],
+        ["OCR จริง และ PostgreSQL ของระบบจริง", "NOT_RUN", "OCR วัดใน LIVE_FREE, PostgreSQL หลัง deploy"],
         ["Flag ใหม่ 6 ตัว", "ปิดอยู่", "เปิดตามขั้นตอนใน docs/ceo-upgrade/MORNING_HANDOFF.md ทีละส่วน"],
         [f"แหล่งความรู้ที่รอตรวจ {len(CANDIDATES) + len(CODEX_MED) + len(CODEX_HOSP)} รายการ", "NOT_APPROVED ไม่ถูกค้น", "ตรวจหน้าเว็บต้นทาง สิทธิ์ และความถูกต้องทางคลินิกก่อนย้ายเข้า catalog.json"],
         ["Embeddings, Clef และตัวจัดการ quota", "เลื่อนไว้ตาม Codex", "ทำเมื่อมีผลเปรียบเทียบที่แสดงประโยชน์"],
@@ -798,18 +883,19 @@ def content() -> list[tuple]:
         ["8 Web UAT", "cd web แล้ว node tests/uat.mjs และ (API เริ่มด้วย UAT_FLAGS=off) node tests/uat-flags-off.mjs", f"{UAT_N} และ {OFF_N} สถานการณ์"],
         ["9 แผนภาพ", "python3 scripts/build_diagrams_400.py", "PNG และ SVG ใน docs/assets/ จากต้นฉบับ HTML ใน docs/diagrams/"],
         ["10 รายงาน", "python3 scripts/build_report_th_400.py", "รายงาน Word และ PDF ใน docs/report/ (ต้องมี LibreOffice และฟอนต์ TH Sarabun New)"],
-        ["11 ชุดประเมินจริง", "python scripts/course_eval.py --base https://<โดเมน> --round 5", "course_eval_results.json (เรียกโมเดลจริง มีค่าใช้จ่าย ต้องได้รับอนุมัติ)"],
+        ["11 ชุดทดสอบตามโจทย์ (OFFLINE)", "python scripts/benchmark_labclear.py run --mode offline --suite coursework --profile C --free-only --record-replay", "eval_runs/<run-id>/ raw.jsonl, CSV และ report_th.md (ต้องมี Tesseract)"],
+        ["12 LIVE_FREE", "python scripts/benchmark_labclear.py preflight ... แล้ว run --mode live-free --policy <นโยบายที่ตรวจแล้ว>", "เรียก Typhoon และ iApp จริงเมื่อ preflight ผ่านเท่านั้น"],
     ], [3.4, 7.8, 5.2])
     h1("ภาคผนวก ข คู่มือ deploy ย่อ (Render)")
     p("ขั้นตอนย่อจาก docs/deploy/render.md และ docs/deploy/render-web.md ยังไม่ได้ทดลองบนบัญชีจริงของทีม การแก้ ENV ของระบบจริงเป็นงานของเจ้าของ")
     table("deploy", "ขั้นตอน deploy บน Render", ["ขั้น", "สิ่งที่ทำ", "คำสั่งหรือที่ตั้งค่า"], [
         ["1", "Merge รุ่นรวมเข้า main หลังตรวจรับ ให้ Render deploy บริการ API labclear ตาม render.yaml เดิม", "ไม่ต้องเพิ่มคีย์ใหม่ flag ใหม่ทั้ง 6 ตัวยังปิด"],
-        ["2", "ตรวจรุ่นและ commit ของ API", "https://<API>/health ต้องเป็น 4.0.0-rc1 และ commit ตรงกับ git"],
+        ["2", "ตรวจรุ่นและ commit ของ API", "https://<API>/health ต้องเป็น 4.0.0-rc2 และ commit ตรงกับ git"],
         ["3", "สร้างบริการเว็บ labclear-web (เลือกได้)", "New Web Service, Root Directory web, build npm ci && npm run build, start npm run start:render"],
         ["4", "ตั้ง ENV ของบริการเว็บ", "NODE_VERSION=22, API_ORIGIN=https://<API>, NEXT_TELEMETRY_DISABLED=1"],
         ["5", "ให้ API รับคำขอจากเว็บ", "TRUSTED_ORIGINS=https://<เว็บ> ที่บริการ API (origin ตรงตัว)"],
         ["6", "ตรวจรับ", "/health ของเว็บ แชตผู้เยี่ยมชมหายเมื่อ Refresh สมัครบัญชีได้ (ถ้าได้ 403 origin_rejected แปลว่า TRUSTED_ORIGINS ไม่ตรง)"],
-        ["7", "ตั้งผู้ให้บริการและงบ แล้วรันชุดประเมิน", "Staff > AI providers, PROVIDER_BUDGET_CYCLE_ID, CLOUD_CALL_LIMIT และ scripts/course_eval.py ตามหัวข้อ 7.8"],
+        ["7", "ตั้งผู้ให้บริการและงบ แล้วรันชุดประเมิน", "Staff > AI providers, PROVIDER_BUDGET_CYCLE_ID, CLOUD_CALL_LIMIT แล้วประเมินด้วย LIVE_FREE ตามหัวข้อ 7.10 (ไม่แก้ ENV ของระบบจริงเพื่อการทดสอบ)"],
         ["–", "Cloudflare Workers Paid (เลื่อนไว้)", "ดู deploy/cloudflare/README.md และ docs/deploy/cloudflare.md ไม่ใช่ขั้นตอนของรุ่นนี้"],
     ], [1.2, 7.4, 7.8])
     h1("ภาคผนวก ค ค่าใช้จ่ายโมเดล")
@@ -1111,7 +1197,7 @@ class Report:
             ("แนะนำแพ็กเกจและช่วยอ่านใบผลตรวจจากข้อมูลอ้างอิง", 18, False, 6),
             ("รายวิชา 06048308 Intelligent Chatbot Development", 16, False, 40),
             ("68076055 นายวัชรินทร์ บัวสอน", 16, False, 24), ("68076060 นายศิริพล ศรีเฮงไพบูลย์", 16, False, 4),
-            ("ตุลาคม 2569", 16, False, 40), ("ฉบับ 4.0.0-rc1 (รุ่นรวม)", 18, True, 8),
+            ("ตุลาคม 2569", 16, False, 40), ("ฉบับ 4.0.0-rc2 (รุ่นรวม)", 18, True, 8),
             ("ซอร์สโค้ด: https://github.com/siriponsri/LabClear", 16, False, 40),
             ("เว็บไซต์: Render (ยังไม่ได้ deploy รุ่นนี้)", 16, False, 4),
         ]

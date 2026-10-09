@@ -1,13 +1,13 @@
-# LabClear 4.0.0-rc1 (รุ่นรวม) รายงานทางเทคนิค
+# LabClear 4.0.0-rc2 (รุ่นรวม) รายงานทางเทคนิค
 
 **วิชา** 06048308 Intelligent Chatbot Development · Final Project
 
 **ผู้พัฒนา** นายวัชรินทร์ บัวสอน (68076055) · นายศิริพล ศรีเฮงไพบูลย์ (68076060)
 
-**รุ่น** 4.0.0-rc1 · ฐาน Codex `main` `c970410` · branch `integration/labclear-4.0-rc1` · commit ที่ทดสอบ `c8f3547` · **วันที่** 9 ตุลาคม 2569
+**รุ่น** 4.0.0-rc2 · ฐาน Codex `main` `c970410` · branch `integration/labclear-4.0-rc1` · commit ที่ทดสอบ `6f41a78` (ชุดเว็บรันซ้ำบน `a4aec07`) · **วันที่** 9 ตุลาคม 2569
 
-> รายงานนี้เดิมเขียนให้ Claude branch 4.0.0 (`release/4.0.0`, commit `95bf3d7`) ซึ่งเลือก Cloudflare Workers Paid และชุดโมเดล OpenRouter แบบเร็ว ฉบับนี้ปรับให้ตรงกับ **รุ่นรวม** ที่ใช้ backend ของ Codex กับหน้าเว็บของ Claude ข้อเท็จจริงทั้งหมดอ้างอิง [release-4.0.0.md](../release-4.0.0.md), [หลักฐานของรุ่นรวม](../evidence/integration-4.0-rc1/README.md) และโค้ดใน repository
-> รุ่นรวมเป็น candidate สำหรับตรวจรับ ยังไม่ได้ merge ยังไม่ได้ deploy ยังไม่ได้เรียกผู้ให้บริการ AI จริง และไม่ได้แก้ ENV ของระบบจริง ความสามารถใหม่ของ Codex ทั้ง 6 flag ปิดเป็นค่าเริ่มต้น
+> รายงานนี้เดิมเขียนให้ Claude branch 4.0.0 (`release/4.0.0`, commit `95bf3d7`) ซึ่งเลือก Cloudflare Workers Paid และชุดโมเดล OpenRouter แบบเร็ว ฉบับนี้ปรับให้ตรงกับ **รุ่นรวม** ที่ใช้ backend ของ Codex กับหน้าเว็บของ Claude ข้อเท็จจริงทั้งหมดอ้างอิง [release-4.0.0.md](../release-4.0.0.md), [หลักฐานของรุ่นรวม rc2](../evidence/integration-4.0-rc2/README.md), [ผลชุดทดสอบตามโจทย์](../evidence/free-first/README.md) และโค้ดใน repository rc2 เพิ่ม free-first harness (หัวข้อ 6) บน rc1 ผลของ rc1 (`c8f3547`) เป็นประวัติ ไม่ใช่ผลของรุ่นนี้
+> รุ่นรวมเป็น candidate สำหรับตรวจรับ ยังไม่ได้ merge ยังไม่ได้ deploy ยังไม่ได้เรียกผู้ให้บริการ AI จริง (LIVE_FREE ถูก preflight หยุดไว้ เพราะไม่มี key และยังไม่มีผู้ยืนยันว่าบัญชีใช้ฟรี) และไม่ได้แก้ ENV ของระบบจริง ความสามารถใหม่ของ Codex ทั้ง 6 flag และนโยบาย free-only ปิดเป็นค่าเริ่มต้น
 
 ## 1. สรุป
 
@@ -18,7 +18,8 @@ LabClear เป็นแชตบอตของคลินิกตรวจ�
 | ส่วน | มาจาก | ในรุ่นรวม |
 |---|---|---|
 | Backend FastAPI, ความปลอดภัย, การไม่เก็บแชตผู้เยี่ยมชม, model harness, เอกสารองค์กร, ลิงก์โรงพยาบาล, สัญญา API | Codex `main` | คงไว้ทั้งหมด |
-| ส่วนต่อขยาย backend | รุ่นรวม (ดัดแปลงจาก Claude) | `routers/public.py` แบบอ่านอย่างเดียว, `TRUSTED_ORIGINS` (ว่างเป็นค่าเริ่มต้น), `/site/membership`, `VERSION = 4.0.0-rc1` |
+| ส่วนต่อขยาย backend | รุ่นรวม (ดัดแปลงจาก Claude) | `routers/public.py` แบบอ่านอย่างเดียว, `TRUSTED_ORIGINS` (ว่างเป็นค่าเริ่มต้น), `/site/membership`, `VERSION = 4.0.0-rc2` |
+| Free-first harness (rc2) | รุ่นรวม | typed tools 8 ตัว, runtime skills เลือกตามงาน 0.3.0, ภาพสังเคราะห์ผ่านการอัปโหลดใน `APP_ENV=test`, นโยบาย free-only + โควตากลาง, ชุดทดสอบตามโจทย์ OFFLINE / REPLAY / LIVE_FREE |
 | หน้าเว็บ Next.js 16 + React 19 + React Three Fiber ภาษาไทยเป็นค่าเริ่มต้น | Claude 4.0.0 | นำมาใช้ ปรับเฉพาะจุดที่สัญญา API ต่างกัน |
 | Deploy | Codex (Render เดิม) | `render.yaml` ไม่เปลี่ยน เว็บเป็นบริการ Render ตัวที่สองแบบเลือกได้ |
 | Cloudflare Workers Paid + Containers | Claude 4.0.0 | เลื่อนไว้ เก็บไฟล์ครบ ไม่ใช้ |
@@ -29,10 +30,10 @@ LabClear เป็นแชตบอตของคลินิกตรวจ�
 | 1 | แหล่งอ้างอิงน้อยและเจาะจงบางโรงพยาบาล อยากให้ลูกค้าองค์กรอัปโหลดเอกสารของโรงพยาบาลเองได้ | ฐานที่ค้นคง 58 รายการ แหล่งใหม่เข้าคิวรอตรวจ เอกสารองค์กรใช้ระบบของ Codex (สมาชิก ร่าง อนุมัติ รุ่น ถอน) และเพิ่มหน้าลิงก์โรงพยาบาล |
 | 2 | ถ้าไม่ได้เข้าสู่ระบบ ประวัติแชตหายเมื่อรีเฟรช | คงการล้างเมื่อรีเฟรช และใช้กฎของ Codex ที่ลบแชตผู้เยี่ยมชมเมื่อเข้าสู่ระบบ พร้อมกันคำตอบเก่าแสดงทับบัญชีใหม่ |
 | 3 | ย้ายจาก Render ไป Cloudflare บนโดเมนที่ทีมซื้อไว้ | เจ้าของเปลี่ยนเป้าหมายกลับเป็น Render เดิม Cloudflare Workers Paid เลื่อนไว้ แผนฟรีใช้เป็น DNS/proxy ได้ภายหลัง |
-| 4 | ใช้ OpenRouter key ของทีม เลือกโมเดลถูก ดี เร็ว งบ USD 10 และพิจารณา embedding | model harness ของ Codex: เลือกผู้ให้บริการต่อ slot และ agent บทบาทใหม่ปิดเป็นค่าเริ่มต้น เพดาน 300 บาท embedding เลื่อนไว้ |
+| 4 | ใช้ OpenRouter key ของทีม เลือกโมเดลถูก ดี เร็ว งบ USD 10 และพิจารณา embedding | model harness ของ Codex: เลือกผู้ให้บริการต่อ slot และ agent บทบาทใหม่ปิดเป็นค่าเริ่มต้น เพดาน 300 บาท รอบ rc2 ใช้ Typhoon text/OCR + OpenThai-SystemOne เป็น baseline แบบ free-first ส่วน OpenRouter และ embedding พักไว้ (โค้ดยังอยู่) |
 | 5 | หน้าเว็บเน้นภาษาไทย ใช้ Next/React/Three ได้ ให้เด่นและเข้าใจง่าย | ใช้เว็บ Next.js ของ Claude ทั้งชุด ภาษาไทยเป็นค่าเริ่มต้น สลับ EN ได้ |
 
-หลักฐานของรุ่นรวม (commit `c8f3547`, ข้อมูลจำลองและตัวแทนโมเดล): pytest ผ่าน 277, browser เดิมของ Codex ผ่าน 36/36, ชุด upgrade ของ Codex ผ่าน 10/10, offline fixture 60/60, Render entrypoint smoke ผ่าน, web UAT ของ Next.js ผ่าน 53/53 และชุดที่ปิด flag ทั้งหมดผ่าน 5/5 คุณภาพคำตอบกับโมเดลจริงยังต้องวัดหลัง deploy
+หลักฐานของ rc2 (commit `6f41a78`, ข้อมูลจำลองและตัวแทนโมเดล): pytest ผ่าน 328, browser เดิมของ Codex ผ่าน 36/36, ชุด upgrade ของ Codex ผ่าน 10/10, offline fixture 60/60, Render entrypoint smoke ผ่าน, web UAT ของ Next.js ผ่าน 53/53 บน `a4aec07` (สองรอบก่อนหน้าบน `6f41a78` ได้ 52/53 ดูหัวข้อ 8) และชุดที่ปิด flag ทั้งหมดผ่าน 5/5 ชุดทดสอบตามโจทย์ 20 กรณีรันครบในโหมด OFFLINE ผ่านเกณฑ์อัตโนมัติระดับ pipeline 15/20 และ REPLAY ตรงกัน แต่เป็นผลของตัวแทนผู้ให้บริการ ไม่ใช่คำตอบของโมเดล คุณภาพคำตอบกับโมเดลจริง (LIVE_FREE) ยังไม่ได้วัด
 
 ## 2. ธุรกิจและขอบเขต
 
@@ -45,7 +46,7 @@ LabClear จำลองคลินิกตรวจสุขภาพขน�
 
 ## 3. การออกแบบระบบ
 
-![สถาปัตยกรรม LabClear 4.0.0-rc1](../assets/architecture-4.0.png)
+![สถาปัตยกรรม LabClear 4.0.0-rc2](../assets/architecture-4.0.png)
 
 ### 3.1 องค์ประกอบ
 
@@ -54,7 +55,8 @@ LabClear จำลองคลินิกตรวจสุขภาพขน�
 | Web (เลือกได้) | บริการ Render `labclear-web`: Node 22, Next.js 16 | หน้าสาธารณะเป็น server component ส่วน `/app` และ `/staff` เป็น client component; `next.config.ts` rewrite `/api/*` และ `/health` ไปที่ `API_ORIGIN` |
 | API | บริการ Render `labclear`: Python 3.12, FastAPI (Codex, `render.yaml` เดิม) | session, CSRF, origin, rate limit, ทุกการทำงานทางธุรกิจ และหน้า Jinja เดิม รัน 1 instance |
 | Core | `business_agent`, `conversation_guard`, `report_reader_v2`, `conversation_transport`, `cost_ledger` | pipeline ของแชต การตรวจความปลอดภัย การอ่านใบผล และด่านก่อนเรียกโมเดล |
-| Core (opt-in) | `model_harness`, `runtime_skills`, `organization_sources` | Medical analyzer และ Thai composer, คำสั่งภาษาไทยที่ตรวจ hash แล้ว, เอกสารองค์กร (ทำงานเมื่อเปิด flag) |
+| Core | `agent_tools` (rc2) | เครื่องมือข้อมูลแบบ typed 8 ตัวที่ pipeline ใช้ดึง catalog สาขา นโยบาย หลักฐาน แถวใบผลที่ยืนยัน และตัวอย่างใบเสนอราคา ตามสิทธิ์อ่านของบทบาท |
+| Core (opt-in) | `model_harness`, `runtime_skills`, `organization_sources`, `free_policy` (rc2) | Medical analyzer และ Thai composer, คำสั่งภาษาไทยที่ตรวจ hash แล้วและเลือกตามงาน, เอกสารองค์กร, นโยบาย free-only (ทำงานเมื่อเปิด flag หรือตั้งไฟล์นโยบาย) |
 | Data | `knowledge/evidence/catalog.json` | ฐานความรู้ 58 รายการ ค้นด้วย BM25 |
 | Data | `knowledge/acquisition/` | คิวแหล่งรอตรวจ (Codex 15 + 6, Claude 90) ไม่ถูกค้น |
 | Data | Render PostgreSQL (SQLite ในเครื่อง) | ตาราง `rs_entities` ทุกแถวเข้ารหัส Fernet ด้วย `BUSINESS_DATA_KEY` |
@@ -83,12 +85,12 @@ LabClear จำลองคลินิกตรวจสุขภาพขน�
 3. ถ้าเปิดเอกสารองค์กร ตรวจซ้ำว่าแหล่งส่วนตัวที่เคยใช้ในประวัติยังอนุมัติและเป็นขององค์กรเดิม ถ้าไม่ใช่ ข้อความนั้นถูกตัดออกจาก context
 4. ตรวจรูปแบบการโจมตีด้วย regex ภาษาไทยและอังกฤษ ถ้าพบจะหยุดโดยไม่เรียกโมเดล แล้วตรวจข้อความเข้าด้วย safety model
 5. Planner เลือก action บทบาท และคำค้น
-6. ค้น BM25 บนฐาน 58 รายการ และข้อความที่อนุมัติแล้วขององค์กรเฉพาะเมื่อเปิด `ORG_REFERENCE_INFERENCE_ENABLED` และผู้ให้บริการทุกตัวที่รับข้อมูลตั้งค่าแล้วและไม่ใช่โมเดล `:free`
-7. ผู้เขียนคำตอบตามบทบาทเขียน JSON พร้อมรหัสแหล่งอ้างอิง (เพิ่มคำสั่งจาก `runtime_skills` เมื่อเปิด `RUNTIME_SKILLS_ENABLED` และใช้ Medical analyzer + Thai composer กับใบผลจำลองในระบบเมื่อเปิด `MEDICAL_HARNESS_ENABLED`)
+6. ดึงข้อมูลผ่าน typed tools ตามสิทธิ์อ่านของบทบาท (catalog สาขา นโยบาย ค้น BM25 บนฐาน 58 รายการ แถวใบผลที่ลูกค้ายืนยันแล้ว) แต่ละเครื่องมือตรวจ input แบบ strict มีเวลาและขนาดผลจำกัด และบันทึก audit ที่ส่งกลับใน `checks.tools` ข้อความที่อนุมัติแล้วขององค์กรใช้เฉพาะเมื่อเปิด `ORG_REFERENCE_INFERENCE_ENABLED` และผู้ให้บริการทุกตัวที่รับข้อมูลตั้งค่าแล้วและไม่ใช่โมเดล `:free`
+7. ผู้เขียนคำตอบตามบทบาทเขียน JSON พร้อมรหัสแหล่งอ้างอิง (เมื่อเปิด `RUNTIME_SKILLS_ENABLED` ระบบเลือกโมดูลคำสั่งจาก `runtime_skills` ตามบทบาท action การมีใบผล ชนิดหลักฐาน และเครื่องมือที่ใช้จริง แล้วรายงานใน `checks.skills` และใช้ Medical analyzer + Thai composer กับใบผลจำลองในระบบเมื่อเปิด `MEDICAL_HARNESS_ENABLED`)
 8. Python ตรวจ citation ค่าผลตรวจ จำนวนเงินเทียบแค็ตตาล็อก และขอบเขตของบทบาท แก้ได้หนึ่งรอบ แล้ว reviewer ตรวจ และตรวจความปลอดภัยขาออก
 9. บันทึกคำตอบ แหล่งอ้างอิง (เอกสารองค์กรมีรุ่น ตำแหน่ง และ SHA-256) และขั้นตอน แล้วส่งผลลัพธ์เป็นบรรทัดสุดท้ายของ stream
 
-ไปป์ไลน์ของ Codex เรียกโมเดลทีละครั้งตามลำดับ ข้อความปกติใช้ 5 ครั้ง และไม่เกิน 8 ครั้งเมื่อมีการแก้ ทุกการเรียกต้องผ่าน `PROVIDER_NETWORK_ENABLED` เพดานจำนวนครั้ง (`CLOUD_CALL_LIMIT` ค่าเริ่มต้น 200 ต่อ `PROVIDER_BUDGET_CYCLE_ID`) และบัญชีค่าใช้จ่ายบาท (`PROJECT_BUDGET_THB` 300 บาท) ก่อนเสมอ ขั้นใดล้มเหลว ระบบหยุดและแสดงสาเหตุพร้อมปุ่มลองใหม่ (fail closed) ลูกค้าเห็นแต่ละขั้นแบบ stream และดูย้อนหลังได้ใต้คำตอบ
+ไปป์ไลน์ของ Codex เรียกโมเดลทีละครั้งตามลำดับ ข้อความปกติใช้ 5 ครั้ง และไม่เกิน 8 ครั้งเมื่อมีการแก้ ทุกการเรียกต้องผ่าน `PROVIDER_NETWORK_ENABLED` นโยบาย free-only เมื่อตั้งไว้ (host, path และโมเดลต้องตรงรายการที่ตรวจแล้ว และโควตาต่อนาที/ต่อ run ยังเหลือ) เพดานจำนวนครั้ง (`CLOUD_CALL_LIMIT` ค่าเริ่มต้น 200 ต่อ `PROVIDER_BUDGET_CYCLE_ID`) และบัญชีค่าใช้จ่ายบาท (`PROJECT_BUDGET_THB` 300 บาท) ก่อนเสมอ ขั้นใดล้มเหลว ระบบหยุดและแสดงสาเหตุพร้อมปุ่มลองใหม่ (fail closed) ลูกค้าเห็นแต่ละขั้นแบบ stream และดูย้อนหลังได้ใต้คำตอบ
 
 การอ่านใบผลในแชตใช้ Typhoon OCR หน้าละหนึ่งครั้ง (เมื่อเปิด `VISION_ENABLED`) safety check ตรวจข้อความที่อ่านได้ในฐานะเอกสาร โมเดลภาษาแปลงเป็นแถว แล้วตรวจแถวอีกครั้ง Python คำนวณว่าค่าอยู่ใน สูงกว่า หรือต่ำกว่าช่วงที่พิมพ์บนใบผล แล้วรอให้ลูกค้ายืนยันก่อนอธิบาย
 
@@ -156,6 +158,7 @@ LabClear จำลองคลินิกตรวจสุขภาพขน�
 | Registry | `runtime_skills/model_registry.json` เป็น metadata ของโมเดลที่พิจารณา ราคา `PRICE_UNVERIFIED` ไม่ใช่การเลือกหรือสิทธิ์เรียก |
 | งบ | เพดานโครงการ 300 บาท ต้องระบุค่าใช้จ่ายก่อนหน้า และเพดานจำนวนครั้งต่อรอบ Codex เสนอให้ประเมินจริงในวง USD 1 เมื่อเจ้าของอนุมัติ |
 | Embedding | เลื่อนไว้จนกว่าจะมีผลเปรียบเทียบการค้นคืน |
+| Baseline แบบ free-first (rc2) | `model_registry.json` ระบุ `typhoon-v2.5-30b-a3b-instruct`, `typhoon-ocr` และ `openthai-systemone` เป็น `BASELINE` ของชุดทดสอบนี้ โมเดลอื่นเป็น `DEFERRED_FOR_THIS_BENCHMARK` ไม่ได้ลบ integration ของ OpenRouter |
 
 หน้า AI providers ของเว็บ Next.js ถูกปรับตามสัญญานี้: แสดง 9 ขั้น (โมเดลภาษา 6 agent safety OCR) ช่องรหัส endpoint สำหรับบทบาทใหม่ ไม่เติมราคาเริ่มต้นให้บทบาทใหม่ และนำปุ่ม "ชุดโมเดลแบบเร็ว" กับแผงความพร้อมของ Claude ออก เพราะ endpoint เหล่านั้นไม่มีใน Codex
 
@@ -165,7 +168,7 @@ LabClear จำลองคลินิกตรวจสุขภาพขน�
 
 ### 5.5 หน้าเว็บภาษาไทยบน Next.js (ข้อ 5)
 
-รุ่นรวมใช้เว็บ Next.js 16 (App Router) + React 19 + React Three Fiber ของ Claude branch ภาษาไทยเป็นค่าเริ่มต้นและสลับ EN ได้ ทุกข้อความผ่าน `t("English source")` คำแปลไทย 2,260 รายการ (เพิ่ม 174 รายการสำหรับส่วนที่ปรับ) และ `npm run i18n:check` ผ่าน หน้าแรกมี DNA helix สามมิติ รายงานผลตัวอย่างที่กดดูคำอธิบายได้ และผู้ที่ตั้ง reduced motion เห็น helix แบบนิ่ง
+รุ่นรวมใช้เว็บ Next.js 16 (App Router) + React 19 + React Three Fiber ของ Claude branch ภาษาไทยเป็นค่าเริ่มต้นและสลับ EN ได้ ทุกข้อความผ่าน `t("English source")` คำแปลไทย 2,297 รายการ (rc1 เพิ่ม 174 รายการสำหรับส่วนที่ปรับ เป็น 2,260 และ rc2 เพิ่ม 37 รายการสำหรับ harness) และ `npm run i18n:check` ผ่าน หน้าแรกมี DNA helix สามมิติ รายงานผลตัวอย่างที่กดดูคำอธิบายได้ และผู้ที่ตั้ง reduced motion เห็น helix แบบนิ่ง
 
 | งานของ Claude | ในรุ่นรวม |
 |---|---|
@@ -173,18 +176,49 @@ LabClear จำลองคลินิกตรวจสุขภาพขน�
 | เข้าสู่ระบบพร้อม "เก็บแชตนี้" | ส่งเฉพาะ email และรหัสผ่าน ล้างหน้าจอทันที กันคำตอบเก่า |
 | My organization | เขียนใหม่ตามสัญญา Codex บนโครงหน้าเดิม |
 | Staff: Organizations, Reference document review | แทนด้วย Organization membership |
-| Staff: AI providers | ปรับเป็น 3 slot + 6 agent บทบาทใหม่ปิด สถานะการตั้งค่า registry |
+| Staff: AI providers | ปรับเป็น 3 slot + 6 agent บทบาทใหม่ปิด สถานะการตั้งค่า registry และ (rc2) แผงนโยบาย free-only กับแผง harness |
+| รายละเอียด "การตรวจสอบคำตอบนี้" ใต้คำตอบ | (rc2) แสดงข้อมูลที่เซิร์ฟเวอร์ดึงมาใช้ (typed tools) และโมดูลคำแนะนำที่ผ่านการตรวจ (runtime skills) เป็นชื่อเท่านั้น |
 | ป้ายองค์กรในแชต | แสดงสถานะ (ใช้กับผู้ช่วย หรือค้นหาอย่างเดียว) แทนการเลือกต่อแชต |
 | หน้าใหม่ | `/hospital-links` และสคริปต์ `start:render` |
 | Backend ของ Claude (`routers/org.py`, `org_knowledge`, keep-chat, fast profile, ตรวจขนาน, semantic search) | ไม่ได้นำมา ยังอยู่ใน `release/4.0.0` ใน bundle |
 
 **trade-off** ระบบมีสอง runtime (Node สำหรับหน้าเว็บ Python สำหรับ API) และหน้าเว็บสองชุด (Next.js และ Jinja เดิมของ Codex) ต้องระวังไม่แก้หน้าผิดชุด หน้า Jinja ยังจำเป็นเพราะชุดทดสอบของ Codex และ landing preview ใช้หน้าเหล่านั้น
 
-![หน้าแรกของรุ่นรวม (ตัวแทนโมเดล)](../evidence/integration-4.0-rc1/web-uat/home-1440.png)
+![หน้าแรกของรุ่นรวม (ตัวแทนโมเดล)](../evidence/integration-4.0-rc2/web-uat/home-1440.png)
 
-![เอกสารอ้างอิงขององค์กรของผู้แก้ไข (เอกสารจำลอง)](../evidence/integration-4.0-rc1/web-uat/orgs-1440.png)
+![เอกสารอ้างอิงขององค์กรของผู้แก้ไข (เอกสารจำลอง)](../evidence/integration-4.0-rc2/web-uat/orgs-1440.png)
 
-## 6. ความปลอดภัยและความเป็นส่วนตัว
+![รายละเอียดการตรวจใต้คำตอบ: เครื่องมือและโมดูลคำแนะนำที่ใช้ (คำตอบจากตัวแทนโมเดล)](../evidence/integration-4.0-rc2/web-uat/app-receipt-1440.png)
+
+## 6. Free-first harness และชุดทดสอบตามโจทย์ (rc2)
+
+rc2 ทำตามเอกสารเสริมของเจ้าของ (`LABCLEAR_FREE_FIRST_BENCHMARK_ADDENDUM_TH.md` และ `LABCLEAR_COURSEWORK_BENCHMARK_SPEC_TH.md`) โดยต่อยอด `scripts/course_eval.py` และ `scripts/offline_check.py` ส่วนที่เพิ่มอยู่ในแอปจริงที่ทำงานตอนรับข้อความ ไม่ใช่ skill ของเครื่องมือเขียนโค้ด
+
+| ส่วน | ไฟล์ | ทำอะไร | ค่าเริ่มต้น |
+|---|---|---|---|
+| Typed tools | `services/agent_tools.py` (`labclear-tools-1.0.0`) | 8 เครื่องมือ: `lookup_packages`, `compare_packages`, `lookup_branches`, `lookup_policies`, `retrieve_evidence`, `get_confirmed_report_rows`, `preview_booking`, `get_external_hospital_offer` input แบบ strict (ไม่รับฟิลด์เกิน) สิทธิ์จาก reads/actions ของบทบาท เวลาและขนาดผลจำกัด audit เก็บเฉพาะชื่อ ผล และ hash ของ argument | ใช้เสมอ (แทนการอ่านข้อมูลตรงใน pipeline) |
+| Runtime skills เลือกตามงาน | `services/runtime_skills.py`, `runtime_skills/thai_health/` 0.3.0-offline | เลือกโมดูลตามบทบาท action ใบผล ชนิดหลักฐาน และเครื่องมือที่ใช้จริง เพิ่มโมดูล `evidence-citation`, `package-compare`, `lay-explanation`, `scope-uncertainty` | ปิด (`RUNTIME_SKILLS_ENABLED`) |
+| ภาพสังเคราะห์ผ่านการอัปโหลด | `services/synthetic_fixtures.py` | รับภาพที่ bytes ตรง SHA-256 ของชุดสังเคราะห์ที่ตรวจแล้ว เฉพาะ `APP_ENV=test` เก็บแถวที่อ่านได้ก่อนยืนยัน (`raw_fields`) แยกจากค่าที่ยืนยัน และไม่ส่งให้โมเดล | ปิด (`SYNTHETIC_FIXTURE_MANIFEST` ว่าง) |
+| นโยบาย free-only | `services/free_policy.py`, `eval/policies/` | ทุกการเรียกต้องตรง host/path/โมเดลที่ระบุว่า `VERIFIED_FREE_FOR_THIS_ACCOUNT` พร้อมหลักฐานไม่เกิน 7 วัน และโควตากลางต่อ run (ต่อนาที ต่อชนิด decisions เวลา) ไม่ผ่าน = หยุดแบบ fail closed ledger และ call cap ยังทำงาน | ปิด (`FREE_ONLY_POLICY_PATH` ว่าง) |
+| ตัวรันชุดทดสอบ | `scripts/benchmark_labclear.py`, `eval/coursework/` | ชุดข้อมูล 1.0.0 (33 กรณี) แยกเฉลยไว้ใน `rubric.json` ที่ scorer อ่านเท่านั้น โหมด OFFLINE / REPLAY / LIVE_FREE แยกชัด ผลแยก execution, automated และ human verdict | — |
+| เซิร์ฟเวอร์ทดลอง LIVE_FREE | `scripts/live_free_server.py` | แอปแยกที่ใช้ DB ชั่วคราว ENV สะอาด และ preflight ต้องผ่านก่อน | ไม่ใช้กับระบบจริง |
+
+**ผลที่วัดได้ (OFFLINE, ตัวแทนผู้ให้บริการ)** รายละเอียดอยู่ใน [COURSEWORK_BENCHMARK_REPORT_TH.md](../ceo-upgrade/COURSEWORK_BENCHMARK_REPORT_TH.md)
+
+| เรื่อง | ผล | หลักฐาน |
+|---|---|---|
+| ชุดตามโจทย์ 10 คำถาม + 5 ภาพ + 5 safety (โปรไฟล์ C, บังคับ free-only แบบ offline) | รันครบ 20/20 ผ่านเกณฑ์ pipeline 15 ไม่ผ่าน 5 (ภาพทั้ง 5: Tesseract ที่เป็นตัวแทน OCR อ่านค่าผิดบางแถวและยืนยันตามที่อ่าน จึงไม่ผ่านตามกติกา) การตรวจโดยคน `PENDING_REVIEW` | run `G-C-free` |
+| REPLAY ของ run เดียวกัน | 20/20 ผลตรงกัน (ไม่ใช่ผล live) | run `G-C-replay` |
+| ปรับปรุง 1: runtime skills ตามงาน | เส้นทางที่ได้โมดูลผิดสิทธิ์หรือขาดโมดูล 5/8 → 0/8 คำสั่งยาวขึ้น (ไม่ใช่การลด token) | `R1-C` → `R2-C`, `skill-route-matrix.json` |
+| ปรับปรุง 2: ภาพสังเคราะห์ผ่านการอัปโหลด | ภาพที่ไปถึงคำอธิบาย 0/5 → 5/5 ค่าอ่านตรง 88/93 เท่าเดิม | `R2-C` → `R3-C` |
+| ปรับปรุง 3: free-only + โควตากลาง | การเรียกปลายทางเสียเงินจาก slot ค้าง 30 → 0 ค่าใช้จ่ายประมาณการ 8.8626 → 0 บาท | `R3-Ctrap` → `R4-Ctrap` |
+| LIVE_FREE (Typhoon text/OCR + iApp จริง) | **ไม่ได้รัน** preflight `BLOCKED`: ไม่มี key ในเครื่องที่รัน นโยบายยังไม่มีผู้ตรวจ endpoint ทั้ง 3 `FREE_STATUS_UNVERIFIED` | `live-free-preflight.json` |
+
+ผลใน OFFLINE วัดชั้นที่ไม่ใช้โมเดล (การดึงหลักฐาน validators guard ที่ไม่ใช้โมเดล side effect และบัญชีค่าใช้จ่าย) writer ตัวแทนคัดลอกจากหลักฐาน จึงไม่บอกคุณภาพภาษาไทย ความถูกต้องทางคลินิก หรือความแม่นของ Typhoon OCR ไม่มีผลใดในรายงานนี้ที่เป็นการผ่านทางคลินิก
+
+ข้อสังเกตจากการวัด: เมื่อ iApp จำกัด 20 ครั้ง/นาที guard เป็นคอขวดของเวลาตอบ และชุด regression 28 กรณีใช้ decisions แบบนับเผื่อ 330 ซึ่งเกินเพดาน 300 ต่อ run ที่เสนอ จึงต้องแบ่งรัน
+
+## 7. ความปลอดภัยและความเป็นส่วนตัว
 
 LabClear ใช้ guardrail สามแบบตามที่เรียน คือ กฎ โมเดลจัดประเภท และการตรวจในโค้ด ทุกชั้นล้มเหลวแบบปิด (fail closed)
 
@@ -201,56 +235,66 @@ LabClear ใช้ guardrail สามแบบตามที่เรียน
 | บทบาทใหม่บน OpenRouter: endpoint ที่ทบทวนแล้ว ไม่สลับผู้ให้บริการ `data_collection: deny`, `zdr` | ข้อมูลไปยังผู้ให้บริการที่ไม่ได้เลือก |
 | log ข้อผิดพลาดของผู้ให้บริการเก็บเฉพาะ slot และสถานะ HTTP | ข้อความหรือคีย์รั่วใน log |
 | `PROVIDER_NETWORK_ENABLED` เพดานจำนวนครั้ง และงบ 300 บาท | ค่าใช้จ่ายบานปลาย |
+| typed tools ตามสิทธิ์บทบาท และนโยบาย free-only (rc2) | บทบาทอ่านข้อมูลเกินหน้าที่ การเรียกปลายทางเสียเงินที่ไม่ได้ตั้งใจ |
 
 การจับคู่กับ OWASP Top 10 for LLM: LLM01 prompt injection (regex, safety model, การตรวจในโค้ด, reviewer, การอนุมัติเอกสารองค์กร), LLM02 การเปิดเผยข้อมูล (ข้อมูลแยกตามเจ้าของและองค์กร คีย์เข้ารหัสและไม่ส่งถึงเบราว์เซอร์ log แบบ metadata), LLM04 การวางยาข้อมูล (ฐานความรู้ตรวจ hash แหล่งใหม่รอตรวจ เอกสารองค์กรต้องอนุมัติ), LLM05 การจัดการผลลัพธ์ (ลบลิงก์และ HTML, DOMPurify, CSP), LLM06 การให้อำนาจเกิน (preview และการยืนยัน), LLM09 ข้อมูลผิด (citation ต้องมีจริงและรองรับคำตอบ), LLM10 การใช้ทรัพยากรไม่จำกัด (rate limit และงบ)
 
 ด้านความเป็นส่วนตัว: ข้อมูลบัญชีเข้ารหัสทุกแถว เจ้าหน้าที่เห็นว่าลูกค้าแชร์ใบผล แต่ไม่เห็นภาพหรือค่า ข้อมูลผู้เยี่ยมชมอยู่ใน RAM และถูกลบเมื่อรีเฟรชหรือเข้าสู่ระบบ เอกสารองค์กรไม่ถูกส่งไปยังผู้ให้บริการ AI จนกว่าจะเปิด `ORG_REFERENCE_INFERENCE_ENABLED` ระบบไม่สร้าง embedding รายละเอียดอยู่ใน [safety.md](../safety.md)
 
-## 7. หลักฐานการทดสอบ
+## 8. หลักฐานการทดสอบ
 
-ทุกการตรวจของรุ่นรวมรันบน commit `c8f3547` วันที่ 9 ต.ค. 2569 ใช้ข้อมูลจำลอง ฐานข้อมูลชั่วคราว ตัวแทนโมเดลและ OCR และไม่เรียกผู้ให้บริการจริง ไฟล์ผลอยู่ใน [docs/evidence/integration-4.0-rc1/](../evidence/integration-4.0-rc1/README.md)
+การตรวจของ rc2 รันบน commit `6f41a78` และชุดเว็บรันซ้ำบน `a4aec07` วันที่ 9 ต.ค. 2569 ใช้ข้อมูลจำลอง ฐานข้อมูลชั่วคราว ตัวแทนโมเดลและ OCR และไม่เรียกผู้ให้บริการจริง ไฟล์ผลอยู่ใน [docs/evidence/integration-4.0-rc2/](../evidence/integration-4.0-rc2/README.md) และผลชุดทดสอบตามโจทย์อยู่ใน [docs/evidence/free-first/](../evidence/free-first/README.md)
 
 | การตรวจ | ผล | ใช้โมเดลจริงหรือไม่ |
 |---|---|---|
-| `python scripts/offline_check.py pytest -q` | 277 ผ่าน (Codex 265 + รุ่นรวม 12) | ไม่ (ปิดการเชื่อมต่อออก) |
+| `python scripts/offline_check.py pytest -q` | 328 ผ่าน (Codex 265 + rc1 12 + rc2 51) | ไม่ (ปิดการเชื่อมต่อออก) |
 | `node tests/browser/uat.cjs` (หน้า Jinja ของ Codex) | 36/36 | ไม่ |
 | `node tests/browser/upgrade.cjs` (preview, ลิงก์โรงพยาบาล, เอกสารองค์กร) | 10/10 | ไม่ |
 | `python scripts/offline_check.py evaluation` | 60 fixture ผ่าน `LIVE_MODEL_EVALUATION=NOT_RUN` | ไม่ |
 | `python scripts/offline_check.py boot` (entrypoint ของ Render) | เริ่มและหยุดได้ ตรวจ 8 เส้นทาง | ไม่ |
-| `npx tsc --noEmit`, `npm run i18n:check`, `npm run build` | ผ่าน (16 routes) | — |
-| `node tests/uat.mjs` (เว็บ Next.js บน `next start` ต่อกับ API จริงผ่าน rewrite) | 53/53 ไม่มี browser error | ไม่ (`scripts/dev_mock_api.py`) |
+| `npx tsc --noEmit`, `npm run i18n:check`, `npm run build` | ผ่าน (ไทย 2,297 ข้อความ, 16 routes) | — |
+| `node tests/uat.mjs` (เว็บ Next.js บน `next start` ต่อกับ API จริงผ่าน rewrite) | 53/53 ไม่มี browser error บน `a4aec07` | ไม่ (`scripts/dev_mock_api.py`) |
 | `node tests/uat-flags-off.mjs` (flag ใหม่ปิดทั้งหมด) | 5/5 | ไม่ |
+| `python scripts/benchmark_labclear.py run --mode offline --suite coursework --profile C --free-only` | 20/20 รันครบ ผ่านเกณฑ์ pipeline 15 | ไม่ (ตัวแทนผู้ให้บริการ) |
+| `python scripts/benchmark_labclear.py preflight ... --policy eval/policies/free_only.example.json` | `BLOCKED` จึงไม่รัน LIVE_FREE | ไม่ (ไม่ได้ส่งคำขอใด ๆ) |
 
-12 ข้อใหม่ใน pytest ครอบคลุม `/site/*` ที่ไม่สร้าง session และไม่มีข้อมูลส่วนบุคคล การนับแหล่ง 58 รายการ flag ที่ปิดเป็นค่าเริ่มต้น ลิงก์โรงพยาบาลตาม flag การปฏิเสธ origin ที่ไม่ได้ระบุหรือใกล้เคียง (subdomain, http, port, wildcard) การยอมรับ origin ที่ระบุตรงตัวทั้งใน API ธุรกิจและการตรวจของ AI endpoint `/site/membership` ที่บอกเฉพาะบทบาทของผู้เรียกเอง และคิวแหล่งรอตรวจที่ไม่ถูกค้น
+51 ข้อใหม่ของ rc2 อยู่ใน `test_agent_tools.py` (15), `test_runtime_skills_select.py` (6), `test_synthetic_fixtures.py` (3), `test_free_first_harness.py` (16) และ `test_benchmark_harness.py` (11) ครอบคลุมสิทธิ์และ schema ของเครื่องมือ การเลือกโมดูล การรับภาพเฉพาะ hash ที่ตรวจแล้วใน test นโยบายและโควตา free-only การกันเฉลยไม่ให้ถึงแอป และการแยกโหมด ส่วน 12 ข้อของ rc1 ครอบคลุม `/site/*` ที่ไม่สร้าง session และไม่มีข้อมูลส่วนบุคคล การนับแหล่ง 58 รายการ flag ที่ปิดเป็นค่าเริ่มต้น ลิงก์โรงพยาบาลตาม flag การปฏิเสธ origin ที่ไม่ได้ระบุหรือใกล้เคียง (subdomain, http, port, wildcard) การยอมรับ origin ที่ระบุตรงตัวทั้งใน API ธุรกิจและการตรวจของ AI endpoint `/site/membership` ที่บอกเฉพาะบทบาทของผู้เรียกเอง และคิวแหล่งรอตรวจที่ไม่ถูกค้น
 
-Web UAT มาจาก 51 สถานการณ์ของ Claude branch สถานการณ์ที่ทดสอบสัญญาเฉพาะของ Claude ถูกเขียนใหม่ตาม Codex (R4-03, R4-04, R4-05, R4-06, R4-07) และเพิ่ม R4-15 กับ R4-13-hospital-links
+Web UAT มาจาก 51 สถานการณ์ของ Claude branch สถานการณ์ที่ทดสอบสัญญาเฉพาะของ Claude ถูกเขียนใหม่ตาม Codex (R4-03, R4-04, R4-05, R4-06, R4-07) และเพิ่ม R4-15 กับ R4-13-hospital-links rc2 เพิ่มการตรวจรายละเอียดเครื่องมือและโมดูลใต้คำตอบ และแผง free-only/harness ในหน้า AI providers
+
+**ข้อสังเกต rc2 (UI-22)** web UAT สองรอบบน `6f41a78` ได้ 52/53 เพราะหน้า `/staff` ของผู้ดูแลได้ 500 หนึ่งครั้ง log ของ Next.js แสดง `socket hang up (ECONNRESET)` ตอนส่งต่อ `/api/business/staff/notifications` เราตีความว่า proxy ของ Next.js ใช้การเชื่อมต่อ keep-alive ที่ว่างอยู่ (Node ตัดที่ 5 วินาที) พร้อมกับที่ uvicorn ปิดการเชื่อมต่อว่างที่ 5 วินาทีเช่นกัน ซึ่งเป็นข้อสันนิษฐานจาก log ไม่ใช่สาเหตุที่พิสูจน์แล้ว commit `a4aec07` ให้ API จำลองของ UAT เก็บการเชื่อมต่อว่างไว้ 65 วินาที แล้วผ่าน 53/53 ไม่ได้แก้โค้ดของระบบหรือ `scripts/run_business.py` ถ้าจะวางเว็บ Next.js หน้า API บน Render ต้องพิจารณาค่าเดียวกันกับ entrypoint จริง
 
 **ข้อสังเกต** การทดสอบ UI-33 ในชุดเดิมของ Codex ถอดรหัสภาพย่อก่อนที่ blob ของภาพจะโหลดเสร็จ บน Linux ชุด baseline ของ Codex (`c970410`) ที่ไม่ได้แก้ผ่าน 1 ใน 2 รอบ และรุ่นรวมไม่ผ่าน 2 ใน 2 รอบ การรันที่ใส่ log ยืนยันว่าภาพโหลดได้หลังจากนั้นเล็กน้อย จึงแก้เฉพาะการทดสอบให้รอ blob (commit `c8f3547`) ไม่ได้แก้โค้ดของระบบ
 
+**ผลของ rc1 (ไม่ใช่ผลของ rc2)** บน commit `c8f3547`: pytest 277, browser 36/36 และ 10/10, web UAT 53/53 และ 5/5 อยู่ใน [integration-4.0-rc1](../evidence/integration-4.0-rc1/README.md)
+
 **ผลของ Claude branch 4.0.0 (ไม่ใช่ผลของรุ่นรวม)** บน commit `95bf3d7`: pytest 261 ผ่าน (backend ของ Claude ที่ไม่ได้นำมา), UAT 51/51 บน OpenNext production build ผ่าน `wrangler dev`, `opennextjs-cloudflare build` และ `wrangler deploy --dry-run` ทั้งสอง worker ผล UAT 49/51 ที่เคยเขียนในรายงานฉบับก่อนเป็นของรอบก่อนแก้ UI-21 และ UI-22
 
-**สิ่งที่ยังไม่ได้ทดสอบ** ยังไม่ได้เรียกผู้ให้บริการ AI จริง จึงยังไม่รู้คุณภาพภาษาไทย ความถูกต้องของ JSON และ OCR ความเร็ว และราคาจริงของรุ่นนี้ ยังไม่ได้สร้างบริการเว็บบน Render ยังไม่ได้ต่อ PostgreSQL ของระบบจริง ยังไม่ได้ทดสอบบนมือถือจริงและ screen reader ชุดทดสอบของวิชา (คำถาม 10 ข้อ ภาพ 5 ภาพ ความปลอดภัย 5 กรณี) ต้องรันด้วย `scripts/course_eval.py` หลัง deploy และให้คนตรวจทุกกรณี
+**สิ่งที่ยังไม่ได้ทดสอบ** ยังไม่ได้เรียกผู้ให้บริการ AI จริง จึงยังไม่รู้คุณภาพภาษาไทย ความถูกต้องของ JSON และ OCR ความเร็ว และราคาจริงของรุ่นนี้ ยังไม่ได้สร้างบริการเว็บบน Render ยังไม่ได้ต่อ PostgreSQL ของระบบจริง ยังไม่ได้ทดสอบบนมือถือจริงและ screen reader ชุดทดสอบของวิชา (คำถาม 10 ข้อ ภาพ 5 ภาพ ความปลอดภัย 5 กรณี) แบบ live ต้องรันด้วย `scripts/benchmark_labclear.py --mode live-free` เมื่อ preflight ผ่าน ตาม [FREE_PROVIDER_PREFLIGHT.md](../ceo-upgrade/FREE_PROVIDER_PREFLIGHT.md) และให้คนตรวจทุกกรณี holdout 5 กรณียังไม่ได้รัน
 
 ผลรอบจริงครั้งแรกเมื่อ 7 ต.ค. บนรุ่น 3.0 (คำถามผ่าน 7/10 ภาพ 4/5 ความปลอดภัย 5/5) รอบ 2 และรอบ 3 (Typhoon บน Render) บันทึกไว้ใน [testing.md](../testing.md) เป็นหลักฐานของรุ่นก่อน รอบที่ 4 บนรุ่น 3.0.2 ถูกหยุดด้วยเพดานจำนวนครั้ง จึงไม่มีผลคุณภาพ
 
-## 8. การดำเนินงาน
+## 9. การดำเนินงาน
 
 | เรื่อง | วิธี |
 |---|---|
 | ตรวจรับ | นำเข้า bundle ตรวจ diff และผลทดสอบ แล้วเจ้าของ merge เข้า `main` เอง (ไม่มีการ push จากงานนี้) |
 | Deploy API | Render deploy บริการ `labclear` ตาม `render.yaml` เดิม ไม่ต้องเพิ่มคีย์ใหม่ flag ใหม่ยังปิด |
 | Deploy เว็บ (เลือกได้) | ตาม [deploy/render-web.md](../deploy/render-web.md) แล้วเจ้าของตั้ง `TRUSTED_ORIGINS` ที่ API |
-| ตรวจสถานะ | `/health` แสดง `version` 4.0.0-rc1 และ `commit` ของทั้งสองบริการ |
+| ตรวจสถานะ | `/health` แสดง `version` 4.0.0-rc2 และ `commit` ของทั้งสองบริการ |
+| ประเมินแบบ free-first | ตาม [FREE_PROVIDER_PREFLIGHT.md](../ceo-upgrade/FREE_PROVIDER_PREFLIGHT.md): กรอกนโยบายที่ตรวจแล้ว ใส่ key ใน shell ของเครื่องที่รันเท่านั้น รัน preflight แล้ว smoke และชุดตามโจทย์บน `scripts/live_free_server.py` ไม่ใช้บริการจริงและไม่แก้ ENV ของ Render |
 | คุมงบ | `PROVIDER_NETWORK_ENABLED`, `CLOUD_CALL_LIMIT` ต่อ `PROVIDER_BUDGET_CYCLE_ID`, `PROJECT_BUDGET_THB=300`, `PROJECT_BUDGET_PRIOR_SPEND_THB` ยอดดูได้ที่ `/staff` → Channels and budget |
 | เปิดความสามารถใหม่ | ทีละ flag ตาม [MORNING_HANDOFF](../ceo-upgrade/MORNING_HANDOFF.md) และ [ENV_HANDOVER](../ceo-upgrade/ENV_HANDOVER.md) |
 | ย้อนรุ่น | ปิด flag ก่อน ถ้าต้องย้อนโค้ด ให้เลือก deploy ก่อนหน้าบน Render หรือ revert commit ห้าม force-push ห้ามรีเซ็ตฐานข้อมูล คีย์ หรือยอดใช้จ่าย |
 | ปัญหาที่คาดไว้ | 403 `origin_rejected` ผ่านเว็บ = `TRUSTED_ORIGINS` ไม่ตรง origin ของเว็บ; หน้าเว็บแสดงข้อมูล seed = API ยังหลับ; AI ไม่ตอบ = `PROVIDER_NETWORK_ENABLED` หรือรอบงบยังไม่ตั้ง |
 
-## 9. ข้อจำกัดและงานต่อไป
+## 10. ข้อจำกัดและงานต่อไป
 
 **ข้อจำกัด**
 
-- คุณภาพ ความเร็ว และราคาของโมเดลยังไม่ได้วัดกับรุ่นนี้
+- คุณภาพ ความเร็ว และราคาของโมเดลยังไม่ได้วัดกับรุ่นนี้ (LIVE_FREE ยังไม่ได้รัน ผล OFFLINE เป็นของตัวแทนผู้ให้บริการ)
+- เพดาน 300 decisions ต่อ run ไม่พอชุด regression 28 กรณี (ต้องการ 330) และโควตา iApp 20 ครั้ง/นาทีทำให้ guard เป็นคอขวด
+- ตัวแทน OCR ใน OFFLINE คือ Tesseract คะแนนอ่านภาพจึงไม่ใช่ของ Typhoon OCR
 - rate limit ของ API นับตาม IP ที่ต่อเข้ามา ผู้ใช้ผ่านบริการเว็บจึงใช้ bucket เดียวกัน (120 ครั้ง/นาที)
 - Google sign-in ผ่านบริการเว็บยังไม่ได้ทดสอบ
 - API มี instance เดียว แชตผู้เยี่ยมชมหายเมื่อ restart และแผนฟรีของ Render หลับเมื่อไม่มีการใช้งาน
@@ -263,7 +307,7 @@ Web UAT มาจาก 51 สถานการณ์ของ Claude branch �
 1. เจ้าของตรวจรับ bundle merge แล้ว deploy บน Render ตรวจ `/health`
 2. สร้างบริการเว็บและตั้ง `TRUSTED_ORIGINS` แล้วตรวจรับตามคู่มือ
 3. ออกแบบการนับ rate limit ผ่านบริการเว็บ และทดสอบ Google sign-in
-4. อนุมัติงบประเมินจริงภายในเพดาน รันชุดทดสอบของวิชา เก็บผลดิบ และให้คนตรวจทุกกรณี
+4. ยืนยันสิทธิ์ฟรีของบัญชีและ endpoint แล้วรัน LIVE_FREE ตาม runbook เก็บผลดิบ ให้คนตรวจทุกกรณี และรัน holdout ครั้งแรกหลังปรับเสร็จ
 5. ตรวจแหล่งความรู้ที่รอ แล้วย้ายเฉพาะที่ผ่านเข้า `catalog.json`
 6. เปิด flag ใหม่ทีละตัวตามประตูของเจ้าของ
 7. ทดสอบบนมือถือจริงและ screen reader
@@ -297,5 +341,8 @@ Web UAT มาจาก 51 สถานการณ์ของ Claude branch �
 | `PROJECT_BUDGET_THB`, `PROJECT_BUDGET_PRIOR_SPEND_THB` | `300`, ว่าง | งบรวมของโครงการและยอดที่ใช้ก่อนหน้า (ว่าง = ไม่ให้เรียกแบบมีค่าใช้จ่าย) |
 | `DATABASE_URL`, `BUSINESS_DATA_KEY` | — | ต้องมีบนระบบที่ host ห้ามหมุนคีย์โดยไม่ย้ายข้อมูล |
 | `API_ORIGIN` (บริการเว็บ) | `http://127.0.0.1:8000` | URL ของบริการ API ที่เว็บส่งต่อ `/api` |
+| `FREE_ONLY_POLICY_PATH`, `FREE_ONLY_RUN_ID` | ว่าง | นโยบาย free-only และรหัส run ของโควตา (rc2 ใช้กับเซิร์ฟเวอร์ทดลอง) |
+| `FREE_ONLY_ALLOW_OFFLINE_DOUBLES` | `false` | ยอมรับรายการ `OFFLINE_DOUBLE` ในนโยบาย เฉพาะ OFFLINE |
+| `SYNTHETIC_FIXTURE_MANIFEST` | ว่าง | รายการ hash ของภาพสังเคราะห์ที่รับผ่านการอัปโหลด ใช้ได้เฉพาะ `APP_ENV=test` |
 
 ค่าทั้งหมดอยู่ใน `config.py` และ [ENV_HANDOVER](../ceo-upgrade/ENV_HANDOVER.md) ค่าที่ผู้จัดการบันทึกในหน้า AI providers มีลำดับเหนือ environment ยกเว้นบทบาทใหม่ที่ไม่มีค่าสำรองจาก environment
