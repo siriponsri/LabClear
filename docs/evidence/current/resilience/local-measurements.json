@@ -1,7 +1,7 @@
 {
   "what": "Local measurements of LabClear's own overhead with offline provider doubles (model and OCR latency excluded). Not Render; not the deterministic score.",
-  "commit": "ebdaa6fb1cba8a753e820a14e947ce9284875b81",
-  "measured_at": "2026-10-10T01:09:02+0700",
+  "commit": "3191f93cd4283b269dbf12a53996a944465d2520",
+  "measured_at": "2026-10-10T01:13:44+0700",
   "environment": {
     "platform": "Linux-6.18.44-fc-v80-x86_64-with-glibc2.39",
     "python": "3.12.3",
@@ -9,8 +9,8 @@
     "server": "scripts/run_business.py DrainingServer (one Uvicorn process) on 127.0.0.1, SQLite, offline doubles"
   },
   "process_start": {
-    "to_health_ms": 655,
-    "to_ready_ms": 657,
+    "to_health_ms": 670,
+    "to_ready_ms": 673,
     "note": "Python process start, imports and storage setup on this machine; Render's free-plan wake-up is separate."
   },
   "chat_sequential": {
@@ -18,11 +18,11 @@
     "succeeded": 20,
     "time_to_first_event_ms": {
       "p50": 2.6,
-      "p95": 5.4
+      "p95": 5.2
     },
     "completion_ms": {
-      "p50": 80.9,
-      "p95": 91.7
+      "p50": 73.1,
+      "p95": 90.7
     },
     "failures": []
   },
@@ -30,12 +30,12 @@
     "samples": 20,
     "succeeded": 20,
     "time_to_first_event_ms": {
-      "p50": 5.1,
-      "p95": 8.5
+      "p50": 4.9,
+      "p95": 11.6
     },
     "completion_ms": {
-      "p50": 171.1,
-      "p95": 224.5
+      "p50": 172.6,
+      "p95": 200.1
     },
     "failures": []
   },
@@ -43,22 +43,22 @@
     "samples": 5,
     "succeeded": 5,
     "time_to_first_event_ms": {
-      "p50": 3.9,
-      "p95": 5.8
+      "p50": 5.3,
+      "p95": 6.3
     },
     "completion_ms": {
-      "p50": 245.2,
-      "p95": 262.8
+      "p50": 238.6,
+      "p95": 243.7
     },
     "failures": []
   },
   "memory_kib": {
-    "web_process_at_ready": 68268,
-    "web_process_peak": 82656,
-    "document_worker_peak": 82360
+    "web_process_at_ready": 68392,
+    "web_process_peak": 82860,
+    "document_worker_peak": 82752
   },
   "shutdown": {
-    "exit_after_sigterm_ms": 315,
+    "exit_after_sigterm_ms": 366,
     "exit_status": 0,
     "workers_running_at_exit": 0
   }

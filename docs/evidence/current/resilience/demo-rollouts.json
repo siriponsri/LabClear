@@ -3,7 +3,7 @@
   "rollouts": [
     {
       "name": "success",
-      "request_id": "req_99fd64dd45e08bda",
+      "request_id": "req_8b07a64fc60eea02",
       "faults": {},
       "provider_calls": {
         "guard": 2,
@@ -16,12 +16,12 @@
         {
           "t": 0.001,
           "type": "accepted",
-          "request_id": "req_99fd64dd45e08bda",
+          "request_id": "req_8b07a64fc60eea02",
           "deadline_ms": 220000,
           "heartbeat_ms": 10000
         },
         {
-          "t": 0.003,
+          "t": 0.002,
           "type": "step",
           "id": "harness",
           "state": "done",
@@ -30,7 +30,7 @@
           "duration_ms": 0.0
         },
         {
-          "t": 0.003,
+          "t": 0.002,
           "type": "step",
           "id": "safety_in",
           "state": "running",
@@ -44,7 +44,7 @@
           "state": "done",
           "label": "Your message passed the safety check",
           "detail": "iApp OpenThai-SystemOne",
-          "duration_ms": 11.0
+          "duration_ms": 11.5
         },
         {
           "t": 0.014,
@@ -55,16 +55,16 @@
           "detail": "Typhoon (SCB 10X) · typhoon-v2.5-30b-a3b-instruct"
         },
         {
-          "t": 0.137,
+          "t": 0.114,
           "type": "step",
           "id": "plan",
           "state": "done",
           "label": "Plan: answer the question, as the Health-check Advisor",
           "detail": "OFFLINE planner stand-in (not a language model) ",
-          "duration_ms": 130.0
+          "duration_ms": 103.3
         },
         {
-          "t": 0.137,
+          "t": 0.114,
           "type": "step",
           "id": "tool_lookup_packages",
           "state": "running",
@@ -72,16 +72,16 @@
           "detail": "Active catalog packages, optionally filtered by IDs, segment or maximum price."
         },
         {
-          "t": 0.137,
+          "t": 0.114,
           "type": "step",
           "id": "tool_lookup_packages",
           "state": "done",
           "label": "Tool: lookup_packages",
-          "detail": "18 items · 0.5 ms",
+          "detail": "18 items · 0.4 ms",
           "duration_ms": 0.4
         },
         {
-          "t": 0.137,
+          "t": 0.114,
           "type": "step",
           "id": "tool_lookup_branches",
           "state": "running",
@@ -89,7 +89,7 @@
           "detail": "Demo centers and opening hours."
         },
         {
-          "t": 0.137,
+          "t": 0.114,
           "type": "step",
           "id": "tool_lookup_branches",
           "state": "done",
@@ -98,7 +98,7 @@
           "duration_ms": 0.1
         },
         {
-          "t": 0.137,
+          "t": 0.114,
           "type": "step",
           "id": "tool_lookup_policies",
           "state": "running",
@@ -106,7 +106,7 @@
           "detail": "Service, payment, cancellation and privacy policy."
         },
         {
-          "t": 0.137,
+          "t": 0.114,
           "type": "step",
           "id": "tool_lookup_policies",
           "state": "done",
@@ -115,7 +115,7 @@
           "duration_ms": 0.1
         },
         {
-          "t": 0.137,
+          "t": 0.114,
           "type": "step",
           "id": "data",
           "state": "done",
@@ -124,7 +124,7 @@
           "duration_ms": 0.0
         },
         {
-          "t": 0.137,
+          "t": 0.114,
           "type": "step",
           "id": "search",
           "state": "running",
@@ -132,7 +132,7 @@
           "detail": "HbA1c"
         },
         {
-          "t": 0.137,
+          "t": 0.114,
           "type": "step",
           "id": "tool_retrieve_evidence",
           "state": "running",
@@ -140,25 +140,25 @@
           "detail": "BM25 search over the verified medical knowledge catalog (no embedding API)."
         },
         {
-          "t": 0.156,
+          "t": 0.129,
           "type": "step",
           "id": "tool_retrieve_evidence",
           "state": "done",
           "label": "Tool: retrieve_evidence",
-          "detail": "6 items · 19.6 ms",
-          "duration_ms": 19.6
+          "detail": "6 items · 15.6 ms",
+          "duration_ms": 15.6
         },
         {
-          "t": 0.156,
+          "t": 0.129,
           "type": "step",
           "id": "search",
           "state": "done",
           "label": "Found 6 medical sources for \"HbA1c\"",
           "detail": "Hemoglobin A1c test; ข้อจำกัดของการตรวจน้ำตาลสะสม (HbA1c) ในผู้ที่มีภาวะซีดหรือฮีโมโกลบินผิดปกติ; ค่าน้ำตาลในเลือด (FBS) กับน้ำตาลสะสม (HbA1c) ต่างกันอย่างไร; Screening for prediabetes and type 2 diabetes (2021)",
-          "duration_ms": 19.6
+          "duration_ms": 15.7
         },
         {
-          "t": 0.156,
+          "t": 0.129,
           "type": "step",
           "id": "skills",
           "state": "running",
@@ -166,16 +166,16 @@
           "detail": "Role, task, report and evidence determine which instructions are loaded."
         },
         {
-          "t": 0.156,
+          "t": 0.129,
           "type": "step",
           "id": "skills",
           "state": "done",
           "label": "Runtime skills loaded",
           "detail": "core, thai-style, evidence-citation, scope-uncertainty, lay-explanation, package-advice · 387765e3ca1a6272",
-          "duration_ms": 0.7
+          "duration_ms": 0.6
         },
         {
-          "t": 0.156,
+          "t": 0.129,
           "type": "step",
           "id": "draft",
           "state": "running",
@@ -183,16 +183,16 @@
           "detail": "Typhoon (SCB 10X) · typhoon-v2.5-30b-a3b-instruct"
         },
         {
-          "t": 0.171,
+          "t": 0.14,
           "type": "step",
           "id": "draft",
           "state": "done",
           "label": "Draft written and checked",
           "detail": "23 cited sources; 0 report values matched exactly",
-          "duration_ms": 20.4
+          "duration_ms": 15.7
         },
         {
-          "t": 0.171,
+          "t": 0.14,
           "type": "step",
           "id": "review",
           "state": "running",
@@ -200,16 +200,16 @@
           "detail": "Typhoon (SCB 10X) · typhoon-v2.5-30b-a3b-instruct"
         },
         {
-          "t": 0.181,
+          "t": 0.148,
           "type": "step",
           "id": "review",
           "state": "done",
           "label": "Second review passed",
           "detail": "supported by the sources, values unchanged, within scope",
-          "duration_ms": 12.3
+          "duration_ms": 10.9
         },
         {
-          "t": 0.181,
+          "t": 0.148,
           "type": "step",
           "id": "safety_out",
           "state": "running",
@@ -217,18 +217,18 @@
           "detail": "iApp OpenThai-SystemOne"
         },
         {
-          "t": 0.19,
+          "t": 0.154,
           "type": "step",
           "id": "safety_out",
           "state": "done",
           "label": "The answer passed the safety check",
           "detail": "iApp OpenThai-SystemOne",
-          "duration_ms": 10.8
+          "duration_ms": 7.5
         },
         {
-          "t": 0.194,
+          "t": 0.157,
           "type": "done",
-          "request_id": "req_99fd64dd45e08bda",
+          "request_id": "req_8b07a64fc60eea02",
           "reply_excerpt": "คำตอบทดสอบแบบคัดลอกจากหลักฐาน (OFFLINE test double ไม่ใช่โมเดลภาษา):\n- Hemoglobin A1c test: HbA1c measures the proportion of hemoglobin with glucose attached and reflects blood glucose exposure over roughly the preceding three months. [nlm-",
           "sources": [
             "rs-p01",
@@ -259,8 +259,9 @@
       ],
       "workflow_log": {
         "event": "workflow",
-        "at": 1791569356.395,
-        "request_id": "req_99fd64dd45e08bda",
+        "at": 1791569632.606,
+        "request_id": "req_8b07a64fc60eea02",
+        "turn_id": "0260897f2cb7db3e9e5a61a5f94d9cee",
         "route": "/chat",
         "kind": "ai",
         "stream": true,
@@ -269,14 +270,14 @@
         "code": null,
         "origin": null,
         "step": "safety_out",
-        "duration_ms": 193,
+        "duration_ms": 156,
         "attempts": 5,
         "dropped_events": 0
       }
     },
     {
       "name": "provider_timeout",
-      "request_id": "req_ae6f5d212989dd82",
+      "request_id": "req_f87651fd4cd95009",
       "faults": {
         "planner": "hang"
       },
@@ -291,12 +292,12 @@
         {
           "t": 0.001,
           "type": "accepted",
-          "request_id": "req_ae6f5d212989dd82",
+          "request_id": "req_f87651fd4cd95009",
           "deadline_ms": 220000,
           "heartbeat_ms": 10000
         },
         {
-          "t": 0.003,
+          "t": 0.002,
           "type": "step",
           "id": "harness",
           "state": "done",
@@ -305,7 +306,7 @@
           "duration_ms": 0.0
         },
         {
-          "t": 0.003,
+          "t": 0.002,
           "type": "step",
           "id": "safety_in",
           "state": "running",
@@ -313,16 +314,16 @@
           "detail": "iApp OpenThai-SystemOne"
         },
         {
-          "t": 0.01,
+          "t": 0.008,
           "type": "step",
           "id": "safety_in",
           "state": "done",
           "label": "Your message passed the safety check",
           "detail": "iApp OpenThai-SystemOne",
-          "duration_ms": 8.8
+          "duration_ms": 7.2
         },
         {
-          "t": 0.012,
+          "t": 0.011,
           "type": "step",
           "id": "plan",
           "state": "running",
@@ -330,53 +331,54 @@
           "detail": "Typhoon (SCB 10X) · typhoon-v2.5-30b-a3b-instruct"
         },
         {
-          "t": 10.012,
+          "t": 10.011,
           "type": "heartbeat"
         },
         {
-          "t": 20.012,
+          "t": 20.011,
           "type": "heartbeat"
         },
         {
-          "t": 30.012,
+          "t": 30.011,
           "type": "heartbeat"
         },
         {
-          "t": 40.012,
+          "t": 40.011,
           "type": "heartbeat"
         },
         {
-          "t": 50.012,
+          "t": 50.011,
           "type": "heartbeat"
         },
         {
-          "t": 60.012,
+          "t": 60.011,
           "type": "heartbeat"
         },
         {
-          "t": 60.023,
+          "t": 60.02,
           "type": "step",
           "id": "plan",
           "state": "timeout",
           "label": "Understanding your request",
           "detail": "upstream_timeout",
-          "duration_ms": 60011.0
+          "duration_ms": 60008.8
         },
         {
-          "t": 60.023,
+          "t": 60.02,
           "type": "error",
           "code": "upstream_timeout",
           "message": "The Planner model did not answer in time. Please try again.",
           "status": 504,
           "origin": "upstream",
-          "request_id": "req_ae6f5d212989dd82",
+          "request_id": "req_f87651fd4cd95009",
           "step": "plan"
         }
       ],
       "workflow_log": {
         "event": "workflow",
-        "at": 1791569356.429,
-        "request_id": "req_ae6f5d212989dd82",
+        "at": 1791569632.635,
+        "request_id": "req_f87651fd4cd95009",
+        "turn_id": "78a22c56081d29121407751c73fc8ede",
         "route": "/chat",
         "kind": "ai",
         "stream": true,
@@ -385,14 +387,14 @@
         "code": "upstream_timeout",
         "origin": "upstream",
         "step": "plan",
-        "duration_ms": 60022,
+        "duration_ms": 60019,
         "attempts": 2,
         "dropped_events": 0
       }
     },
     {
       "name": "user_cancellation",
-      "request_id": "req_3723a8286a384629",
+      "request_id": "req_bddd8b4f1158b5b5",
       "faults": {
         "writer": "hang"
       },
@@ -408,12 +410,12 @@
         {
           "t": 0.001,
           "type": "accepted",
-          "request_id": "req_3723a8286a384629",
+          "request_id": "req_bddd8b4f1158b5b5",
           "deadline_ms": 220000,
           "heartbeat_ms": 10000
         },
         {
-          "t": 0.003,
+          "t": 0.002,
           "type": "step",
           "id": "harness",
           "state": "done",
@@ -422,7 +424,7 @@
           "duration_ms": 0.0
         },
         {
-          "t": 0.003,
+          "t": 0.002,
           "type": "step",
           "id": "safety_in",
           "state": "running",
@@ -430,16 +432,16 @@
           "detail": "iApp OpenThai-SystemOne"
         },
         {
-          "t": 0.012,
+          "t": 0.01,
           "type": "step",
           "id": "safety_in",
           "state": "done",
           "label": "Your message passed the safety check",
           "detail": "iApp OpenThai-SystemOne",
-          "duration_ms": 11.1
+          "duration_ms": 8.4
         },
         {
-          "t": 0.015,
+          "t": 0.019,
           "type": "step",
           "id": "plan",
           "state": "running",
@@ -447,16 +449,16 @@
           "detail": "Typhoon (SCB 10X) · typhoon-v2.5-30b-a3b-instruct"
         },
         {
-          "t": 0.024,
+          "t": 0.027,
           "type": "step",
           "id": "plan",
           "state": "done",
           "label": "Plan: answer the question, as the Health-check Advisor",
           "detail": "OFFLINE planner stand-in (not a language model) ",
-          "duration_ms": 11.2
+          "duration_ms": 10.1
         },
         {
-          "t": 0.024,
+          "t": 0.027,
           "type": "step",
           "id": "tool_lookup_packages",
           "state": "running",
@@ -464,7 +466,7 @@
           "detail": "Active catalog packages, optionally filtered by IDs, segment or maximum price."
         },
         {
-          "t": 0.024,
+          "t": 0.027,
           "type": "step",
           "id": "tool_lookup_packages",
           "state": "done",
@@ -473,7 +475,7 @@
           "duration_ms": 0.3
         },
         {
-          "t": 0.024,
+          "t": 0.027,
           "type": "step",
           "id": "tool_lookup_branches",
           "state": "running",
@@ -481,7 +483,7 @@
           "detail": "Demo centers and opening hours."
         },
         {
-          "t": 0.024,
+          "t": 0.027,
           "type": "step",
           "id": "tool_lookup_branches",
           "state": "done",
@@ -490,7 +492,7 @@
           "duration_ms": 0.1
         },
         {
-          "t": 0.024,
+          "t": 0.027,
           "type": "step",
           "id": "tool_lookup_policies",
           "state": "running",
@@ -498,7 +500,7 @@
           "detail": "Service, payment, cancellation and privacy policy."
         },
         {
-          "t": 0.024,
+          "t": 0.027,
           "type": "step",
           "id": "tool_lookup_policies",
           "state": "done",
@@ -507,7 +509,7 @@
           "duration_ms": 0.1
         },
         {
-          "t": 0.024,
+          "t": 0.027,
           "type": "step",
           "id": "data",
           "state": "done",
@@ -516,7 +518,7 @@
           "duration_ms": 0.0
         },
         {
-          "t": 0.024,
+          "t": 0.027,
           "type": "step",
           "id": "search",
           "state": "running",
@@ -524,7 +526,7 @@
           "detail": "HbA1c"
         },
         {
-          "t": 0.024,
+          "t": 0.027,
           "type": "step",
           "id": "tool_retrieve_evidence",
           "state": "running",
@@ -532,25 +534,25 @@
           "detail": "BM25 search over the verified medical knowledge catalog (no embedding API)."
         },
         {
-          "t": 0.027,
+          "t": 0.03,
           "type": "step",
           "id": "tool_retrieve_evidence",
           "state": "done",
           "label": "Tool: retrieve_evidence",
-          "detail": "6 items · 3.4 ms",
-          "duration_ms": 3.4
+          "detail": "6 items · 3.5 ms",
+          "duration_ms": 3.5
         },
         {
-          "t": 0.027,
+          "t": 0.03,
           "type": "step",
           "id": "search",
           "state": "done",
           "label": "Found 6 medical sources for \"HbA1c\"",
           "detail": "Hemoglobin A1c test; ข้อจำกัดของการตรวจน้ำตาลสะสม (HbA1c) ในผู้ที่มีภาวะซีดหรือฮีโมโกลบินผิดปกติ; ค่าน้ำตาลในเลือด (FBS) กับน้ำตาลสะสม (HbA1c) ต่างกันอย่างไร; Screening for prediabetes and type 2 diabetes (2021)",
-          "duration_ms": 3.4
+          "duration_ms": 3.5
         },
         {
-          "t": 0.027,
+          "t": 0.03,
           "type": "step",
           "id": "skills",
           "state": "running",
@@ -558,16 +560,16 @@
           "detail": "Role, task, report and evidence determine which instructions are loaded."
         },
         {
-          "t": 0.027,
+          "t": 0.03,
           "type": "step",
           "id": "skills",
           "state": "done",
           "label": "Runtime skills loaded",
           "detail": "core, thai-style, evidence-citation, scope-uncertainty, lay-explanation, package-advice · 387765e3ca1a6272",
-          "duration_ms": 0.5
+          "duration_ms": 0.6
         },
         {
-          "t": 0.027,
+          "t": 0.03,
           "type": "step",
           "id": "draft",
           "state": "running",
@@ -575,29 +577,30 @@
           "detail": "Typhoon (SCB 10X) · typhoon-v2.5-30b-a3b-instruct"
         },
         {
-          "t": 0.041,
+          "t": 0.044,
           "type": "step",
           "id": "draft",
           "state": "cancelled",
           "label": "Writing the answer",
           "detail": "cancelled",
-          "duration_ms": 14.6
+          "duration_ms": 14.0
         },
         {
-          "t": 0.041,
+          "t": 0.044,
           "type": "error",
           "code": "cancelled",
           "message": "Stopped. A late answer will not be added.",
           "status": 409,
           "origin": "client",
-          "request_id": "req_3723a8286a384629",
+          "request_id": "req_bddd8b4f1158b5b5",
           "step": "draft"
         }
       ],
       "workflow_log": {
         "event": "workflow",
-        "at": 1791569356.482,
-        "request_id": "req_3723a8286a384629",
+        "at": 1791569632.688,
+        "request_id": "req_bddd8b4f1158b5b5",
+        "turn_id": "545ec16b35e947aad1b9f445ef9ed3a5",
         "route": "/chat",
         "kind": "ai",
         "stream": true,
@@ -606,7 +609,7 @@
         "code": "cancelled",
         "origin": "client",
         "step": "draft",
-        "duration_ms": 40,
+        "duration_ms": 43,
         "attempts": 3,
         "dropped_events": 0
       }

@@ -2,7 +2,7 @@
   "benchmark": "LabClear resilience fault suite R01–R12",
   "mode": "OFFLINE",
   "seed": 20261010,
-  "commit": "ebdaa6fb1cba8a753e820a14e947ce9284875b81",
+  "commit": "3191f93cd4283b269dbf12a53996a944465d2520",
   "score": 100.0,
   "required": 12,
   "passed": 12,
@@ -11,7 +11,7 @@
   "external_provider_calls": 0,
   "outbound_connection_attempts": 0,
   "accepted": true,
-  "score_sha256": "c14555b386efaaa1",
+  "score_sha256": "7ec88f1376d2d778",
   "environment": {
     "python": "3.12.3",
     "node": "node v22.22.0",
@@ -19,11 +19,11 @@
     "clock": "virtual for server cases, fake for client cases, real seconds for R09 and regression"
   },
   "real_seconds": {
-    "server": 9.66,
-    "client": 0.12,
-    "sigterm": 4.67,
-    "regression": 25.03,
-    "total": 39.5
+    "server": 9.55,
+    "client": 0.13,
+    "sigterm": 4.71,
+    "regression": 24.21,
+    "total": 38.62
   },
   "server_case_order": [
     "R10",
@@ -1084,7 +1084,7 @@
         },
         {
           "part": "server",
-          "name": "one structured workflow line per request, linked by request ID",
+          "name": "one structured workflow line per request, linked by request ID (and the turn ID)",
           "passed": true
         },
         {

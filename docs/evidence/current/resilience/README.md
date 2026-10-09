@@ -8,7 +8,7 @@ and nothing was charged. What the cases check and how to run them:
 ## Fault suite R01–R12
 
 [`resilience-benchmark.json`](resilience-benchmark.json), from
-`python scripts/benchmark_resilience.py --offline --seed 20261010` at commit `ebdaa6f`.
+`python scripts/benchmark_resilience.py --offline --seed 20261010` at commit `3191f93`.
 
 | Result | Value |
 |---|---|
@@ -16,8 +16,8 @@ and nothing was charged. What the cases check and how to run them:
 | Skipped | 0 |
 | Outbound connection attempts | 0 (external provider calls: 0) |
 | Assertions | 183, all passed |
-| Score hash | `c14555b386efaaa1`; the same with `--seed 7` (another case order) |
-| Run time | about 40 s: server cases 10 s (virtual clock), client 0.1 s, SIGTERM 5 s, regression 25 s |
+| Score hash | `7ec88f1376d2d778`; the same with `--seed 7` (another case order) |
+| Run time | about 39 s: server cases 10 s (virtual clock), client 0.1 s, SIGTERM 5 s, regression 24 s |
 
 | Case | Scenario | Assertions |
 |---|---|---:|
@@ -51,19 +51,19 @@ interrupted step and the request reference were visible. Screenshots: `UI-R02-up
 ## Local measurements
 
 [`local-measurements.json`](local-measurements.json), from `python scripts/measure_resilience.py` at
-commit `ebdaa6f`: one Uvicorn process on 127.0.0.1 (2 CPUs, SQLite), offline doubles, so **model and
+commit `3191f93`: one Uvicorn process on 127.0.0.1 (2 CPUs, SQLite), offline doubles, so **model and
 OCR latency are excluded**. These describe LabClear's own overhead on this machine, not Render.
 
 | Measure | Samples | Result |
 |---|---:|---|
-| Process start to `/health` / `/ready` | 1 | 655 ms / 657 ms |
-| Chat, time to first event (`accepted`) | 20 | p50 3 ms, p95 6 ms |
-| Chat completion, one at a time | 20 | p50 81 ms, p95 92 ms |
-| Chat completion, two at a time | 20 | p50 171 ms, p95 225 ms |
-| Report read completion (A4 PNG, worker process) | 5 | p50 245 ms, p95 263 ms |
+| Process start to `/health` / `/ready` | 1 | 670 ms / 673 ms |
+| Chat, time to first event (`accepted`) | 20 | p50 3 ms, p95 5 ms |
+| Chat completion, one at a time | 20 | p50 73 ms, p95 91 ms |
+| Chat completion, two at a time | 20 | p50 173 ms, p95 200 ms |
+| Report read completion (A4 PNG, worker process) | 5 | p50 239 ms, p95 244 ms |
 | Memory: web process at ready / peak | | 67 MiB / 81 MiB |
-| Memory: document worker peak | | 80 MiB |
-| Exit after SIGTERM with nothing in flight | 1 | 315 ms, status 0 |
+| Memory: document worker peak | | 81 MiB |
+| Exit after SIGTERM with nothing in flight | 1 | 366 ms, status 0 |
 
 Render Free adds its own wake-up after 15 idle minutes (about a minute, per Render's documentation),
 network time and provider latency; none of that is measured here.
