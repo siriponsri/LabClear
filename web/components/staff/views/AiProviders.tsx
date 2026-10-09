@@ -31,7 +31,19 @@ type SlotView = {
   help?: string;
 };
 type Preset = { id: string; label: string; slots: string[]; default_model: string; vision_model: string; price_in: number; price_out: number; key_url: string };
-type AiView = { slots: Record<Kind, SlotView>; agents: Record<string, SlotView & { slot: string; help: string }>; presets: Preset[]; network_enabled: boolean };
+type FreeEndpoint = { family: string; host: string; path: string; model: string; price_status: string; verified_at: string; callable: boolean; reason: string; app_rate_per_minute: number };
+type FreePolicy =
+  | { active: false }
+  | { active: true; valid: false; error: string }
+  | { active: true; valid: true; policy_id: string; policy_version: string; mode: string; reviewed_at: string; endpoints: FreeEndpoint[];
+      run_limits: Record<string, number>; usage: Record<string, number> };
+type Harness = {
+  tools_schema: string;
+  tools: { name: string; version: string; scope: string; timeout_seconds: number; max_items: number; description: string }[];
+  skills: { package: string; version: string; enabled: boolean; modules: { file: string; id: string; version: string; sha256: string }[] };
+};
+type AiView = { slots: Record<Kind, SlotView>; agents: Record<string, SlotView & { slot: string; help: string }>; presets: Preset[]; network_enabled: boolean;
+  free_policy?: FreePolicy; harness?: Harness };
 type Candidate = { model_id: string; roles: string[]; approval_status: string; price_status: string; privacy_approval: string; last_live_eval: string | null; notes: string };
 type Registry = { version: string; status: string; models: Candidate[] };
 
@@ -151,6 +163,11 @@ export function AiProviders() {
                 <RegistryPanel r={registry} />
               </div>
 
+              <div className="sd-two">
+                <FreePolicyPanel f={d.free_policy} />
+                {d.harness ? <HarnessPanel h={d.harness} /> : null}
+              </div>
+
               <h3 className="sd-section-title">{t("Change a step")}</h3>
               {(["llm", "guard", "vision"] as Kind[]).map((slot) => (
                 <SlotCard key={slot} d={d} slot={slot} cur={d.slots[slot]} onSaved={state.reload} />
@@ -164,6 +181,91 @@ export function AiProviders() {
         }}
       </Loaded>
     </div>
+  );
+}
+
+/** Free-first trial (services/free_policy.py): which exact endpoints may be called, and how much of the trial quota is used.
+    Off in normal deployments. "Callable" needs a reviewed VERIFIED_FREE_FOR_THIS_ACCOUNT entry; nothing here proves a bill is zero. */
+function FreePolicyPanel({ f }: { f?: FreePolicy }) {
+  const { t, tf } = useStaff();
+  if (!f || !f.active)
+    return (
+      <section className="card stack-sm" aria-labelledby="sd-free">
+        <h3 id="sd-free">{t("Free-only trial policy")}</h3>
+        <p className="small muted">{t("Off. Provider calls follow the settings above, the call cap and the THB budget. The free-first benchmark turns this on only in its own isolated trial server.")}</p>
+      </section>
+    );
+  if (!f.valid)
+    return (
+      <section className="card stack-sm" aria-labelledby="sd-free">
+        <h3 id="sd-free">{t("Free-only trial policy")}</h3>
+        <p className="small">{t("The policy file is missing or invalid, so every provider call is refused.")}</p>
+      </section>
+    );
+  const u = f.usage || {};
+  return (
+    <section className="card stack" aria-labelledby="sd-free">
+      <div className="record-head">
+        <h3 id="sd-free">{t("Free-only trial policy")}</h3>
+        <Badge tone="warn">{f.mode}</Badge>
+      </div>
+      <p className="small muted">{tf("Policy {id} version {v}. Only the exact endpoints below can be called; anything else is refused before the network.", { id: f.policy_id, v: f.policy_version })}</p>
+      <ul className="sd-issues small">
+        {f.endpoints.map((e) => (
+          <li key={e.family + e.model}>
+            <Icon name={e.callable ? "check" : "doc"} size={15} />
+            <span>
+              <span className="mono">{e.host + e.path}</span> · {e.model} · {e.price_status}
+              {e.callable ? "" : " · " + t("not callable") + " (" + e.reason + ")"}
+            </span>
+          </li>
+        ))}
+      </ul>
+      <Kv
+        rows={[
+          [t("Text calls"), `${u.text_calls ?? 0} / ${f.run_limits.text_calls}`],
+          [t("OCR calls"), `${u.ocr_calls ?? 0} / ${f.run_limits.ocr_calls}`],
+          [t("Safety decisions (counted conservatively)"), `${u.guard_decisions ?? 0} / ${f.run_limits.guard_decisions}`],
+          [t("Calls refused by the quota"), String(u.blocked ?? 0)],
+        ]}
+      />
+    </section>
+  );
+}
+
+/** Typed tools and runtime skill modules of the conversation harness (services/agent_tools.py, services/runtime_skills.py). */
+function HarnessPanel({ h }: { h: Harness }) {
+  const { t, tf } = useStaff();
+  return (
+    <section className="card stack" aria-labelledby="sd-harness">
+      <div className="record-head">
+        <h3 id="sd-harness">{t("Conversation harness")}</h3>
+        <Badge tone={h.skills.enabled ? "ok" : "neutral"}>{h.skills.enabled ? t("Skills on") : t("Skills off")}</Badge>
+      </div>
+      <p className="small muted">{t("The model plans and writes; these typed tools fetch exact data with server-side permissions, and the server picks reviewed instruction modules for each task.")}</p>
+      <h4 className="small">{tf("Typed tools ({v})", { v: h.tools_schema })}</h4>
+      <ul className="sd-issues small">
+        {h.tools.map((x) => (
+          <li key={x.name}>
+            <Icon name="doc" size={15} />
+            <span>
+              <span className="mono">{x.name}</span> · {tf("scope {s}", { s: x.scope })} · {tf("timeout {n} s", { n: x.timeout_seconds })}
+            </span>
+          </li>
+        ))}
+      </ul>
+      <h4 className="small">{tf("Instruction modules ({v})", { v: h.skills.version })}</h4>
+      <ul className="sd-issues small">
+        {h.skills.modules.map((x) => (
+          <li key={x.file}>
+            <Icon name="doc" size={15} />
+            <span>
+              <span className="mono">{x.id}</span> {x.version} · <span className="mono">{x.sha256}</span>
+            </span>
+          </li>
+        ))}
+      </ul>
+    </section>
   );
 }
 

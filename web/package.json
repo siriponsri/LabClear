@@ -1,6 +1,6 @@
 {
   "name": "labclear-web",
-  "version": "4.0.0-rc1",
+  "version": "4.0.0-rc2",
   "private": true,
   "description": "LabClear website, customer workspace and service desk (Next.js App Router, React Three Fiber). Talks to the Codex FastAPI service under /api; deployed on Render as an optional second service (Cloudflare scripts kept as deferred).",
   "scripts": {

@@ -26,7 +26,7 @@ function seed(): Common {
   const types: Record<string, number> = {};
   for (const r of records) types[publisherType(r)] = (types[publisherType(r)] || 0) + 1;
   return {
-    version: "4.0.0-rc1",
+    version: "4.0.0-rc2",
     catalog: seedCatalog as any,
     branches: (seedBranches as any).branches,
     policies: seedPolicies as any,

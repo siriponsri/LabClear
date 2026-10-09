@@ -14,7 +14,9 @@ export type ActionPreview = {
   time?: string;
   summary?: string;
 };
-export type Checks = { citations_validated?: number; observations?: number; [k: string]: unknown };
+export type ToolAudit = { tool: string; ok: boolean; code?: string; ms?: number; items?: number; truncated?: boolean };
+export type SkillUse = { package: string; modules: string[]; sha256: string };
+export type Checks = { citations_validated?: number; observations?: number; tools?: ToolAudit[]; skills?: SkillUse | null; [k: string]: unknown };
 export type TraceRow = { id?: string; label: string; detail?: string };
 
 export type ChatMessage = Message & {

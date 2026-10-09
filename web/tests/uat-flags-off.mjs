@@ -1,5 +1,5 @@
 /*
- * Integration 4.0.0-rc1: the same Next.js build against the Codex API with every new feature flag
+ * Integration 4.0.0-rc2: the same Next.js build against the Codex API with every new feature flag
  * OFF (the default deployment state on Render). Start the API with UAT_FLAGS=off:
  *
  *   UAT_FLAGS=off python scripts/dev_mock_api.py           # repository root, :8000

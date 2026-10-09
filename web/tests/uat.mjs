@@ -1,5 +1,5 @@
 /*
- * LabClear integration 4.0.0-rc1 browser acceptance suite (UAT) for the Next.js website, customer
+ * LabClear integration 4.0.0-rc2 browser acceptance suite (UAT) for the Next.js website, customer
  * workspace (/app) and service desk (/staff), running against the Codex backend.
  *
  *   npm run uat                         # from web/, against http://localhost:3000
@@ -459,6 +459,13 @@ async function main() {
       await links.first().waitFor();
       assert((await links.count()) >= 2, "expected 2 cited sources");
       await shot(p, "app-answer-1440.png");
+      // Free-first harness: the receipt names the typed data tools and reviewed instruction modules the server used.
+      await answer.getByRole("button", { name: T("How this was checked") }).click();
+      const receipt = answer.locator(".receipt");
+      await receipt.getByText(T("Data the server looked up")).waitFor();
+      await receipt.getByText(T("Reviewed instruction modules")).waitFor();
+      assert((await receipt.innerText()).includes(T("Medical knowledge search")), "receipt does not name the knowledge search tool");
+      await shot(p, "app-receipt-1440.png");
 
       assert(tokens.length >= 1, "no X-LabClear-Guest header seen on API requests");
       const old = tokens[tokens.length - 1];
@@ -876,6 +883,10 @@ async function main() {
         assert(!/sk-(or|ant|proj)-[A-Za-z0-9_-]{12,}/.test(raw), "an API key is returned to the browser");
         const view = JSON.parse(raw);
         assert(Object.keys(view.agents).length === 6, "the API does not list six agents");
+        assert(view.free_policy && view.free_policy.active === false, "the free-only trial policy must be off in a normal deployment");
+        assert(view.harness && view.harness.tools.length === 8 && view.harness.skills.modules.length === 8, "harness tools/skills not reported");
+        await s.getByRole("heading", { name: T("Free-only trial policy") }).waitFor();
+        await s.getByRole("heading", { name: T("Conversation harness") }).waitFor();
         assert(view.agents.medical_analyzer.config_status !== "SCHEMA_CHECK_ONLY" && view.agents.thai_composer.config_status !== "SCHEMA_CHECK_ONLY", "an opt-in role is configured by default");
         const agents = s.locator("section.agents-card .agent-row");
         assert((await agents.count()) === 6, "expected six agent rows, found " + (await agents.count()));

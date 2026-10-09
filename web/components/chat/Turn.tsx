@@ -320,9 +320,45 @@ function ObservationRow({ o }: { o: Observation }) {
 
 /* ------------------------------------------------------------ what ran before the answer was shown */
 
+/** Typed data tools and reviewed instruction modules the server used (free-first harness). Names only;
+    arguments and instructions are never sent to the browser. */
+function harnessLines(c: NonNullable<ChatMessage["checks"]>, t: (s: string) => string, tf: (s: string, v: Record<string, string | number>) => string) {
+  const toolNames: Record<string, string> = {
+    lookup_packages: t("Package catalog"),
+    compare_packages: t("Package comparison"),
+    lookup_branches: t("Centers and hours"),
+    lookup_policies: t("Service policies"),
+    retrieve_evidence: t("Medical knowledge search"),
+    get_confirmed_report_rows: t("Your confirmed report"),
+    preview_booking: t("Booking preview"),
+    get_external_hospital_offer: t("Official hospital offers"),
+  };
+  const moduleNames: Record<string, string> = {
+    core: t("Grounded answers"),
+    "thai-style": t("Plain Thai"),
+    "evidence-citation": t("Citations"),
+    "scope-uncertainty": t("Scope and uncertainty"),
+    "lay-explanation": t("Explaining a test"),
+    "patient-explanation": t("Explaining your report"),
+    "package-advice": t("Package advice"),
+    "package-compare": t("Package comparison"),
+  };
+  const lines: { key: string; label: string; detail?: string }[] = [];
+  const tools = Array.isArray(c.tools) ? c.tools : [];
+  const used = [...new Set(tools.filter((x) => x.ok).map((x) => toolNames[x.tool] || x.tool))];
+  const refused = tools.filter((x) => !x.ok).length;
+  if (used.length) lines.push({ key: "tools", label: t("Data the server looked up"), detail: used.join(" · ") });
+  if (refused) lines.push({ key: "refused", label: refused === 1 ? t("1 lookup was refused by a server rule") : tf("{n} lookups were refused by server rules", { n: refused }) });
+  const skills = c.skills && typeof c.skills === "object" ? c.skills : null;
+  if (skills?.modules?.length)
+    lines.push({ key: "skills", label: t("Reviewed instruction modules"), detail: skills.modules.map((x) => moduleNames[x] || x).join(" · ") });
+  return lines;
+}
+
 function Receipt({ m, id }: { m: ChatMessage; id: string }) {
   const { t, tf } = useT();
   const c = m.checks || {};
+  const extra = harnessLines(c, t, tf);
   if (m.trace?.length)
     return (
       <ul className="receipt" id={id}>
@@ -331,6 +367,14 @@ function Receipt({ m, id }: { m: ChatMessage; id: string }) {
             <div>
               <span className="step-label">{stepLabel(x.label, t, tf)}</span>
               {x.detail ? <span className="step-detail">{stepDetail(x.detail, t, tf)}</span> : null}
+            </div>
+          </li>
+        ))}
+        {extra.map((x) => (
+          <li key={x.key}>
+            <div>
+              <span className="step-label">{x.label}</span>
+              {x.detail ? <span className="step-detail">{x.detail}</span> : null}
             </div>
           </li>
         ))}

@@ -108,7 +108,14 @@ async def agent(message, context, emit=None):
                       "_(คำตอบตัวอย่างจากโหมดทดสอบ ไม่ได้เรียก AI จริง)_"),
             "sources": SRC, "observations": observations, "action": None, "followups": ["HbA1c ต้องงดอาหารไหม", "ควรตรวจซ้ำบ่อยแค่ไหน"],
             "dot": {"id": "explainer", "name": "Report Explainer"}, "trace": trace,
-            "checks": {"input_safety": "passed", "citations_validated": 2, "independent_review": "passed", "output_safety": "passed", "observations": len(observations)}}
+            "checks": {"input_safety": "passed", "citations_validated": 2, "independent_review": "passed", "output_safety": "passed", "observations": len(observations),
+                       # Shape of the free-first harness audit (services/agent_tools.py, services/runtime_skills.py); names only.
+                       "tools": [{"tool": "lookup_policies", "ok": True}, {"tool": "retrieve_evidence", "ok": True},
+                                 {"tool": "get_confirmed_report_rows", "ok": True}] if observations else
+                                [{"tool": "lookup_policies", "ok": True}, {"tool": "retrieve_evidence", "ok": True}],
+                       "skills": {"package": "labclear-thai-health-communication 0.3.0-offline", "sha256": "test-double",
+                                  "modules": ["core", "thai-style", "evidence-citation", "scope-uncertainty",
+                                              "patient-explanation" if observations else "lay-explanation"]}}}
 
 
 b.business_agent.run = agent
