@@ -45,5 +45,6 @@
   "Hospital websites": "เว็บไซต์โรงพยาบาล",
   "Packages on hospital websites": "แพ็กเกจจากเว็บไซต์โรงพยาบาล",
   "{price} THB": "{price} บาท",
-  "Checked": "ตรวจข้อมูล"
+  "Checked": "ตรวจข้อมูล",
+  "Version {n}": "รุ่น {n}"
 }

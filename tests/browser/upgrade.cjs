@@ -50,12 +50,17 @@ async function scenario(name, fn) { try { await fn(); records.push({ name, statu
       });
       await scenario('official external links ' + width, async () => {
         await page.goto(base + '/hospital-links', { waitUntil: 'networkidle' });
-        const links = page.locator('main a[target="_blank"]'); check(await links.count() === 2, 'offer count');
+        // One official page per recorded offer plus each hospital's own comparison page (business_data/hospital_links.json).
+        const recorded = JSON.parse(fs.readFileSync(path.join(root, 'business_data/hospital_links.json'), 'utf8')).offers.filter(o => o.review_status !== 'REVOKED');
+        const links = page.locator('main a[target="_blank"]'); check(await links.count() === recorded.length + recorded.filter(o => o.detail_url).length, 'offer count');
         for (const link of await links.all()) { const url = new URL(await link.getAttribute('href')); check(!url.search && !url.hash, 'personal outbound data'); check((await link.getAttribute('rel')).includes('noreferrer'), 'referrer'); }
         check(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), 'offers overflow'); await shot(page, 'hospital-links-' + width);
       });
     }
     await scenario('synthetic organization upload review cite revoke', async () => {
+      // The service desk part uses the English interface labels; the organization page below is
+      // checked in Thai, the default language.
+      await context.addCookies([{ name: 'labclear_language', value: 'en', url: base }]);
       await page.goto(base + '/staff', { waitUntil: 'networkidle' });
       if (!(await page.locator('#modal').isVisible())) await page.locator('#account-open').click();
       await page.getByLabel('Email or username').fill('staff@example.invalid');
@@ -74,6 +79,7 @@ async function scenario(name, fn) { try { await fn(); records.push({ name, statu
         const clipped=await card.locator('input:visible, select:visible').evaluateAll(elements => elements.map(e => { const r=e.getBoundingClientRect(); return {tag:e.tagName,left:r.left,right:r.right,width:innerWidth}; }).filter(r => r.left < 0 || r.right > r.width));
         check(!clipped.length, 'admin control clipped: '+JSON.stringify(clipped));
       }
+      await context.addCookies([{ name: 'labclear_language', value: 'th', url: base }]);
       await page.goto(base + '/organization-references', { waitUntil: 'networkidle' });
       await page.locator('#reference-upload').waitFor({ state: 'visible' });
       await page.locator('#reference-upload input[name=title]').fill('เอกสารจำลองการเตรียมตัว');

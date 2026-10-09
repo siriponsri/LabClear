@@ -26,7 +26,8 @@
     for (const doc of data.documents) {
       const section = node('article', ''); section.className = 'reference-record';
       const title = node('h3', doc.title); title.setAttribute('translate', 'no');   // the uploader's own title
-      section.append(title, node('p', `Version ${doc.version} · ${labels[doc.state]}`));
+      const state = node('p', ''); state.append(node('span', `Version ${doc.version}`), document.createTextNode(' · '), node('span', labels[doc.state]));
+      section.append(title, state);
       const actions = node('div', ''); actions.className = 'reference-actions';
       if (['draft', 'rejected', 'approved'].includes(doc.state)) actions.append(button('View content', async () => preview((await request(base + '/' + doc.id)).text)));
       if (doc.state === 'approved') {

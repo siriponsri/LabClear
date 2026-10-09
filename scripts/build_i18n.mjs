@@ -3,9 +3,10 @@
 //   node scripts/build_i18n.mjs            # writes static/i18n/th.js and static/i18n/th.js.gz
 //   node scripts/build_i18n.mjs --check    # also fails if an API message has no Thai entry
 //
-// Sources: i18n/th.json (strings carried over from 3.x) and every i18n/th/*.json feature file
-// (later files win). Keys are the English interface strings exactly as written in templates/ and
-// static/js/; a key may be a template with {placeholders}. static/js/i18n.js loads the result.
+// Sources: i18n/th.json (strings carried over from 3.x), every i18n/th/*.json feature file (later
+// files win) and finally i18n/th/*.overrides.json, the reviewed corrections. Keys are the English
+// interface strings exactly as written in templates/ and static/js/; a key may be a template with
+// {placeholders}. static/js/i18n.js loads the result.
 import { readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { gzipSync } from "node:zlib";
 import { compile, protectThai, strip } from "./thai-keep.mjs";
@@ -14,7 +15,10 @@ const root = new URL("../", import.meta.url);
 const dir = new URL("i18n/", root);
 const merged = JSON.parse(readFileSync(new URL("th.json", dir), "utf8"));
 const seen = new Map(Object.keys(merged).map((k) => [k, "th.json"]));
-for (const name of readdirSync(new URL("th/", dir)).filter((f) => f.endsWith(".json")).sort()) {
+// Feature files in name order, then the reviewed corrections (*.overrides.json), which always win.
+const isOverride = (f) => f.endsWith(".overrides.json");
+const files = readdirSync(new URL("th/", dir)).filter((f) => f.endsWith(".json")).sort();
+for (const name of [...files.filter((f) => !isOverride(f)), ...files.filter(isOverride)]) {
   const data = JSON.parse(readFileSync(new URL("th/" + name, dir), "utf8"));
   for (const [k, v] of Object.entries(data)) {
     if (typeof v !== "string") throw new Error(`${name}: value for "${k}" must be a string`);
