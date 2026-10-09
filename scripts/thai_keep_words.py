@@ -1,0 +1,107 @@
+"""Find Thai words in the website's dictionary that the browser may break in the middle.
+
+Browsers break Thai lines with ICU's dictionary. Loanwords and compounds the ICU dictionary does not
+know ("แพ็กเกจ" -> แพ็ก|เกจ, "แอดมิน" -> แอ|ดมิน, "โทเคน" -> โท|เคน) can then wrap mid-word on a narrow
+screen. This developer tool tokenizes every Thai string of web/lib/i18n (th.json + th/*.json) with
+PyThaiNLP's dictionary (newmm), asks ICU (Node's Intl.Segmenter, the same library Chromium uses) how it
+segments each dictionary word, and writes the words ICU splits to web/lib/i18n/th-keep-together.json.
+scripts/merge-i18n.mjs then joins the letters of those words with WORD JOINER (U+2060), which forbids
+a line break inside them and is invisible. Review the list before committing it.
+
+    pip install pythainlp            # developer tool only; not a runtime dependency
+    python scripts/thai_keep_words.py [--write]
+"""
+from __future__ import annotations
+
+import json
+from pathlib import Path
+import re
+import subprocess
+import sys
+
+ROOT = Path(__file__).resolve().parents[1]
+I18N = ROOT / "web/lib/i18n"
+OUT = I18N / "th-keep-together.json"
+THAI = re.compile(r"[ก-ฺเ-๛]")
+# Domain loanwords PyThaiNLP's word list does not contain; ICU splits them too.
+EXTRA = ["โทเคน", "โทเค็น", "พร้อมเพย์", "แดชบอร์ด", "แชตบอต", "แชต", "ล็อกอิน", "อัปโหลด", "อัปเกรด", "รีเซ็ต", "เวอร์ชัน", "ลิงก์", "เซสชัน", "ไฟล์", "พรีวิว", "เทมเพลต",
+         "แอป", "เอเจนต์", "เฟอร์ริทิน", "ครีเอตินิน", "ครีเอตินีน", "อารีย์", "ฟอสฟาเทส"]
+# Real one-letter or short words ICU keeps apart correctly; known, never protected.
+KNOWN = ["ณ"]
+MAX_LEN = 14  # longer units would remove too many break opportunities in narrow cells
+
+
+def thai_strings() -> list[str]:
+    files = [I18N / "th.json", *sorted((I18N / "th").glob("*.json"))]
+    values = []
+    for f in files:
+        values += [v for v in json.loads(f.read_text(encoding="utf-8")).values() if isinstance(v, str)]
+    return [v.replace("⁠", "") for v in values if THAI.search(v)]
+
+
+def node_segment(values: list[str], keep: list[str]) -> list[dict]:
+    """Protect each value with the current list (web/scripts/thai-keep.mjs) and return ICU boundaries."""
+    out = subprocess.run(["node", str(ROOT / "web/scripts/thai-keep.mjs"), "--segment"], input=json.dumps({"values": values, "words": keep}),
+                         capture_output=True, text=True, check=True, encoding="utf-8")
+    return json.loads(out.stdout)
+
+
+def main() -> int:
+    from pythainlp.corpus import thai_words
+    from pythainlp.tokenize import word_tokenize
+
+    words = set(thai_words()) | set(EXTRA) | set(KNOWN)
+
+    def bad_segment(seg: str) -> bool:
+        # An ICU segment that is Thai and neither a dictionary word nor made of dictionary words
+        # ("ไม่มี" = ไม่+มี is fine) means ICU cut a word apart there ("ตนั้", "ร้").
+        core = seg.strip("\u2060\u200b \u00a0")
+        if not THAI.search(core) or core in words or re.fullmatch(r"[\u0E46\u0E2F\s]+|น\.?", core):
+            return False
+        return not all(t in words for t in word_tokenize(core, engine="newmm") if t.strip())
+
+    values = thai_strings()
+    current = json.loads(OUT.read_text(encoding="utf-8"))["words"] if OUT.exists() and "--fresh" not in sys.argv else []
+    keep = set(current) | set(EXTRA)
+    added: list[str] = []
+    unresolved: dict[str, str] = {}
+    for _round in range(60):
+        new: set[str] = set()
+        for res in node_segment(values, sorted(keep)):
+            clean, bounds = res["clean"], sorted(set(res["boundaries"]) | {0, len(res["clean"])})
+            segments = [(a, b, clean[a:b]) for a, b in zip(bounds, bounds[1:])]
+            first = next(((a, b, sg) for a, b, sg in segments if bad_segment(sg)), None)
+            if not first:
+                continue
+            # The dictionary word (PyThaiNLP newmm) that covers the start of the first bad segment.
+            pos = 0
+            for tok in word_tokenize(clean, engine="newmm", keep_whitespace=True):
+                start, end = pos, pos + len(tok)
+                pos = end
+                if start <= first[0] < end:
+                    # Short tokens are often PyThaiNLP mis-splits of a longer loanword (แอ|ป): review by hand.
+                    if tok in words and THAI.search(tok) and 3 <= len(tok) <= MAX_LEN and tok not in keep:
+                        new.add(tok)
+                    else:
+                        unresolved[first[2]] = clean[max(0, first[0] - 12): first[1] + 12]
+                    break
+        if not new:
+            break
+        keep |= new
+        added += sorted(new)
+    words_out = sorted(keep, key=lambda w: (-len(w), w))
+    payload = {"_about": "Thai words that ICU line breaking splits inside a word (or that derail the words after them). web/scripts/merge-i18n.mjs keeps them on one line (U+2060) and separates them from neighbouring Thai letters (U+200B). Generated by scripts/thai_keep_words.py (PyThaiNLP dictionary + Intl.Segmenter), reviewed by hand.",
+               "words": words_out}
+    if "--write" in sys.argv:
+        OUT.write_text(json.dumps(payload, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+    print(f"{len(values)} Thai strings; {len(words_out)} words kept together ({len(added)} added this run)" + (f" -> {OUT.relative_to(ROOT).as_posix()}" if "--write" in sys.argv else ""))
+    print("added:", " ".join(added))
+    if unresolved:
+        print(f"{len(unresolved)} segments not resolved automatically (review by hand):")
+        for seg, ctx in list(unresolved.items())[:80]:
+            print(f"  {seg!r} in …{ctx}…")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

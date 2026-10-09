@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import Script from "next/script";
-import { getLang } from "@/lib/i18n/server";
+import { getLang, getT } from "@/lib/i18n/server";
 import { LangProvider } from "@/lib/i18n/client";
 import { SessionProvider } from "@/lib/session";
 import "./styles/base.css";
@@ -9,12 +9,16 @@ import "./styles/workspace.css";
 import "./styles/i18n.css";
 import "./styles/next.css";
 
-export const metadata: Metadata = {
-  title: { default: "LabClear | จองตรวจสุขภาพ เข้าใจผลตรวจ", template: "%s | LabClear" },
-  description: "เปรียบเทียบแพ็กเกจตรวจสุขภาพ ขอนัดหมาย และให้ AI อธิบายผลแล็บพร้อมแหล่งอ้างอิง (ระบบจำลองเพื่อการศึกษา)",
-  robots: { index: false, follow: false },
-  icons: { icon: "/img/favicon.svg" },
-};
+// Title and description follow the visitor's language like the rest of the page (Thai by default).
+export async function generateMetadata(): Promise<Metadata> {
+  const { t } = await getT();
+  return {
+    title: { default: "LabClear | " + t("Book the check. Understand the result."), template: "%s | LabClear" },
+    description: t("Compare health-check packages, request an appointment and let AI explain lab results with sources (coursework simulation)."),
+    robots: { index: false, follow: false },
+    icons: { icon: "/img/favicon.svg" },
+  };
+}
 
 export const viewport: Viewport = {
   width: "device-width",

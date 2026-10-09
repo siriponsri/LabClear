@@ -7,6 +7,7 @@ import { useDeferredValue, useId, useState } from "react";
 import type { SourceRecord } from "@/lib/types";
 import { useT } from "@/lib/i18n/client";
 import type { Lang } from "@/lib/i18n/shared";
+import { textLang } from "@/lib/format";
 
 /** Display order and names; unknown types are shown after these with a readable label. */
 export const PUBLISHER_TYPES: [string, string][] = [
@@ -36,12 +37,12 @@ function SourceItem({ r, lang }: { r: SourceRecord; lang: Lang }) {
     <li className="pub-src">
       <h3 className="pub-src-title">
         <a href={r.url} target="_blank" rel="noopener noreferrer">
-          {r.title}
+          <span lang={r.language || textLang(r.title)}>{r.title}</span>
           <span className="sr-only"> {t("(opens in a new tab)")}</span>
         </a>
       </h3>
       <p className="pub-src-meta tiny">
-        <span>{r.publisher}</span>
+        <span lang={textLang(r.publisher)}>{r.publisher}</span>
         {r.reviewed_at ? (
           <span>
             {t("Reviewed")} {reviewed(r.reviewed_at, lang)}
@@ -51,7 +52,7 @@ function SourceItem({ r, lang }: { r: SourceRecord; lang: Lang }) {
       </p>
       {r.content ? (
         <>
-          <p className={"pub-src-text small" + (open ? " open" : "")} id={id}>
+          <p className={"pub-src-text small" + (open ? " open" : "")} id={id} lang={r.language || textLang(r.content)}>
             {r.content}
           </p>
           {long ? (

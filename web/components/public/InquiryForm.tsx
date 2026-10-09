@@ -167,7 +167,7 @@ export function InquiryForm({ packages, branches, minPeople, preselect }: { pack
           <select className="input" name="branch_id">
             {branches.map((b) => (
               <option key={b.id} value={b.id}>
-                {b.name}
+                {t(b.name)}
               </option>
             ))}
           </select>

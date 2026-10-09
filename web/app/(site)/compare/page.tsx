@@ -110,7 +110,7 @@ export default async function ComparePage({ searchParams }: Props) {
                   </tr>
                   {comparison.services.map((s) => (
                     <tr key={s.name}>
-                      <th scope="row">{s.name}</th>
+                      <th scope="row">{t(s.name)}</th>
                       {s.included.map((inc, i) => (
                         <td key={i} className={inc ? "yes" : "no"}>
                           {inc ? t("Included") : t("Not included")}

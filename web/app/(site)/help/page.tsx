@@ -245,7 +245,7 @@ export default async function HelpPage() {
           <ul className="plain small">
             {c.branches.map((b) => (
               <li key={b.id}>
-                {b.name} · <span className="nowrap">{t(String(b.hours || ""))}</span>
+                {t(b.name)} · <span className="nowrap">{t(String(b.hours || ""))}</span>
               </li>
             ))}
           </ul>

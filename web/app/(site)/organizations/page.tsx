@@ -51,7 +51,7 @@ export default async function OrganizationsPage({ searchParams }: Props) {
                     <td>
                       <Link href={"/packages/" + encodeURIComponent(p.id)}>{p.name}</Link>
                     </td>
-                    <td className="small">{p.services.join(", ")}</td>
+                    <td className="small">{p.services.map((s) => t(s)).join(", ")}</td>
                     <td className="n">
                       <strong>{money(p.price_thb)}</strong>
                     </td>

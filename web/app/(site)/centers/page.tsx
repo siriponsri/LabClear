@@ -26,7 +26,7 @@ export default async function CentersPage() {
           return (
             <article className="card center-row" id={b.id} key={b.id}>
               <div className="stack-sm">
-                <h2 className="h3">{b.name}</h2>
+                <h2 className="h3">{t(b.name)}</h2>
                 <p className="muted">{t(String(b.area || ""))}</p>
                 <dl className="facts small">
                   <div>

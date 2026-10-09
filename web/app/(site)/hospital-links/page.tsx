@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getT } from "@/lib/i18n/server";
+import { textLang } from "@/lib/format";
 import { apiGet } from "@/lib/api/server";
 import { Crumbs } from "@/components/public/Crumbs";
 import "@/app/styles/public.css";
@@ -61,15 +62,20 @@ export default async function HospitalLinksPage() {
         <Crumbs label={t("Breadcrumb")} items={[<Link key="home" href="/">{t("Home")}</Link>]} current={t("Hospital websites")} />
         <h1>{t("See the details on the hospital's own website")}</h1>
         <p className="muted">{t("These external links are separate from LabClear's simulated packages. No partnership or booking is confirmed. Choose a check with a health professional; more tests do not mean a better check.")}</p>
+        <p className="small muted">{t("Hospital names and offer details are quoted as recorded from the hospital's own page, in that page's language.")}</p>
       </div>
       <div className="wrap center-list">
         {data.offers.map((o) => (
           <article className="card center-row" id={o.id} key={o.id}>
             <div className="stack-sm">
-              <h2 className="h3">{o.hospital}</h2>
-              <p className="muted">{o.branch}</p>
+              <h2 className="h3" lang={textLang(o.hospital)}>
+                {o.hospital}
+              </h2>
+              <p className="muted" lang={textLang(o.branch)}>
+                {o.branch}
+              </p>
               <p>
-                <strong>{o.variant}</strong>
+                <strong lang={textLang(o.variant)}>{o.variant}</strong>
               </p>
               {o.current_offer && o.price_thb !== null ? (
                 <p>
@@ -83,11 +89,11 @@ export default async function HospitalLinksPage() {
               <dl className="facts small">
                 <div>
                   <dt>{t("Eligibility")}</dt>
-                  <dd>{o.eligibility}</dd>
+                  <dd lang={textLang(o.eligibility)}>{o.eligibility}</dd>
                 </div>
                 <div>
                   <dt>{t("Fees")}</dt>
-                  <dd>{o.fees}</dd>
+                  <dd lang={textLang(o.fees)}>{o.fees}</dd>
                 </div>
                 <div>
                   <dt>{t("Sale until")}</dt>

@@ -135,7 +135,7 @@ export function BookView() {
                 <option value="">{t("Choose a center")}</option>
                 {centers.map((b) => (
                   <option key={b.id} value={b.id}>
-                    {b.name}
+                    {t(b.name)}
                   </option>
                 ))}
               </select>
@@ -197,7 +197,7 @@ export function BookView() {
             </div>
             <div>
               <dt>{t("Center")}</dt>
-              <dd>{branch?.name || t("Not chosen")}</dd>
+              <dd>{branch?.name ? t(branch.name) : t("Not chosen")}</dd>
             </div>
             <div>
               <dt>{t("Date")}</dt>

@@ -1,5 +1,8 @@
 import type { Lang } from "@/lib/i18n/shared";
 
+/** The language a stored text is written in (records, offers, examples): marks it with lang="…". */
+export const textLang = (s: string | null | undefined): Lang => (/[\u0E01-\u0E3A\u0E40-\u0E5B]/.test(s || "") ? "th" : "en");
+
 const locale = (lang: Lang) => (lang === "th" ? "th-TH" : "en-GB");
 
 /** ฿1,690 — the baht sign keeps prices compact in both languages. */

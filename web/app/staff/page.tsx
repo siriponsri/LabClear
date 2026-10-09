@@ -1,8 +1,12 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
+import { getT } from "@/lib/i18n/server";
 import { StaffDesk } from "@/components/staff/StaffDesk";
 
-export const metadata: Metadata = { title: "Service desk" };
+export async function generateMetadata(): Promise<Metadata> {
+  const { t } = await getT();
+  return { title: t("Service desk") };
+}
 
 export default function StaffPage() {
   return (

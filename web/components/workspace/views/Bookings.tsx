@@ -282,7 +282,7 @@ export function BookingsView() {
   if (!res.data) return (<div>{intro}<Loading rows={3} /></div>);
 
   const { s, branches } = res.data;
-  const branchName = (id: string) => branches.find((b) => b.id === id)?.name || id;
+  const branchName = (id: string) => t(branches.find((b) => b.id === id)?.name || id);
   const quotes: Quote[] = (s.quotes || []).slice().sort((a, b) => (b.data.version || 1) - (a.data.version || 1));
   const groups = new Map<string, Quote[]>();
   for (const q of quotes) {

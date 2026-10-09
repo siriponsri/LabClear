@@ -79,7 +79,7 @@ export function Canvas({ ids, focus, onClose }: { ids: string[]; focus?: string;
             <tbody>
               {d.services.map((s) => (
                 <tr key={s.name}>
-                  <th scope="row">{s.name}</th>
+                  <th scope="row">{t(s.name)}</th>
                   {s.included.map((inc, i) => (
                     <td key={i} className={(inc ? "yes" : "no") + (d.packages[i].id === sel ? " sel" : "")} aria-label={inc ? t("Included") : t("Not included")}>
                       {inc ? "✓" : "–"}

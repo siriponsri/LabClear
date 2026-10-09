@@ -9,7 +9,7 @@ import Link from "next/link";
 import { useDeferredValue, useRef, useState, useSyncExternalStore } from "react";
 import { useSearchParams } from "next/navigation";
 import type { Branch, Package } from "@/lib/types";
-import { money } from "@/lib/format";
+import { money, textLang } from "@/lib/format";
 import { useT } from "@/lib/i18n/client";
 import { filterPackages, PRICE_STEPS, readFilters, SORTS, type Filters } from "./search";
 import { queryString } from "./compare";
@@ -116,7 +116,14 @@ export function Catalog({ packages, branches, catalogVersion }: Props) {
             placeholder={t("e.g. sugar, cholesterol, HbA1c")}
             onChange={(e) => typed(e.target.value)}
           />
-          <span className="hint">{t("Thai or English both work, for example น้ำตาล finds glucose tests.")}</span>
+          <span className="hint">
+            {t("Thai or English both work, for example {word} finds glucose tests.").split("{word}").map((part, i) => (
+              <span key={i}>
+                {i ? <span lang="th">น้ำตาล</span> : null}
+                {part}
+              </span>
+            ))}
+          </span>
         </label>
         <fieldset>
           <legend>{t("Who it is for")}</legend>
@@ -159,7 +166,7 @@ export function Catalog({ packages, branches, catalogVersion }: Props) {
             <option value="">{t("All centers")}</option>
             {branches.map((b) => (
               <option key={b.id} value={b.id}>
-                {b.name}
+                {t(b.name)}
               </option>
             ))}
           </select>
@@ -227,7 +234,7 @@ export function Catalog({ packages, branches, catalogVersion }: Props) {
               {EXAMPLES.map((ex, i) => (
                 <span key={ex}>
                   {i ? ", " : ""}
-                  <button className="link-btn" type="button" onClick={() => typed(ex)}>
+                  <button className="link-btn" type="button" lang={textLang(ex)} onClick={() => typed(ex)}>
                     {ex}
                   </button>
                 </span>

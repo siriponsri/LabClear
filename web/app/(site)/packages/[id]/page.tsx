@@ -89,7 +89,7 @@ export default async function PackageDetailPage({ params }: Props) {
             <h2 className="h3" id="inc">{t("What is included")}</h2>
             <ul className="included">
               {p.services.map((s) => (
-                <li key={s}>{s}</li>
+                <li key={s}>{t(s)}</li>
               ))}
             </ul>
             <p className="small muted">{t("Ask the assistant what any test measures. It answers from cited public references.")}</p>
@@ -111,7 +111,7 @@ export default async function PackageDetailPage({ params }: Props) {
             <ul className="plain">
               {d.branches.map((b) => (
                 <li key={b.id}>
-                  <strong>{b.name}</strong>{" "}
+                  <strong>{t(b.name)}</strong>{" "}
                   <span className="muted small">
                     · {t(String(b.area || ""))} · {t(String(b.hours || ""))}
                   </span>

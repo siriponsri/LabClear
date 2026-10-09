@@ -49,7 +49,7 @@ export function PackageRow({ p }: { p: Package }) {
       </div>
       <ul className="pkg-tests" aria-label={t("Included tests")}>
         {p.services.map((s) => (
-          <li key={s}>{s}</li>
+          <li key={s}>{t(s)}</li>
         ))}
       </ul>
       <div className="pkg-price">

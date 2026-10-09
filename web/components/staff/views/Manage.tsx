@@ -293,7 +293,7 @@ export function Audit() {
                     <tr key={i}>
                       <td data-label={t("Time")}>{when(e.at, lang)}</td>
                       <td data-label={t("Actor")}>
-                        {t(e.actor_role)} <span className="mono muted">…{e.actor}</span>
+                        {t(e.actor_role)} {e.actor && e.actor !== "system" ? <span className="mono muted">…{e.actor}</span> : null}
                       </td>
                       <td data-label={t("Action")} className="mono">
                         {e.action}

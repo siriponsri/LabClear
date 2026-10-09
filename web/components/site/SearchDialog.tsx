@@ -94,7 +94,7 @@ export function SearchDialog() {
       .filter((r) => r.score > 0)
       .sort((a, b) => b.score - a.score || a.order - b.order)
       .slice(0, 5)
-      .forEach(({ p }) => items.push({ kind: t("Package"), title: p.name, sub: money(p.price_thb) + " · " + p.services.slice(0, 3).join(", "), href: "/packages/" + encodeURIComponent(p.id) }));
+      .forEach(({ p }) => items.push({ kind: t("Package"), title: p.name, sub: money(p.price_thb) + " · " + p.services.slice(0, 3).map((x) => t(x)).join(", "), href: "/packages/" + encodeURIComponent(p.id) }));
     matchTests(uniqueTests(packages), parsed)
       .slice(0, 4)
       .forEach((test) => items.push({ kind: t("Test"), title: test, sub: t("Health checks that include this test"), href: "/packages?q=" + encodeURIComponent(test) }));
@@ -103,7 +103,8 @@ export function SearchDialog() {
   if (text) items.push({ kind: t("Ask"), title: tf("Ask the assistant: “{q}”", { q: text.slice(0, 60) }), sub: t("Answers with sources"), href: "/app?q=" + encodeURIComponent(text) });
   PAGES.filter((p) => {
     if (!text) return true;
-    const hay = (t(p.title) + " " + p.title + " " + p.keys).toLowerCase();
+    // Translations may hold invisible word joiners (U+2060) that keep Thai words on one line.
+    const hay = (t(p.title) + " " + p.title + " " + p.keys).replace(/\u2060/g, "").toLowerCase();
     return hay.includes(lower) || p.keys.split(" ").some((k) => k.length >= 2 && lower.includes(k.toLowerCase()));
   })
     .slice(0, text ? 4 : 6)
@@ -201,7 +202,20 @@ export function SearchDialog() {
             ))}
           </div>
           {text && packages && !packageHits ? (
-            <p className="search-empty small muted">{tf("No package matches “{q}”. Try a test name such as HbA1c, ไขมัน or น้ำตาล.", { q: text.slice(0, 40) })}</p>
+            <p className="search-empty small muted">
+              {tf("No package matches “{q}”. Try a test name such as {examples}.", { q: text.slice(0, 40) })
+                .split("{examples}")
+                .map((part, i) => (
+                  <span key={i}>
+                    {i ? (
+                      <>
+                        HbA1c, <span lang="th">ไขมัน</span> {t("or")} <span lang="th">น้ำตาล</span>
+                      </>
+                    ) : null}
+                    {part}
+                  </span>
+                ))}
+            </p>
           ) : null}
           {text && failed ? <p className="search-empty small muted">{t("Package search is unavailable right now.")}</p> : null}
           {text && !packages && !failed ? (
