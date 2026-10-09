@@ -39,6 +39,7 @@ from urllib.parse import urlsplit
 
 import httpx
 
+DOUBLES_VERSION = "1.1.0"
 OCR_ENGINE = "tesseract" if shutil.which("tesseract") else "unavailable"
 SKILL_HEADERS = {}  # "# Heading" line -> module file name, filled from the runtime-skill folder
 _lock = threading.Lock()
@@ -117,7 +118,7 @@ def parse_rows(text: str) -> list[dict]:
         if not line:
             continue
         if not started:
-            started = bool(re.search(r"\bResult\b", line))
+            started = bool(re.search(r"\bResults?\b", line))
             continue
         if re.match(r"(REPORTED BY|APPROVED BY|PRINTED|Page \d)", line, re.I):
             break
@@ -163,8 +164,21 @@ def _sentence(text: str, limit: int = 180) -> str:
     return (cut[:limit] + "…") if len(cut) > limit else cut
 
 
+def _payload(messages) -> dict:
+    """The writer payload is the last JSON user message; a rewrite request appends plain text after it."""
+    for m in reversed(messages):
+        if m.get("role") == "user" and isinstance(m.get("content"), str):
+            try:
+                data = json.loads(m["content"])
+            except ValueError:
+                continue
+            if isinstance(data, dict) and "EVIDENCE" in data:
+                return data
+    return {}
+
+
 def _writer(messages) -> dict:
-    payload = json.loads(messages[-1]["content"])
+    payload = _payload(messages)
     evidence = payload.get("EVIDENCE") or []
     report = payload.get("REPORT") or {}
     medical = [e for e in evidence if e.get("data_class") in ("public_reference", "public_education")]
@@ -178,7 +192,10 @@ def _writer(messages) -> dict:
             observations.append({"field_id": f["id"], "value": f.get("value", ""), "unit": f.get("unit", ""),
                                  "reference": f.get("reference", ""), "status": f.get("status", "unknown")})
     for e in medical[:3]:
-        lines.append(f"- {e.get('title')}: {_sentence(e.get('content', ''))} [{e['id']}]")
+        # With a report, never quote another source's numbers next to the customer's rows
+        # (the answer rules forbid replacing printed ranges); cite the topic only.
+        excerpt = "" if report.get("fields") else ": " + _sentence(e.get("content", ""))
+        lines.append(f"- {e.get('title')}{excerpt} [{e['id']}]")
     named = set((payload.get("decision") or {}).get("package_ids") or [])
     for e in evidence:
         if e.get("data_class") != "synthetic_business":
@@ -247,8 +264,14 @@ class Handler:
 
     async def __call__(self, request: httpx.Request) -> httpx.Response:
         import asyncio
+        import logging
         await request.aread()
-        return await asyncio.to_thread(self.sync, request)
+        try:
+            return await asyncio.to_thread(self.sync, request)
+        except Exception:
+            # A double failure must be visible as such, not as a provider outage.
+            logging.getLogger("labclear.benchmark").exception("test_double_failed")
+            raise
 
 
 def make_handler(recorder: Recorder, replay=None) -> Handler:
@@ -286,7 +309,7 @@ def make_handler(recorder: Recorder, replay=None) -> Handler:
                    skill_modules=[name for header, name in SKILL_HEADERS.items() if header in system])
         if stage == "writer":
             try:
-                payload = json.loads(messages[-1]["content"])
+                payload = _payload(messages)
                 row["evidence"] = [{"id": e.get("id"), "data_class": e.get("data_class"), "content": e.get("content", "")}
                                    for e in payload.get("EVIDENCE") or []]
                 row["role"] = (payload.get("ROLE") or {}).get("id")

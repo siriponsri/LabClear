@@ -262,6 +262,26 @@ def live_env(run: dict) -> dict:
 
 # ------------------------------------------------------------------ HTTP client for one case
 
+class Pacer:
+    """Keeps the runner under the app's own per-client limit (CHAT_RATE_LIMIT_REQUESTS, 120/min by
+    default) instead of switching it off. Waiting time is recorded separately from response time."""
+
+    def __init__(self, per_minute: int = 100):
+        self.per_minute, self.sent, self.waited_ms = per_minute, [], 0
+
+    def wait(self) -> None:
+        now_ = time.monotonic()
+        self.sent = [t for t in self.sent if now_ - t < 60]
+        if len(self.sent) >= self.per_minute:
+            pause = 60 - (now_ - self.sent[0]) + 0.05
+            self.waited_ms += round(pause * 1000)
+            time.sleep(pause)
+        self.sent.append(time.monotonic())
+
+
+PACER = Pacer()
+
+
 class Client:
     def __init__(self, base: str):
         self.base = base
@@ -272,12 +292,14 @@ class Client:
         return {"X-Business-CSRF": self.csrf, "X-LabClear-Guest": self.guest}
 
     def start(self) -> None:
+        PACER.wait()
         r = self.c.get(self.base + "/api/business/session", headers=self.headers())
         r.raise_for_status()
         body = r.json()
         self.csrf, self.guest = body["csrf"], body.get("guest_token", "")
 
     def get(self, path: str):
+        PACER.wait()
         r = self.c.get(self.base + "/api/business" + path, headers=self.headers())
         try:
             return r.status_code, r.json()
@@ -286,6 +308,7 @@ class Client:
 
     def stream(self, path: str, **kw) -> dict:
         """POST with Accept: application/x-ndjson; time every step event as it arrives."""
+        PACER.wait()
         t0 = time.perf_counter()
         events, result, error, status = [], None, None, 0
         headers = {**self.headers(), "Accept": "application/x-ndjson"}
@@ -320,6 +343,7 @@ class Client:
     def close(self) -> None:
         if self.guest:
             try:
+                PACER.wait()
                 self.c.post(self.base + "/api/business/guest/close", json={"guest_token": self.guest, "csrf": self.csrf})
             except httpx.HTTPError:
                 pass
@@ -353,6 +377,7 @@ class Staff:
         self.csrf = r.json()["csrf"]
 
     def snapshot(self) -> dict:
+        PACER.wait()
         r = self.c.get("/api/business/staff/budget", headers={"X-Business-CSRF": self.csrf})
         return r.json() if r.status_code == 200 else {}
 
@@ -518,6 +543,7 @@ def run_case(server: Server, staff: Staff | None, case: dict, rule: dict, gold: 
            "topic": case["topic"], "input_turns": case["turns"], "timestamp": now(), "cache_hit": False,
            "human_verdict": "PENDING_REVIEW", "human_review_role": None}
     outcomes = []
+    waited = PACER.waited_ms
     try:
         client.start()
         if case["kind"] == "image":
@@ -542,6 +568,7 @@ def run_case(server: Server, staff: Staff | None, case: dict, rule: dict, gold: 
                     row["confirmation_mode"] = "RAW_AS_READ"
                 explain = client.stream("/chat/report/confirm", json=confirm_body)
                 outcomes.append(explain)
+                PACER.wait()
                 client.c.delete(client.base + f"/api/business/reports/{res['report_id']}", headers=client.headers())
         else:
             for turn in case["turns"]:
@@ -563,7 +590,7 @@ def run_case(server: Server, staff: Staff | None, case: dict, rule: dict, gold: 
                checks_reported=result.get("checks"), trace=[t.get("label") for t in result.get("trace") or []],
                dot=(result.get("dot") or {}).get("id"), action=(result.get("action") or {}).get("type"),
                total_ms=sum(o.get("total_ms", 0) for o in outcomes), step_ms=[o.get("step_ms") for o in outcomes],
-               queue_ms=None, provider_ms=None)
+               queue_ms=None, provider_ms=None, runner_pacing_ms=PACER.waited_ms - waited)
     stages = {}
     for c in calls:
         stages[c.get("stage")] = stages.get(c.get("stage"), 0) + 1
@@ -704,6 +731,12 @@ def cmd_run(args) -> int:
            "canaries": rubric["canaries"]["other_customer"],
            "limits": {"retries_per_case": 2, "max_minutes": 60}}
     if mode in ("OFFLINE", "REPLAY"):
+        sys.path.insert(0, str(ROOT))
+        from tests.benchmark import doubles
+        run["doubles"] = {"version": doubles.DOUBLES_VERSION, "ocr_engine": doubles.OCR_ENGINE,
+                          "ocr_engine_version": (subprocess.run(["tesseract", "--version"], capture_output=True, text=True).stdout.splitlines() or [""])[0]
+                          if doubles.OCR_ENGINE == "tesseract" else None,
+                          "file_sha256": sha256_file(ROOT / "tests/benchmark/doubles.py")}
         run.update(canary_key="offline-canary-" + secrets.token_hex(8), provider_label="OFFLINE_DOUBLES",
                    model_label="none (test doubles; see verdict_scope)", price_status="NOT_APPLICABLE_OFFLINE",
                    policy_version=f"rubric {rubric['rubric_version']}; labels eval/policies/free_only.offline.json")
