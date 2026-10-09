@@ -43,7 +43,10 @@ def test_hospital_links_follow_the_codex_flag(monkeypatch):
     assert c.get(SITE + '/hospital-links').status_code == 404
     monkeypatch.setattr(settings, 'HOSPITAL_LINKS_ENABLED', True)
     data = c.get(SITE + '/hospital-links').json()
-    assert data['affiliation'] == 'NO_PARTNERSHIP_VERIFIED' and len(data['offers']) == 2
+    import json
+    with open('business_data/hospital_links.json', encoding='utf-8') as f:
+        recorded = json.load(f)['offers']
+    assert data['affiliation'] == 'NO_PARTNERSHIP_VERIFIED' and len(data['offers']) == len(recorded) >= 2
     for offer in data['offers']:
         assert not offer['booking_confirmed'] and not offer['partnership_verified']
         assert offer['url'].startswith('https://')

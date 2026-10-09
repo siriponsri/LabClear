@@ -1,6 +1,7 @@
 'use strict';
 (() => {
   const root = document.querySelector('[data-txn]'); if (!root) return;
+  const LOC = () => window.LC_I18N?.locale() || 'en-GB';   // dates follow the page language (static/js/i18n.js)
   const id = root.dataset.txn, panel = root.querySelector('[data-pay-panel]');
   const make = (tag, text, cls) => { const e = document.createElement(tag); if (text != null) e.textContent = text; if (cls) e.className = cls; return e; };
   const money = n => '฿' + new Intl.NumberFormat('en-US').format(n);
@@ -31,7 +32,7 @@
       panel.append(note, back);
     }
     const log = make('details'); log.append(make('summary', 'Signed events received (' + t.events.length + ')'));
-    const ul = make('ul', null, 'plain small'); t.events.forEach(e => ul.append(make('li', new Date(e.at * 1000).toLocaleString() + ' · ' + e.type))); log.append(ul);
+    const ul = make('ul', null, 'plain small'); t.events.forEach(e => ul.append(make('li', new Date(e.at * 1000).toLocaleString(LOC()) + ' · ' + e.type))); log.append(ul);
     panel.append(log);
   }
   function fail(message, retry = true) {

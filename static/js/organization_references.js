@@ -7,12 +7,12 @@
   async function request(url, options = {}) {
     const response = await fetch(url, { ...options, headers: { 'X-Business-CSRF': csrf, ...(options.headers || {}) }, cache: 'no-store' });
     const data = await response.json();
-    if (!response.ok) throw Error(data.message || 'ดำเนินการไม่สำเร็จ กรุณาตรวจสิทธิ์แล้วลองอีกครั้ง');
+    if (!response.ok) throw Error(data.message || 'The action did not complete. Check your access and try again.');
     return data;
   }
   async function run(fn) {
-    status.textContent = 'กำลังดำเนินการ…';
-    try { await fn(); status.textContent = 'ดำเนินการแล้ว'; }
+    status.textContent = 'Working…';
+    try { await fn(); status.textContent = 'Done'; }
     catch (error) { status.textContent = error.message; }
   }
   function preview(text) { document.getElementById('reference-preview').hidden = false; document.getElementById('reference-text').textContent = text; }
@@ -21,23 +21,24 @@
     const data = await request(base);
     document.getElementById('reference-upload').hidden = !data.can_edit;
     const list = document.getElementById('reference-list'); list.replaceChildren();
-    if (!data.documents.length) list.append(node('p', 'ยังไม่มีเอกสารที่คุณเข้าถึงได้'));
-    const labels = { draft: 'รอทบทวน', approved: 'อนุมัติแล้ว', rejected: 'ไม่อนุมัติ', revoked: 'ถอนแล้ว', deleted: 'ลบเนื้อหาแล้ว' };
+    if (!data.documents.length) list.append(node('p', 'No documents you can access yet.'));
+    const labels = { draft: 'Waiting for review', approved: 'Approved', rejected: 'Not approved', revoked: 'Revoked', deleted: 'Content deleted' };
     for (const doc of data.documents) {
       const section = node('article', ''); section.className = 'reference-record';
-      section.append(node('h3', doc.title), node('p', `รุ่น ${doc.version} · ${labels[doc.state]}`));
+      const title = node('h3', doc.title); title.setAttribute('translate', 'no');   // the uploader's own title
+      section.append(title, node('p', `Version ${doc.version} · ${labels[doc.state]}`));
       const actions = node('div', ''); actions.className = 'reference-actions';
-      if (['draft', 'rejected', 'approved'].includes(doc.state)) actions.append(button('ดูเนื้อหา', async () => preview((await request(base + '/' + doc.id)).text)));
+      if (['draft', 'rejected', 'approved'].includes(doc.state)) actions.append(button('View content', async () => preview((await request(base + '/' + doc.id)).text)));
       if (doc.state === 'approved') {
-        const link = node('a', 'ดาวน์โหลดเอกสาร'); link.href = base + '/' + doc.id + '/download'; actions.append(link);
+        const link = node('a', 'Download document'); link.href = base + '/' + doc.id + '/download'; actions.append(link);
       }
       if (data.can_edit) {
-        const steps = doc.state === 'draft' ? [['approve', 'อนุมัติ'], ['reject', 'ไม่อนุมัติ']] : doc.state === 'approved' ? [['revoke', 'ถอนเอกสาร']] : [];
-        if (doc.state !== 'deleted') steps.push(['delete', 'ลบเนื้อหา']);
+        const steps = doc.state === 'draft' ? [['approve', 'Approve'], ['reject', 'Do not approve']] : doc.state === 'approved' ? [['revoke', 'Revoke document']] : [];
+        if (doc.state !== 'deleted') steps.push(['delete', 'Delete content']);
         steps.forEach(([action, label]) => actions.append(button(label, async () => { await request(base + '/' + doc.id + '/' + action, { method: 'POST' }); document.getElementById('reference-preview').hidden = true; await refresh(); })));
-        if (doc.state === 'approved') actions.append(button('อัปโหลดรุ่นใหม่', async () => {
+        if (doc.state === 'approved') actions.append(button('Upload a new version', async () => {
           const form = document.getElementById('reference-upload'); form.elements.previous_id.value = doc.id;
-          document.getElementById('version-note').textContent = 'รุ่นใหม่ของ ' + doc.title; form.elements.title.focus();
+          document.getElementById('version-note').textContent = 'New version of ' + doc.title; form.elements.title.focus();
         }));
       }
       section.append(actions); list.append(section);
@@ -45,7 +46,7 @@
   }
   document.getElementById('reference-upload').onsubmit = event => {
     event.preventDefault(); const form = event.currentTarget;
-    run(async () => { const result = await request(base, { method: 'POST', body: new FormData(form) }); preview(result.preview); form.reset(); document.getElementById('version-note').textContent = 'เอกสารใหม่'; await refresh(); });
+    run(async () => { const result = await request(base, { method: 'POST', body: new FormData(form) }); preview(result.preview); form.reset(); document.getElementById('version-note').textContent = 'New document'; await refresh(); });
   };
   document.getElementById('membership-form').onsubmit = event => {
     event.preventDefault(); const body = Object.fromEntries(new FormData(event.currentTarget));
@@ -55,9 +56,10 @@
     event.preventDefault(); const query = new FormData(event.currentTarget).get('q');
     run(async () => {
       const data = await request(base + '/search', { method: 'POST', body: JSON.stringify({ q: query }), headers: { 'Content-Type': 'application/json' } }); const results = document.getElementById('reference-results'); results.replaceChildren();
-      results.append(node('h2', 'ข้อความจากเอกสารต้นทาง — ไม่ใช่คำตอบจาก AI'));
-      if (!data.sources.length) results.append(node('p', 'ไม่พบข้อความในเอกสารที่อนุมัติแล้ว'));
-      data.sources.forEach(source => { const article = node('article', ''); const link = node('a', `${source.title} · รุ่น ${source.version} · ${source.section}`); link.href = source.url; article.append(link, node('pre', source.content)); results.append(article); });
+      results.append(node('h2', 'Text from the source documents — not an answer from AI'));
+      if (!data.sources.length) results.append(node('p', 'No text found in approved documents.'));
+      data.sources.forEach(source => { const article = node('article', ''); const link = node('a', `${source.title} · v${source.version} · ${source.section}`); link.href = source.url; link.setAttribute('translate', 'no');
+        const excerpt = node('pre', source.content); excerpt.setAttribute('translate', 'no'); article.append(link, excerpt); results.append(article); });
     });
   };
   run(async () => {

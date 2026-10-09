@@ -19,6 +19,37 @@ from services.conversation_transport import ConversationError
 ROOT = Path(__file__).resolve().parents[1]
 templates = Jinja2Templates(directory=ROOT / "templates")
 router = APIRouter()
+LANG_COOKIE = "labclear_language"
+
+
+def ui_lang(request: Request) -> str:
+    """Interface language: Thai unless the visitor chose English (TH/EN switch cookie)."""
+    return "en" if request.cookies.get(LANG_COOKIE) == "en" else "th"
+
+
+def _asset_version() -> str:
+    # Changes whenever the dictionary or the translator changes, so browsers can cache them for a year.
+    import hashlib
+    digest = hashlib.sha256()
+    for name in ("static/i18n/th.js", "static/js/i18n.js", "static/css/i18n.css", "static/css/base.css", "static/css/site.css", "static/css/workspace.css", "static/js/turns.js"):
+        path = ROOT / name
+        digest.update(path.read_bytes() if path.exists() else b"")
+    return digest.hexdigest()[:12]
+
+
+def text_lang(text) -> str:
+    """The language a stored text is written in (offers, records): marks it with lang="…"."""
+    import re
+    return "th" if re.search(r"[\u0E01-\u0E3A\u0E40-\u0E5B]", str(text or "")) else "en"
+
+
+def feature(name: str) -> bool:
+    """Feature flags templates may show links for (read at render time)."""
+    from config import settings
+    return bool(getattr(settings, name, False))
+
+
+templates.env.globals.update(ui_lang=ui_lang, asset_version=_asset_version(), text_lang=text_lang, feature=feature)
 
 
 @router.get('/preview/landing', response_class=HTMLResponse)
@@ -34,7 +65,7 @@ async def organization_references(request: Request):
     from config import settings
     if not settings.ORG_DOCUMENTS_ENABLED:
         raise ConversationError('feature_disabled', 'Organization references are disabled.', 404)
-    return page(request, 'site/organization_references.html', 'เอกสารอ้างอิงองค์กร | LabClear', 'จัดการเอกสารจำลองที่ผ่านการตรวจทาน')
+    return page(request, 'site/organization_references.html', 'Organization references | LabClear', 'Manage reviewed synthetic organization documents.')
 
 
 @router.get('/hospital-links', response_class=HTMLResponse)
@@ -43,7 +74,7 @@ async def hospital_links(request: Request):
     from services.hospital_links import catalog
     if not settings.HOSPITAL_LINKS_ENABLED:
         raise ConversationError('feature_disabled', 'Hospital links are disabled.', 404)
-    return page(request, 'site/hospital_links.html', 'แพ็กเกจจากเว็บไซต์โรงพยาบาล | LabClear', 'ลิงก์ข้อมูลบริการจากแหล่งทางการ', offers=catalog())
+    return page(request, 'site/hospital_links.html', 'Packages on hospital websites | LabClear', 'Links to official hospital pages, separate from LabClear\'s simulated packages. No partnership or booking is implied.', offers=catalog())
 
 SEGMENTS = [
     {"id": "core", "label": "Core health checks", "query": "segment=individual&review=excluded",

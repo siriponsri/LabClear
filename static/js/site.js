@@ -117,7 +117,8 @@
   function renderChips(p) {
     chips.replaceChildren();
     const add = (key, text) => {
-      const b = el('button', null, 'chip active'); b.type = 'button'; b.append(document.createTextNode(text + ' '), el('span', '×', 'x'));
+      // A search term the visitor typed stays as typed (translate="no"); filter names are translated.
+      const b = el('button', null, 'chip active'); b.type = 'button'; const label = el('span', text + ' '); if (key === 'q') label.setAttribute('translate', 'no'); b.append(label, el('span', '×', 'x'));
       b.setAttribute('aria-label', 'Remove filter: ' + text);
       b.addEventListener('click', () => { const f = form.elements[key]; if (f instanceof RadioNodeList) { [...f].forEach(r => { r.checked = r.value === ''; }); } else f.value = ''; update(true); });
       chips.append(b);

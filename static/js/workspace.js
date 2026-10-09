@@ -4,6 +4,7 @@
    capacity, payment state and permissions. The browser only renders and asks. */
 (() => {
   const $ = id => document.getElementById(id);
+  const LOC = () => window.LC_I18N?.locale() || 'en-GB';   // dates follow the page language (static/js/i18n.js)
   const STAFF_MODE = document.body.dataset.staff === 'true';
   const STAFF_ROLES = ['staff', 'manager', 'clinical'];
   let guestToken = '', csrf = '', user = null, state = null, accessCode = '', busy = false, controller = null;
@@ -12,9 +13,9 @@
 
   /* ------------------------------------------------------------ helpers */
   const money = n => '฿' + new Intl.NumberFormat('en-US').format(n);
-  const longDate = s => new Date(s + 'T00:00:00').toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
-  const ago = t => { const m = Math.max(0, Math.round((Date.now() / 1000 - t) / 60)); return m < 1 ? 'just now' : m < 60 ? m + ' min ago' : m < 1440 ? Math.round(m / 60) + ' h ago' : Math.round(m / 1440) + ' d ago'; };
-  const when = t => new Date(t * 1000).toLocaleString('en-GB', { dateStyle: 'medium', timeStyle: 'short' });
+  const longDate = s => new Date(s + 'T00:00:00').toLocaleDateString(LOC(), { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+  const ago = t => { const m = Math.max(0, Math.round((Date.now() / 1000 - t) / 60)); return m < 1 ? 'just now' : m < 60 ? m + ' min ago' : m < 1440 ? Math.round(m / 60) + ' h ago' : Math.round(m / 1440) + ' d ago'; };   // translated by i18n.js templates
+  const when = t => new Date(t * 1000).toLocaleString(LOC(), { dateStyle: 'medium', timeStyle: 'short' });
   const el = (tag, text, cls) => { const e = document.createElement(tag); if (text !== undefined && text !== null) e.textContent = text; if (cls) e.className = cls; return e; };
   const isStaff = () => STAFF_ROLES.includes(user?.role);
   const isManager = () => user?.role === 'manager';
@@ -304,7 +305,7 @@
     const next = $('context-next'); next.replaceChildren();
     const today = bangkokDate(0), open = state.bookings.filter(b => ['requested', 'confirmed'].includes(b.state) && b.data.date >= today).sort((a, b) => (a.data.date + a.data.time).localeCompare(b.data.date + b.data.time));
     if (open.length) {
-      const b = open[0], a = el('button', (b.state === 'requested' ? 'Requested: ' : 'Next visit: ') + new Date(b.data.date + 'T00:00:00').toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' }) + ', ' + b.data.time, 'link-btn');
+      const b = open[0], a = el('button', (b.state === 'requested' ? 'Requested: ' : 'Next visit: ') + new Date(b.data.date + 'T00:00:00').toLocaleDateString(LOC(), { weekday: 'short', day: 'numeric', month: 'short' }) + ', ' + b.data.time, 'link-btn');
       a.type = 'button'; a.onclick = () => navigate('bookings'); next.append(a, bookingBadges(b)[0]);
     } else if (mode !== 'bot') next.append(el('span', 'Our team has this conversation.'));
     const chips = $('context-chips'); chips.replaceChildren();
@@ -447,7 +448,8 @@
     const STATUS_TEXT = { high: ['Above', 'warn'], low: ['Below', 'warn'], within: ['Within', 'ok'] };
     (m.fields || []).forEach(f => {
       const tr = el('tr'), st = STATUS_TEXT[f.status], td = el('td');
-      tr.append(el('td', f.name), el('td', (f.value + ' ' + (f.unit || '')).trim(), 'num'), el('td', f.reference || 'None printed', f.reference ? '' : 'muted'));
+      const nameCell = el('td', f.name); nameCell.setAttribute('translate', 'no');   // test name as read from the report
+      tr.append(nameCell, el('td', (f.value + ' ' + (f.unit || '')).trim(), 'num'), el('td', f.reference || 'None printed', f.reference ? '' : 'muted'));
       if (st) td.append(badge(st[0], st[1])); else td.append(el('span', 'Not compared', 'tiny muted'));
       if (f.printed_flag) td.append(el('span', ' flag ' + f.printed_flag, 'tiny muted'));
       tr.append(td); t.append(tr);
@@ -712,7 +714,7 @@
       const p = bookable.find(x => x.id === pkg.input.value);
       summary.replaceChildren(el('h3', 'Summary'));
       const dl = el('dl'); const row = (k, v) => { const d = el('div'); d.append(el('dt', k), el('dd', v || 'Not chosen')); dl.append(d); };
-      row('Package', p?.name); row('Center', branch.input.value ? branchName(branch.input.value) : ''); row('Date', date.input.value ? new Date(date.input.value + 'T00:00:00').toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' }) : ''); row('Time', time ? time + ' Bangkok time' : '');
+      row('Package', p?.name); row('Center', branch.input.value ? branchName(branch.input.value) : ''); row('Date', date.input.value ? new Date(date.input.value + 'T00:00:00').toLocaleDateString(LOC(), { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' }) : ''); row('Time', time ? time + ' Bangkok time' : '');
       summary.append(dl, el('p', p ? money(p.price_thb) : '', 'total'), el('p', 'Simulated price from the current catalog. The server rechecks price and capacity when you send.', 'tiny muted'), submit);
     }
     form.onsubmit = e => e.preventDefault();
@@ -760,7 +762,7 @@
         const d = q.data, r = el('article', null, 'record'), h = el('div', null, 'record-head');
         const tone = { offered: ['Ready to review', 'warn'], accepted: ['Accepted', 'ok'], superseded: ['Superseded by a newer version', 'neutral'] }[q.state] || [q.state, 'neutral'];
         h.append(el('h3', d.items[0].name + ' · version ' + (d.version || 1)), badge(...tone)); r.append(h);
-        const meta = el('div', null, 'record-meta'); meta.append(el('span', 'Total ' + money(d.total_thb)), el('span', d.date + ' ' + d.time), el('span', d.venue), el('span', 'Valid until ' + new Date(d.expires * 1000).toLocaleDateString('en-GB')));
+        const meta = el('div', null, 'record-meta'); meta.append(el('span', 'Total ' + money(d.total_thb)), el('span', d.date + ' ' + d.time), el('span', d.venue), el('span', 'Valid until ' + new Date(d.expires * 1000).toLocaleDateString(LOC())));
         r.append(meta); if (d.note) r.append(el('p', 'Note: ' + d.note, 'small'));
         const act = el('div', null, 'record-actions');
         act.append(link('Download quotation (PDF)', '/api/business/quotes/' + encodeURIComponent(q.id) + '/document.pdf', 'btn sm'));
@@ -920,8 +922,8 @@
   /* ------------------------------------------------------------ plan, lab dashboard */
   const planOf = () => state?.plan || { plan: 'free', images_per_read: 1, trends: false, can_read: true, ai_reads_used: 0, ai_reads_limit: 1 };
   const isPlus = () => planOf().plan === 'plus';
-  const dayText = t => new Date(t * 1000).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
-  const shortDate = d => /^\d{4}-\d{2}-\d{2}$/.test(d || '') ? new Date(d + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : (d || '');
+  const dayText = t => new Date(t * 1000).toLocaleDateString(LOC(), { day: 'numeric', month: 'short', year: 'numeric' });
+  const shortDate = d => /^\d{4}-\d{2}-\d{2}$/.test(d || '') ? new Date(d + 'T00:00:00').toLocaleDateString(LOC(), { day: 'numeric', month: 'short', year: 'numeric' }) : (d || '');
   const LAB_STATUS = { within: ['Within printed range', 'ok'], high: ['Above printed range', 'warn'], low: ['Below printed range', 'warn'], unknown: ['No range to compare', 'neutral'] };
   function planStrip() {
     const p = planOf(), s = el('div', null, 'plan-strip');
@@ -1006,7 +1008,7 @@
     [['within', 'Within range'], ['high', 'Above range'], ['low', 'Below range'], ['unknown', 'No printed range']].forEach(([k, label]) => kpis.append(tile(label, String(lab.counts[k] || 0), k === 'within' ? 'of ' + lab.rows.length + (lab.rows.length === 1 ? ' test' : ' tests') : '')));
     sum.append(head, kpis);
     const flagged = lab.rows.filter(r => r.status === 'high' || r.status === 'low');
-    if (flagged.length) { const ul = el('ul', null, 'plain flag-list'); flagged.forEach(r => { const li = el('li'); li.append(el('strong', r.name), el('span', ` ${r.value} ${r.unit}`.trimEnd()), el('span', ' · printed range ' + (r.reference || 'none'), 'muted small'), badge(...LAB_STATUS[r.status])); ul.append(li); }); sum.append(ul); }
+    if (flagged.length) { const ul = el('ul', null, 'plain flag-list'); flagged.forEach(r => { const li = el('li'), nm = el('strong', r.name); nm.setAttribute('translate', 'no'); li.append(nm, el('span', ` ${r.value} ${r.unit}`.trimEnd()), el('span', ' · printed range ' + (r.reference || 'none'), 'muted small'), badge(...LAB_STATUS[r.status])); ul.append(li); }); sum.append(ul); }
     const askRow = el('div', null, 'row'); askRow.append(button('Ask about this report', async () => { await post('/reports/select', { report_id: lab.id }); await refresh(); await navigate('chat'); $('message').value = 'Please explain my latest report in plain language.'; $('message').focus(); }, 'btn sm'));
     sum.append(askRow);
     box.append(sum);
@@ -1021,7 +1023,8 @@
     const grid = el('div', null, 'trend-grid');
     tr.tests.slice(0, 24).forEach(t => {
       const card = el('article', null, 'trend-card'), h = el('div', null, 'trend-head');
-      h.append(el('strong', t.name), badge(...(LAB_STATUS[t.latest.status] || LAB_STATUS.unknown)));
+      const tn = el('strong', t.name); tn.setAttribute('translate', 'no');   // test name as printed on the reports
+      h.append(tn, badge(...(LAB_STATUS[t.latest.status] || LAB_STATUS.unknown)));
       const meta = el('p', null, 'small muted');
       meta.textContent = `${t.latest.value} ${t.unit}`.trim() + (t.change === null || t.change === undefined ? (t.count > 1 ? ' · change not numeric' : ' · one report so far') : t.change === 0 ? ` · no change since ${shortDate(t.previous.date)}` : ` · ${t.change > 0 ? '+' : ''}${t.change} since ${shortDate(t.previous.date)}`);
       card.append(h, meta, sparkline(t), el('p', t.latest.reference ? 'Band: range printed on the latest report (' + t.latest.reference + ')' : 'No printed range on the latest report', 'tiny muted'));
@@ -1076,7 +1079,7 @@
     const b = el('button', null, 'ticket-btn'); b.type = 'button'; b.dataset.ticket = t.id; b.setAttribute('aria-current', String(t.id === activeTicket));
     const top = el('span', null, 'row'); top.append(el('strong', t.data.summary.slice(0, 90)));
     const tone = { waiting: 'warn', staff: '', bot: 'neutral', closed: 'neutral' }[t.state];
-    b.append(top, el('small', ({ waiting: 'Waiting', staff: 'With staff', bot: 'Back with assistant', closed: 'Closed' }[t.state] || t.state) + ' · ' + (t.branch || 'any center') + ' · ' + when(t.created)));
+    b.append(top, el('small', ({ waiting: 'Waiting', staff: 'With staff', bot: 'Back with assistant', closed: 'Case closed' }[t.state] || t.state) + ' · ' + (t.branch || 'any center') + ' · ' + when(t.created)));
     if (t.data.topic === 'organization') b.append(badge('Organization', 'neutral'));
     b.onclick = () => openTicket(t.id); b.classList.toggle('closed', t.state === 'closed'); void tone; return b;
   }
@@ -1109,7 +1112,7 @@
     try { [d, inq] = await Promise.all([api('/staff/tickets/' + id), api('/staff/tickets/' + id + '/inquiry')]); }
     catch (e) { thread.replaceChildren(empty('This case cannot be opened', e.message)); return; }
     const t = d.ticket, mine = t.data.assigned_to === user.id;
-    const head = el('div', null, 'record-head'); head.append(el('h3', t.data.summary), badge({ waiting: 'Waiting', staff: mine ? 'You are replying' : 'With another staff member', bot: 'With assistant', closed: 'Closed' }[t.state] || t.state, t.state === 'waiting' ? 'warn' : 'neutral'));
+    const head = el('div', null, 'record-head'); head.append(el('h3', t.data.summary), badge({ waiting: 'Waiting', staff: mine ? 'You are replying' : 'With another staff member', bot: 'With assistant', closed: 'Case closed' }[t.state] || t.state, t.state === 'waiting' ? 'warn' : 'neutral'));
     thread.replaceChildren(head);
     const controls = el('div', null, 'record-actions');
     const setState = (label, s, cls) => button(label, async () => { await post('/staff/tickets/' + id + '/state', { state: s }); notice(s === 'staff' ? 'You took over. The assistant is paused for this customer.' : s === 'bot' ? 'Returned to the assistant.' : 'Case closed.'); await openTicket(id); pollList(); }, cls);
@@ -1185,7 +1188,7 @@
   function staffBookingRow(b, after) {
     const d = b.data, r = el('article', null, 'record'), h = el('div', null, 'record-head');
     h.append(el('h3', d.items.map(i => i.name).join(' + ')), ...bookingBadges(b));
-    const meta = el('div', null, 'record-meta'); meta.append(el('span', new Date(d.date + 'T00:00:00').toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' }) + ', ' + d.time), el('span', branchName(b.branch)), el('span', money(d.total_thb)), el('span', d.organization ? 'Organization' : 'Pays ' + ({ center: 'at the center', promptpay: 'by test PromptPay', card: 'by test card' }[d.payment_method] || 'at the center')), el('span', 'Ref ' + b.id.slice(-8)));
+    const meta = el('div', null, 'record-meta'); meta.append(el('span', new Date(d.date + 'T00:00:00').toLocaleDateString(LOC(), { weekday: 'short', day: 'numeric', month: 'short' }) + ', ' + d.time), el('span', branchName(b.branch)), el('span', money(d.total_thb)), el('span', d.organization ? 'Organization' : 'Pays ' + ({ center: 'at the center', promptpay: 'by test PromptPay', card: 'by test card' }[d.payment_method] || 'at the center')), el('span', 'Ref ' + b.id.slice(-8)));
     if (b.state === 'requested' && d.requested_at) meta.append(el('span', 'Requested ' + ago(d.requested_at)));
     r.append(h, meta);
     const act = el('div', null, 'record-actions');
@@ -1328,11 +1331,11 @@
     box.append(el('p', c.channel + ' · reference ' + c.id.slice(-8), 'small muted'));
     const block = (title, rows, emptyText) => { const b = el('section', null, 'history-block'); b.append(el('h4', title)); if (!rows.length) b.append(el('p', emptyText, 'small muted')); rows.forEach(r => b.append(r)); box.append(b); };
     block('Appointments', d.bookings.slice().reverse().map(b => { const r = el('div', null, 'history-row'); r.append(el('strong', (b.items || []).map(i => i.name).join(' + ')), el('span', longDate(b.date) + ', ' + b.time), el('span', branchName(b.branch)), el('span', money(b.total_thb)), ...bookingBadges({ state: b.state, data: { payment_status: b.payment_status } })); return r; }), 'No appointments.');
-    block('Cases', d.tickets.slice().reverse().map(t => { const r = el('div', null, 'history-row'); r.append(el('span', t.summary.slice(0, 80)), badge({ waiting: 'Waiting', staff: 'With staff', bot: 'With assistant', closed: 'Closed' }[t.state] || t.state, t.state === 'waiting' ? 'warn' : 'neutral'), button('Open case', async () => { closeModal(); activeTicket = t.id; ticketFilter = 'all'; await navigate('staff'); }, 'btn ghost sm')); return r; }), 'No cases.');
+    block('Cases', d.tickets.slice().reverse().map(t => { const r = el('div', null, 'history-row'); r.append(el('span', t.summary.slice(0, 80)), badge({ waiting: 'Waiting', staff: 'With staff', bot: 'With assistant', closed: 'Case closed' }[t.state] || t.state, t.state === 'waiting' ? 'warn' : 'neutral'), button('Open case', async () => { closeModal(); activeTicket = t.id; ticketFilter = 'all'; await navigate('staff'); }, 'btn ghost sm')); return r; }), 'No cases.');
     block('Quotations', d.quotes.map(q => { const r = el('div', null, 'history-row'); r.append(el('strong', 'Version ' + q.version), el('span', q.people + ' people, ' + q.date), el('span', money(q.total_thb)), badge(q.state, q.state === 'accepted' ? 'ok' : q.state === 'offered' ? 'warn' : 'neutral'), link('PDF', '/api/business/quotes/' + encodeURIComponent(q.id) + '/document.pdf', 'btn ghost sm')); return r; }), 'No quotations.');
     block('Test payments', d.payments.slice().reverse().map(p => { const r = el('div', null, 'history-row'); r.append(el('span', p.reference), el('span', money(p.amount_thb)), el('span', { promptpay: 'Test PromptPay', card: 'Test card' }[p.method] || p.method), payBadge(p.state)); return r; }), 'No test payments.');
     box.append(el('p', d.reports.count ? d.reports.count + (d.reports.count === 1 ? ' report uploaded' : ' reports uploaded') + ', ' + d.reports.confirmed + ' confirmed. Values stay private to the customer.' : 'No reports uploaded.', 'small muted'));
-    if (d.plan) box.append(el('p', 'Lab Report plan: ' + d.plan.plan_name + (d.plan.active ? ' until ' + new Date(d.plan.period_end * 1000).toLocaleDateString('en-GB') : '') + ' · AI readings used: ' + d.plan.ai_reads_used, 'small muted'));
+    if (d.plan) box.append(el('p', 'Lab Report plan: ' + d.plan.plan_name + (d.plan.active ? ' until ' + new Date(d.plan.period_end * 1000).toLocaleDateString(LOC()) : '') + ' · AI readings used: ' + d.plan.ai_reads_used, 'small muted'));
     modal(c.label, box);
   }
   const PAY = { pending: ['Waiting for payment', 'warn'], succeeded: ['Succeeded', 'ok'], failed: ['Failed', 'bad'], expired: ['Expired', 'neutral'], cancelled: ['Cancelled', 'neutral'], refunded: ['Refunded', 'neutral'], center: ['Paid at center', 'ok'] };
@@ -1398,7 +1401,7 @@
     const days = el('select', null, 'input'); days.setAttribute('aria-label', 'Days ahead');
     [[7, 'Next 7 open days'], [14, 'Next 14 open days']].forEach(([v, t]) => { const o = el('option', t); o.value = v; days.append(o); });
     days.value = String(dashDays); days.onchange = () => { dashDays = Number(days.value); navigate('overview', false); };
-    bar.append(days, el('span', 'Updated ' + new Date(d.generated_at * 1000).toLocaleTimeString('en-GB'), 'small muted'), button('Refresh', () => navigate('overview', false), 'btn ghost sm'));
+    bar.append(days, el('span', 'Updated ' + new Date(d.generated_at * 1000).toLocaleTimeString(LOC()), 'small muted'), button('Refresh', () => navigate('overview', false), 'btn ghost sm'));
     box.append(intro('Overview', 'Every number is computed from stored appointments, cases, quotations and payments. Money values are simulated.'), bar);
     // Decision of the day: requests that only a person can confirm, oldest first, with the real actions inline.
     const waiting = ops.bookings.filter(b => b.state === 'requested' && (!dashBranch || b.branch === dashBranch)).sort((a, b) => (a.data.requested_at || 0) - (b.data.requested_at || 0));
@@ -1431,7 +1434,7 @@
     // Capacity heat strip: sequential single hue, value printed in every cell, legend + caption.
     const cap = el('section', null, 'card stack-sm'); cap.append(el('h3', 'Capacity used'), el('p', 'Requested and confirmed visits against slots (18 half-hours × visits per slot), Monday to Saturday.', 'small muted'));
     const tableWrap = el('div', null, 'heat-wrap'), t = el('table', null, 'heat'); t.setAttribute('aria-label', 'Capacity used per center and day');
-    const hr = el('tr'); hr.append(el('th', 'Center')); (d.capacity[0]?.days || []).forEach(x => { const th = el('th', new Date(x.date + 'T00:00:00').toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric' })); th.scope = 'col'; hr.append(th); }); hr.append(el('th', 'Used')); t.append(hr);
+    const hr = el('tr'); hr.append(el('th', 'Center')); (d.capacity[0]?.days || []).forEach(x => { const th = el('th', new Date(x.date + 'T00:00:00').toLocaleDateString(LOC(), { weekday: 'short', day: 'numeric' })); th.scope = 'col'; hr.append(th); }); hr.append(el('th', 'Used')); t.append(hr);
     d.capacity.forEach(b => {
       const tr = el('tr'), th = el('th', b.name.replace(' Demo Center', '')); th.scope = 'row'; tr.append(th);
       b.days.forEach(x => { const u = x.capacity ? x.used / x.capacity : 0, step = rampStep(u), td = el('td', x.used + '/' + x.capacity, 'num heat-' + step); td.title = `${b.name}, ${x.date}: ${x.used} of ${x.capacity} visits`; tr.append(td); });
@@ -1499,7 +1502,9 @@
     const d = await api('/staff/audit?limit=150');
     if (!d.events.length) { box.append(empty('No events yet', '')); return box; }
     const wrap = el('div', null, 'table-wrap'), t = el('table', null, 'data'), h = el('tr'); ['Time', 'Actor', 'Action', 'Record'].forEach(x => h.append(el('th', x))); t.append(h);
-    d.events.forEach(e => { const tr = el('tr'); tr.append(el('td', when(e.at)), el('td', e.actor_role + ' …' + e.actor), el('td', e.action), el('td', '…' + e.object)); t.append(tr); });
+    d.events.forEach(e => { const tr = el('tr'); const who = el('td', e.actor_role + ' '), id = el('span', '…' + e.actor, 'mono muted'), obj = el('td', '…' + e.object); id.setAttribute('translate', 'no'); obj.setAttribute('translate', 'no'); who.append(id);
+      const act = el('td', e.action); act.setAttribute('translate', 'no');   // record codes stay as stored
+      tr.append(el('td', when(e.at)), who, act, obj); t.append(tr); });
     wrap.append(t); box.append(wrap); return box;
   }
 
@@ -1539,7 +1544,7 @@
         await api('/staff/ai-providers/' + slot, { method: 'PUT', body: JSON.stringify({ preset: prov.input.value, model: model.input.value.trim(), api_key: key.input.value.trim(), base_url: url.input.value.trim(), enabled: kind === 'vision' ? box2.checked : true, price_in: pin.input.value === '' ? null : Number(pin.input.value), price_out: pout.input.value === '' ? null : Number(pout.input.value), provider_allowlist: endpoints.input.value.split(',').map(s => s.trim()).filter(Boolean) }) });
         notice(cur.label + ' saved.'); await navigate('ai', false); connection();
       }, 'btn primary sm'),
-      button('Test', async () => { const r = await post('/staff/ai-providers/' + slot + '/test'); notice(r.message, r.ok ? '' : 'bad'); }, 'btn sm'));
+      button('Test connection', async () => { const r = await post('/staff/ai-providers/' + slot + '/test'); notice(r.message, r.ok ? '' : 'bad'); }, 'btn sm'));
     if (cur.source === 'app') actions.append(button(upgrade ? 'Disable this new role' : slot.startsWith('agent_') ? 'Use the shared language model' : 'Use server settings', async () => {
       await api('/staff/ai-providers/' + slot, { method: 'DELETE' });
       notice(upgrade ? cur.label + ' is disabled.' : slot.startsWith('agent_') ? cur.label + ' uses the shared language model again.' : 'Saved settings removed; the server environment is used again.');
@@ -1612,6 +1617,20 @@
   mobile.addEventListener('change', () => setMenu(false));
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && $('sidebar').classList.contains('open')) { setMenu(false); $('menu-toggle').focus(); } });
   window.addEventListener('popstate', () => { const p = new URLSearchParams(location.search); navigate(p.get('view') || (STAFF_MODE ? 'overview' : 'chat'), false, Object.fromEntries(p)); });
+
+  /* ------------------------------------------------------------ interface language
+     static/js/i18n.js swaps the interface text in place. Dates and times are formatted for the
+     language, so after a switch the conversation and read-only views are rebuilt quietly (no
+     skeleton); views with forms keep what was typed. */
+  const FORM_VIEWS = ['book', 'packages', 'staff', 'catalog-admin', 'centers', 'roles', 'ai'];
+  document.addEventListener('labclear:language', async () => {
+    lastMessages = '';
+    if (state && !STAFF_MODE) { renderMessages(state.conversation); renderContext(); }
+    if (TITLES[view]) document.title = TITLES[view] + ' | LabClear';
+    if (view === 'chat' || FORM_VIEWS.includes(view) || $('modal').open) return;
+    const id = ++navigationId, params = Object.fromEntries(new URLSearchParams(location.search));
+    try { const node = await FACTORIES[view](params); if (id === navigationId) $('content').replaceChildren(node); } catch { /* keep the current view */ }
+  });
 
   /* ------------------------------------------------------------ connection and linking */
   async function connection() {

@@ -10,7 +10,7 @@
   <div class="table-wrap">
     <table class="data sources-table">
       <thead><tr><th scope="col">Title</th><th scope="col">Publisher</th><th scope="col">Reviewed</th></tr></thead>
-      <tbody>{% for r in records %}<tr><td><a href="{{ r.url }}" target="_blank" rel="noopener noreferrer">{{ r.title }}</a><div class="tiny muted">{{ r.id }}</div></td><td class="small">{{ r.publisher }}</td><td class="small">{{ r.reviewed_at }}</td></tr>{% endfor %}</tbody>
+      <tbody>{% for r in records %}<tr><td><a href="{{ r.url }}" target="_blank" rel="noopener noreferrer" lang="{{ r.language or text_lang(r.title) }}">{{ r.title }}</a><div class="tiny muted mono" translate="no">{{ r.id }}</div></td><td class="small">{{ r.publisher }}</td><td class="small">{{ r.reviewed_at }}</td></tr>{% endfor %}</tbody>
     </table>
   </div>
   <p class="small muted">Reference intervals in these sources are context, not personal decision limits. Ranges printed on your own report take precedence. Synthetic test reports are never used as medical knowledge.</p>

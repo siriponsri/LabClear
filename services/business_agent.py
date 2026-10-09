@@ -112,6 +112,27 @@ def _agent(name):
     from services.providers import agent_slot,is_agent
     return agent_slot(name) if is_agent(agent_slot(name)) else 'llm'
 
+PACKAGE_TALK=re.compile(r'แพ็กเกจ|แพคเกจ|แพ็คเกจ|ตรวจสุขภาพ|โปรแกรมตรวจ|โรงพยาบาล|package|check-?up|health check|hospital',re.I)
+
+
+async def _hospital_offers(tools,plan,message,reads,step):
+    """Official hospital package pages shown beside a package answer (flag HOSPITAL_LINKS_ENABLED).
+    Python attaches them after the answer passed every check; they never reach the model, so they
+    cannot be quoted as LabClear prices, a booking or a partnership. Only offers whose price is
+    current (VERIFIED) are listed, at most three; the full list is on /hospital-links."""
+    if not settings.HOSPITAL_LINKS_ENABLED or 'catalog' not in reads or plan.action not in ('answer','clarify','quote','book'):
+        return []
+    if not (plan.package_ids or PACKAGE_TALK.search(message)):
+        return []
+    try:
+        found=(await agent_tools.invoke(tools,'get_external_hospital_offer',{}))['offers']
+    except transport.ConversationError:
+        return []
+    current=[o for o in found if o.get('state')=='VERIFIED' and o.get('price_thb') is not None][:3]
+    if current:await step('offers','done','Linked official hospital package pages',', '.join(dict.fromkeys(o['hospital'] for o in current)))
+    return [{k:o.get(k) for k in ('id','hospital','branch','variant','url','detail_url','price_thb','checked_at')} for o in current]
+
+
 async def run(message,context,emit=None):
     """One answer. emit(event) receives each step as it starts and ends, for the live view; the
     finished steps are returned as 'trace' and kept with the answer under "How this was checked"."""
@@ -222,6 +243,9 @@ async def run(message,context,emit=None):
     role={'id':dot['id'],'name':dot['name'],'summary':dot['summary'],'rule':'You are this AI role of LabClear, not a person or clinician. Stay within the role.'+(' You have no sales, pricing or booking tools: never name, price or recommend packages; offer the Health-check Advisor instead.' if 'quote' not in dot['actions'] else '')}
     if role_report:await step('report','done','Using your confirmed report',f"{len(role_report.get('fields',[]))} values, compared only with the ranges printed on it")
     payload={'USER_TEXT':message,'ROLE':role,'REPORT':role_report,'PREVIOUS_REPORTS':context.get('previous_reports',[]) if role_report else [],'EVIDENCE':evidence,'ACTION':action,'decision':plan.model_dump(exclude={'ui'}),'customer_state':customer_state}
+    # Process explainability: name the typed tools the server ran for this role (no arguments, no data).
+    ran=[a['tool'] for a in tools.audit if a.get('ok')]
+    if ran:await step('tools','done','Typed tools used',', '.join(dict.fromkeys(ran)))
     writer=_agent(dot['id'])
     instructions=ANSWER
     skills=None
@@ -231,6 +255,7 @@ async def run(message,context,emit=None):
         chosen=select(dot,plan.action,bool(role_report),{e.get('data_class') for e in evidence},[a['tool'] for a in tools.audit if a.get('ok')])
         instructions += '\n\n' + chosen['instructions']
         skills={'package':chosen['id']+' '+chosen['version'],'modules':[m['id'] for m in chosen['modules']],'sha256':chosen['sha256'][:16]}
+        await step('skills','done','Runtime skills selected',', '.join(skills['modules']))
     if settings.MEDICAL_HARNESS_ENABLED and role_report:
         from services.model_harness import analyze, packet_from_payload
         from services.providers import runtime
@@ -291,4 +316,5 @@ async def run(message,context,emit=None):
     await guard.check(answer.reply+'\n'+'\n'.join(answer.followups)+'\n'+json.dumps(action,ensure_ascii=False)+'\n'+plan.reason,'output',message)
     await step('safety_out','done','The answer passed the safety check',_label('guard'))
     sources=[{k:e.get(k) for k in ['id','title','url','publisher','data_class','version','section','sha256']} for e in evidence if e['id'] in answer.evidence_ids]
-    return {'reply':answer.reply,'sources':sources,'observations':[o.model_dump() for o in answer.observations],'followups':answer.followups,'action':action,'retrieval':retrieval,'dot':{'id':dot['id'],'name':dot['name']},'rerouted_from':rerouted,'ui':ui,'checks':{'rewrite_count':attempt,'input_safety':'passed','citations_validated':len(sources),'independent_review':'passed','output_safety':'passed','observations':len(answer.observations),'tools':tools.audit,'skills':skills},'trace':trace}
+    external_offers=await _hospital_offers(tools,plan,message,reads,step)
+    return {'reply':answer.reply,'sources':sources,'observations':[o.model_dump() for o in answer.observations],'followups':answer.followups,'action':action,'retrieval':retrieval,'dot':{'id':dot['id'],'name':dot['name']},'rerouted_from':rerouted,'ui':ui,'external_offers':external_offers,'checks':{'rewrite_count':attempt,'input_safety':'passed','citations_validated':len(sources),'independent_review':'passed','output_safety':'passed','observations':len(answer.observations),'tools':tools.audit,'skills':skills},'trace':trace}

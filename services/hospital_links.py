@@ -5,7 +5,8 @@ from pathlib import Path
 from urllib.parse import urlsplit
 from zoneinfo import ZoneInfo
 
-ALLOWED = {'www.samitivejhospitals.com', 'www.bangkokhospital.com'}
+# Official hospital hosts whose pages were opened and reviewed (business_data/hospital_links.json).
+ALLOWED = {'www.samitivejhospitals.com', 'www.bangkokhospital.com', 'www.vichaiyut.com', 'www.phyathai.com', 'www.bch.in.th', 'www.bumrungrad.com'}
 ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -19,6 +20,7 @@ def safe_url(value):
 def present(row, today=None):
     today = today or datetime.now(ZoneInfo('Asia/Bangkok')).date()
     result = {**row, 'url': safe_url(row['url']), 'mode': 'OFFICIAL_EXTERNAL', 'booking_confirmed': False,
+              'detail_url': safe_url(row['detail_url']) if row.get('detail_url') else None,
               'partnership_verified': False, 'clinical_recommendation_approved': False}
     state = row['review_status']
     if state == 'REVOKED':

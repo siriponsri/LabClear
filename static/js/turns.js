@@ -27,12 +27,14 @@ window.RSTurns = (() => {
     const a = make(href ? 'a' : 'button', null, 'act'); if (href) a.href = href; else { a.type = 'button'; a.addEventListener('click', onClick); }
     a.append(icon(iconName), document.createTextNode(label)); return a;
   }
-  const time = t => t ? new Date(t * 1000).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }) : '';
+  const time = t => t ? new Date(t * 1000).toLocaleTimeString(window.LC_I18N?.locale() || 'en-GB', { hour: '2-digit', minute: '2-digit' }) : '';
+  // Conversation text, model answers, report values and source titles stay in their own language.
+  const keep = e => { e.setAttribute('translate', 'no'); return e; };
   function safeUrl(url) { try { const u = new URL(url, location.origin); return ['http:', 'https:'].includes(u.protocol) ? u : null; } catch { return null; } }
   /* Answers carry inline [source-id] markers (checked server-side against the cited evidence).
      They become numbered references that match the numbered source list under the answer. */
   function body(text, sources = []) {
-    const d = make('div', null, 'message-body');
+    const d = keep(make('div', null, 'message-body'));
     if (window.DOMPurify && window.marked) d.innerHTML = DOMPurify.sanitize(marked.parse(text || ''), { ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'ul', 'ol', 'li', 'code', 'table', 'thead', 'tbody', 'tr', 'th', 'td'], ALLOWED_ATTR: [] });
     else d.textContent = text || '';
     if (!sources.length) return d;
@@ -69,7 +71,7 @@ window.RSTurns = (() => {
   const STATUS = { low: ['Below the printed range', 'warn'], high: ['Above the printed range', 'warn'], within: ['Within the printed range', 'ok'], unknown: ['No range to compare with', 'neutral'] };
   function observation(o) {
     const row = make('div', null, 'obs'), head = make('div', null, 'obs-head');
-    head.append(make('strong', (o.name || 'Value') + ' ' + o.value + (o.unit ? ' ' + o.unit : '')), make('span', o.reference ? 'Range printed on your report: ' + o.reference : 'Your report prints no range for this value'));
+    head.append(keep(make('strong', (o.name || 'Value') + ' ' + o.value + (o.unit ? ' ' + o.unit : ''))), make('span', o.reference ? 'Range printed on your report: ' + o.reference : 'Your report prints no range for this value'));
     const [label, tone] = STATUS[o.status] || STATUS.unknown, b = make('span', label, 'badge ' + tone); head.append(b);
     row.append(head);
     const r = parseRange(o.reference), v = parseFloat(String(o.value).replace(/,/g, ''));
@@ -92,6 +94,7 @@ window.RSTurns = (() => {
     const ul = make('ul', null, 'receipt'); ul.hidden = true;
     if (m.trace?.length) {
       m.trace.forEach(x => { const li = make('li'), t = make('div'); t.append(make('span', x.label, 'step-label')); if (x.detail) t.append(make('span', x.detail, 'step-detail')); li.append(t); ul.append(li); });
+      harness(c).forEach(li => ul.append(li));
       return ul;
     }
     const items = ['Safety check on your question', c.citations_validated ? 'Each claim matched to ' + c.citations_validated + (c.citations_validated === 1 ? ' cited source' : ' cited sources') : 'No source needed for this reply', 'Second review: supported, values unchanged, in scope', 'Safety check on the answer'];
@@ -99,6 +102,35 @@ window.RSTurns = (() => {
     if (m.dot?.name) items.push('Answered by the ' + m.dot.name);
     items.forEach(t => ul.append(make('li', t)));
     return ul;
+  }
+  /* The harness behind this answer, as the server recorded it (checks.tools and checks.skills):
+     which typed tools ran with which permission scope, and which reviewed instruction modules were
+     loaded. Names and versions only: never arguments, data or hidden reasoning. */
+  function harness(c) {
+    const out = [];
+    const line = (label, detail) => { const li = make('li', null, 'harness'), t = make('div'); t.append(make('span', label, 'step-label')); const d = make('span', detail, 'step-detail mono'); d.setAttribute('translate', 'no'); t.append(d); li.append(t); return li; };
+    const tools = (c?.tools || []).filter(x => x.ok);
+    if (tools.length) out.push(line('Typed tools run by the server', [...new Set(tools.map(x => `${x.tool} ${x.version || ''} (${x.scope})`.replace(' (', ' · ').replace(')', '')))].join(', ')));
+    if (c?.skills) out.push(line('Runtime skills loaded', `${c.skills.package} · ${(c.skills.modules || []).join(', ')} · sha256 ${c.skills.sha256}`));
+    return out;
+  }
+  /* Official hospital package pages the server attached to a package answer (never written by the
+     model; never a LabClear price, booking or partnership). */
+  function offers(list) {
+    const box = make('div', null, 'external-offers');
+    box.append(make('p', 'Packages on hospital websites', 'offers-title tiny'));
+    list.forEach(o => {
+      const u = safeUrl(o.url); if (!u || u.protocol !== 'https:') return;
+      const a = make('a', null, 'offer-link'); a.href = u.href; a.target = '_blank'; a.rel = 'noopener noreferrer'; a.referrerPolicy = 'no-referrer';
+      const thai = s => (/[\u0E01-\u0E5B]/.test(s || '') ? 'th' : 'en');
+      const name = make('strong', o.hospital); name.lang = thai(o.hospital);
+      const variant = make('span', o.variant, 'small'); variant.lang = thai(o.variant);
+      const price = make('span', o.price_thb ? '฿' + new Intl.NumberFormat('en-US').format(o.price_thb) : '', 'num small');
+      a.append(name, variant, price, make('span', ' (opens in a new tab)', 'sr-only')); box.append(a);
+    });
+    const note = make('p', null, 'tiny muted'); note.append(document.createTextNode('External links, separate from our simulated packages: no partnership or booking. Prices as shown on each page when checked ' + (list[0]?.checked_at || '') + '. '));
+    const all = make('a', 'All hospital links'); all.href = '/hospital-links'; note.append(all); box.append(note);
+    return box;
   }
   /* Files sent with a message: the report pages as thumbnails (served only to their owner). */
   function attachments(m, opts) {
@@ -134,7 +166,7 @@ window.RSTurns = (() => {
     turn.append(head);
     if (m.role === 'user') {
       if (m.attachments?.length) turn.append(attachments(m, opts));
-      if (m.content) turn.append(make('div', m.content, 'text'));
+      if (m.content) turn.append(keep(make('div', m.content, 'text')));
       if (m.failed) turn.append(failure(m, opts, opts.onRetry));
       return turn;
     }
@@ -144,12 +176,13 @@ window.RSTurns = (() => {
       return turn;
     }
     turn.append(body(m.content, m.sources || []));
+    if (m.external_offers?.length) turn.append(offers(m.external_offers));
     if (m.observations?.length) { const l = make('div', null, 'obs-list'); l.setAttribute('aria-label', 'Report values in this answer'); m.observations.forEach(o => l.append(observation(o))); turn.append(l); }
     if (!opts.interactive) return turn;
     const actions = make('div', null, 'actions'), extra = make('div');
     if (m.sources?.length) {
       const list = make('div', null, 'sources'); list.hidden = true;
-      m.sources.forEach((x, i) => { const a = make('a'), u = safeUrl(x.url); a.append(make('span', String(i + 1), 'cite'), document.createTextNode(x.title + (x.publisher ? ', ' + x.publisher : ''))); if (u) { a.href = u.href; if (u.origin !== location.origin) { a.target = '_blank'; a.rel = 'noopener noreferrer'; } } list.append(a); });
+      m.sources.forEach((x, i) => { const a = keep(make('a')), u = safeUrl(x.url); a.append(make('span', String(i + 1), 'cite'), document.createTextNode(x.title + (x.publisher ? ', ' + x.publisher : ''))); if (u) { a.href = u.href; if (u.origin !== location.origin) { a.target = '_blank'; a.rel = 'noopener noreferrer'; } } list.append(a); });
       const b = act(m.sources.length === 1 ? 'View source' : 'View ' + m.sources.length + ' sources', 'source', () => { list.hidden = !list.hidden; b.setAttribute('aria-expanded', String(!list.hidden)); });
       b.setAttribute('aria-expanded', 'false'); actions.append(b); extra.append(list);
     }
@@ -159,7 +192,7 @@ window.RSTurns = (() => {
     // Step 4 of the journey, always the customer's choice: never offered automatically by the Explainer.
     if (opts.onFollowupCheck && opts.last && m.dot?.id === 'explainer') actions.append(act('Find a follow-up check', 'calendar', opts.onFollowupCheck));
     if (opts.onStaff && opts.last && m.role !== 'staff') actions.append(act('Ask our team', 'staff', opts.onStaff));
-    if (m.followups?.length && opts.onFollowup) { const f = make('div', null, 'row'); m.followups.slice(0, 3).forEach(q => { const c = make('button', q, 'chip'); c.type = 'button'; c.onclick = () => opts.onFollowup(q); f.append(c); }); extra.append(f); }
+    if (m.followups?.length && opts.onFollowup) { const f = make('div', null, 'row'); m.followups.slice(0, 3).forEach(q => { const c = keep(make('button', q, 'chip')); c.type = 'button'; c.onclick = () => opts.onFollowup(q); f.append(c); }); extra.append(f); }
     if (actions.children.length) turn.append(actions);
     if (extra.children.length) turn.append(extra);
     return turn;

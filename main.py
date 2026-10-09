@@ -8,7 +8,6 @@ from starlette.formparsers import MultiPartParser
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from fastapi.templating import Jinja2Templates
 
 from config import settings
 from services.release_info import VERSION, build_commit
@@ -22,7 +21,7 @@ from routers.site import router as site_router
 from routers.organization_sources import router as organization_sources_router
 from routers.public import router as public_router
 from services.conversation_transport import ConversationError
-from fastapi.responses import JSONResponse
+from fastapi.responses import FileResponse, JSONResponse
 
 BASE_DIR = Path(__file__).resolve().parent
 
@@ -56,7 +55,8 @@ if cors_origins:
     )
 
 app.mount("/static", StaticFiles(directory=BASE_DIR / "static"), name="static")
-templates = Jinja2Templates(directory=BASE_DIR / "templates")
+# One template environment for every page, with the interface-language helpers (routers/site.py).
+from routers.site import templates  # noqa: E402
 app.include_router(samples_router)
 app.include_router(ai_admin_router)
 app.include_router(google_auth_router)
@@ -99,7 +99,14 @@ async def request_boundary(request: Request, call_next):
             if len(body) > limit:
                 return too_large
         request._body = bytes(body)
-    response = await call_next(request)
+    if request.url.path == "/static/i18n/th.js" and "gzip" in request.headers.get("accept-encoding", "") and (BASE_DIR / "static/i18n/th.js.gz").exists():
+        # The Thai dictionary is large; serve its pre-compressed copy (written by web/scripts/merge-i18n.mjs).
+        response = FileResponse(BASE_DIR / "static/i18n/th.js.gz", media_type="text/javascript; charset=utf-8", headers={"Content-Encoding": "gzip", "Vary": "Accept-Encoding"})
+    else:
+        response = await call_next(request)
+    if request.url.path.startswith("/static/") and request.query_params.get("v"):
+        # Versioned URLs (?v=<content hash>) never change: let browsers keep them.
+        response.headers["Cache-Control"] = "public, max-age=31536000, immutable"
     response.headers["X-Content-Type-Options"] = "nosniff"
     response.headers["Referrer-Policy"] = "no-referrer"
     response.headers["Permissions-Policy"] = "camera=(), microphone=(), geolocation=()"

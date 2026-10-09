@@ -11,14 +11,28 @@ def row():
 
 
 def test_exact_variant_price_and_freshness():
-    offer = present(row(), date(2026, 10, 8))
+    # 4.0.0-rc3: the offers were re-read on 2026-10-09 and stay current until review_until.
+    first = row()
+    checked, until = date.fromisoformat(first['checked_at']), date.fromisoformat(first['review_until'])
+    offer = present(first, checked)
     assert offer['price_thb'] == 7500 and offer['current_offer']
     assert offer['branch'].startswith('สุขุมวิท')
     assert not offer['booking_confirmed'] and not offer['partnership_verified']
-    stale = present(row(), date(2026, 10, 9))
+    stale = present(first, date.fromordinal(until.toordinal() + 1))
     assert stale['state'] == 'STALE' and stale['price_thb'] is None
-    unknown = catalog(date(2026, 10, 8))[1]
-    assert unknown['price_thb'] is None and not unknown['current_offer']
+    offers = {o['id']: o for o in catalog(checked)}
+    # A programme without a purchase deadline, a page that was not re-read and an ended sale never show a price.
+    assert offers['HOSP-004']['state'] == 'UNVERIFIED' and offers['HOSP-004']['price_thb'] is None
+    assert offers['HOSP-005']['state'] == 'UNVERIFIED' and not offers['HOSP-005']['current_offer']
+    assert offers['HOSP-006']['state'] == 'EXPIRED_SALE' and offers['HOSP-006']['price_thb'] is None
+    assert sum(o['current_offer'] for o in offers.values()) == 4
+
+
+def test_every_offer_link_is_an_allowlisted_official_page():
+    for o in catalog(date(2026, 10, 9)):
+        assert o['url'].startswith('https://') and not o['booking_confirmed'] and not o['partnership_verified']
+        if o.get('detail_url'):
+            assert safe_url(o['detail_url']) == o['detail_url']
 
 
 def test_sale_expiry_cannot_use_service_date_to_appear_current():

@@ -1,0 +1,35 @@
+/* Interface language (4.0.0-rc3): TH/EN switch, the language crossfade and Thai typography.
+   The page design is unchanged; these rules only tune spacing for Thai text, which has tall
+   vowels and tone marks and no spaces between words. */
+
+/* ------------------------------------------------------------ TH | EN switch */
+.language-switch{display:inline-flex;flex:none;align-items:center;gap:2px;height:36px;padding:3px;border:1px solid var(--color-border);border-radius:var(--radius-pill);background:transparent}
+.language-switch button{display:inline-grid;place-items:center;height:28px;min-width:30px;padding:0 8px;border:0;border-radius:var(--radius-pill);background:transparent;color:var(--color-fg-muted);font:500 12px/1 var(--font-sans);letter-spacing:.03em;cursor:pointer;transition:background-color var(--dur-fast) var(--ease-out),color var(--dur-fast) var(--ease-out)}
+.language-switch button:hover{color:var(--color-fg)}
+.language-switch button[aria-pressed="true"]{background:var(--color-fg);color:var(--color-bg)}
+.language-switch button:focus-visible{outline:2px solid var(--color-focus,var(--color-fg));outline-offset:1px}
+
+/* ------------------------------------------------------------ switching language: a short crossfade */
+::view-transition-old(root),::view-transition-new(root){animation-duration:.18s;animation-timing-function:cubic-bezier(.2,0,0,1)}
+@media (prefers-reduced-motion: reduce){::view-transition-old(root),::view-transition-new(root){animation:none}}
+
+/* ------------------------------------------------------------ Thai text */
+:lang(th) body{line-height:1.7}
+:lang(th) h1,:lang(th) h2,:lang(th) .display{letter-spacing:-.005em;line-height:1.28}
+:lang(th) h3,:lang(th) h4{letter-spacing:0;line-height:1.4}
+:lang(th) p,:lang(th) li,:lang(th) dd,:lang(th) label,:lang(th) td,:lang(th) th{overflow-wrap:break-word;word-break:normal}
+:lang(th) .btn,:lang(th) .nav-item,:lang(th) .badge,:lang(th) .main-nav a,:lang(th) .nav-drop-btn,:lang(th) .eyebrow,:lang(th) .brand{letter-spacing:0}
+:lang(th) .btn{line-height:1.35}
+:lang(th) .eyebrow,:lang(th) .band-label,:lang(th) .kicker{font-family:var(--font-sans);text-transform:none}
+:lang(th) .lede,:lang(th) .hero-lede{text-wrap:pretty}
+:lang(th) h1,:lang(th) h2{text-wrap:balance}
+
+/* Header: room for the switch next to the theme toggle */
+.nav-actions{gap:6px;min-width:0}
+@media (min-width:961px) and (max-width:1180px){.main-nav>a,.nav-drop-btn{padding-inline:7px}.nav-cta{display:none}}
+@media (max-width:600px){
+  .language-switch{height:32px;padding:2px}
+  .language-switch button{height:26px;min-width:28px;padding:0 6px;font-size:11.5px}
+  .nav-actions{gap:3px}
+}
+@media (max-width:380px){.nav-search{display:none}}

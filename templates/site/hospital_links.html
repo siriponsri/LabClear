@@ -1,9 +1,39 @@
-<!doctype html><html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{{ title }}</title><meta name="referrer" content="no-referrer">
-<link rel="stylesheet" href="/static/css/base.css"><link rel="stylesheet" href="/static/css/upgrade.css"></head><body class="preview-page">
-<header class="preview-nav"><a class="brand" href="/">LabClear</a><nav><a href="/packages">แพ็กเกจจำลอง</a><a href="/app">กลับแชต</a></nav></header>
-<main class="reference-workspace"><h1>ดูข้อมูลจากโรงพยาบาลโดยตรง</h1><p>ลิงก์ภายนอกนี้แยกจากแพ็กเกจจำลองของ LabClear ไม่มีการยืนยันความเป็นพันธมิตรหรือการจอง การเลือกแพ็กเกจควรพิจารณาความเหมาะสมกับบุคลากรทางการแพทย์ จำนวนรายการตรวจมากกว่าไม่ได้แปลว่าจำเป็นกว่า</p>
-{% for offer in offers %}<article class="reference-record"><h2>{{ offer.hospital }}</h2><p>{{ offer.branch }}</p><h3>{{ offer.variant }}</h3>
-{% if offer.current_offer %}<p><strong>{{ "{:,.0f}".format(offer.price_thb) }} บาท</strong> · ราคาตามหน้าต้นทางที่ตรวจ</p>{% else %}<p><strong>ราคาปัจจุบันยังไม่ยืนยัน</strong> · {{ {'STALE':'ข้อมูลต้องทบทวนใหม่','UNVERIFIED':'ต้องตรวจสอบโปรแกรมย่อยและเงื่อนไข','EXPIRED_SALE':'หมดเขตซื้อ','EXPIRED_SERVICE':'หมดเขตใช้บริการ','NOT_YET_ON_SALE':'ยังไม่ถึงวันเริ่มจำหน่าย'}.get(offer.state, 'ต้องตรวจสอบกับโรงพยาบาล') }}</p>{% endif %}
-<dl><dt>ผู้มีสิทธิ์</dt><dd>{{ offer.eligibility }}</dd><dt>ค่าธรรมเนียม</dt><dd>{{ offer.fees }}</dd><dt>ซื้อได้ถึง</dt><dd>{{ offer.sale_until or 'ยังไม่ยืนยัน' }}</dd><dt>ใช้บริการได้ถึง</dt><dd>{{ offer.service_until or 'ยังไม่ยืนยัน — ไม่ใช่วันเดียวกับวันซื้อโดยอัตโนมัติ' }}</dd><dt>รายการตรวจที่รวมและไม่รวม</dt><dd>ยังไม่ยืนยันรายการทั้งหมด โปรดอ่านรายละเอียดโปรแกรมที่เว็บไซต์โรงพยาบาล</dd></dl>
-<p class="small muted">ตรวจข้อมูล {{ offer.checked_at }} · {{ offer.source_locator }}</p><a class="btn" href="{{ offer.url }}" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">ดูรายละเอียดที่โรงพยาบาล ↗</a></article>{% endfor %}
-<p>LabClear ไม่ส่งผลตรวจหรือข้อมูลบัญชีไปกับลิงก์ การทำรายการต่ออยู่ภายใต้เงื่อนไขและนโยบายของโรงพยาบาล</p></main></body></html>
+{% extends "site/base.html" %}
+{% block content %}
+{# Official hospital pages (Codex data). Offer fields are quoted as recorded, so each carries its own language. #}
+<div class="wrap page-head">
+  <nav class="crumbs small" aria-label="Breadcrumb"><a href="/">Home</a> / <span aria-current="page">Hospital websites</span></nav>
+  <h1>See the details on the hospital's own website</h1>
+  <p class="muted">These external links are separate from LabClear's simulated packages. No partnership or booking is confirmed. Choose a check with a health professional; more tests do not mean a better check.</p>
+  <p class="small muted">Hospital names and offer details are quoted as recorded from the hospital's own page, in that page's language.</p>
+</div>
+<div class="wrap center-list">
+  {% for offer in offers %}
+  <article class="card center-row" id="{{ offer.id }}">
+    <div class="stack-sm">
+      <h2 class="h3" lang="{{ text_lang(offer.hospital) }}">{{ offer.hospital }}</h2>
+      <p class="muted" lang="{{ text_lang(offer.branch) }}">{{ offer.branch }}</p>
+      <p><strong lang="{{ text_lang(offer.variant) }}">{{ offer.variant }}</strong></p>
+      {% if offer.current_offer %}
+      <p><strong class="num">{{ "{:,.0f}".format(offer.price_thb) }} THB</strong> · <span class="small muted">Price as shown on the reviewed source page</span></p>
+      {% else %}
+      <p class="callout warn small"><strong>Current price not confirmed</strong> · <span>{{ {'STALE': 'The information needs a new review', 'UNVERIFIED': 'Check the exact programme and conditions with the hospital', 'EXPIRED_SALE': 'The sale period has ended', 'EXPIRED_SERVICE': 'The service period has ended', 'NOT_YET_ON_SALE': 'Not on sale yet'}.get(offer.state, 'Check with the hospital') }}</span></p>
+      {% endif %}
+      <dl class="facts small">
+        <div><dt>Eligibility</dt><dd lang="{{ text_lang(offer.eligibility) }}">{{ offer.eligibility }}</dd></div>
+        <div><dt>Fees</dt><dd lang="{{ text_lang(offer.fees) }}">{{ offer.fees }}</dd></div>
+        <div><dt>Sale until</dt><dd>{{ offer.sale_until or 'Not confirmed' }}</dd></div>
+        <div><dt>Service until</dt><dd>{{ offer.service_until or 'Not confirmed (not automatically the same as the sale date)' }}</dd></div>
+        <div><dt>Tests included and excluded</dt><dd>Not fully confirmed; read the programme details on the hospital website.</dd></div>
+      </dl>
+      <p class="tiny muted"><span>Checked</span> <span class="num">{{ offer.checked_at }}</span> · <span lang="{{ text_lang(offer.source_locator) }}">{{ offer.source_locator }}</span></p>
+    </div>
+    <div class="stack-sm center-actions">
+      <a class="btn primary" href="{{ offer.url }}" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">View on the hospital website<span class="sr-only"> (opens in a new tab)</span></a>
+      {% if offer.detail_url %}<a class="btn" href="{{ offer.detail_url }}" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">Compare this hospital's packages<span class="sr-only"> (opens in a new tab)</span></a>{% endif %}
+    </div>
+  </article>
+  {% endfor %}
+  <p class="small muted">LabClear does not send your results or account details with these links. Anything you do next follows the hospital's own terms and privacy policy.</p>
+</div>
+{% endblock %}

@@ -427,6 +427,18 @@ ul.plain{list-style:none;margin:0;padding:0;display:grid;gap:8px}
 .turn .sources a{color:var(--color-fg-muted);text-decoration:none;display:flex;align-items:baseline}
 .turn .sources a .cite{margin:0 8px 0 0}
 .turn .sources a:hover{color:var(--color-fg);text-decoration:underline}
+/* Official hospital pages attached by the server to a package answer (external, not our packages) */
+.external-offers{display:grid;gap:6px;margin-top:4px;padding:12px 14px;border:1px solid var(--color-border);border-radius:var(--radius-md);background:var(--color-bg-subtle);font-family:var(--font-sans)}
+.external-offers .offers-title{margin:0;color:var(--color-fg-muted);font-weight:500;letter-spacing:.01em}
+.offer-link{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:12px;row-gap:1px;align-items:baseline;padding:8px 10px;border-radius:var(--radius-sm);background:var(--color-surface);border:1px solid var(--color-border);color:var(--color-fg);text-decoration:none;transition:border-color var(--dur-fast) var(--ease-out)}
+.offer-link:hover{border-color:var(--color-border-strong)}
+.offer-link:focus-visible{outline:2px solid var(--color-accent);outline-offset:2px}
+.offer-link strong{font-weight:600;font-size:13.5px;min-width:0}
+.offer-link .small{grid-column:1;color:var(--color-fg-muted);font-size:12.5px;min-width:0;overflow-wrap:anywhere}
+.offer-link .num{grid-column:2;grid-row:1;font-variant-numeric:tabular-nums;color:var(--color-fg)}
+.external-offers>p.tiny{margin:2px 0 0}
+.external-offers>p.tiny a{color:inherit;text-decoration:underline;text-underline-offset:2px}
+.receipt li.harness .step-detail{font-size:12px}
 /* Files sent with a message and failed-turn notes (workspace and the page dock) */
 .failure{display:flex;flex-wrap:wrap;gap:4px 8px;align-items:center}
 .failure .btn{margin-left:auto}

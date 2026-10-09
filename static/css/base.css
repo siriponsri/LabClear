@@ -3,10 +3,13 @@
 @font-face{font-family:Geist;src:url('/static/fonts/geist-variable.woff2') format('woff2-variations'),url('/static/fonts/geist-variable.woff2') format('woff2');font-weight:100 900;font-display:swap}
 @font-face{font-family:GeistMono;src:url('/static/fonts/geist-mono-variable.woff2') format('woff2-variations'),url('/static/fonts/geist-mono-variable.woff2') format('woff2');font-weight:100 900;font-display:swap}
 @font-face{font-family:RSDisplay;src:url('/static/fonts/source-serif-4-opsz.woff2') format('woff2-variations'),url('/static/fonts/source-serif-4-opsz.woff2') format('woff2');font-weight:200 900;font-display:swap}
-@font-face{font-family:RSDisplayThai;src:url('/static/fonts/noto-serif-thai-600.woff2') format('woff2');font-weight:500 900;font-display:swap;unicode-range:U+0E01-0E5B,U+200C-200D,U+25CC}
-@font-face{font-family:NotoSansThaiRS;src:url('/static/fonts/noto-sans-thai-400.woff2') format('woff2');font-weight:400;font-display:swap;unicode-range:U+0E01-0E5B,U+200C-200D,U+25CC}
-@font-face{font-family:NotoSansThaiRS;src:url('/static/fonts/noto-sans-thai-500.woff2') format('woff2');font-weight:500;font-display:swap;unicode-range:U+0E01-0E5B,U+200C-200D,U+25CC}
-@font-face{font-family:NotoSansThaiRS;src:url('/static/fonts/noto-sans-thai-600.woff2') format('woff2');font-weight:600 700;font-display:swap;unicode-range:U+0E01-0E5B,U+200C-200D,U+25CC}
+/* Thai: IBM Plex Sans Thai for text, Trirong (Cadson Demak) for serif headings; both SIL OFL 1.1.
+   unicode-range keeps Latin in Geist / Source Serif 4 and sends only Thai to these files. */
+@font-face{font-family:RSDisplayThai;src:url('/static/fonts/trirong-thai-500-normal.woff2') format('woff2');font-weight:400 500;font-display:swap;unicode-range:U+0E01-0E5B,U+200C-200D,U+25CC}
+@font-face{font-family:RSDisplayThai;src:url('/static/fonts/trirong-thai-600-normal.woff2') format('woff2');font-weight:600 900;font-display:swap;unicode-range:U+0E01-0E5B,U+200C-200D,U+25CC}
+@font-face{font-family:PlexThai;src:url('/static/fonts/ibm-plex-sans-thai-thai-400-normal.woff2') format('woff2');font-weight:300 400;font-display:swap;unicode-range:U+0E01-0E5B,U+200C-200D,U+25CC}
+@font-face{font-family:PlexThai;src:url('/static/fonts/ibm-plex-sans-thai-thai-500-normal.woff2') format('woff2');font-weight:500;font-display:swap;unicode-range:U+0E01-0E5B,U+200C-200D,U+25CC}
+@font-face{font-family:PlexThai;src:url('/static/fonts/ibm-plex-sans-thai-thai-600-normal.woff2') format('woff2');font-weight:600 800;font-display:swap;unicode-range:U+0E01-0E5B,U+200C-200D,U+25CC}
 
 /* ------------------------------------------------------------ tokens: light (default) */
 :root{
@@ -25,9 +28,9 @@
   --color-scrim:oklch(20% 0.02 295 / 0.42);--color-nav-glass:oklch(99.3% 0.002 295 / 0.82);
   --shadow-float:0 1px 2px oklch(20% 0.02 295 / 0.05),0 12px 32px oklch(20% 0.02 295 / 0.10);
   --shadow-card:0 1px 2px oklch(20% 0.02 295 / 0.04);
-  --font-sans:Geist,NotoSansThaiRS,"Noto Sans Thai",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-sans:Geist,PlexThai,"IBM Plex Sans Thai","Noto Sans Thai",system-ui,-apple-system,"Segoe UI",sans-serif;
   --font-mono:GeistMono,ui-monospace,SFMono-Regular,Menlo,monospace;
-  --font-display:RSDisplay,RSDisplayThai,Georgia,"Times New Roman",serif;
+  --font-display:RSDisplay,RSDisplayThai,Trirong,Georgia,"Times New Roman",serif;
   --color-rail:oklch(91.5% 0.006 295);
   --text-xs:12.5px;--text-sm:14px;--text-md:15.5px;--text-lg:17px;--text-xl:20px;--text-2xl:24px;--text-3xl:32px;
   --text-display:clamp(2.5rem,4.2vw + 0.6rem,4.25rem);--text-display-s:clamp(2rem,3vw + 0.5rem,3rem);
@@ -83,7 +86,7 @@
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%;overflow-x:clip;background:var(--color-bg)}
 body{margin:0;overflow-x:clip;background:var(--color-bg);color:var(--color-fg);font:400 var(--text-md)/1.6 var(--font-sans);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
-h1,h2,h3,h4{margin:0;font-family:var(--font-sans);font-weight:600;font-style:normal;letter-spacing:-.02em;line-height:1.15;color:inherit;overflow-wrap:anywhere;min-width:0}
+h1,h2,h3,h4{margin:0;font-family:var(--font-sans);font-weight:600;font-style:normal;letter-spacing:-.02em;line-height:1.15;color:inherit;overflow-wrap:break-word;min-width:0}
 h1{font-size:var(--text-display-s);letter-spacing:-.03em;line-height:1.06}
 h2{font-size:clamp(1.6rem,1.6vw + 1rem,2.25rem);letter-spacing:-.025em}
 /* Display serif for page and section titles : heavy, tight, optical size 60 */

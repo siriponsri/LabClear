@@ -15,14 +15,24 @@
   const header = $('.site-header');
   if (header) { const on = () => header.classList.toggle('scrolled', scrollY > 8); addEventListener('scroll', on, { passive: true }); on(); }
 
-  /* ---------- split headline: words rise in sequence ---------- */
+  /* ---------- split headline: words rise in sequence ----------
+     The words are rebuilt from the English source in the page language (static/js/i18n.js), and
+     again after a TH/EN switch; translate="no" tells the translator this script owns the text. */
+  const I18N = window.LC_I18N;
+  const sourceOf = el => el.dataset.source ?? (el.dataset.source = (I18N ? I18N.source(el) : el.textContent).replace(/\s+/g, ' ').trim());
+  const inLang = el => (I18N ? I18N.t(sourceOf(el)) : sourceOf(el));
+  const plain = s => s.replace(/[\u2060\u200b]/g, '');
+  function splitHeadline(h) {
+    const text = inLang(h), words = text.split(/\s+/);
+    h.setAttribute('translate', 'no'); h.setAttribute('aria-label', plain(text));
+    h.replaceChildren(...words.flatMap((w, i) => { const o = make('span', null, 'w'), inner = make('span', w); o.setAttribute('aria-hidden', 'true'); o.style.setProperty('--i', i); o.append(inner); return i < words.length - 1 ? [o, document.createTextNode(' ')] : [o]; }));
+  }
   $$('[data-split]').forEach(h => {
     if (reduced) return;
-    const words = h.textContent.trim().split(/\s+/);
-    h.setAttribute('aria-label', h.textContent.trim());
-    h.replaceChildren(...words.flatMap((w, i) => { const o = make('span', null, 'w'), inner = make('span', w); o.setAttribute('aria-hidden', 'true'); o.style.setProperty('--i', i); o.append(inner); return i < words.length - 1 ? [o, document.createTextNode(' ')] : [o]; }));
+    splitHeadline(h);
     requestAnimationFrame(() => requestAnimationFrame(() => h.classList.add('is-in')));
   });
+  document.addEventListener('labclear:language', () => { if (!reduced) $$('[data-split]').forEach(splitHeadline); });
 
   /* ---------- reveals, demos, count-up ---------- */
   function countUp(el) {
@@ -45,11 +55,15 @@
 
   /* ---------- statement: words light up as it scrolls through the viewport ---------- */
   $$('[data-words]').forEach(p => {
-    const words = p.textContent.trim().split(/\s+/);
-    p.setAttribute('aria-label', p.textContent.trim());
-    const spans = words.map(w => { const s = make('span', w + ' ', 'lw'); s.setAttribute('aria-hidden', 'true'); return s; });
-    p.replaceChildren(...spans);
-    if (reduced) { spans.forEach(s => s.classList.add('on')); return; }
+    let spans = [];
+    const build = () => {
+      const text = inLang(p), words = text.split(/\s+/);
+      p.setAttribute('translate', 'no'); p.setAttribute('aria-label', plain(text));
+      spans = words.map(w => { const s = make('span', w + ' ', 'lw'); s.setAttribute('aria-hidden', 'true'); return s; });
+      p.replaceChildren(...spans);
+    };
+    build();
+    if (reduced) { spans.forEach(s => s.classList.add('on')); document.addEventListener('labclear:language', () => { build(); spans.forEach(s => s.classList.add('on')); }); return; }
     let ticking = false;
     const update = () => {
       ticking = false; const r = p.getBoundingClientRect(), vh = innerHeight;
@@ -57,6 +71,7 @@
       const n = Math.round(k * spans.length); spans.forEach((s, i) => s.classList.toggle('on', i < n));
     };
     addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true }); update();
+    document.addEventListener('labclear:language', () => { build(); update(); });
   });
 
   /* ---------- product deck: stacked cards with tabs, auto-advance that pauses ---------- */

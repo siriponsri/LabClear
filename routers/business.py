@@ -322,7 +322,7 @@ async def turn(owner,message,retry_id='',page=None,emit=None,reply_to=''):
             # Observations were matched exactly against the confirmed report by validate_answer; keep them with the turn.
             rows={f.get('id'):f for f in ((context.get('report') or {}).get('fields') or [])}
             observations=[{**o,'name':rows.get(o.get('field_id'),{}).get('name','')} for o in (result.get('observations') or [])]
-            d['messages']=(d['messages']+[msg('assistant',result['reply'],sources=result['sources'],private_source_ids=context.get('private_source_ids',[]),observations=observations,action=result.get('action'),action_id=result.get('action_id'),followups=result.get('followups',[]),dot=result.get('dot'),ui=result.get('ui',[]),checks=result.get('checks'),trace=result.get('trace',[]))])[-100:]
+            d['messages']=(d['messages']+[msg('assistant',result['reply'],sources=result['sources'],private_source_ids=context.get('private_source_ids',[]),observations=observations,action=result.get('action'),action_id=result.get('action_id'),followups=result.get('followups',[]),dot=result.get('dot'),ui=result.get('ui',[]),checks=result.get('checks'),trace=result.get('trace',[]),external_offers=result.get('external_offers',[]))])[-100:]
             d['busy_until']=0;d['updated']=time.time();tx.put(c['id'],'conversation',owner,d)
         return result
     except ConversationError as exc:

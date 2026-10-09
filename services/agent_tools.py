@@ -194,8 +194,8 @@ async def _hospital_offer(ctx: ToolContext, a: HospitalOffer) -> dict:
         raise ConversationError("feature_disabled", "Official hospital links are not enabled.", 409)
     offers = [o for o in hospital_links.catalog() if not a.offer_id or o.get("id") == a.offer_id]
     # External offers are never clinical evidence, never a booking and never a partnership claim.
-    return {"offers": [{k: o.get(k) for k in ("id", "hospital", "title", "url", "state", "price_thb", "checked_at",
-                                               "booking_confirmed", "partnership_verified")} for o in offers]}
+    return {"offers": [{k: o.get(k) for k in ("id", "hospital", "branch", "variant", "url", "detail_url", "state", "price_thb",
+                                               "checked_at", "booking_confirmed", "partnership_verified")} for o in offers]}
 
 
 TOOLS: dict[str, Tool] = {t.name: t for t in [
