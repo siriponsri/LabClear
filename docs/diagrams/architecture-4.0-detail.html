@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>องค์ประกอบภายใน FastAPI ของ LabClear 4.0.0-rc1</title>
+  <title>องค์ประกอบภายใน FastAPI ของ LabClear 4.0.0-rc2</title>
   <!-- Fonts are self-hosted (no network): see labclear-diagram-fonts.css next to this file. -->
   <link rel="stylesheet" href="labclear-diagram-fonts.css">
   <style>
@@ -56,12 +56,12 @@
 </head>
 <body>
   <div class="frame">
-    <p class="eyebrow">Architecture detail · LabClear 4.0.0-rc1</p>
-    <h1>องค์ประกอบภายใน FastAPI ของ LabClear 4.0.0-rc1</h1>
+    <p class="eyebrow">Architecture detail · LabClear 4.0.0-rc2</p>
+    <h1>องค์ประกอบภายใน FastAPI ของ LabClear 4.0.0-rc2</h1>
     <div class="diagram-container">
 <svg viewBox="0 0 880 1092" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="architecture-4.0-detail-title architecture-4.0-detail-desc">
-<title id="architecture-4.0-detail-title">องค์ประกอบภายใน FastAPI ของ LabClear 4.0.0-rc1</title>
-<desc id="architecture-4.0-detail-desc">แผนภาพองค์ประกอบภายในบริการ API labclear (FastAPI ของ Codex) รุ่น 4.0.0-rc1: routers ได้แก่ business, chats, business_ops, ai_admin, samples, site (หน้า Jinja), organization_sources, google_auth และ public ที่เพิ่มใหม่แบบอ่านอย่างเดียวพร้อม /membership ทุกคำขอผ่านการตรวจ session, CSRF, origin (Host ของตัวเองหรือ TRUSTED_ORIGINS ที่ตรงตัว) และ rate limit ก่อนถึงตัวอ่านใบผล report_reader_v2 ไปป์ไลน์แชต business_agent และเอกสารองค์กร organization_sources ซึ่งค้นเฉพาะองค์กรของผู้ใช้ ใช้เฉพาะเอกสารที่อนุมัติแล้ว และตรวจการถอนซ้ำทุกครั้ง ไปป์ไลน์แชตทำงานทีละขั้นตามลำดับ เรียก conversation_guard ค้น evidence_search ด้วย BM25 บนฐาน 58 รายการ และใช้ model_harness กับ runtime_skills เฉพาะเมื่อเปิด MEDICAL_HARNESS_ENABLED หรือ RUNTIME_SKILLS_ENABLED ทุกการเรียกโมเดลผ่าน conversation_transport, cost_ledger และ providers (3 slot และ 6 agents) ซึ่งตรวจ PROVIDER_NETWORK_ENABLED เพดาน CLOUD_CALL_LIMIT และบัญชี 300 บาทก่อนถึงผู้ให้บริการ AI ข้อมูลถาวรผ่าน business_store ที่เข้ารหัส Fernet ไปยัง PostgreSQL บน Render หรือ SQLite ในเครื่อง flag ใหม่ 6 ตัวของ Codex ปิดเป็นค่าเริ่มต้น</desc>
+<title id="architecture-4.0-detail-title">องค์ประกอบภายใน FastAPI ของ LabClear 4.0.0-rc2</title>
+<desc id="architecture-4.0-detail-desc">แผนภาพองค์ประกอบภายในบริการ API labclear (FastAPI ของ Codex) รุ่น 4.0.0-rc2: routers ได้แก่ business, chats, business_ops, ai_admin, samples, site (หน้า Jinja), organization_sources, google_auth และ public ที่เพิ่มใหม่แบบอ่านอย่างเดียวพร้อม /membership ทุกคำขอผ่านการตรวจ session, CSRF, origin (Host ของตัวเองหรือ TRUSTED_ORIGINS ที่ตรงตัว) และ rate limit ก่อนถึงตัวอ่านใบผล report_reader_v2 ไปป์ไลน์แชต business_agent และเอกสารองค์กร organization_sources ซึ่งค้นเฉพาะองค์กรของผู้ใช้ ใช้เฉพาะเอกสารที่อนุมัติแล้ว และตรวจการถอนซ้ำทุกครั้ง ไปป์ไลน์แชตทำงานทีละขั้นตามลำดับ เรียก conversation_guard ค้น evidence_search ด้วย BM25 บนฐาน 58 รายการ และใช้ model_harness กับ runtime_skills เฉพาะเมื่อเปิด MEDICAL_HARNESS_ENABLED หรือ RUNTIME_SKILLS_ENABLED ทุกการเรียกโมเดลผ่าน conversation_transport, cost_ledger และ providers (3 slot และ 6 agents) ซึ่งตรวจ PROVIDER_NETWORK_ENABLED เพดาน CLOUD_CALL_LIMIT และบัญชี 300 บาทก่อนถึงผู้ให้บริการ AI ข้อมูลถาวรผ่าน business_store ที่เข้ารหัส Fernet ไปยัง PostgreSQL บน Render หรือ SQLite ในเครื่อง flag ใหม่ 6 ตัวของ Codex ปิดเป็นค่าเริ่มต้น</desc>
 <defs>
 <marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#6b6875"/></marker>
 <marker id="arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#6539a9"/></marker>
@@ -209,10 +209,10 @@
 <rect x="432" y="392" width="192" height="112" rx="6" fill="#ffffff" stroke="#23202b" stroke-width="1"/>
 <rect x="440" y="400" width="24" height="14" rx="2" fill="none" stroke="rgba(35,32,43,0.40)" stroke-width="0.8"/>
 <text x="452" y="410.5" fill="#23202b" font-size="10" font-weight="500" font-family="'Geist Mono', 'Noto Sans Thai', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.08em">KB</text>
-<text x="528" y="436" fill="#23202b" font-size="16" font-weight="600" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">ค้นความรู้</text>
-<text x="528" y="456" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist Mono', 'Noto Sans Thai', ui-monospace, monospace" text-anchor="middle">evidence_search</text>
-<text x="528" y="474" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">BM25 · 58 รายการที่ตรวจแล้ว</text>
-<text x="528" y="492" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">ไม่ค้นคิว acquisition</text>
+<text x="528" y="436" fill="#23202b" font-size="16" font-weight="600" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">เครื่องมือข้อมูล</text>
+<text x="528" y="456" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist Mono', 'Noto Sans Thai', ui-monospace, monospace" text-anchor="middle">agent_tools · evidence</text>
+<text x="528" y="474" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">แคตตาล็อก · นโยบาย · BM25</text>
+<text x="528" y="492" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">schema · สิทธิ์บทบาท · audit</text>
 </g>
 <!-- Node: ตรวจความปลอดภัย (backend) -->
 <g data-fit="node">
@@ -234,7 +234,7 @@
 <text x="528" y="588" fill="#6b6875" font-size="16" font-weight="600" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">ส่วนเสริม (opt-in)</text>
 <text x="528" y="608" fill="#23202b" font-size="12" font-weight="400" font-family="'Geist Mono', 'Noto Sans Thai', ui-monospace, monospace" text-anchor="middle">model_harness</text>
 <text x="528" y="626" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist Mono', 'Noto Sans Thai', ui-monospace, monospace" text-anchor="middle">MEDICAL_HARNESS_ENABLED</text>
-<text x="528" y="644" fill="#23202b" font-size="12" font-weight="400" font-family="'Geist Mono', 'Noto Sans Thai', ui-monospace, monospace" text-anchor="middle">runtime_skills</text>
+<text x="528" y="644" fill="#23202b" font-size="12" font-weight="400" font-family="'Geist Mono', 'Noto Sans Thai', ui-monospace, monospace" text-anchor="middle">runtime_skills ตามงาน</text>
 <text x="528" y="662" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist Mono', 'Noto Sans Thai', ui-monospace, monospace" text-anchor="middle">RUNTIME_SKILLS_ENABLED</text>
 </g>
 <!-- Node: ด่านก่อนเรียกโมเดลทุกครั้ง (security) -->
@@ -244,9 +244,9 @@
 <rect x="64" y="720" width="38" height="14" rx="2" fill="none" stroke="rgba(101,57,169,0.40)" stroke-width="0.8"/>
 <text x="83" y="730.5" fill="#6539a9" font-size="10" font-weight="500" font-family="'Geist Mono', 'Noto Sans Thai', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.08em">GATE</text>
 <text x="340" y="756" fill="#23202b" font-size="16" font-weight="600" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">ด่านก่อนเรียกโมเดลทุกครั้ง</text>
-<text x="340" y="776" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist Mono', 'Noto Sans Thai', ui-monospace, monospace" text-anchor="middle">conversation_transport · cost_ledger · providers</text>
+<text x="340" y="776" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist Mono', 'Noto Sans Thai', ui-monospace, monospace" text-anchor="middle">free_policy* · conversation_transport · cost_ledger · providers</text>
 <text x="340" y="794" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">PROVIDER_NETWORK_ENABLED · CLOUD_CALL_LIMIT · บัญชี 300 บาท</text>
-<text x="340" y="812" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">providers: 3 slot (ภาษา · ความปลอดภัย · OCR) + 6 agents · ไม่ผ่าน = หยุด</text>
+<text x="340" y="812" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">3 slot + 6 agents · *free-only เฉพาะเซิร์ฟเวอร์ทดลอง · ไม่ผ่าน = หยุด</text>
 </g>
 <!-- Node: ผู้ให้บริการ AI (external) -->
 <g data-fit="node">

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>สถาปัตยกรรมของ LabClear 4.0.0-rc1 (รุ่นรวม)</title>
+  <title>สถาปัตยกรรมของ LabClear 4.0.0-rc2 (รุ่นรวม)</title>
   <!-- Fonts are self-hosted (no network): see labclear-diagram-fonts.css next to this file. -->
   <link rel="stylesheet" href="labclear-diagram-fonts.css">
   <style>
@@ -56,12 +56,12 @@
 </head>
 <body>
   <div class="frame">
-    <p class="eyebrow">Architecture · LabClear 4.0.0-rc1</p>
-    <h1>สถาปัตยกรรมของ LabClear 4.0.0-rc1 (รุ่นรวม)</h1>
+    <p class="eyebrow">Architecture · LabClear 4.0.0-rc2</p>
+    <h1>สถาปัตยกรรมของ LabClear 4.0.0-rc2 (รุ่นรวม)</h1>
     <div class="diagram-container">
 <svg viewBox="0 0 880 1176" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="architecture-4.0-title architecture-4.0-desc">
-<title id="architecture-4.0-title">สถาปัตยกรรมของ LabClear 4.0.0-rc1 (รุ่นรวม)</title>
-<desc id="architecture-4.0-desc">แผนภาพสถาปัตยกรรมรุ่นรวม 4.0.0-rc1 บน Render: ผู้ใช้ (ลูกค้า ผู้เยี่ยมชม เจ้าหน้าที่) เปิดบริการเว็บ labclear-web ผ่าน HTTPS ซึ่งเป็นบริการ Render ตัวที่สองแบบเลือกได้ (Node 22, Next.js 16, React 19, React Three Fiber ภาษาไทยเป็นค่าเริ่มต้น สลับ EN ได้) เว็บ rewrite /api/* และ /health ผ่าน HTTPS ไปยังบริการ API labclear (Python 3.12, FastAPI ของ Codex, render.yaml ไม่เปลี่ยน, หน้า Jinja เดิมยังใช้ได้) บริการ API ตรวจ Origin เทียบ Host ของตัวเองหรือ TRUSTED_ORIGINS ที่ตรงตัว เก็บแชตผู้เยี่ยมชมใน RAM ซึ่งลบเมื่อ Refresh และเมื่อเข้าสู่ระบบ ค้นฐานความรู้ 58 รายการที่ตรวจแล้วด้วย BM25 ค้นเอกสารองค์กรเฉพาะสมาชิกเมื่อเปิด ORG_DOCUMENTS_ENABLED (ปิดเป็นค่าเริ่มต้น) และบันทึกข้อมูลใน Render PostgreSQL ตาราง rs_entities ที่เข้ารหัส Fernet ทุกการเรียกโมเดลผ่านด่าน PROVIDER_NETWORK_ENABLED เพดาน CLOUD_CALL_LIMIT และบัญชี 300 บาท ไปยังผู้ให้บริการ AI ตาม slot (ค่าเริ่มต้น Typhoon, iApp OpenThai-SystemOne, Typhoon OCR ผู้จัดการเลือกผู้ให้บริการอื่นเช่น OpenRouter ได้) คิว acquisition (Codex 15 + 6 และ Claude 90 รายการ) ไม่ถูกค้น บทบาทเสริม Medical analyzer และ Thai composer ปิดเป็นค่าเริ่มต้น Cloudflare Workers Paid และ Containers เลื่อนไว้ ส่วน Cloudflare Free DNS/proxy เป็นงานในอนาคต</desc>
+<title id="architecture-4.0-title">สถาปัตยกรรมของ LabClear 4.0.0-rc2 (รุ่นรวม)</title>
+<desc id="architecture-4.0-desc">แผนภาพสถาปัตยกรรมรุ่นรวม 4.0.0-rc2 บน Render: ผู้ใช้ (ลูกค้า ผู้เยี่ยมชม เจ้าหน้าที่) เปิดบริการเว็บ labclear-web ผ่าน HTTPS ซึ่งเป็นบริการ Render ตัวที่สองแบบเลือกได้ (Node 22, Next.js 16, React 19, React Three Fiber ภาษาไทยเป็นค่าเริ่มต้น สลับ EN ได้) เว็บ rewrite /api/* และ /health ผ่าน HTTPS ไปยังบริการ API labclear (Python 3.12, FastAPI ของ Codex, render.yaml ไม่เปลี่ยน, หน้า Jinja เดิมยังใช้ได้) บริการ API ตรวจ Origin เทียบ Host ของตัวเองหรือ TRUSTED_ORIGINS ที่ตรงตัว เก็บแชตผู้เยี่ยมชมใน RAM ซึ่งลบเมื่อ Refresh และเมื่อเข้าสู่ระบบ ค้นฐานความรู้ 58 รายการที่ตรวจแล้วด้วย BM25 ค้นเอกสารองค์กรเฉพาะสมาชิกเมื่อเปิด ORG_DOCUMENTS_ENABLED (ปิดเป็นค่าเริ่มต้น) และบันทึกข้อมูลใน Render PostgreSQL ตาราง rs_entities ที่เข้ารหัส Fernet ทุกการเรียกโมเดลผ่านด่าน PROVIDER_NETWORK_ENABLED เพดาน CLOUD_CALL_LIMIT และบัญชี 300 บาท ไปยังผู้ให้บริการ AI ตาม slot (ค่าเริ่มต้น Typhoon, iApp OpenThai-SystemOne, Typhoon OCR ผู้จัดการเลือกผู้ให้บริการอื่นเช่น OpenRouter ได้) คิว acquisition (Codex 15 + 6 และ Claude 90 รายการ) ไม่ถูกค้น บทบาทเสริม Medical analyzer และ Thai composer ปิดเป็นค่าเริ่มต้น Cloudflare Workers Paid และ Containers เลื่อนไว้ ส่วน Cloudflare Free DNS/proxy เป็นงานในอนาคต</desc>
 <defs>
 <marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#6b6875"/></marker>
 <marker id="arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#6539a9"/></marker>

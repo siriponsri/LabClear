@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>การไหลของข้อมูลของ 1 ข้อความ (4.0.0-rc1)</title>
+  <title>การไหลของข้อมูลของ 1 ข้อความ (4.0.0-rc2)</title>
   <!-- Fonts are self-hosted (no network): see labclear-diagram-fonts.css next to this file. -->
   <link rel="stylesheet" href="labclear-diagram-fonts.css">
   <style>
@@ -56,12 +56,12 @@
 </head>
 <body>
   <div class="frame">
-    <p class="eyebrow">Sequence · LabClear 4.0.0-rc1</p>
-    <h1>การไหลของข้อมูลของ 1 ข้อความ (4.0.0-rc1)</h1>
+    <p class="eyebrow">Sequence · LabClear 4.0.0-rc2</p>
+    <h1>การไหลของข้อมูลของ 1 ข้อความ (4.0.0-rc2)</h1>
     <div class="diagram-container">
 <svg viewBox="0 0 880 1290" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="message-flow-4.0-title message-flow-4.0-desc">
-<title id="message-flow-4.0-title">การไหลของข้อมูลของ 1 ข้อความ (4.0.0-rc1)</title>
-<desc id="message-flow-4.0-desc">แผนภาพลำดับของ 1 ข้อความในรุ่นรวม 4.0.0-rc1 มีเส้นชีวิต 4 เส้น ได้แก่ เบราว์เซอร์ บริการเว็บ Render (Next.js) FastAPI (Codex) และผู้ให้บริการ AI ขั้น 01 เบราว์เซอร์ POST /api/business/chat พร้อม Accept: application/x-ndjson ไปที่บริการเว็บ ซึ่ง rewrite ผ่าน HTTPS ไปยัง FastAPI ขั้น 02 ตรวจ session, CSRF, origin และ rate limit แล้วบันทึกข้อความ (บัญชีลง PostgreSQL ผู้เยี่ยมชมลง RAM ชั่วคราว) ขั้น 03 ถ้าเปิดเอกสารองค์กร ตรวจซ้ำว่าแหล่งส่วนตัวในประวัติยังอนุมัติและเป็นขององค์กรเดิม ถ้าไม่ ตัดออกจาก context ขั้น 04 ตรวจความปลอดภัยขาเข้าด้วย regex ก่อนแล้วจึงเรียก safety model ขั้น 05 เรียก planner ขั้น 06 ค้น BM25 บนฐาน 58 รายการ และใช้ข้อความองค์กรที่อนุมัติแล้วเฉพาะเมื่อเปิด ORG_REFERENCE_INFERENCE_ENABLED ขั้น 07 เรียกผู้เขียนคำตอบตามบทบาทให้เขียน JSON พร้อม citation (runtime skills และ medical harness ใช้เฉพาะเมื่อเปิด flag) ขั้น 08 Python ตรวจ citation ค่าผลตรวจ ราคา และบทบาท แล้วเรียก reviewer โดยเขียนใหม่ได้ 1 รอบ จากนั้นเรียก safety model ตรวจคำตอบขาออก ขั้น 09 บันทึกคำตอบ แหล่งอ้างอิง และขั้นตอน แล้วส่ง {&quot;type&quot;:&quot;done&quot;} เป็นบรรทัดสุดท้าย ระหว่างทางทุกขั้นส่งบรรทัด NDJSON กลับไปที่เบราว์เซอร์ผ่านบริการเว็บ ทุกการเรียกโมเดลทำทีละครั้งตามลำดับ และผ่านด่าน PROVIDER_NETWORK_ENABLED เพดาน CLOUD_CALL_LIMIT และบัญชี 300 บาทก่อนเสมอ</desc>
+<title id="message-flow-4.0-title">การไหลของข้อมูลของ 1 ข้อความ (4.0.0-rc2)</title>
+<desc id="message-flow-4.0-desc">แผนภาพลำดับของ 1 ข้อความในรุ่นรวม 4.0.0-rc2 มีเส้นชีวิต 4 เส้น ได้แก่ เบราว์เซอร์ บริการเว็บ Render (Next.js) FastAPI (Codex) และผู้ให้บริการ AI ขั้น 01 เบราว์เซอร์ POST /api/business/chat พร้อม Accept: application/x-ndjson ไปที่บริการเว็บ ซึ่ง rewrite ผ่าน HTTPS ไปยัง FastAPI ขั้น 02 ตรวจ session, CSRF, origin และ rate limit แล้วบันทึกข้อความ (บัญชีลง PostgreSQL ผู้เยี่ยมชมลง RAM ชั่วคราว) ขั้น 03 ถ้าเปิดเอกสารองค์กร ตรวจซ้ำว่าแหล่งส่วนตัวในประวัติยังอนุมัติและเป็นขององค์กรเดิม ถ้าไม่ ตัดออกจาก context ขั้น 04 ตรวจความปลอดภัยขาเข้าด้วย regex ก่อนแล้วจึงเรียก safety model ขั้น 05 เรียก planner ขั้น 06 ค้น BM25 บนฐาน 58 รายการ และใช้ข้อความองค์กรที่อนุมัติแล้วเฉพาะเมื่อเปิด ORG_REFERENCE_INFERENCE_ENABLED ขั้น 07 เรียกผู้เขียนคำตอบตามบทบาทให้เขียน JSON พร้อม citation (runtime skills และ medical harness ใช้เฉพาะเมื่อเปิด flag) ขั้น 08 Python ตรวจ citation ค่าผลตรวจ ราคา และบทบาท แล้วเรียก reviewer โดยเขียนใหม่ได้ 1 รอบ จากนั้นเรียก safety model ตรวจคำตอบขาออก ขั้น 09 บันทึกคำตอบ แหล่งอ้างอิง และขั้นตอน แล้วส่ง {&quot;type&quot;:&quot;done&quot;} เป็นบรรทัดสุดท้าย ระหว่างทางทุกขั้นส่งบรรทัด NDJSON กลับไปที่เบราว์เซอร์ผ่านบริการเว็บ ทุกการเรียกโมเดลทำทีละครั้งตามลำดับ และผ่านด่าน PROVIDER_NETWORK_ENABLED เพดาน CLOUD_CALL_LIMIT และบัญชี 300 บาทก่อนเสมอ</desc>
 <defs>
 <marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#6b6875"/></marker>
 <marker id="arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#6539a9"/></marker>
@@ -179,12 +179,12 @@
 <g data-fit="label">
 <rect x="543" y="504" width="154" height="38" rx="2" fill="#fdfcfe"/>
 <text x="620" y="518" fill="#2f6fb5" font-size="12" font-weight="500" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">planner</text>
-<text x="620" y="536" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">เลือก action บทบาท และคำค้น</text>
+<text x="620" y="536" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">เสนอ action บทบาท และคำค้น</text>
 </g>
 <g data-fit="label">
 <rect x="506" y="580" width="229" height="74" rx="2" fill="#fdfcfe"/>
-<text x="510" y="594" fill="#23202b" font-size="12" font-weight="500" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="start">ค้นหลักฐาน</text>
-<text x="510" y="612" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="start">BM25 บนฐาน 58 รายการ</text>
+<text x="510" y="594" fill="#23202b" font-size="12" font-weight="500" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="start">typed tools ตามสิทธิ์บทบาท</text>
+<text x="510" y="612" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="start">แคตตาล็อก · นโยบาย · BM25 58 รายการ</text>
 <text x="510" y="630" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="start">+ ข้อความองค์กรที่อนุมัติแล้ว ถ้าเปิด</text>
 <text x="510" y="648" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist Mono', 'Noto Sans Thai', ui-monospace, monospace" text-anchor="start">ORG_REFERENCE_INFERENCE_ENABLED</text>
 </g>
@@ -192,7 +192,7 @@
 <rect x="528" y="694" width="184" height="74" rx="2" fill="#f9f8fa"/>
 <text x="620" y="708" fill="#2f6fb5" font-size="12" font-weight="500" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">ผู้เขียนคำตอบตามบทบาท</text>
 <text x="620" y="726" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">JSON พร้อม citation</text>
-<text x="620" y="744" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">runtime skills / medical harness</text>
+<text x="620" y="744" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">runtime skills · medical harness</text>
 <text x="620" y="762" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="middle">ใช้เฉพาะเมื่อเปิด flag</text>
 </g>
 <g data-fit="label">
@@ -286,7 +286,7 @@
 <text x="209.9" y="1236" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="start">LOOP = เขียนใหม่ได้ 1 รอบ</text>
 <text x="362.3" y="1236" fill="#23202b" font-size="12" font-weight="500" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="start">เรียกโมเดลทีละครั้งตามลำดับ ไม่มีการตรวจขนาน</text>
 <rect x="40" y="1251" width="18" height="18" rx="2" fill="rgba(35,32,43,0.04)" stroke="rgba(35,32,43,0.35)" stroke-width="0.8" stroke-dasharray="3,2"/>
-<text x="66" y="1264" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="start">ด่าน = ทุกการเรียกโมเดลผ่าน PROVIDER_NETWORK_ENABLED, เพดาน CLOUD_CALL_LIMIT และบัญชีบาท (300 บาท) ก่อน ไม่ผ่านหยุดทันที</text>
+<text x="66" y="1264" fill="#6b6875" font-size="12" font-weight="400" font-family="'Geist', 'Noto Sans Thai', system-ui, sans-serif" text-anchor="start">ด่าน = นโยบาย free-only (เซิร์ฟเวอร์ทดลองเท่านั้น) → PROVIDER_NETWORK_ENABLED → CLOUD_CALL_LIMIT → บัญชี 300 บาท ไม่ผ่านหยุดทันที</text>
 </svg>
     </div>
   </div>
