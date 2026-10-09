@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>LabClear 4.0.0 · นำเสนอ Final Project</title>
+<title>LabClear 4.0.0-rc2 · นำเสนอ Final Project</title>
 <link rel="icon" href="../web/public/img/favicon.svg">
 <link rel="stylesheet" href="vendor/reveal.js-5.2.1/reset.css">
 <link rel="stylesheet" href="vendor/reveal.js-5.2.1/reveal.css">
@@ -124,12 +124,12 @@ table.t tr.lead td{background:var(--tint)}
 <section class="night" data-background-color="#1b1328">
   <div class="dots"></div>
   <div class="frame">
-    <div class="brand"><img src="../web/public/img/mark.svg" alt="">LabClear 4.0.0</div>
+    <div class="brand"><img src="../web/public/img/mark.svg" alt="">LabClear 4.0.0-rc2 · รุ่นรวม</div>
     <h1 class="hero">จองตรวจสุขภาพ<br>เข้าใจผลตรวจ</h1>
-    <p class="lede">แชตบอตภาษาไทยของคลินิกตรวจสุขภาพจำลอง แนะนำแพ็กเกจ รับนัด และอธิบายใบผลแล็บพร้อมแหล่งอ้างอิง รุ่นนี้ทำตามความเห็น CEO ครบ 5 ข้อ</p>
-    <div class="people">นายวัชรินทร์ บัวสอน 68076055 · นายศิริพล ศรีเฮงไพบูลย์ 68076060<br>06048308 Intelligent Chatbot Development · ตุลาคม 2569</div>
+    <p class="lede">แชตบอตภาษาไทยของคลินิกตรวจสุขภาพจำลอง รุ่นรวมนี้ใช้ backend ของ Codex กับหน้าเว็บภาษาไทยของ Claude เพื่อตอบความเห็น CEO 5 ข้อ ยังเป็น candidate สำหรับตรวจรับ</p>
+    <div class="people">นายวัชรินทร์ บัวสอน 68076055 · นายศิริพล ศรีเฮงไพบูลย์ 68076060<br>06048308 Intelligent Chatbot Development · 9 ตุลาคม 2569</div>
   </div>
-  <aside class="notes">[0:00–0:10] สวัสดีครับ เราคือทีม LabClear แชตบอตของคลินิกตรวจสุขภาพจำลอง วันนี้เล่ารุ่น 4.0.0 ที่แก้ตามความเห็น CEO ทั้ง 5 ข้อครับ</aside>
+  <aside class="notes">[0:00–0:10] สวัสดีครับ เราคือทีม LabClear แชตบอตของคลินิกตรวจสุขภาพจำลอง วันนี้เล่ารุ่นรวม 4.0.0-rc2 ที่ประกอบงานสองชุดเข้าด้วยกันเพื่อตอบความเห็น CEO ทั้ง 5 ข้อครับ</aside>
 </section>
 
 <!-- 2 · Problem and business -->
@@ -163,7 +163,7 @@ table.t tr.lead td{background:var(--tint)}
     <h2>จากใบผลที่มี ไปสู่การตรวจที่ต้องการ</h2>
     <div class="split" style="grid-template-columns:1fr 1.02fr;align-items:start">
       <ol class="steps">
-        <li>แนบรูปหรือ PDF ใบผลในแชต<span>Gemini อ่านทุกแถว แสดงค่าข้างภาพ</span></li>
+        <li>แนบรูปหรือ PDF ใบผลในแชต<span>OCR อ่านทุกแถว (ค่าเริ่มต้น Typhoon OCR) แสดงค่าข้างภาพ</span></li>
         <li>ลูกค้าตรวจและกดยืนยันค่าเอง<span>ยังไม่อธิบายอะไรก่อนกดยืนยัน</span></li>
         <li>อ่านคำอธิบายพร้อมแหล่งอ้างอิง<span>เทียบกับช่วงที่พิมพ์บนใบผลเดียวกัน ไม่วินิจฉัย</span></li>
         <li>ถามหาการตรวจติดตาม ถ้าต้องการ<span>ลูกค้าเป็นคนเลือก ระบบไม่ขายเพราะค่าผิดปกติ</span></li>
@@ -171,27 +171,28 @@ table.t tr.lead td{background:var(--tint)}
       </ol>
       <div>
         <div class="shot" style="height:476px"><img src="img/chat-guest.png" alt="แชตผู้เยี่ยมชม: คำตอบเรื่อง HbA1c พร้อมแหล่งอ้างอิง 2 รายการ และแถบโหมดผู้เยี่ยมชม"></div>
-        <p class="cap">แชตผู้เยี่ยมชมบนเว็บ 4.0.0 · ภาพจากโหมดพัฒนา คำตอบมาจาก AI จำลอง</p>
+        <p class="cap">แชตผู้เยี่ยมชมบนเว็บรุ่นรวม · ภาพจาก web UAT คำตอบมาจาก AI จำลอง</p>
       </div>
     </div>
   </div>
-  <aside class="notes">[0:20–1:10] สาธิต 50 วินาที บนเว็บที่ deploy แล้ว (ถ้ายังไม่มี ใช้คลิปสาธิต): ถาม "HbA1c คืออะไร" แล้วเปิดแหล่งอ้างอิง → แนบใบผลตัวอย่าง ดูขั้นตอนอ่าน แล้วกด "ค่าถูกต้อง นี่คือรายงานของฉัน" → อ่านคำอธิบาย → กดรีเฟรชให้เห็นว่าแชตผู้เยี่ยมชมหาย พูดระหว่างรอ: ลูกค้ายืนยันค่าก่อนเสมอ และทุกคำตอบบอกแหล่งที่มา</aside>
+  <aside class="notes">[0:20–1:10] สาธิต 50 วินาที (ถ้ายังไม่ได้ deploy ใช้คลิปจากเครื่องพัฒนาที่บอกว่าเป็น AI จำลอง): ถาม "HbA1c คืออะไร" แล้วเปิดแหล่งอ้างอิง → แนบใบผลตัวอย่าง ดูขั้นตอนอ่าน แล้วกดยืนยันค่า → อ่านคำอธิบาย → กดรีเฟรชให้เห็นว่าแชตผู้เยี่ยมชมหาย พูดระหว่างรอ: ลูกค้ายืนยันค่าก่อนเสมอ และทุกคำตอบบอกแหล่งที่มา</aside>
 </section>
 
 <!-- 4 · CEO overview -->
 <section>
   <div class="frame">
-    <h2>ความเห็น CEO 5 ข้อ และสิ่งที่เปลี่ยน</h2>
-    <table class="t" style="font-size:22px">
-      <tr><th style="width:36px">ข้อ</th><th style="width:44%">CEO บอกว่า</th><th>เราเปลี่ยนเป็น</th></tr>
-      <tr><td class="k">1</td><td>แหล่งอ้างอิงน้อยและเจาะจงบางโรงพยาบาล อยากให้ลูกค้าองค์กรอัปโหลดเอกสารเอง</td><td>135 แหล่งจาก 24 ผู้เผยแพร่ และเอกสารขององค์กรที่เจ้าหน้าที่ตรวจก่อนใช้</td></tr>
-      <tr><td class="k">2</td><td>ไม่ได้เข้าสู่ระบบ ประวัติแชตหายเมื่อรีเฟรช</td><td>คงการลบไว้เพื่อความเป็นส่วนตัว บอกผู้ใช้ชัด ๆ และเลือกเก็บแชตตอนเข้าสู่ระบบได้</td></tr>
-      <tr><td class="k">3</td><td>ย้ายจาก Render ไป Cloudflare บนโดเมนที่ซื้อไว้</td><td>Worker หน้าเว็บ + Worker API ที่รัน FastAPI ใน Container</td></tr>
-      <tr><td class="k">4</td><td>ใช้ OpenRouter key ของทีม โมเดลถูก ดี เร็ว งบ USD 10</td><td>คีย์เดียว 4 โมเดล ประมาณ USD 0.008 ต่อคำตอบ ระบบหยุดที่ 360 บาท</td></tr>
-      <tr><td class="k">5</td><td>เว็บเน้นภาษาไทย ใช้ Next/React/Three ให้เด่นและเข้าใจง่าย</td><td>Next.js 16 + React 19 + React Three Fiber ภาษาไทยเป็นค่าเริ่มต้น</td></tr>
+    <h2>ความเห็น CEO 5 ข้อ ในรุ่นรวม</h2>
+    <table class="t" style="font-size:21px">
+      <tr><th style="width:36px">ข้อ</th><th style="width:40%">CEO บอกว่า</th><th>รุ่นรวมทำ</th></tr>
+      <tr><td class="k">1</td><td>แหล่งอ้างอิงน้อยและเจาะจงบางโรงพยาบาล อยากให้ลูกค้าองค์กรอัปโหลดเอกสารเอง</td><td>ฐานที่ค้นคง 58 รายการที่ตรวจแล้ว แหล่งใหม่ 111 รายการรอตรวจ เอกสารองค์กรแบบ Codex และหน้าลิงก์โรงพยาบาล</td></tr>
+      <tr><td class="k">2</td><td>ไม่ได้เข้าสู่ระบบ ประวัติแชตหายเมื่อรีเฟรช</td><td>คงการลบเพื่อความเป็นส่วนตัว เข้าสู่ระบบแล้วแชตผู้เยี่ยมชมก็ถูกลบ (กฎ Codex)</td></tr>
+      <tr><td class="k">3</td><td>ย้ายจาก Render ไป Cloudflare บนโดเมนที่ซื้อไว้</td><td>เจ้าของเลือกกลับมาใช้ Render เดิม · Cloudflare เก็บเป็นทางเลือก</td></tr>
+      <tr><td class="k">4</td><td>ใช้ OpenRouter key ของทีม โมเดลถูก ดี เร็ว งบ USD 10</td><td>เลือกผู้ให้บริการต่อขั้นได้ (มี OpenRouter) บทบาทใหม่ปิดไว้ เพดาน 300 บาท</td></tr>
+      <tr><td class="k">5</td><td>เว็บเน้นภาษาไทย ใช้ Next/React/Three ให้เด่นและเข้าใจง่าย</td><td>เว็บ Next.js ของ Claude ภาษาไทยเป็นค่าเริ่มต้น ปรับให้เข้ากับ API ของ Codex</td></tr>
     </table>
+    <p class="small" style="margin-top:18px">รุ่นรวม = backend, ความปลอดภัย และสัญญา API ของ Codex <code>main</code> + หน้าเว็บของ Claude branch · ความสามารถใหม่ของ Codex 6 ส่วนปิดเป็นค่าเริ่มต้น</p>
   </div>
-  <aside class="notes">[1:10–1:20] นี่คือความเห็นห้าข้อของ CEO กับสิ่งที่เราเปลี่ยน สไลด์ถัดไปเล่าทีละข้อ วงกลมมุมขวาบนบอกว่ากำลังตอบข้อไหน</aside>
+  <aside class="notes">[1:10–1:20] นี่คือความเห็นห้าข้อของ CEO กับสิ่งที่รุ่นรวมทำ เราใช้ backend ของ Codex ที่ผ่านการตรวจความปลอดภัยแล้วเป็นฐาน แล้วนำหน้าเว็บภาษาไทยมาประกอบ</aside>
 </section>
 
 <!-- 5 · CEO 5: Thai-first Next.js website -->
@@ -202,14 +203,14 @@ table.t tr.lead td{background:var(--tint)}
     <div class="split" style="grid-template-columns:1.45fr 1fr;align-items:start">
       <div><div class="shot" style="height:420px"><img src="img/home.png" alt="หน้าแรกภาษาไทย: จองตรวจสุขภาพ เข้าใจผลตรวจ พร้อม DNA helix จากอนุภาค"></div></div>
       <ul class="notes-list">
-        <li><b>Next.js 16 · React 19 · React Three Fiber</b>ย้ายทุกหน้า: เว็บ แชต และหน้าเจ้าหน้าที่</li>
-        <li><b>ไทยก่อน สลับ EN ได้</b>คำแปลไทยมากกว่า 2,000 รายการ ตรวจครบด้วย <code>i18n:check</code></li>
-        <li><b>DNA helix 3 มิติจากอนุภาค</b>แสดงแบบนิ่งเมื่อผู้ใช้ตั้ง reduced motion</li>
-        <li style="border-bottom:0"><b>หน้าตาเดิมที่เจ้าของชอบ</b>สีม่วง ฟอนต์ Noto Sans/Serif Thai และการ์ดชุดเดิม</li>
+        <li><b>Next.js 16 · React 19 · React Three Fiber</b>หน้าเว็บ แชต พื้นที่ลูกค้า และหน้าเจ้าหน้าที่ จาก Claude branch</li>
+        <li><b>ไทยก่อน สลับ EN ได้</b>คำแปลไทย 2,297 รายการ ตรวจครบด้วย <code>i18n:check</code></li>
+        <li><b>ปรับให้เข้ากับ Codex</b>เข้าสู่ระบบ เอกสารองค์กร หน้า AI providers และหน้าลิงก์โรงพยาบาล</li>
+        <li style="border-bottom:0"><b>DNA helix 3 มิติ</b>แสดงแบบนิ่งเมื่อผู้ใช้ตั้ง reduced motion</li>
       </ul>
     </div>
   </div>
-  <aside class="notes">[1:20–1:28] ทั้งเว็บย้ายไป Next.js ภาษาไทยเป็นค่าเริ่มต้น หน้าตาเดิมที่ชอบยังอยู่ และหน้าแรกมี DNA สามมิติ</aside>
+  <aside class="notes">[1:20–1:28] หน้าเว็บ Next.js ภาษาไทยมาจากงานของ Claude ทั้งชุด เราปรับเฉพาะส่วนที่ต้องคุยกับ API ของ Codex หน้าตาเดิมที่ชอบยังอยู่ครบ</aside>
 </section>
 
 <!-- 6 · CEO 3: architecture -->
@@ -217,17 +218,17 @@ table.t tr.lead td{background:var(--tint)}
   <div class="frame tall">
     <div>
       <div class="ceo inline">ความเห็น CEO <b>3</b></div>
-      <h2>Cloudflare:<br>สอง Worker บนโดเมนเดียว</h2>
+      <h2>Render:<br>API เดิม + เว็บ Next.js</h2>
       <ul class="notes-list">
-        <li><b><code>labclear-web</code></b>หน้าเว็บ Next.js ส่ง <code>/api</code> ต่อผ่าน service binding ทำให้ cookie และ CSRF ใช้ origin เดียวกัน</li>
-        <li><b><code>labclear-api</code></b>FastAPI ใน Container 1 instance หลับเมื่อไม่มีคำขอ 25 นาที</li>
-        <li><b>PostgreSQL ภายนอก</b>ทุกแถวเข้ารหัส Fernet แชตผู้เยี่ยมชมอยู่ใน RAM เท่านั้น</li>
-        <li style="border-bottom:0"><b>OpenRouter คีย์เดียว</b>ทุกการเรียกผ่านเพดานจำนวนครั้งและงบบาทก่อน</li>
+        <li><b><code>labclear</code> (API)</b>FastAPI ของ Codex ใช้ <code>render.yaml</code> เดิม 1 instance หน้า Jinja เดิมยังเปิดได้</li>
+        <li><b><code>labclear-web</code> (เลือกได้)</b>Next.js rewrite <code>/api</code> ไปที่ API · API รับ origin ของเว็บผ่าน <code>TRUSTED_ORIGINS</code> แบบตรงตัว</li>
+        <li><b>Render PostgreSQL</b>ทุกแถวเข้ารหัส Fernet แชตผู้เยี่ยมชมอยู่ใน RAM เท่านั้น</li>
+        <li style="border-bottom:0"><b>Cloudflare</b>Workers Paid เลื่อนไว้ · แผนฟรีใช้เป็น DNS ได้ภายหลัง</li>
       </ul>
     </div>
-    <figure><img src="img/architecture-slide.png" alt="แผนภาพสถาปัตยกรรม LabClear 4.0.0: เบราว์เซอร์ → labclear-web → labclear-api → FastAPI ใน Container → PostgreSQL และ OpenRouter"></figure>
+    <figure><img src="img/architecture-slide.png" alt="แผนภาพสถาปัตยกรรม LabClear 4.0.0-rc2: เบราว์เซอร์ → labclear-web → labclear (FastAPI) → PostgreSQL และผู้ให้บริการ AI ผ่านด่านงบ"></figure>
   </div>
-  <aside class="notes">[1:28–1:40] ผู้ใช้เห็นโดเมนเดียว Worker หน้าเว็บส่งคำขอ API ต่อไปที่ Worker ที่รัน FastAPI ใน container ฐานข้อมูลอยู่ข้างนอกและเข้ารหัสทุกแถว โมเดลทุกตัวมาจาก OpenRouter</aside>
+  <aside class="notes">[1:28–1:40] เจ้าของเลือกกลับมาใช้ Render บริการ API เดิมไม่เปลี่ยน หน้าเว็บ Next.js เป็นบริการที่สองที่ส่งคำขอ API ต่อไป ฐานข้อมูลเข้ารหัสทุกแถว งาน Cloudflare เก็บไว้ใช้ภายหลัง</aside>
 </section>
 
 <!-- 7 · one message data flow -->
@@ -236,185 +237,186 @@ table.t tr.lead td{background:var(--tint)}
     <div>
       <h2>หนึ่งข้อความ<br>ผ่านการตรวจก่อนถึงลูกค้า</h2>
       <ol class="steps">
-        <li>regex ตรวจคำโจมตีก่อนเรียกโมเดลใด ๆ</li>
-        <li>safety ขาเข้า + planner ทำพร้อมกัน<span>ใช้แผนเมื่อข้อความผ่านการตรวจเท่านั้น</span></li>
-        <li>ค้น BM25 + vector และเอกสารองค์กร แล้ว Gemini เขียนคำตอบ</li>
+        <li>ตรวจ session CSRF origin แล้ว regex ก่อนเรียกโมเดล</li>
+        <li>safety ขาเข้า แล้ว planner<span>เรียกทีละขั้นตามลำดับ ไม่มีการตรวจขนาน</span></li>
+        <li>typed tools ดึงข้อมูลตามสิทธิ์บทบาท แล้วเขียนคำตอบ<span>catalog นโยบาย BM25 58 รายการ · runtime skills เลือกตามงาน</span></li>
         <li>Python ตรวจ citation ค่าผลตรวจ และราคา</li>
-        <li>reviewer + safety ขาออก ทำพร้อมกัน<span>ขั้นไหนไม่ผ่าน หยุด แสดงสาเหตุ และให้ลองใหม่</span></li>
+        <li>reviewer แล้ว safety ขาออก<span>ทุกการเรียกผ่านด่านงบ (และนโยบาย free-only เมื่อตั้ง) ขั้นไหนไม่ผ่าน หยุดและให้ลองใหม่</span></li>
       </ol>
     </div>
-    <figure><img src="img/message-flow-slide.png" alt="แผนภาพการไหลของข้อมูล 1 ข้อความ 9 ขั้น จากเบราว์เซอร์ผ่าน Cloudflare ถึง FastAPI และ OpenRouter"></figure>
+    <figure><img src="img/message-flow-slide.png" alt="แผนภาพการไหลของข้อมูล 1 ข้อความ 9 ขั้น จากเบราว์เซอร์ผ่านบริการเว็บถึง FastAPI และผู้ให้บริการ AI"></figure>
   </div>
-  <aside class="notes">[1:40–1:52] ข้อความหนึ่งข้อความผ่าน regex ก่อน แล้วตรวจความปลอดภัยพร้อมกับวางแผน ค้นแหล่งอ้างอิง เขียนคำตอบ ให้ Python ตรวจ แล้ว reviewer กับ safety ตรวจพร้อมกันอีกรอบ ไม่ผ่านขั้นไหนก็หยุดทันที</aside>
+  <aside class="notes">[1:40–1:52] ข้อความหนึ่งข้อความผ่านการตรวจคำขอและ regex ก่อน แล้วตรวจความปลอดภัย วางแผน ดึงข้อมูลผ่านเครื่องมือที่จำกัดสิทธิ์ตามบทบาท เขียนคำตอบ ให้ Python ตรวจ แล้ว reviewer กับ safety ตรวจอีกรอบ ทุกการเรียกโมเดลผ่านเพดานจำนวนครั้งและงบบาทก่อน</aside>
 </section>
 
-<!-- 8 · CEO 4: models and cost -->
+<!-- 8 · CEO 4: models and budget -->
 <section>
   <div class="frame">
     <div class="ceo">ความเห็น CEO <b>4</b></div>
-    <h2>คีย์ OpenRouter เดียว โมเดลเล็กที่เร็ว</h2>
+    <h2>เลือกโมเดลต่อขั้นได้ ไม่ฝังค่าที่ยังไม่ได้วัด</h2>
     <div class="split" style="grid-template-columns:1.5fr 1fr;gap:44px;align-items:start">
       <div>
-      <table class="t">
-        <tr><th>ขั้น</th><th>โมเดล</th><th style="text-align:right">USD / คำตอบ</th></tr>
-        <tr><td>Planner</td><td>Qwen3 30B A3B</td><td class="num" style="text-align:right">0.0004</td></tr>
-        <tr class="lead"><td>เขียนคำตอบ และอ่านใบผล</td><td>Gemini 3.1 Flash Lite</td><td class="num" style="text-align:right">0.0033</td></tr>
-        <tr><td>Reviewer</td><td>GPT-4.1 mini</td><td class="num" style="text-align:right">0.0029</td></tr>
-        <tr><td>Safety ขาเข้า + ขาออก</td><td>GPT-4.1 mini</td><td class="num" style="text-align:right">0.0012</td></tr>
-        <tr><td>Embedding (1024 มิติ)</td><td>Qwen3 Embedding 8B</td><td class="num" style="text-align:right">≈ 0</td></tr>
-        <tr><td><strong>รวม</strong></td><td></td><td class="num" style="text-align:right"><strong>≈ 0.008</strong></td></tr>
+      <table class="t" style="font-size:21px">
+        <tr><th>ขั้น</th><th>ค่าเริ่มต้น (เปลี่ยนได้ที่ /staff)</th></tr>
+        <tr><td>โมเดลภาษา (planner ผู้เขียน reviewer)</td><td>Typhoon v2.5 30B</td></tr>
+        <tr><td>Safety check</td><td>iApp OpenThai-SystemOne</td></tr>
+        <tr><td>อ่านใบผล</td><td>Typhoon OCR</td></tr>
+        <tr class="lead"><td>Medical analyzer · Thai composer</td><td>ปิด · ต้องระบุโมเดล ราคาที่ตรวจแล้ว และ endpoint</td></tr>
       </table>
       <div class="split" style="grid-template-columns:repeat(3,1fr);gap:22px;margin-top:26px;font-size:17px;line-height:1.42">
-        <div><strong style="display:block;font-size:19px">เร็ว</strong>ตรวจความปลอดภัยคู่กับ planner และ reviewer ข้าม reviewer เมื่อทักทาย ปิด reasoning ของ Gemini</div>
-        <div><strong style="display:block;font-size:19px">เป็นส่วนตัว</strong>ขอเฉพาะ endpoint แบบ zero data retention ที่ไม่เก็บข้อมูล ไม่มี fallback</div>
-        <div><strong style="display:block;font-size:19px">คุมงบ</strong>เพดานจำนวนครั้งและ ledger บาทก่อนทุกการเรียก ล้มเหลวแล้วหยุด</div>
+        <div><strong style="display:block;font-size:19px">OpenRouter</strong>เลือกได้ทุก slot บทบาทใหม่ต้องระบุ endpoint ไม่สลับผู้ให้บริการ และขอ zero data retention</div>
+        <div><strong style="display:block;font-size:19px">ไม่อ้างเกินจริง</strong>บันทึก = ตรวจการตั้งค่า · registry เป็น metadata ราคา PRICE_UNVERIFIED</div>
+        <div><strong style="display:block;font-size:19px">คุมงบ</strong>สิทธิ์เรียกเครือข่าย เพดานจำนวนครั้ง และ ledger บาทก่อนทุกการเรียก</div>
       </div>
       </div>
       <div>
-        <div class="hero-num">≈ 1,250</div>
-        <p style="font-size:22px;margin-top:12px">คำตอบต่องบ USD 10<br><span class="muted">ระบบหยุดเรียก AI เมื่อครบ 360 บาท</span></p>
-        <p class="small" style="margin-top:26px">ประมาณจากราคา 7 ต.ค. 2569 และจำนวน token ที่สมมติ ยังไม่ได้เรียก OpenRouter จริง ต้องยืนยันด้วย usage หลัง deploy</p>
+        <div class="hero-num">300 บาท</div>
+        <p style="font-size:22px;margin-top:12px">เพดานงบรวมของโครงการ<br><span class="muted">ประเมินจริงในวง USD 1 เมื่อเจ้าของอนุมัติ</span></p>
+        <p class="small" style="margin-top:26px">รอบ rc2 ทดสอบแบบ free-first: Typhoon text/OCR + OpenThai-SystemOne เป็น baseline · OpenRouter และ embedding พักไว้ (โค้ดยังอยู่) · ชุดโมเดลเร็วของ Claude branch ยังไม่ได้วัด จึงไม่เป็นค่าเริ่มต้น</p>
       </div>
     </div>
   </div>
-  <aside class="notes">[1:52–2:04] ทุกขั้นใช้คีย์ OpenRouter ของทีม Qwen วางแผน Gemini Flash Lite เขียนและอ่านใบผล GPT-4.1 mini ตรวจทาน ประมาณ 0.008 ดอลลาร์ต่อคำตอบ งบ 10 ดอลลาร์จึงพอราว 1,250 คำตอบ ตัวเลขนี้ยังเป็นค่าประมาณครับ</aside>
+  <aside class="notes">[1:52–2:04] ผู้จัดการเลือกผู้ให้บริการได้ทีละขั้น OpenRouter เป็นหนึ่งในตัวเลือก บทบาทใหม่ปิดไว้จนกว่าจะใส่โมเดลและราคาที่ตรวจแล้ว เราไม่ฝังชุดโมเดลที่ยังไม่ได้วัด และคุมงบที่ 300 บาทครับ</aside>
 </section>
 
 <!-- 9 · CEO 2: guest privacy -->
 <section>
   <div class="frame">
     <div class="ceo">ความเห็น CEO <b>2</b></div>
-    <h2>ผู้เยี่ยมชม: รีเฟรชแล้วแชตหาย ตามที่เจ้าของเลือก</h2>
+    <h2>ผู้เยี่ยมชม: รีเฟรชหรือเข้าสู่ระบบแล้วแชตหาย</h2>
     <div class="split" style="grid-template-columns:1.4fr 1fr;gap:44px;align-items:start">
       <table class="t" style="font-size:22px">
         <tr><th style="width:56%">เมื่อผู้เยี่ยมชม…</th><th>แชตและภาพที่แนบ</th></tr>
         <tr><td>รีเฟรช หรือปิดแท็บ</td><td>ลบบนเซิร์ฟเวอร์ทันที (beacon)</td></tr>
         <tr><td>กดย้อนกลับมาหน้าเดิม</td><td>หน้าโหลดใหม่ ไม่เห็นแชตเก่า</td></tr>
-        <tr class="lead"><td>เข้าสู่ระบบ และติ๊ก "เก็บแชตนี้ไว้ในบัญชีของฉัน"</td><td>ย้ายเข้าบัญชี อยู่ต่อหลังรีเฟรช</td></tr>
-        <tr><td>เข้าสู่ระบบโดยไม่ติ๊ก</td><td>ลบ</td></tr>
+        <tr class="lead"><td>เข้าสู่ระบบ หรือสมัครบัญชี</td><td>ลบ หน้าจอล้างทันที บัญชีเริ่มแชตใหม่</td></tr>
+        <tr><td>มีคำตอบเก่าของผู้เยี่ยมชมมาถึงช้า</td><td>ถูกทิ้ง ไม่แสดงทับบัญชีใหม่</td></tr>
         <tr><td>ไม่ใช้งาน 20 นาที</td><td>ลบ</td></tr>
       </table>
       <ul class="notes-list">
         <li><b>ไม่มีอะไรในเบราว์เซอร์</b>ไม่ใช้ localStorage, sessionStorage หรือ cookie เก็บ token ไว้ในหน่วยความจำของหน้าเท่านั้น</li>
-        <li><b>บอกผู้ใช้ตลอด</b>แถบโหมดผู้เยี่ยมชมเหนือช่องพิมพ์ และเบราว์เซอร์ถามก่อนออกจากหน้า</li>
-        <li style="border-bottom:0"><b>ทดสอบแล้ว</b>pytest 2 ข้อ และ UAT R4-02 ถึง R4-04 ผ่าน</li>
+        <li><b>บอกผู้ใช้ก่อน</b>แถบโหมดผู้เยี่ยมชม และหน้าต่างเข้าสู่ระบบเตือนว่าแชตนี้จะถูกลบ</li>
+        <li style="border-bottom:0"><b>ทดสอบแล้ว</b>UAT R4-02 ถึง R4-04 และ UI-33 ผ่าน (ตัวแทนโมเดล)</li>
       </ul>
     </div>
   </div>
-  <aside class="notes">[2:04–2:14] CEO สังเกตว่าแชตหายเมื่อรีเฟรช เจ้าของเลือกให้ลบต่อเพราะเป็นข้อมูลสุขภาพ เราจึงลบให้แน่นขึ้น บอกผู้ใช้ตลอด และให้เลือกเก็บแชตตอนเข้าสู่ระบบ</aside>
+  <aside class="notes">[2:04–2:14] CEO สังเกตว่าแชตหายเมื่อรีเฟรช เจ้าของเลือกให้ลบต่อเพราะเป็นข้อมูลสุขภาพ รุ่นรวมใช้กฎของ Codex ที่ลบแชตเมื่อเข้าสู่ระบบด้วย และกันไม่ให้คำตอบเก่ามาแสดงทับบัญชีใหม่</aside>
 </section>
 
 <!-- 10 · CEO 1: organization documents -->
 <section>
   <div class="frame">
     <div class="ceo">ความเห็น CEO <b>1</b></div>
-    <h2>โรงพยาบาลเพิ่มเอกสารของตัวเอง เจ้าหน้าที่ตรวจก่อนใช้</h2>
+    <h2>โรงพยาบาลเก็บเอกสารเอง องค์กรอนุมัติ</h2>
     <div class="flow" style="grid-template-columns:repeat(5,1fr)">
-      <div>สร้างองค์กร<small>ได้รหัสเข้าร่วม · ผู้จัดการ LabClear</small></div>
-      <div>เข้าร่วมด้วยรหัส<small>ลูกค้าที่มีบัญชี</small></div>
-      <div>อัปโหลดเอกสาร<small>PDF, DOCX, TXT, MD · ผู้ดูแลองค์กร</small></div>
-      <div>ตรวจแล้วอนุมัติ<small>อ่านทุกช่วงข้อความ · ผู้จัดการ LabClear</small></div>
-      <div>แชตอ้างอิงได้<small>เฉพาะสมาชิก ระบุชื่อองค์กรเป็นแหล่งที่มา</small></div>
+      <div>กำหนดสมาชิก<small>ผู้อ่านหรือผู้แก้ไข · ผู้จัดการ LabClear</small></div>
+      <div>อัปโหลดร่าง<small>TXT/MD ไม่เกิน 256 KiB · ผู้แก้ไข</small></div>
+      <div>ดูตัวอย่างแล้วอนุมัติ<small>รุ่นใหม่แทนรุ่นเดิม · ผู้แก้ไข</small></div>
+      <div>สมาชิกค้นและดาวน์โหลด<small>ข้อความต้นฉบับ ไม่ใช่คำตอบจาก AI</small></div>
+      <div>ถอนหรือลบ<small>คำตอบครั้งต่อไปใช้ไม่ได้ทันที</small></div>
     </div>
     <div class="split" style="grid-template-columns:1.25fr 1fr;gap:40px;margin-top:26px;align-items:start">
-      <div><div class="shot" style="height:300px"><img src="img/orgs.png" alt="หน้าองค์กรของฉัน: เอกสารที่อนุมัติแล้วและปุ่มใช้ในแชตของฉัน"></div><p class="cap">หน้าองค์กรของฉัน · ภาพจาก UAT R4-05</p></div>
+      <div><div class="shot" style="height:270px"><img src="img/orgs.png" alt="หน้าองค์กรของฉัน: เอกสารจำลองที่อนุมัติแล้ว ปุ่มรุ่นใหม่ ถอน และลบ"></div><p class="cap">หน้าองค์กรของฉันของผู้แก้ไข · ภาพจาก UAT R4-05 (เอกสารจำลอง)</p></div>
       <ul class="notes-list">
-        <li>ช่วงที่ดูเหมือนสั่ง AI ถูกทำเครื่องหมายและไม่ถูกใช้</li>
-        <li>ค้นด้วย BM25 บนเซิร์ฟเวอร์ ไม่ส่งไปทำ embedding</li>
-        <li style="border-bottom:0">เก็บเป็นข้อความเข้ารหัส ไม่เก็บไฟล์ต้นฉบับ</li>
+        <li>ต้องเปิด <code>ORG_DOCUMENTS_ENABLED</code> · ปิดเป็นค่าเริ่มต้น</li>
+        <li>เห็นเฉพาะองค์กรเดียวกัน ตรวจซ้ำทุกครั้งว่ายังอนุมัติ</li>
+        <li style="border-bottom:0">ผู้ช่วยใช้ข้อความเมื่อเปิด <code>ORG_REFERENCE_INFERENCE_ENABLED</code> และผู้ให้บริการผ่านการตั้งค่าแล้ว</li>
       </ul>
     </div>
   </div>
-  <aside class="notes">[2:14–2:24] โรงพยาบาลที่เป็นลูกค้าองค์กรเข้าร่วมด้วยรหัส ผู้ดูแลอัปโหลดเอกสาร เจ้าหน้าที่ LabClear อ่านและอนุมัติก่อน แล้วแชตของสมาชิกจึงอ้างอิงได้ ข้อความที่ดูเหมือนสั่ง AI ถูกตัดออก</aside>
+  <aside class="notes">[2:14–2:24] เอกสารขององค์กรใช้ระบบของ Codex ผู้จัดการกำหนดสมาชิก ผู้แก้ไขขององค์กรอัปโหลดและอนุมัติเอง มีรุ่น ถอนได้ และเห็นเฉพาะคนในองค์กร ผู้ช่วยจะใช้เอกสารเหล่านี้ก็ต่อเมื่อเจ้าของเปิด</aside>
 </section>
 
 <!-- 11 · CEO 1: knowledge base -->
 <section>
   <div class="frame">
     <div class="ceo">ความเห็น CEO <b>1</b></div>
-    <h2>ฐานความรู้จาก 58 เป็น 135 รายการ 24 ผู้เผยแพร่</h2>
+    <h2>ฐานที่ค้น 58 รายการ · แหล่งใหม่รอตรวจ 111 รายการ</h2>
     <div class="split" style="grid-template-columns:1.25fr 1fr;gap:50px;align-items:start">
       <ul class="bars" style="margin-top:8px">
-        <li><span>ห้องแล็บโรงพยาบาลไทย</span><span class="bar"><i style="width:100%"></i></span><span class="v">49</span></li>
-        <li><span>แหล่งอ้างอิงสากล</span><span class="bar"><i style="width:83.7%"></i></span><span class="v">41</span></li>
-        <li><span>หน่วยงานสากล</span><span class="bar"><i style="width:55.1%"></i></span><span class="v">27</span></li>
-        <li><span>สมาคมวิชาชีพไทย</span><span class="bar"><i style="width:26.5%"></i></span><span class="v">13</span></li>
-        <li><span>หน่วยงานรัฐไทย</span><span class="bar"><i style="width:10.2%"></i></span><span class="v">5</span></li>
-        <li style="margin-top:22px;font-size:17px;color:var(--muted);display:block">ทุกการตรวจในแค็ตตาล็อกมีอย่างน้อย 2 ผู้เผยแพร่ และมีชื่อไทยที่คนทั่วไปใช้ เช่น น้ำตาลสะสม ไขมันเลว ค่าไต</li>
+        <li style="font-size:18px;color:var(--muted);display:block;margin-bottom:6px">ระเบียนจาก Claude branch ที่รอตรวจ (90 รายการ 26 ผู้เผยแพร่)</li>
+        <li><span>แหล่งอ้างอิงสากล</span><span class="bar"><i style="width:100%"></i></span><span class="v">32</span></li>
+        <li><span>หน่วยงานสากล</span><span class="bar"><i style="width:84.4%"></i></span><span class="v">27</span></li>
+        <li><span>สมาคมวิชาชีพไทย</span><span class="bar"><i style="width:40.6%"></i></span><span class="v">13</span></li>
+        <li><span>โรงพยาบาลไทย (ร่าง)</span><span class="bar"><i style="width:40.6%"></i></span><span class="v">13</span></li>
+        <li><span>หน่วยงานรัฐไทย</span><span class="bar"><i style="width:15.6%"></i></span><span class="v">5</span></li>
+        <li style="margin-top:22px;font-size:17px;color:var(--muted);display:block">อีก 21 รายการเป็นแหล่งและลิงก์โรงพยาบาลที่ Codex รวบรวม ทั้งหมดอยู่ใน <code>knowledge/acquisition/</code> สถานะ NOT_APPROVED</li>
       </ul>
       <ul class="notes-list">
-        <li><b class="num">77 รายการใหม่ ยังไม่ได้ตรวจลิงก์</b>เขียนแบบออฟไลน์ ติด <code>url_checked=false</code> ต้องรัน <code>verify_sources.py</code> แล้วให้คนอ่านเทียบ</li>
-        <li style="border-bottom:0"><b class="num">13 ร่างของ 5 โรงพยาบาล แยกไว้</b>อยู่ใน <code>pending.json</code> ไม่ถูกค้น จนกว่าจะเจอบทความจริงของโรงพยาบาล</li>
+        <li><b class="num">58 รายการที่ตรวจแล้ว</b>ศิริราช ศรีนครินทร์ และ MedlinePlus ค้นด้วย BM25 พร้อมชื่อไทย</li>
+        <li><b class="num">77 + 13 รายการจาก Claude</b>เขียนโดยไม่ได้เปิดหน้าเว็บต้นทาง จึงยังไม่ใช้ ทดสอบแล้วว่าไม่ถูกค้น</li>
+        <li style="border-bottom:0"><b>ก่อนนำเข้า</b>คนเปิดต้นฉบับ ยืนยันข้อความ สิทธิ์ และความถูกต้องทางคลินิก</li>
       </ul>
     </div>
   </div>
-  <aside class="notes">[2:24–2:32] ฐานความรู้สาธารณะเพิ่มเป็น 135 รายการ แต่ 77 รายการใหม่ยังไม่ได้ตรวจลิงก์ เพราะเขียนแบบออฟไลน์ ต้องรันสคริปต์ตรวจและให้คนอ่านเทียบก่อนส่ง</aside>
+  <aside class="notes">[2:24–2:32] เราไม่เพิ่มแหล่งที่ยังไม่มีใครเทียบกับต้นฉบับเข้าระบบ ฐานที่ค้นยัง 58 รายการ แหล่งใหม่ 111 รายการรอตรวจ เมื่อตรวจแล้วจึงย้ายเข้าทีละรายการ</aside>
 </section>
 
 <!-- 12 · testing evidence -->
 <section>
   <div class="frame">
-    <h2>ผลทดสอบที่มี และสิ่งที่ยังไม่ได้วัด</h2>
+    <h2>ผลทดสอบของรุ่นรวม และสิ่งที่ยังไม่ได้วัด</h2>
     <div class="stats">
-      <div><div class="n">261</div><div class="l">pytest ผ่านทั้งหมด<br>รวม 11 ข้อใหม่ของ 4.0.0</div></div>
-      <div class="warn"><div class="n">49/51</div><div class="l">สถานการณ์ UAT บนเว็บ Next.js ผ่าน</div></div>
-      <div><div class="n" style="font-size:44px;line-height:1.32">ผ่าน</div><div class="l">type check และตรวจคำแปลไทย</div></div>
-      <div><div class="n" style="font-size:44px;line-height:1.32">ผ่าน</div><div class="l">build และ dry-run ของสอง Worker</div></div>
+      <div><div class="n">328</div><div class="l">pytest ผ่านทั้งหมด<br>Codex 265 + รุ่นรวม 63</div></div>
+      <div><div class="n">46/46</div><div class="l">ชุด browser เดิมของ Codex<br>36 + upgrade 10</div></div>
+      <div><div class="n">53/53</div><div class="l">web UAT ของ Next.js<br>flag ปิดทั้งหมด 5/5</div></div>
+      <div><div class="n">20/20</div><div class="l">ชุดตามโจทย์ 10 · 5 · 5 รันครบ<br>OFFLINE · ผ่านเกณฑ์ pipeline 15</div></div>
     </div>
-    <div class="split" style="grid-template-columns:1fr 1fr;gap:44px;margin-top:28px">
+    <div class="split" style="grid-template-columns:1fr 1fr;gap:44px;margin-top:16px">
       <div>
-        <h3>UAT ที่ยังไม่ผ่าน</h3>
+        <h3>3 จุดปรับปรุง (วัดก่อน–หลัง)</h3>
         <ul class="notes-list">
-          <li><b>UI-21</b>กด Escape แล้วเมนูเว็บไม่ปิด ที่ 390 และ 768 px</li>
-          <li style="border-bottom:0"><b>UI-22</b>หน้า 404 ของ <code>/packages/P99</code> มี error ใน console</li>
+          <li><b>คำแนะนำเลือกตามงาน</b>เส้นทางที่ได้คำสั่งผิดหรือขาด 5/8 → 0/8</li>
+          <li><b>อัปโหลดภาพสังเคราะห์</b>ภาพที่ไปถึงคำอธิบาย 0/5 → 5/5</li>
+          <li style="border-bottom:0"><b>free-only</b>เรียกปลายทางเสียเงินจาก slot ค้าง 30 → 0 ครั้ง</li>
         </ul>
       </div>
       <div>
         <h3>ยังไม่ได้วัด</h3>
         <ul class="notes-list">
-          <li>ทุกผลข้างบนใช้โมเดลจำลอง ยังไม่ได้เรียก OpenRouter จริง</li>
-          <li style="border-bottom:0">ชุดทดสอบของวิชา คำถาม 10 ภาพ 5 ความปลอดภัย 5 ต้องรันหลัง deploy และให้คนตรวจทุกข้อ</li>
+          <li>ทุกผลข้างบนใช้ข้อมูลจำลองและ AI จำลอง คำตอบเป็นของตัวแทน ไม่ใช่ Typhoon</li>
+          <li style="border-bottom:0">รอบ LIVE_FREE ยังไม่ได้รัน: ยังไม่มี key และยังไม่ได้ยืนยันว่าบัญชีใช้ฟรี · คนยังไม่ได้ตรวจคำตอบ</li>
         </ul>
       </div>
     </div>
   </div>
-  <aside class="notes">[2:32–2:42] pytest ผ่าน 261 ข้อ UAT ผ่าน 49 จาก 51 อีกสองข้อเป็นบั๊กหน้าเว็บที่ต้องแก้ ทั้งหมดนี้ใช้โมเดลจำลอง คุณภาพคำตอบจริงต้องวัดหลัง deploy</aside>
+  <aside class="notes">[2:32–2:42] รุ่นรวมผ่าน pytest 328 ข้อ browser เดิมของ Codex 46 สถานการณ์ และ web UAT 53 สถานการณ์ ชุดตามโจทย์รันครบ 20 กรณีด้วย AI จำลอง และวัดสามจุดปรับปรุงแบบก่อนหลังได้ แต่คำตอบของโมเดลจริงยังไม่ได้วัด เพราะรอบ LIVE_FREE ยังรอ key และการยืนยันสิทธิ์ฟรี</aside>
 </section>
 
 <!-- 13 · deployment -->
 <section>
   <div class="frame">
     <div class="ceo">ความเห็น CEO <b>3</b></div>
-    <h2>Deploy บนบัญชีทีม: API ก่อน แล้วเว็บ</h2>
+    <h2>Deploy บน Render: API ก่อน แล้วเว็บ</h2>
     <div class="flow" style="grid-template-columns:repeat(5,1fr)">
-      <div>สร้าง PostgreSQL<small>เช่น Neon ใช้ <code>sslmode=require</code></small></div>
-      <div>ตั้ง secret ทีละตัว<small>ด้วย <code>wrangler secret put</code></small></div>
-      <div>ผูกโดเมน<small>ด้วย <code>npm run cf:domain</code></small></div>
-      <div>deploy API แล้วเว็บ<small>สคริปต์ deploy หรือ GitHub Actions</small></div>
-      <div>ตั้งค่าครั้งแรก<small>สร้างผู้จัดการ กดชุดโมเดลแบบเร็ว กด Test</small></div>
+      <div>ตรวจรับและ merge<small>เจ้าของนำเข้า bundle แล้ว merge เอง</small></div>
+      <div>API เดิม deploy<small><code>render.yaml</code> ไม่เปลี่ยน flag ใหม่ยังปิด</small></div>
+      <div>สร้างบริการเว็บ<small>Root <code>web</code> · <code>npm run start:render</code></small></div>
+      <div>เชื่อมสองบริการ<small><code>API_ORIGIN</code> ที่เว็บ · <code>TRUSTED_ORIGINS</code> ที่ API</small></div>
+      <div>ตั้ง AI และงบ<small>ตั้งผู้ให้บริการ กด Test ประเมินจริงภายในงบ</small></div>
     </div>
     <div class="split" style="grid-template-columns:1fr 1fr;gap:44px;margin-top:30px;align-items:start">
       <div>
         <h3>ตรวจรับ</h3>
         <ul class="notes-list" style="margin-bottom:16px">
-          <li><code>/health</code> ตอบ <code>4.0.0</code> และ commit ที่ deploy</li>
-          <li>เข้าสู่ระบบ จองนัด อัปโหลดใบผล ตรวจเอกสารองค์กร</li>
-          <li style="border-bottom:0">แชตผู้เยี่ยมชมหายหลังรีเฟรช · ย้อนรุ่นด้วย <code>wrangler rollback</code></li>
+          <li><code>/health</code> ตอบ <code>4.0.0-rc2</code> และ commit ที่ deploy</li>
+          <li>สมัครบัญชีได้ (ถ้าได้ 403 แปลว่า <code>TRUSTED_ORIGINS</code> ไม่ตรง)</li>
+          <li style="border-bottom:0">แชตผู้เยี่ยมชมหายหลังรีเฟรช · ย้อนรุ่นด้วยการปิด flag หรือ deploy ก่อนหน้า</li>
         </ul>
-        <span class="pill warn">ยังไม่ได้ deploy จากเครื่องที่พัฒนา</span>
+        <span class="pill warn">ยังไม่ได้ deploy และยังไม่ได้แก้ ENV ของระบบจริง</span>
       </div>
       <div>
         <h3>ค่าใช้จ่ายต่อเดือน</h3>
         <table class="t" style="font-size:21px">
-          <tr><td>Cloudflare Workers Paid</td><td class="num" style="text-align:right">USD 5</td></tr>
-          <tr><td>Container ส่วนที่เกินโควตา</td><td style="text-align:right">ตามการใช้</td></tr>
-          <tr><td>OpenRouter</td><td style="text-align:right">ภายใน USD 10</td></tr>
-          <tr><td>PostgreSQL (Neon free tier)</td><td class="num" style="text-align:right">0</td></tr>
+          <tr><td>Render: API และเว็บ (แผนฟรี)</td><td class="num" style="text-align:right">0</td></tr>
+          <tr><td>Render PostgreSQL ฟรี (หมดอายุ 30 วัน)</td><td class="num" style="text-align:right">0</td></tr>
+          <tr><td>ผู้ให้บริการ AI</td><td style="text-align:right">ภายใน 300 บาท</td></tr>
+          <tr><td>Cloudflare Workers Paid</td><td style="text-align:right">ไม่ใช้ (เลื่อนไว้)</td></tr>
         </table>
       </div>
     </div>
   </div>
-  <aside class="notes">[2:42–2:50] คู่มือ deploy เป็นภาษาไทย ห้าขั้น สร้างฐานข้อมูล ตั้ง secret ผูกโดเมน deploy API ก่อนเว็บ แล้วตั้งค่าครั้งแรก ค่าคงที่คือ 5 ดอลลาร์ต่อเดือน</aside>
+  <aside class="notes">[2:42–2:50] deploy บน Render ห้าขั้น บริการ API เดิมไม่เปลี่ยน สร้างบริการเว็บแล้วเชื่อมสองบริการ จากนั้นจึงตั้ง AI และงบ ไม่มีค่าแผน Workers Paid</aside>
 </section>
 
 <!-- 14 · limitations and next steps -->
@@ -425,37 +427,37 @@ table.t tr.lead td{background:var(--tint)}
       <div>
         <h3>ข้อจำกัดตอนนี้</h3>
         <ul class="notes-list">
-          <li>คุณภาพภาษาไทย ความเร็ว OCR และราคาจริงของโมเดลชุดใหม่ ยังไม่ได้วัด</li>
-          <li>ยังไม่ได้ build Docker image และขึ้น Cloudflare จริง</li>
-          <li>Container มี 1 instance แชตผู้เยี่ยมชมหายเมื่อ restart คำขอแรกหลังหลับต้องรอ</li>
+          <li>คุณภาพภาษาไทย ความเร็ว และ OCR ของโมเดลจริงยังไม่ได้วัดกับรุ่นนี้</li>
+          <li>ผ่านบริการเว็บ ผู้ใช้ทุกคนใช้ rate limit ก้อนเดียว · Google sign-in ยังไม่ได้ทดสอบ</li>
+          <li>API มี 1 instance แชตผู้เยี่ยมชมหายเมื่อ restart แผนฟรีหลับเมื่อไม่มีคนใช้</li>
           <li style="border-bottom:0">ข้อมูลธุรกิจและใบผลเป็นข้อมูลจำลอง ระบบไม่วินิจฉัยโรค</li>
         </ul>
       </div>
       <div>
         <h3>ลำดับงานต่อไป</h3>
         <ol class="steps">
-          <li>Deploy บนบัญชีทีมและทำรายการตรวจรับ</li>
-          <li>รันชุดทดสอบ 10 / 5 / 5 ให้คนตรวจทุกข้อ</li>
-          <li>ตรวจลิงก์และเนื้อหาแหล่งอ้างอิงใหม่ 77 รายการ</li>
-          <li>แก้ UI-21 และ UI-22 แล้วรัน UAT ซ้ำ</li>
+          <li>ตรวจรับ merge และ deploy บน Render</li>
+          <li>รัน LIVE_FREE 10 / 5 / 5 เมื่อยืนยันสิทธิ์ฟรีแล้ว ให้คนตรวจทุกข้อ</li>
+          <li>ตรวจแหล่งความรู้ที่รอ แล้วนำเข้าทีละรายการ</li>
+          <li>เปิด flag ใหม่ทีละตัวตามประตูของเจ้าของ</li>
           <li>อัดคลิปสาธิตไม่เกิน 3 นาที</li>
         </ol>
       </div>
     </div>
   </div>
-  <aside class="notes">[2:50–2:57] สิ่งที่เรายังไม่รู้คือผลของโมเดลจริงบนระบบจริง งานถัดไปคือ deploy รันชุดทดสอบของวิชา ตรวจแหล่งอ้างอิง และแก้บั๊กสองข้อ</aside>
+  <aside class="notes">[2:50–2:57] สิ่งที่เรายังไม่รู้คือผลของโมเดลจริงบนระบบจริง งานถัดไปคือ deploy รันชุดทดสอบของวิชา ตรวจแหล่งอ้างอิง และเปิดความสามารถใหม่ทีละส่วน</aside>
 </section>
 
 <!-- 15 · Closing -->
 <section class="night" data-background-color="#1b1328">
   <div class="dots"></div>
   <div class="frame">
-    <div class="brand"><img src="../web/public/img/mark.svg" alt="">LabClear 4.0.0</div>
-    <h2 style="font-family:var(--serif);font-size:52px;line-height:1.45;margin:56px 0 24px;max-width:1040px">ความเห็น CEO ทั้ง 5 ข้ออยู่ในโค้ดแล้ว<br>ขั้นต่อไปคือวัดผลบนระบบจริง</h2>
-    <p class="lede">ตอบภาษาไทยจากแหล่งที่ตรวจได้ ลบแชตผู้เยี่ยมชมเมื่อรีเฟรช รันบน Cloudflare และหยุดเรียก AI ที่ 360 บาท</p>
+    <div class="brand"><img src="../web/public/img/mark.svg" alt="">LabClear 4.0.0-rc2</div>
+    <h2 style="font-family:var(--serif);font-size:52px;line-height:1.45;margin:56px 0 24px;max-width:1040px">รุ่นรวมพร้อมให้ตรวจรับ<br>ขั้นต่อไปคือวัดผลบนระบบจริง</h2>
+    <p class="lede">หน้าเว็บภาษาไทยบน backend ที่ตรวจความปลอดภัยแล้ว ลบแชตผู้เยี่ยมชมเมื่อรีเฟรชหรือเข้าสู่ระบบ รันบน Render และหยุดเรียก AI ที่ 300 บาท</p>
     <div class="people">โค้ดและเอกสาร: github.com/siriponsri/LabClear · รายงานทางเทคนิค docs/report/LabClear_Technical_Report_4_0_0.pdf<br>นายวัชรินทร์ บัวสอน · นายศิริพล ศรีเฮงไพบูลย์</div>
   </div>
-  <aside class="notes">[2:57–3:00] สรุปคือทำครบห้าข้อในโค้ดแล้ว และจะวัดผลบนระบบจริงต่อ ขอบคุณครับ</aside>
+  <aside class="notes">[2:57–3:00] สรุปคือรุ่นรวมพร้อมให้ตรวจรับ และจะวัดผลบนระบบจริงต่อ ขอบคุณครับ</aside>
 </section>
 
 </div></div>
