@@ -69,9 +69,9 @@ on macOS/Linux use `sha256sum` instead of `Get-FileHash` and `curl` instead of `
    ```powershell
    git fetch origin
    git rev-parse origin/main                       # must equal the bundle's base (3c15550 for rc3)
-   Get-FileHash .\LabClear-4.0.0-rc3-resilience.bundle -Algorithm SHA256   # compare with the .sha256 file
-   git bundle verify .\LabClear-4.0.0-rc3-resilience.bundle
-   git fetch .\LabClear-4.0.0-rc3-resilience.bundle integration/labclear-4.0-rc1:integration/labclear-4.0-rc1
+   Get-FileHash .\LabClear-4.0.0-rc3.bundle -Algorithm SHA256   # compare with the .sha256 file
+   git bundle verify .\LabClear-4.0.0-rc3.bundle
+   git fetch .\LabClear-4.0.0-rc3.bundle integration/labclear-4.0-rc1:integration/labclear-4.0-rc1
    git switch integration/labclear-4.0-rc1
    ```
 
