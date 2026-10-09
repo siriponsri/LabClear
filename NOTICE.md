@@ -31,7 +31,6 @@ service at runtime.
 | Trirong | Thai headings | `static/fonts/Trirong-OFL.txt` |
 | Geist, Geist Mono | Latin text and code | `static/fonts/Geist-OFL.txt` |
 | Source Serif 4 | Latin display headings | `static/fonts/SourceSerif4-OFL.txt` |
-| Noto Sans Thai, Noto Serif Thai | Diagram builds (`docs/diagrams/build_diagrams.py`) | `static/fonts/NotoSansThai-OFL.txt`, `static/fonts/NotoSerifThai-OFL.txt` |
 
 ## Design references
 
