@@ -2,6 +2,6 @@
 > labclear-web@4.0.0-rc2 i18n:check
 > node scripts/merge-i18n.mjs && node scripts/i18n-check.mjs
 
-i18n: 2295 Thai strings
+i18n: 2297 Thai strings
 i18n: every t() string has a Thai translation
 exit 0

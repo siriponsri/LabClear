@@ -1,12 +1,12 @@
 {
   "mode": "SOFTWARE_TESTS_WITH_DOUBLES",
-  "candidate_sha": "d4b102562a04d740a1ace31cdba55b0ac955a86f",
+  "candidate_sha": "6f41a78046dc73d31b34f486da3114bfa42d5625",
   "working_tree": true,
-  "at": "2026-10-09T01:57:48.666Z",
+  "at": "2026-10-09T02:12:34.873Z",
   "records": [
     {
       "name": "baseline home timing 390",
-      "ms": 1518,
+      "ms": 1331,
       "scope": "local fixture navigation + screenshot; not production performance"
     },
     {
@@ -15,7 +15,7 @@
     },
     {
       "name": "preview timing 390",
-      "ms": 1197,
+      "ms": 1148,
       "scope": "local fixture interaction + screenshots"
     },
     {
@@ -28,7 +28,7 @@
     },
     {
       "name": "baseline home timing 768",
-      "ms": 1323,
+      "ms": 1346,
       "scope": "local fixture navigation + screenshot; not production performance"
     },
     {
@@ -37,7 +37,7 @@
     },
     {
       "name": "preview timing 768",
-      "ms": 1105,
+      "ms": 1084,
       "scope": "local fixture interaction + screenshots"
     },
     {
@@ -50,7 +50,7 @@
     },
     {
       "name": "baseline home timing 1440",
-      "ms": 1556,
+      "ms": 1469,
       "scope": "local fixture navigation + screenshot; not production performance"
     },
     {
@@ -59,7 +59,7 @@
     },
     {
       "name": "preview timing 1440",
-      "ms": 1093,
+      "ms": 1105,
       "scope": "local fixture interaction + screenshots"
     },
     {

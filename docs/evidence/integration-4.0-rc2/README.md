@@ -8,7 +8,7 @@ language model and OCR. **No real provider API was called, no production ENV or 
 changed, nothing was pushed or deployed.** These are software/UI-flow results, not model, OCR or
 clinical quality results.
 
-Tested commit: `d4b102562a04d740a1ace31cdba55b0ac955a86f` (branch `integration/labclear-4.0-rc1`).
+Tested commit: `6f41a78046dc73d31b34f486da3114bfa42d5625` (branch `integration/labclear-4.0-rc1`).
 Later commits change documentation, reports, slides and evidence only; the delivery manifest records
 the final head and `git diff --stat d4b1025 HEAD -- . ':!docs' ':!README.md' ':!presentation'`.
 

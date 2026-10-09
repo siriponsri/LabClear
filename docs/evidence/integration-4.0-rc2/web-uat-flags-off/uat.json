@@ -1,5 +1,5 @@
 {
-  "started": "2026-10-09T02:01:31.588Z",
+  "started": "2026-10-09T02:16:55.870Z",
   "base": "http://localhost:3000",
   "mode": "MOCKED_TEST_ONLY AI; Codex API with every new flag off (UAT_FLAGS=off).",
   "scenarios": [
@@ -7,31 +7,31 @@
       "id": "OFF-01",
       "title": "Feature endpoint reports every new Codex flag off",
       "ok": true,
-      "ms": 97
+      "ms": 34
     },
     {
       "id": "OFF-02",
       "title": "/hospital-links is a 404 and the footer has no hospital link",
       "ok": true,
-      "ms": 883
+      "ms": 924
     },
     {
       "id": "OFF-03",
       "title": "/app does not list My organization; the view explains it is off; the API answers 404",
       "ok": true,
-      "ms": 1137
+      "ms": 1221
     },
     {
       "id": "OFF-04",
       "title": "Codex Jinja preview pages stay off on the API",
       "ok": true,
-      "ms": 45
+      "ms": 47
     },
     {
       "id": "OFF-05",
       "title": "No console or page errors",
       "ok": true,
-      "ms": 1
+      "ms": 0
     }
   ],
   "passed": 5,
