@@ -2,7 +2,10 @@
 
 Usage: python scripts/offline_check.py pytest -q
        python scripts/offline_check.py browser
+       python scripts/offline_check.py benchmark <config.json>   (started by scripts/benchmark_labclear.py)
 No .env, inherited application configuration, or production database is loaded.
+The benchmark mode serves the real app with provider test doubles behind an in-process
+httpx.MockTransport (tests/benchmark); outbound sockets stay denied exactly as in the other modes.
 """
 from __future__ import annotations
 
@@ -19,8 +22,8 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def main():
     mode, *args = sys.argv[1:] or ["pytest", "-q"]
-    if mode not in {"pytest", "browser", "evaluation", "boot"}:
-        raise SystemExit("Choose pytest, browser, evaluation or boot")
+    if mode not in {"pytest", "browser", "evaluation", "boot", "benchmark"}:
+        raise SystemExit("Choose pytest, browser, evaluation, boot or benchmark")
     browser_port = int(args[0]) if mode == "browser" and args else 8098
     # Preserve only OS/tool operation variables, never provider/cloud credentials.
     keep = {"systemroot", "windir", "path", "pathext", "temp", "tmp", "userprofile",
@@ -73,6 +76,12 @@ def main():
             return 0
         if mode == "boot":
             runpy.run_path(str(ROOT / "scripts/boot_check.py"), run_name="__main__")
+            return 0
+        if mode == "benchmark":
+            if len(args) != 1:
+                raise SystemExit("benchmark needs the config file written by scripts/benchmark_labclear.py")
+            sys.argv = [str(ROOT / "tests/benchmark/server.py"), str(Path(args[0]).resolve())]
+            runpy.run_path(sys.argv[0], run_name="__main__")
             return 0
         runpy.run_path(str(ROOT / "tests/browser/fixture_server.py"), run_name="__main__")
         return 0

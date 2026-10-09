@@ -1,0 +1,24 @@
+{
+ "policy_id": "free-only-trial",
+ "policy_version": "1",
+ "mode": "LIVE_FREE",
+ "purpose": "Template. The owner fills reviewed_by/reviewed_at/account_label and, for each endpoint, sets price_status to VERIFIED_FREE_FOR_THIS_ACCOUNT only after checking the exact account, endpoint and model on the provider's console and pricing page on the day of the run. Until then preflight reports FREE_STATUS_UNVERIFIED and no live call is made.",
+ "reviewed_by": "",
+ "reviewed_at": "",
+ "account_label": "",
+ "data_policy_reviewed": false,
+ "endpoints": [
+  {"family": "text", "protocol": "openai_chat", "host": "api.opentyphoon.ai", "path": "/v1/chat/completions", "model": "typhoon-v2.5-30b-a3b-instruct",
+   "price_status": "FREE_STATUS_UNVERIFIED", "price_in_thb_per_mtok": 0, "price_out_thb_per_mtok": 0, "verified_at": "", "evidence": "",
+   "provider_rps": 5, "provider_rpm": 200, "app_rate_per_minute": 30},
+  {"family": "ocr", "protocol": "typhoon_ocr", "host": "api.opentyphoon.ai", "path": "/v1/chat/completions", "model": "typhoon-ocr",
+   "price_status": "FREE_STATUS_UNVERIFIED", "price_in_thb_per_mtok": 0, "price_out_thb_per_mtok": 0, "verified_at": "", "evidence": "",
+   "provider_rps": 2, "provider_rpm": 20, "app_rate_per_minute": 5,
+   "path_note": "This is the path the existing adapter (services/report_reader_v2.py via conversation_transport.complete) calls. Confirm it against the Typhoon OCR documentation before marking it verified; do not change the adapter to a guessed path."},
+  {"family": "guard", "protocol": "systemone_iapp", "host": "api.iapp.co.th", "path": "/v3/store/openthai/systemone", "model": "openthai-systemone",
+   "price_status": "FREE_STATUS_UNVERIFIED", "price_in_thb_per_mtok": 0, "price_out_thb_per_mtok": 0, "verified_at": "", "evidence": "",
+   "provider_rpm": 100, "daily_decisions": 1000, "app_rate_per_minute": 20}
+ ],
+ "run_limits": {"max_minutes": 60, "text_calls": 400, "ocr_calls": 20, "guard_decisions": 300, "retries_per_logical_call": 2, "concurrency": 1},
+ "decision_counting": "questions_x_labels"
+}

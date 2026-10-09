@@ -17,3 +17,6 @@ data/*
 # OS
 .DS_Store
 Thumbs.db
+
+# Benchmark run folders (raw synthetic results; selected evidence is copied into docs/evidence/)
+eval_runs/

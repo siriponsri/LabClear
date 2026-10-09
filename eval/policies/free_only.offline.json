@@ -1,0 +1,19 @@
+{
+ "policy_id": "free-only-offline-doubles",
+ "policy_version": "1",
+ "mode": "OFFLINE_DOUBLES_ONLY",
+ "purpose": "Labels and enforces the exact endpoint/model tuples of the free-first profile in OFFLINE benchmark runs. The endpoints are served by in-process test doubles; nothing here says the real services are free for any account.",
+ "reviewed_by": "benchmark fixture (no account checked)",
+ "reviewed_at": "2026-10-09",
+ "account_label": "none",
+ "endpoints": [
+  {"family": "text", "protocol": "openai_chat", "host": "api.opentyphoon.ai", "path": "/v1/chat/completions", "model": "typhoon-v2.5-30b-a3b-instruct",
+   "price_status": "OFFLINE_DOUBLE", "price_in_thb_per_mtok": 0, "price_out_thb_per_mtok": 0, "verified_at": "", "evidence": "test double", "app_rate_per_minute": 30},
+  {"family": "ocr", "protocol": "typhoon_ocr", "host": "api.opentyphoon.ai", "path": "/v1/chat/completions", "model": "typhoon-ocr",
+   "price_status": "OFFLINE_DOUBLE", "price_in_thb_per_mtok": 0, "price_out_thb_per_mtok": 0, "verified_at": "", "evidence": "test double", "app_rate_per_minute": 5},
+  {"family": "guard", "protocol": "systemone_iapp", "host": "api.iapp.co.th", "path": "/v3/store/openthai/systemone", "model": "openthai-systemone",
+   "price_status": "OFFLINE_DOUBLE", "price_in_thb_per_mtok": 0, "price_out_thb_per_mtok": 0, "verified_at": "", "evidence": "test double", "app_rate_per_minute": 20, "daily_decisions": 1000}
+ ],
+ "run_limits": {"max_minutes": 60, "text_calls": 400, "ocr_calls": 20, "guard_decisions": 300, "retries_per_logical_call": 2, "concurrency": 1},
+ "decision_counting": "questions_x_labels"
+}

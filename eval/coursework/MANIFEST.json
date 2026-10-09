@@ -1,0 +1,25 @@
+{
+ "dataset_id": "labclear-coursework",
+ "dataset_version": "1.0.0",
+ "rubric_version": "1.0.0",
+ "frozen_at": "2026-10-09",
+ "synthetic_only": true,
+ "files": {
+  "eval/coursework/dataset.json": "2ebb1a06ff5a487647a2d5b9ca4f1cfe9b5ff9f677a82576d977c1ace521931e",
+  "eval/coursework/rubric.json": "ebfa957227a4b2f97413b1c3284ec8311273a4481631b77702087e0bea830a86",
+  "examples/thai_lab_reference_v3/expected_results.json": "251545d5fe53e957bd5c7545cb41159546cc5f5c1661ef10144ff695801304c8",
+  "examples/thai_lab_reference_v3/png/01_A_Liver.png": "5a67c936b795a16c51207caee3c5e20f4f6e2899a2ba5c5ab3f7e5b655ec50e7",
+  "examples/thai_lab_reference_v3/png/02_A_Renal.png": "d4508a0501809cf1b97baec16bd32f9efe74cf8fd6ae81ec6009462bc72c307f",
+  "examples/thai_lab_reference_v3/png/03_B_Lipid.png": "02e129d36910fe0e405ec9c458e3bb2d7f260d1a1520737039cab6b6c3948155",
+  "examples/thai_lab_reference_v3/png/04_B_Glucose_Urine.png": "5f7dce75a4cf5a62c515d4f8ec03170e0f659ad77de7d85cd449fb770953e874",
+  "examples/thai_lab_reference_v3/png/05_C_Hematology.png": "dd10636b44e4c6285c52fbb9800cdf7a24053420f14c4e7379024e210daaf134",
+  "examples/thai_lab_reference_v3/png/06_C_Thyroid.png": "59e2b2b9957b418d265ff87c9b590bcee74cadf7be047ba7a331cf9a8200f65f"
+ },
+ "counts": {
+  "rubric_regression": 20,
+  "benign_control": 5,
+  "holdout": 5,
+  "development": 3
+ },
+ "note": "Changing any file listed here requires a new dataset_version; before/after comparisons across versions are not direct."
+}
