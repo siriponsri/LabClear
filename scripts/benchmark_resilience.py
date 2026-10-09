@@ -233,8 +233,11 @@ def run_regression(artifacts: Path) -> dict:
     proc = subprocess.run([sys.executable, str(ROOT / "scripts/offline_check.py"), "pytest", "-q", "-p", "no:cacheprovider", *REGRESSION],
                           cwd=ROOT, capture_output=True, text=True, timeout=900)
     (artifacts / "regression.log").write_text(proc.stdout[-20000:] + proc.stderr[-5000:], encoding="utf-8")
+    import re
     tail = [line for line in proc.stdout.splitlines() if " passed" in line or " failed" in line or " error" in line]
-    return {"assertions": [{"name": "existing business, Guest privacy, Guard, cost-ledger and resilience tests pass (" + (tail[-1].strip() if tail else "no summary") + ")",
+    counts = ", ".join(re.findall(r"\d+ (?:passed|failed|errors?|skipped)", tail[-1])) if tail else "no summary"
+    # The name carries the counts only (no timing), so the score hash is reproducible.
+    return {"assertions": [{"name": f"existing business, Guest privacy, Guard, cost-ledger and resilience tests pass ({counts})",
                             "passed": proc.returncode == 0}], "files": REGRESSION, "real_seconds": round(time.monotonic() - started, 2)}
 
 
