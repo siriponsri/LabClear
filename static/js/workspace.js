@@ -325,7 +325,7 @@
 
   /* ------------------------------------------------------------ live steps while the assistant works */
   /* Shown while a reply is being prepared and removed when it arrives. The finished steps stay
-     with the answer under "How this was checked". */
+     with the answer under "Process Explainability". */
   function thinking() {
     const turn = el('article', null, 'turn ai thinking'), head = el('div', null, 'turn-head');
     const dot = el('span', null, 'speaker-dot'); dot.setAttribute('aria-hidden', 'true');

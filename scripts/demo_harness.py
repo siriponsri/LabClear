@@ -27,7 +27,7 @@ def capture(output):
             prompts=[json.loads(line) for line in (folder/'prompts.jsonl').read_text().splitlines()]
             out={'mode':'OFFLINE_DOUBLE','clinical_validation':False,'fixture_sha256':bench.sha256_file(image),
                  'note':'Confirmation is simulated as read. OCR mistakes remain visible. Prompts and outputs are observable artifacts, not private model reasoning.',
-                 'source_digest':bench.source_digest(),'turns':{'question':text,'read':read,'explain':explain,'hospital':hospital,'packages':packages},'prompts':prompts}
+                 'source_digest':bench.source_digest(),'turns':{'question':text,'hospital':hospital,'packages':packages,'read':read,'explain':explain},'prompts':prompts}
             output.parent.mkdir(parents=True,exist_ok=True);output.write_text(json.dumps(out,ensure_ascii=False,indent=2)+'\n')
             return out
         finally:server.stop()

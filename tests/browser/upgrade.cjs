@@ -12,6 +12,9 @@ const server = spawn(python, ['scripts/offline_check.py', 'browser', '8099'], { 
 let errors = '', browser;
 server.stderr.on('data', b => { errors += b; });
 const records = [], screenshots = [], browserErrors = [];
+// The interface is Thai by default (labclear_language cookie). Thai interface strings may carry
+// invisible line-breaking marks (U+2060, U+200B; see docs/i18n.md), so match them tolerantly.
+const th = (text) => new RegExp('^\\s*' + [...text].map(c => c.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('[\\u2060\\u200b]*') + '\\s*$');
 const check = (condition, message) => { if (!condition) throw Error(message); };
 async function shot(page, name) { await page.screenshot({ path: path.join(out, name + '.png'), fullPage: true }); screenshots.push(name + '.png'); }
 async function scenario(name, fn) { try { await fn(); records.push({ name, status: 'PASS' }); } catch (e) { records.push({ name, status: 'FAIL', error: e.message }); } }
@@ -75,14 +78,14 @@ async function scenario(name, fn) { try { await fn(); records.push({ name, statu
       await page.locator('#reference-upload').waitFor({ state: 'visible' });
       await page.locator('#reference-upload input[name=title]').fill('เอกสารจำลองการเตรียมตัว');
       await page.locator('input[type=file]').setInputFiles({ name: 'synthetic.md', mimeType: 'text/markdown', buffer: Buffer.from('ข้อมูลจำลอง: เตรียมเลขนัดหมายก่อนมาติดต่อ\n<script>throw Error("injected")</script>') });
-      await page.getByRole('button', { name: 'อัปโหลดและดูตัวอย่าง' }).click();
-      await page.getByRole('button', { name: 'อนุมัติ', exact: true }).waitFor();
+      await page.getByRole('button', { name: th('อัปโหลดและดูตัวอย่าง') }).click();
+      await page.getByRole('button', { name: th('อนุมัติ') }).waitFor();
       check((await page.locator('#reference-text').innerText()).includes('<script>'), 'preview does not preserve plain text');
       await shot(page, 'organization-draft-1440');
-      await page.getByRole('button', { name: 'อนุมัติ', exact: true }).click();
-      await page.getByRole('button', { name: 'ถอนเอกสาร', exact: true }).waitFor();
+      await page.getByRole('button', { name: th('อนุมัติ') }).click();
+      await page.getByRole('button', { name: th('ถอนเอกสาร') }).waitFor();
       await page.locator('input[name=q]').fill('นัดหมาย');
-      await page.getByRole('button', { name: 'ค้นหาแหล่งอ้างอิง' }).click();
+      await page.getByRole('button', { name: th('ค้นหาแหล่งอ้างอิง') }).click();
       await page.locator('#reference-results a').waitFor();
       check((await page.locator('#reference-results').innerText()).includes('line 1'), 'citation line');
       const download = await page.locator('#reference-results a').getAttribute('href');
@@ -93,11 +96,11 @@ async function scenario(name, fn) { try { await fn(); records.push({ name, statu
         check(await page.locator('#reference-upload input:not([type=hidden]), #reference-upload button').evaluateAll(elements => elements.every(e => { const r=e.getBoundingClientRect(), f=e.closest('form').getBoundingClientRect(); return r.left >= f.left && r.right <= f.right; })), 'upload controls clipped');
         await shot(page, 'organization-approved-' + width);
       }
-      await page.getByRole('button', { name: 'ถอนเอกสาร', exact: true }).click();
-      await page.getByText('รุ่น 1 · ถอนแล้ว', { exact: true }).waitFor();
+      await page.getByRole('button', { name: th('ถอนเอกสาร') }).click();
+      await page.getByText(th('รุ่น 1 · ถอนแล้ว')).waitFor();
       check((await page.request.get(base + download)).status() === 404, 'revoked source still available');
-      await page.getByRole('button', { name: 'ค้นหาแหล่งอ้างอิง' }).click();
-      await page.getByText('ไม่พบข้อความในเอกสารที่อนุมัติแล้ว').waitFor();
+      await page.getByRole('button', { name: th('ค้นหาแหล่งอ้างอิง') }).click();
+      await page.getByText(th('ไม่พบข้อความในเอกสารที่อนุมัติแล้ว')).waitFor();
       await shot(page, 'organization-revoked-1440');
     });
     check(browserErrors.length === 0, browserErrors.join('\n'));

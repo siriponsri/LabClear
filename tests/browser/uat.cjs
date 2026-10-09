@@ -28,6 +28,10 @@ async function signUp(page, email) {
   try {
     for (let i = 0; i < 80; i++) { try { if ((await fetch(base + '/health')).ok) break; } catch { } await wait(250); if (i === 79) throw Error('Fixture server unavailable: ' + log.slice(-1500)); }
     browser = await chromium.launch({ headless: true, args: ['--no-sandbox'] });
+    // This suite checks the English interface (the source language); the Thai interface is covered by
+    // tests/browser/i18n_audit.mjs. Every context starts with the English language cookie.
+    const newContext = browser.newContext.bind(browser);
+    browser.newContext = async (options) => { const c = await newContext(options); await c.addCookies([{ name: 'labclear_language', value: 'en', url: base }]); return c; };
     const cctx = await browser.newContext({ viewport: { width: 1440, height: 1000 }, acceptDownloads: true }); const c = await cctx.newPage(); watch(c, 'customer');
     const day1 = nextOpenDay(3);
 
@@ -317,7 +321,7 @@ async function signUp(page, email) {
       await r.getByText('Offline UI test double: your question was received.').last().waitFor();
       w = await (await r.request.get(base + '/api/business/workspace')).json();
       assert(w.conversation.report_id && w.conversation.messages.filter(m => m.content === 'UI_TEST_REPORT_QUESTION').length === 1, 'confirmation did not answer once');
-      await r.locator('.act', { hasText: 'How this was checked' }).last().click(); await r.locator('.receipt:not([hidden]) .step-label').first().waitFor(); await shot(r, 'chat-report-answer-1440');
+      await r.locator('.act', { hasText: 'Process Explainability' }).last().click(); await r.locator('.receipt:not([hidden]) .step-label').first().waitFor(); await shot(r, 'chat-report-answer-1440');
       await rctx.close();
     });
     await check('UI-31', 'Chats and projects: new chat, project, rename, switch back, drawer on mobile', async () => {

@@ -42,5 +42,61 @@
     "ocr_exact": 217,
     "ocr_expected": 252,
     "requests": 120
+  },
+  {
+    "run": "rc3-coursework-A",
+    "mode": "OFFLINE",
+    "profile": "A",
+    "planned": 20,
+    "pass": 15,
+    "score": 75.0,
+    "ocr_exact": 88,
+    "ocr_expected": 93,
+    "requests": 115,
+    "score_sha256": "0005e76f9d868bc5f44f8453f32f652f48836f91b834975be6e49a3140bef703",
+    "candidate": "02599aa",
+    "app_version": "4.0.0-rc3"
+  },
+  {
+    "run": "rc3-coursework-B",
+    "mode": "OFFLINE",
+    "profile": "B",
+    "planned": 20,
+    "pass": 15,
+    "score": 75.0,
+    "ocr_exact": 88,
+    "ocr_expected": 93,
+    "requests": 115,
+    "score_sha256": "0005e76f9d868bc5f44f8453f32f652f48836f91b834975be6e49a3140bef703",
+    "candidate": "02599aa",
+    "app_version": "4.0.0-rc3"
+  },
+  {
+    "run": "rc3-coursework-C",
+    "mode": "OFFLINE",
+    "profile": "C",
+    "planned": 20,
+    "pass": 15,
+    "score": 75.0,
+    "ocr_exact": 88,
+    "ocr_expected": 93,
+    "requests": 120,
+    "score_sha256": "0005e76f9d868bc5f44f8453f32f652f48836f91b834975be6e49a3140bef703",
+    "candidate": "02599aa",
+    "app_version": "4.0.0-rc3"
+  },
+  {
+    "run": "rc3-ocr-C",
+    "mode": "OFFLINE",
+    "profile": "C",
+    "planned": 12,
+    "pass": 0,
+    "score": 0.0,
+    "ocr_exact": 217,
+    "ocr_expected": 252,
+    "requests": 120,
+    "score_sha256": "795ad3fb33f9ac4cdcc6e7b4a9d56a61d0058fd98de9b86a2116c96e4cc59880",
+    "candidate": "02599aa",
+    "app_version": "4.0.0-rc3"
   }
 ]

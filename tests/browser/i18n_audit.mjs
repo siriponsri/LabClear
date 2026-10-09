@@ -475,7 +475,7 @@ async function main() {
   return candidate;
 }
 
-/** Chat answer: open "How this was checked" and the source list so their text is audited too. */
+/** Chat answer: open "Process Explainability" and the source list so their text is audited too. */
 async function openReceipt(page) {
   const turn = page.locator("#messages article.turn.ai").last();
   if (!(await turn.count())) return;
