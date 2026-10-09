@@ -11,10 +11,11 @@ and clinical measurements are NOT_RUN. Older counts below belong to previous rel
 
 ## Integration 4.0.0-rc2 regression and coursework benchmark
 
-Current software evidence for the integrated candidate (commit `d4b1025`, see
+Current software evidence for the integrated candidate (commit `6f41a78`; web gate rerun on `a4aec07`, see
 [evidence/integration-4.0-rc2](evidence/integration-4.0-rc2/README.md)): **328** Python tests, **36/36**
 legacy and **10/10** upgrade browser scenarios, **60** fixture checks, boot PASS, web build, **53/53** web
-UAT and **5/5** flags-off UAT, all with test doubles. The coursework benchmark (10 questions, 5 images,
+UAT (three runs; two earlier runs on `6f41a78` were 52/53, see the evidence README) and **5/5** flags-off
+UAT, all with test doubles. The coursework benchmark (10 questions, 5 images,
 5 safety cases from `scripts/course_eval.py`, frozen in `eval/coursework/` with a scorer-only rubric) runs
 through `scripts/benchmark_labclear.py` in three separate modes:
 
