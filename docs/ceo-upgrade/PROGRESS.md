@@ -197,3 +197,36 @@ RENDER_NOT_VERIFIED; LIVE_API_NOT_RUN.
 Next: implement preview and organization document UI; source acquisition/official links;
 offline comparison harness and registry; final compatibility/regression/browser checks;
 current docs/report addendum and handoff; audit release gates before any commit/push.
+
+## Integration checkpoint — free-first harness 4.0.0-rc2 (Claude Cowork, 2026-10-09)
+
+Appended by the integration work on branch `integration/labclear-4.0-rc1` (base Codex `c970410`).
+The checkpoints above are Codex's own log and are unchanged. Linux cloud workspace, synthetic data,
+no provider API call, no Render ENV change, no push/merge to `main`, no deploy.
+
+Requirements: owner addendum `LABCLEAR_FREE_FIRST_BENCHMARK_ADDENDUM_TH.md` and
+`LABCLEAR_COURSEWORK_BENCHMARK_SPEC_TH.md` (requirements, not implemented code; every command
+was checked against the repository before use).
+
+| ID | Task | Evidence | Status |
+|---|---|---|---|
+| FB-01 | Integration base, rubric, profiles, free conditions | `c970410` ancestor check; rubric mapping CW-01..CW-14 in `COURSEWORK_BENCHMARK_REPORT_TH.md`; `--print-effective-slots`; registry `free_first_benchmark` | DONE; free status of the three endpoints `FREE_STATUS_UNVERIFIED` (no account reviewer) |
+| FB-02 | OFFLINE / LIVE_FREE / REPLAY separation, transport allowlist | `scripts/benchmark_labclear.py`, `scripts/offline_check.py benchmark`, `services/free_policy.py`; `tests/test_free_first_harness.py` (16), `tests/test_benchmark_harness.py` (11) | DONE |
+| FB-03 | Runtime skills + typed tools in the real pipeline | `services/agent_tools.py` (`labclear-tools-1.0.0`), `services/runtime_skills.py` 0.3.0-offline; `tests/test_agent_tools.py` (15), `tests/test_runtime_skills_select.py` (6), `scripts/skill_route_matrix.py` | DONE |
+| FB-04 | Benchmark per spec, frozen version | `eval/coursework/` dataset 1.0.0 (digest `63e5c85e93b93b67`), scorer-only rubric, MANIFEST | DONE; holdout H01–H05 not run |
+| FB-05 | LIVE_FREE smoke and bounded coursework run | `docs/evidence/free-first/live-free-preflight.json` = `BLOCKED` (no keys in the runner, policy and data terms not reviewed, endpoints unverified); run command exits 2 with nothing sent | BLOCKED with evidence |
+| FB-06 | Three fixes with paired before/after and UI regression | `R1-C→R2-C` skills 5/8→0/8 wrong routes; `R2-C→R3-C` images 0/5→5/5 explained; `R3-Ctrap→R4-Ctrap` paid calls 30→0; rubric unchanged | DONE (OFFLINE); live answer quality NOT_RUN |
+| FB-07 | Claude reports/README/runbook updated, bundle delivered | rc2 reports, release notes, technical report, slides, diagrams, `FREE_PROVIDER_PREFLIGHT.md`, `ENV_HANDOVER.md` additions; ZIP + bundle + SHA-256 manifest | DONE at delivery |
+
+Final checks: pytest 328 passed (`6f41a78`); Codex browser 36/36 and 10/10; offline evaluation
+60 fixtures; boot smoke PASS; web type check, Thai dictionary (2,297) and build pass; web UAT 53/53
+three times and flags-off 5/5 on `a4aec07` (two earlier runs on `6f41a78` were 52/53, UI-22, proxy
+`socket hang up`; the local mock API now keeps idle connections 65 s — product code unchanged).
+Evidence: `docs/evidence/integration-4.0-rc2/`, `docs/evidence/free-first/`.
+
+Outcome: CANDIDATE_READY_FOR_OWNER_REVIEW; LIVE_FREE_BLOCKED; HUMAN_REVIEW_PENDING;
+PUSH_NOT_RUN; DEPLOY_NOT_RUN; RENDER_ENV_UNCHANGED.
+
+Next executable action (owner): fill and review a copy of `eval/policies/free_only.example.json`,
+export the two trial keys in the runner's shell only, then follow `FREE_PROVIDER_PREFLIGHT.md`
+(preflight → smoke → coursework A/B/C).
