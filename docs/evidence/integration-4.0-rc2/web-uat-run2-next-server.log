@@ -1,0 +1,29 @@
+
+> labclear-web@4.0.0-rc2 start:render
+> next start -H 0.0.0.0 -p ${PORT:-3000}
+
+▲ Next.js 16.3.8
+- Local:         http://localhost:3000
+- Network:       http://0.0.0.0:3000
+✓ Ready in 160ms
+✓ Running next.config.ts took 53ms
+Failed to proxy http://127.0.0.1:8000/api/business/staff/notifications Error: socket hang up
+    at ignore-listed frames {
+  code: 'ECONNRESET'
+}
+Error: socket hang up
+    at ignore-listed frames {
+  code: 'ECONNRESET'
+}
+⨯ Error: The destination stream closed early.
+    at ignore-listed frames {
+  digest: '2364020992'
+}
+⨯ Error: The destination stream closed early.
+    at ignore-listed frames {
+  digest: '2364020992'
+}
+⨯ Error: The destination stream closed early.
+    at ignore-listed frames {
+  digest: '2364020992'
+}

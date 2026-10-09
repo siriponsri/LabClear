@@ -1,0 +1,25 @@
+
+> labclear-web@4.0.0-rc2 start:render
+> next start -H 0.0.0.0 -p ${PORT:-3000}
+
+▲ Next.js 16.3.8
+- Local:         http://localhost:3000
+- Network:       http://0.0.0.0:3000
+✓ Ready in 150ms
+✓ Running next.config.ts took 51ms
+⨯ Error: The destination stream closed early.
+    at ignore-listed frames {
+  digest: '2364020992'
+}
+⨯ Error: The destination stream closed early.
+    at ignore-listed frames {
+  digest: '2364020992'
+}
+⨯ Error: The destination stream closed early.
+    at ignore-listed frames {
+  digest: '2364020992'
+}
+⨯ Error: The destination stream closed early.
+    at ignore-listed frames {
+  digest: '2364020992'
+}
