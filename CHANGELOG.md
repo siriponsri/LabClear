@@ -57,6 +57,13 @@ This release.
   - Deterministic fault suite `scripts/benchmark_resilience.py` (R01–R12, virtual clock, provider
     doubles, a real SIGTERM): 12/12. Runbook: `docs/operations/resilience.md`. Not implemented (P1):
     circuit breaker, retry policy, durable jobs.
+- **Reports and slides.** Three Thai reports in the style of the 4.0.0 technical report, written with
+  the Thai Report Format skill: the Final Project submission report (Word, `scripts/build_report.py`,
+  placeholders for facts still missing), a business report and an architecture, tech stack and agent
+  flow report (PDF from Markdown, `scripts/build_docs_pdf.mjs`). The deck is rewritten in English for
+  rc3 (12 slides). Diagrams show admission, the deadline, the heartbeat and `/ready`; screenshots in
+  `docs/assets/screenshots` are current Thai captures. The 4.0.0 report, its builder and page map are
+  removed.
 - **Removed documentation.** `docs/ceo-upgrade/`, older release notes and older evidence folders.
 - Python tests: 371.
 

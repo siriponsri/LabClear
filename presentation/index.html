@@ -1,30 +1,29 @@
 <!doctype html>
-<html lang="th">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>LabClear 4.0.0-rc2 · นำเสนอ Final Project</title>
-<link rel="icon" href="../web/public/img/favicon.svg">
+<title>LabClear 4.0.0-rc3 · Final Project presentation</title>
+<link rel="icon" href="../static/img/favicon.svg">
 <link rel="stylesheet" href="vendor/reveal.js-5.2.1/reset.css">
 <link rel="stylesheet" href="vendor/reveal.js-5.2.1/reveal.css">
 <style>
-/* LabClear 4.0.0 slides (reveal.js 5.2.1). Fonts ship with the repository (web/public/fonts); nothing loads from the internet.
+/* LabClear 4.0.0-rc3 slides (reveal.js 5.2.1). Fonts ship with the repository (static/fonts); nothing loads from the internet.
    Present: open this file in a browser, press S for speaker notes. PDF: node scripts/build_docs_pdf.mjs slides */
-@font-face{font-family:"Noto Sans Thai";src:url(../web/public/fonts/noto-sans-thai-400.woff2) format("woff2");font-weight:400;font-display:block}
-@font-face{font-family:"Noto Sans Thai";src:url(../web/public/fonts/noto-sans-thai-500.woff2) format("woff2");font-weight:500;font-display:block}
-@font-face{font-family:"Noto Sans Thai";src:url(../web/public/fonts/noto-sans-thai-600.woff2) format("woff2");font-weight:600 700;font-display:block}
-@font-face{font-family:"Noto Serif Thai";src:url(../web/public/fonts/noto-serif-thai-600.woff2) format("woff2");font-weight:600;font-display:block}
-@font-face{font-family:"Geist";src:url(../web/public/fonts/geist-variable.woff2) format("woff2");font-weight:100 900;font-display:block}
-@font-face{font-family:"Geist Mono";src:url(../web/public/fonts/geist-mono-variable.woff2) format("woff2");font-weight:100 900;font-display:block}
+@font-face{font-family:"IBM Plex Sans Thai";src:url(../static/fonts/ibm-plex-sans-thai-thai-400-normal.woff2) format("woff2");font-weight:400;font-display:block}
+@font-face{font-family:"IBM Plex Sans Thai";src:url(../static/fonts/ibm-plex-sans-thai-thai-600-normal.woff2) format("woff2");font-weight:600 700;font-display:block}
+@font-face{font-family:"Source Serif 4";src:url(../static/fonts/source-serif-4-opsz.woff2) format("woff2");font-weight:200 900;font-display:block}
+@font-face{font-family:"Geist";src:url(../static/fonts/geist-variable.woff2) format("woff2");font-weight:100 900;font-display:block}
+@font-face{font-family:"Geist Mono";src:url(../static/fonts/geist-mono-variable.woff2) format("woff2");font-weight:100 900;font-display:block}
 
 :root{
   --paper:#fbfaff; --surface:#ffffff; --ink:#1f1830; --muted:#5d5470; --soft:#8a809a;
   --line:#e3dcee; --tint:#f1ebfa; --accent:#6539a9; --accent-ink:#4a2680;
   --night:#1b1328; --night-2:#271c3a; --on-night:#f4f0fb; --on-night-muted:#c9bfdc;
   --ok:#2f6f5e; --warn:#8a4b12;
-  --sans:"Geist","Noto Sans Thai",system-ui,sans-serif;
-  --serif:"Noto Serif Thai","Geist",Georgia,serif;
-  --mono:"Geist Mono","Noto Sans Thai",ui-monospace,monospace;
+  --sans:"Geist","IBM Plex Sans Thai",system-ui,sans-serif;
+  --serif:"Source Serif 4","Geist",Georgia,serif;
+  --mono:"Geist Mono",ui-monospace,monospace;
 }
 html,body{background:var(--paper)}
 .reveal{font-family:var(--sans);font-size:24px;color:var(--ink);line-height:1.5}
@@ -54,7 +53,7 @@ html,body{background:var(--paper)}
 .dots{position:absolute;inset:0;background-image:radial-gradient(rgba(176,140,230,.28) 1.4px,transparent 1.6px);background-size:26px 26px;-webkit-mask-image:linear-gradient(100deg,transparent 35%,#000 95%);mask-image:linear-gradient(100deg,transparent 35%,#000 95%)}
 .brand{display:flex;align-items:center;gap:12px;font-weight:600;font-size:24px}
 .brand img{width:40px;height:40px}
-.reveal .hero{font-family:var(--serif);font-weight:600;font-size:74px;line-height:1.38;margin:34px 0 18px}
+.reveal .hero{font-family:var(--serif);font-weight:600;font-size:68px;line-height:1.15;margin:40px 0 22px}
 .lede{font-size:26px;color:var(--on-night-muted);max-width:820px}
 .people{position:absolute;left:60px;bottom:44px;font-size:18px;color:var(--on-night-muted);line-height:1.6}
 
@@ -107,6 +106,12 @@ table.t tr.lead td{background:var(--tint)}
 .pill.warn{background:#fbefe2;color:var(--warn)}
 .hero-num{font-family:"Geist";font-weight:600;font-size:88px;line-height:1;color:var(--accent);letter-spacing:-.02em}
 .split{display:grid;gap:40px}
+.split>*{min-width:0}
+.steps.compact li{margin-bottom:14px;font-size:21px}
+.steps.compact li span{font-size:17px}
+.notes-list.compact li{padding:10px 0;font-size:19px}
+.notes-list.compact li b{font-size:20px}
+.shot img.crop{width:auto;height:auto;max-width:none}
 .frame.tall{display:grid;grid-template-columns:1fr 610px;gap:36px;padding:40px 40px 34px 60px}
 .frame.tall figure{margin:0;height:646px;display:flex;justify-content:center;align-items:flex-start}
 .frame.tall figure img{height:100%;width:auto;max-width:100%;object-fit:contain;border-radius:10px}
@@ -124,340 +129,228 @@ table.t tr.lead td{background:var(--tint)}
 <section class="night" data-background-color="#1b1328">
   <div class="dots"></div>
   <div class="frame">
-    <div class="brand"><img src="../web/public/img/mark.svg" alt="">LabClear 4.0.0-rc2 · รุ่นรวม</div>
-    <h1 class="hero">จองตรวจสุขภาพ<br>เข้าใจผลตรวจ</h1>
-    <p class="lede">แชตบอตภาษาไทยของคลินิกตรวจสุขภาพจำลอง รุ่นรวมนี้ใช้ backend ของ Codex กับหน้าเว็บภาษาไทยของ Claude เพื่อตอบความเห็น CEO 5 ข้อ ยังเป็น candidate สำหรับตรวจรับ</p>
-    <div class="people">นายวัชรินทร์ บัวสอน 68076055 · นายศิริพล ศรีเฮงไพบูลย์ 68076060<br>06048308 Intelligent Chatbot Development · 9 ตุลาคม 2569</div>
+    <div class="brand"><img src="../static/img/mark.svg" alt="">LabClear 4.0.0-rc3</div>
+    <h1 class="hero">Book a health check.<br>Understand your results.</h1>
+    <p class="lede">A Thai-first chatbot for a simulated health-check clinic. It answers only from the clinic's own data, reads lab reports the customer confirms, and explains each value against the range printed on the same report, with sources.</p>
+    <div class="people">นายวัชรินทร์ บัวสอน 68076055 · นายศิริพล ศรีเฮงไพบูลย์ 68076060<br>06048308 Intelligent Chatbot Development · Final Project · October 2026</div>
   </div>
-  <aside class="notes">[0:00–0:10] สวัสดีครับ เราคือทีม LabClear แชตบอตของคลินิกตรวจสุขภาพจำลอง วันนี้เล่ารุ่นรวม 4.0.0-rc2 ที่ประกอบงานสองชุดเข้าด้วยกันเพื่อตอบความเห็น CEO ทั้ง 5 ข้อครับ</aside>
+  <aside class="notes">[0:00–0:10] We are team LabClear. This is the 4.0.0-rc3 release candidate of our chatbot for a simulated health-check clinic.</aside>
 </section>
 
 <!-- 2 · Problem and business -->
 <section>
   <div class="frame">
-    <h2>ลูกค้าถามเรื่องเดิมทุกครั้งที่ตรวจสุขภาพ</h2>
+    <h2>Customers ask the same questions at every visit</h2>
     <div class="split" style="grid-template-columns:1.25fr 1fr;align-items:start">
-      <table class="t" style="font-size:23px">
-        <tr><th style="width:150px">ช่วงเวลา</th><th>คำถามที่ได้ยินทุกวัน</th></tr>
-        <tr><td><strong>ก่อนตรวจ</strong></td><td>มีงบ 1,500 บาท ควรเลือกแพ็กเกจไหน</td></tr>
-        <tr><td><strong>นัดหมาย</strong></td><td>ศูนย์ไหนว่าง ต้องงดอาหารไหม เลื่อนนัดได้ไหม</td></tr>
-        <tr class="lead"><td><strong>ได้ผลแล้ว</strong></td><td>HbA1c บนใบผลบอกอะไร ค่าไหนอยู่นอกช่วง</td></tr>
+      <table class="t">
+        <tr><th style="width:170px">When</th><th>What customers ask</th></tr>
+        <tr><td><strong>Before</strong></td><td>I have 1,500 baht. Which package should I take?</td></tr>
+        <tr><td><strong>Booking</strong></td><td>Which center is free? Can I move my appointment?</td></tr>
+        <tr class="lead"><td><strong>Results</strong></td><td>What does HbA1c on my report mean? Which values are out of range?</td></tr>
       </table>
       <div style="border:1px solid var(--line);border-radius:14px;background:var(--surface);padding:24px 26px">
-        <h3>LabClear (ธุรกิจจำลอง)</h3>
+        <h3>LabClear (simulated business)</h3>
         <ul class="notes-list" style="margin-top:12px">
-          <li><b class="num">18 แพ็กเกจ</b>เริ่ม ฿1,190 · ตรวจติดตามต้องให้ทีมงานพิจารณาก่อน</li>
-          <li><b class="num">3 ศูนย์</b>กรุงเทพฯ เชียงใหม่ ขอนแก่น · จ.–ส. 07:00–16:00</li>
-          <li style="border-bottom:0"><b>AI Lab Report</b>ฟรี 1 รายงาน · Plus ฿355 ต่อ 30 วัน</li>
+          <li><b class="num">18 packages</b>290–2,890 baht · follow-up tests need staff review first</li>
+          <li><b class="num">3 centers</b>Bangkok, Chiang Mai, Khon Kaen · Mon–Sat 07:00–16:00</li>
+          <li style="border-bottom:0"><b>AI Lab Report</b>one free report · Plus 355 baht per 30 days</li>
         </ul>
       </div>
     </div>
-    <p class="small" style="position:absolute;left:60px;bottom:40px">ราคา ศูนย์บริการ การชำระเงิน และใบผลทั้งหมดเป็นข้อมูลสมมติ ระบบให้ข้อมูลทั่วไป ไม่วินิจฉัยโรค</p>
+    <p class="small" style="position:absolute;left:60px;bottom:40px">Prices, centers, payments and lab reports are synthetic. No real patient data, no real money.</p>
   </div>
-  <aside class="notes">[0:10–0:20] ลูกค้าถามสามช่วง ก่อนตรวจ ตอนนัด และหลังได้ผล ทีมงานตอบซ้ำทั้งวัน แชตบอตตอบส่วนที่เป็นข้อมูล ส่วนการยืนยันนัดและเงินยังเป็นงานของคน</aside>
+  <aside class="notes">[0:10–0:25] Customers ask before the visit, while booking and after they get results. Staff answer the same questions every day, and only during opening hours. The owner set three rules: answer only from the clinic's data, be usable without help, and never be talked into discounts, other customers' data or invented policies.</aside>
 </section>
 
-<!-- 3 · Customer journey + demo -->
+<!-- 3 · Journey -->
 <section>
   <div class="frame">
-    <h2>จากใบผลที่มี ไปสู่การตรวจที่ต้องการ</h2>
-    <div class="split" style="grid-template-columns:1fr 1.02fr;align-items:start">
-      <ol class="steps">
-        <li>แนบรูปหรือ PDF ใบผลในแชต<span>OCR อ่านทุกแถว (ค่าเริ่มต้น Typhoon OCR) แสดงค่าข้างภาพ</span></li>
-        <li>ลูกค้าตรวจและกดยืนยันค่าเอง<span>ยังไม่อธิบายอะไรก่อนกดยืนยัน</span></li>
-        <li>อ่านคำอธิบายพร้อมแหล่งอ้างอิง<span>เทียบกับช่วงที่พิมพ์บนใบผลเดียวกัน ไม่วินิจฉัย</span></li>
-        <li>ถามหาการตรวจติดตาม ถ้าต้องการ<span>ลูกค้าเป็นคนเลือก ระบบไม่ขายเพราะค่าผิดปกติ</span></li>
-        <li>ขอเวลานัด ทีมงานยืนยัน แล้วจึงชำระ</li>
+    <h2>From the report a customer has to the check-up they need</h2>
+    <div class="split" style="grid-template-columns:1fr 1.05fr;align-items:start">
+      <ol class="steps compact">
+        <li>Attach a photo or PDF of the report<span>Read in an isolated worker, then by Typhoon OCR, page by page</span></li>
+        <li>The customer checks and confirms the values<span>Nothing is explained before confirmation</span></li>
+        <li>Explanation with sources<span>Compared only with the range printed on the same report; no diagnosis</span></li>
+        <li>Ask about follow-up tests if wanted<span>The customer chooses; out-of-range values never trigger a sale</span></li>
+        <li>Request a time; staff confirm; then pay<span>Bookings and payments are previews until the customer confirms</span></li>
       </ol>
       <div>
-        <div class="shot" style="height:476px"><img src="img/chat-guest.png" alt="แชตผู้เยี่ยมชม: คำตอบเรื่อง HbA1c พร้อมแหล่งอ้างอิง 2 รายการ และแถบโหมดผู้เยี่ยมชม"></div>
-        <p class="cap">แชตผู้เยี่ยมชมบนเว็บรุ่นรวม · ภาพจาก web UAT คำตอบมาจาก AI จำลอง</p>
+        <div class="shot" style="height:470px"><img src="../docs/assets/screenshots/report-card.jpg" alt="Values read from a sample report, waiting for the customer to confirm" style="object-position:-440px -150px;width:auto;height:auto;max-width:none"></div>
+        <p class="cap">Values read from a sample report, waiting for confirmation (offline test double)</p>
       </div>
     </div>
   </div>
-  <aside class="notes">[0:20–1:10] สาธิต 50 วินาที (ถ้ายังไม่ได้ deploy ใช้คลิปจากเครื่องพัฒนาที่บอกว่าเป็น AI จำลอง): ถาม "HbA1c คืออะไร" แล้วเปิดแหล่งอ้างอิง → แนบใบผลตัวอย่าง ดูขั้นตอนอ่าน แล้วกดยืนยันค่า → อ่านคำอธิบาย → กดรีเฟรชให้เห็นว่าแชตผู้เยี่ยมชมหาย พูดระหว่างรอ: ลูกค้ายืนยันค่าก่อนเสมอ และทุกคำตอบบอกแหล่งที่มา</aside>
+  <aside class="notes">[0:25–0:45] The core journey: attach a report, confirm what was read, get an explanation tied to the printed ranges, and book if you want. The model never decides a status; Python compares each value with the range on the report.</aside>
 </section>
 
-<!-- 4 · CEO overview -->
-<section>
-  <div class="frame">
-    <h2>ความเห็น CEO 5 ข้อ ในรุ่นรวม</h2>
-    <table class="t" style="font-size:21px">
-      <tr><th style="width:36px">ข้อ</th><th style="width:40%">CEO บอกว่า</th><th>รุ่นรวมทำ</th></tr>
-      <tr><td class="k">1</td><td>แหล่งอ้างอิงน้อยและเจาะจงบางโรงพยาบาล อยากให้ลูกค้าองค์กรอัปโหลดเอกสารเอง</td><td>ฐานที่ค้นคง 58 รายการที่ตรวจแล้ว แหล่งใหม่ 111 รายการรอตรวจ เอกสารองค์กรแบบ Codex และหน้าลิงก์โรงพยาบาล</td></tr>
-      <tr><td class="k">2</td><td>ไม่ได้เข้าสู่ระบบ ประวัติแชตหายเมื่อรีเฟรช</td><td>คงการลบเพื่อความเป็นส่วนตัว เข้าสู่ระบบแล้วแชตผู้เยี่ยมชมก็ถูกลบ (กฎ Codex)</td></tr>
-      <tr><td class="k">3</td><td>ย้ายจาก Render ไป Cloudflare บนโดเมนที่ซื้อไว้</td><td>เจ้าของเลือกกลับมาใช้ Render เดิม · Cloudflare เก็บเป็นทางเลือก</td></tr>
-      <tr><td class="k">4</td><td>ใช้ OpenRouter key ของทีม โมเดลถูก ดี เร็ว งบ USD 10</td><td>เลือกผู้ให้บริการต่อขั้นได้ (มี OpenRouter) บทบาทใหม่ปิดไว้ เพดาน 300 บาท</td></tr>
-      <tr><td class="k">5</td><td>เว็บเน้นภาษาไทย ใช้ Next/React/Three ให้เด่นและเข้าใจง่าย</td><td>เว็บ Next.js ของ Claude ภาษาไทยเป็นค่าเริ่มต้น ปรับให้เข้ากับ API ของ Codex</td></tr>
-    </table>
-    <p class="small" style="margin-top:18px">รุ่นรวม = backend, ความปลอดภัย และสัญญา API ของ Codex <code>main</code> + หน้าเว็บของ Claude branch · ความสามารถใหม่ของ Codex 6 ส่วนปิดเป็นค่าเริ่มต้น</p>
-  </div>
-  <aside class="notes">[1:10–1:20] นี่คือความเห็นห้าข้อของ CEO กับสิ่งที่รุ่นรวมทำ เราใช้ backend ของ Codex ที่ผ่านการตรวจความปลอดภัยแล้วเป็นฐาน แล้วนำหน้าเว็บภาษาไทยมาประกอบ</aside>
-</section>
-
-<!-- 5 · CEO 5: Thai-first Next.js website -->
-<section>
-  <div class="frame">
-    <div class="ceo">ความเห็น CEO <b>5</b></div>
-    <h2>เว็บใหม่ ภาษาไทยเป็นหลัก</h2>
-    <div class="split" style="grid-template-columns:1.45fr 1fr;align-items:start">
-      <div><div class="shot" style="height:420px"><img src="img/home.png" alt="หน้าแรกภาษาไทย: จองตรวจสุขภาพ เข้าใจผลตรวจ พร้อม DNA helix จากอนุภาค"></div></div>
-      <ul class="notes-list">
-        <li><b>Next.js 16 · React 19 · React Three Fiber</b>หน้าเว็บ แชต พื้นที่ลูกค้า และหน้าเจ้าหน้าที่ จาก Claude branch</li>
-        <li><b>ไทยก่อน สลับ EN ได้</b>คำแปลไทย 2,297 รายการ ตรวจครบด้วย <code>i18n:check</code></li>
-        <li><b>ปรับให้เข้ากับ Codex</b>เข้าสู่ระบบ เอกสารองค์กร หน้า AI providers และหน้าลิงก์โรงพยาบาล</li>
-        <li style="border-bottom:0"><b>DNA helix 3 มิติ</b>แสดงแบบนิ่งเมื่อผู้ใช้ตั้ง reduced motion</li>
-      </ul>
-    </div>
-  </div>
-  <aside class="notes">[1:20–1:28] หน้าเว็บ Next.js ภาษาไทยมาจากงานของ Claude ทั้งชุด เราปรับเฉพาะส่วนที่ต้องคุยกับ API ของ Codex หน้าตาเดิมที่ชอบยังอยู่ครบ</aside>
-</section>
-
-<!-- 6 · CEO 3: architecture -->
+<!-- 4 · Architecture -->
 <section>
   <div class="frame tall">
     <div>
-      <div class="ceo inline">ความเห็น CEO <b>3</b></div>
-      <h2>Render:<br>API เดิม + เว็บ Next.js</h2>
+      <h2>One FastAPI service on Render</h2>
       <ul class="notes-list">
-        <li><b><code>labclear</code> (API)</b>FastAPI ของ Codex ใช้ <code>render.yaml</code> เดิม 1 instance หน้า Jinja เดิมยังเปิดได้</li>
-        <li><b><code>labclear-web</code> (เลือกได้)</b>Next.js rewrite <code>/api</code> ไปที่ API · API รับ origin ของเว็บผ่าน <code>TRUSTED_ORIGINS</code> แบบตรงตัว</li>
-        <li><b>Render PostgreSQL</b>ทุกแถวเข้ารหัส Fernet แชตผู้เยี่ยมชมอยู่ใน RAM เท่านั้น</li>
-        <li style="border-bottom:0"><b>Cloudflare</b>Workers Paid เลื่อนไว้ · แผนฟรีใช้เป็น DNS ได้ภายหลัง</li>
+        <li><b>Website and API together</b>Jinja pages and plain JavaScript, Thai first with an English switch</li>
+        <li><b>Chat pipeline</b>guards, planner, roles, typed tools, runtime skills, writer, checks, reviewer</li>
+        <li><b>Provider gate</b>network switch, call cap, THB ledger and a free-only policy before every model call</li>
+        <li style="border-bottom:0"><b>Blueprint</b>auto-deploys every commit on <code>main</code>; health check <code>/ready</code></li>
       </ul>
     </div>
-    <figure><img src="img/architecture-slide.png" alt="แผนภาพสถาปัตยกรรม LabClear 4.0.0-rc2: เบราว์เซอร์ → labclear-web → labclear (FastAPI) → PostgreSQL และผู้ให้บริการ AI ผ่านด่านงบ"></figure>
+    <figure><img src="../docs/assets/architecture.png" alt="LabClear 4.0.0-rc3 architecture"></figure>
   </div>
-  <aside class="notes">[1:28–1:40] เจ้าของเลือกกลับมาใช้ Render บริการ API เดิมไม่เปลี่ยน หน้าเว็บ Next.js เป็นบริการที่สองที่ส่งคำขอ API ต่อไป ฐานข้อมูลเข้ารหัสทุกแถว งาน Cloudflare เก็บไว้ใช้ภายหลัง</aside>
+  <aside class="notes">[0:45–1:00] Everything runs as one web service. Customers and staff reach the same FastAPI app. Data lives in PostgreSQL with encrypted rows. Every call to Typhoon or iApp passes the same gate that enforces a call cap and a 300-baht budget.</aside>
 </section>
 
-<!-- 7 · one message data flow -->
+<!-- 5 · Data flow -->
 <section>
   <div class="frame tall">
     <div>
-      <h2>หนึ่งข้อความ<br>ผ่านการตรวจก่อนถึงลูกค้า</h2>
-      <ol class="steps">
-        <li>ตรวจ session CSRF origin แล้ว regex ก่อนเรียกโมเดล</li>
-        <li>safety ขาเข้า แล้ว planner<span>เรียกทีละขั้นตามลำดับ ไม่มีการตรวจขนาน</span></li>
-        <li>typed tools ดึงข้อมูลตามสิทธิ์บทบาท แล้วเขียนคำตอบ<span>catalog นโยบาย BM25 58 รายการ · runtime skills เลือกตามงาน</span></li>
-        <li>Python ตรวจ citation ค่าผลตรวจ และราคา</li>
-        <li>reviewer แล้ว safety ขาออก<span>ทุกการเรียกผ่านด่านงบ (และนโยบาย free-only เมื่อตั้ง) ขั้นไหนไม่ผ่าน หยุดและให้ลองใหม่</span></li>
-      </ol>
+      <h2>One message, step by step</h2>
+      <ul class="notes-list">
+        <li><b>The model proposes, Python decides</b>the planner suggests a role and search terms; code checks permissions and calls the tools</li>
+        <li><b>Answers cite evidence</b>only sources the tools returned; prices and report values checked in code; one rewrite, then withheld</li>
+        <li><b>Five model calls</b>input guard, planner, writer, reviewer, output guard</li>
+        <li style="border-bottom:0"><b>Every step is visible</b>streamed live and kept under the answer as Process Explainability</li>
+      </ul>
     </div>
-    <figure><img src="img/message-flow-slide.png" alt="แผนภาพการไหลของข้อมูล 1 ข้อความ 9 ขั้น จากเบราว์เซอร์ผ่านบริการเว็บถึง FastAPI และผู้ให้บริการ AI"></figure>
+    <figure><img src="../docs/assets/message-flow.png" alt="Data flow of one message"></figure>
   </div>
-  <aside class="notes">[1:40–1:52] ข้อความหนึ่งข้อความผ่านการตรวจคำขอและ regex ก่อน แล้วตรวจความปลอดภัย วางแผน ดึงข้อมูลผ่านเครื่องมือที่จำกัดสิทธิ์ตามบทบาท เขียนคำตอบ ให้ Python ตรวจ แล้ว reviewer กับ safety ตรวจอีกรอบ ทุกการเรียกโมเดลผ่านเพดานจำนวนครั้งและงบบาทก่อน</aside>
+  <aside class="notes">[1:00–1:20] Thirteen steps, five of them model calls. If any check fails the answer is withheld and the customer sees which step stopped it. Nothing is invented to fill the gap.</aside>
 </section>
 
-<!-- 8 · CEO 4: models and budget -->
+<!-- 6 · Tools, skills and explainability -->
 <section>
   <div class="frame">
-    <div class="ceo">ความเห็น CEO <b>4</b></div>
-    <h2>เลือกโมเดลต่อขั้นได้ ไม่ฝังค่าที่ยังไม่ได้วัด</h2>
-    <div class="split" style="grid-template-columns:1.5fr 1fr;gap:44px;align-items:start">
-      <div>
-      <table class="t" style="font-size:21px">
-        <tr><th>ขั้น</th><th>ค่าเริ่มต้น (เปลี่ยนได้ที่ /staff)</th></tr>
-        <tr><td>โมเดลภาษา (planner ผู้เขียน reviewer)</td><td>Typhoon v2.5 30B</td></tr>
-        <tr><td>Safety check</td><td>iApp OpenThai-SystemOne</td></tr>
-        <tr><td>อ่านใบผล</td><td>Typhoon OCR</td></tr>
-        <tr class="lead"><td>Medical analyzer · Thai composer</td><td>ปิด · ต้องระบุโมเดล ราคาที่ตรวจแล้ว และ endpoint</td></tr>
+    <h2>Typed tools, reviewed skills, visible steps</h2>
+    <div class="split" style="grid-template-columns:1fr 1fr;align-items:start">
+      <table class="t" style="font-size:19px">
+        <tr><th>Tool</th><th>Advisor</th><th>Explainer</th></tr>
+        <tr><td><code>lookup_packages</code> · <code>compare_packages</code></td><td>✓</td><td>–</td></tr>
+        <tr><td><code>lookup_branches</code></td><td>✓</td><td>–</td></tr>
+        <tr><td><code>lookup_policies</code></td><td>✓</td><td>✓</td></tr>
+        <tr><td><code>retrieve_evidence</code> (BM25, 148 records)</td><td>✓</td><td>✓</td></tr>
+        <tr><td><code>get_confirmed_report_rows</code></td><td>–</td><td>✓</td></tr>
+        <tr><td><code>preview_booking</code> · <code>get_external_hospital_offer</code></td><td>✓</td><td>–</td></tr>
       </table>
-      <div class="split" style="grid-template-columns:repeat(3,1fr);gap:22px;margin-top:26px;font-size:17px;line-height:1.42">
-        <div><strong style="display:block;font-size:19px">OpenRouter</strong>เลือกได้ทุก slot บทบาทใหม่ต้องระบุ endpoint ไม่สลับผู้ให้บริการ และขอ zero data retention</div>
-        <div><strong style="display:block;font-size:19px">ไม่อ้างเกินจริง</strong>บันทึก = ตรวจการตั้งค่า · registry เป็น metadata ราคา PRICE_UNVERIFIED</div>
-        <div><strong style="display:block;font-size:19px">คุมงบ</strong>สิทธิ์เรียกเครือข่าย เพดานจำนวนครั้ง และ ledger บาทก่อนทุกการเรียก</div>
-      </div>
-      </div>
       <div>
-        <div class="hero-num">300 บาท</div>
-        <p style="font-size:22px;margin-top:12px">เพดานงบรวมของโครงการ<br><span class="muted">ประเมินจริงในวง USD 1 เมื่อเจ้าของอนุมัติ</span></p>
-        <p class="small" style="margin-top:26px">รอบ rc2 ทดสอบแบบ free-first: Typhoon text/OCR + OpenThai-SystemOne เป็น baseline · OpenRouter และ embedding พักไว้ (โค้ดยังอยู่) · ชุดโมเดลเร็วของ Claude branch ยังไม่ได้วัด จึงไม่เป็นค่าเริ่มต้น</p>
+        <div class="shot" style="height:400px"><img src="../docs/assets/screenshots/chat-explainability.jpg" alt="Process Explainability under an answer" style="object-position:-470px -110px;width:auto;height:auto;max-width:none"></div>
+        <p class="cap">8 skill modules chosen per role and task, SHA-256 checked; every tool call audited without storing its arguments</p>
       </div>
     </div>
   </div>
-  <aside class="notes">[1:52–2:04] ผู้จัดการเลือกผู้ให้บริการได้ทีละขั้น OpenRouter เป็นหนึ่งในตัวเลือก บทบาทใหม่ปิดไว้จนกว่าจะใส่โมเดลและราคาที่ตรวจแล้ว เราไม่ฝังชุดโมเดลที่ยังไม่ได้วัด และคุมงบที่ 300 บาทครับ</aside>
+  <aside class="notes">[1:20–1:35] Each role can only call the tools its permissions allow. The Report Explainer has no sales tools. Skills are chosen per message and hash-checked, and the answer records which ones were used.</aside>
 </section>
 
-<!-- 9 · CEO 2: guest privacy -->
+<!-- 7 · No-code admin -->
 <section>
   <div class="frame">
-    <div class="ceo">ความเห็น CEO <b>2</b></div>
-    <h2>ผู้เยี่ยมชม: รีเฟรชหรือเข้าสู่ระบบแล้วแชตหาย</h2>
-    <div class="split" style="grid-template-columns:1.4fr 1fr;gap:44px;align-items:start">
-      <table class="t" style="font-size:22px">
-        <tr><th style="width:56%">เมื่อผู้เยี่ยมชม…</th><th>แชตและภาพที่แนบ</th></tr>
-        <tr><td>รีเฟรช หรือปิดแท็บ</td><td>ลบบนเซิร์ฟเวอร์ทันที (beacon)</td></tr>
-        <tr><td>กดย้อนกลับมาหน้าเดิม</td><td>หน้าโหลดใหม่ ไม่เห็นแชตเก่า</td></tr>
-        <tr class="lead"><td>เข้าสู่ระบบ หรือสมัครบัญชี</td><td>ลบ หน้าจอล้างทันที บัญชีเริ่มแชตใหม่</td></tr>
-        <tr><td>มีคำตอบเก่าของผู้เยี่ยมชมมาถึงช้า</td><td>ถูกทิ้ง ไม่แสดงทับบัญชีใหม่</td></tr>
-        <tr><td>ไม่ใช้งาน 20 นาที</td><td>ลบ</td></tr>
-      </table>
-      <ul class="notes-list">
-        <li><b>ไม่มีอะไรในเบราว์เซอร์</b>ไม่ใช้ localStorage, sessionStorage หรือ cookie เก็บ token ไว้ในหน่วยความจำของหน้าเท่านั้น</li>
-        <li><b>บอกผู้ใช้ก่อน</b>แถบโหมดผู้เยี่ยมชม และหน้าต่างเข้าสู่ระบบเตือนว่าแชตนี้จะถูกลบ</li>
-        <li style="border-bottom:0"><b>ทดสอบแล้ว</b>UAT R4-02 ถึง R4-04 และ UI-33 ผ่าน (ตัวแทนโมเดล)</li>
+    <h2>Managers tune the assistant without code, inside safety rails</h2>
+    <div class="split" style="grid-template-columns:0.9fr 1.1fr;align-items:start">
+      <ul class="notes-list compact">
+        <li><b>Company Harness</b>turn unlocked skills on or off, add company wording, sources per search 1–8, answer length 500–4,000 tokens</li>
+        <li><b>Limits can only go down</b>tool timeouts and item counts never exceed the code's ceiling</li>
+        <li><b>Locked</b>core, evidence-citation and scope-uncertainty; safety checks; data permissions; customer confirmation</li>
+        <li style="border-bottom:0"><b>Knowledge library</b>148 owner-approved records as A4 PDF pages; pause any record</li>
       </ul>
+      <div>
+        <div class="shot" style="height:450px"><img src="../docs/assets/screenshots/company-harness.jpg" alt="Company Harness page" style="object-position:-250px -80px;width:auto;height:auto;max-width:none"></div>
+        <p class="cap">Every save is a new revision that can be restored; its SHA-256 is recorded with each answer</p>
+      </div>
     </div>
   </div>
-  <aside class="notes">[2:04–2:14] CEO สังเกตว่าแชตหายเมื่อรีเฟรช เจ้าของเลือกให้ลบต่อเพราะเป็นข้อมูลสุขภาพ รุ่นรวมใช้กฎของ Codex ที่ลบแชตเมื่อเข้าสู่ระบบด้วย และกันไม่ให้คำตอบเก่ามาแสดงทับบัญชีใหม่</aside>
+  <aside class="notes">[1:35–1:50] The owner asked for no-code control. Managers can shape the assistant, but cannot switch off the rules that keep it safe.</aside>
 </section>
 
-<!-- 10 · CEO 1: organization documents -->
+<!-- 8 · Resilience -->
 <section>
   <div class="frame">
-    <div class="ceo">ความเห็น CEO <b>1</b></div>
-    <h2>โรงพยาบาลเก็บเอกสารเอง องค์กรอนุมัติ</h2>
-    <div class="flow" style="grid-template-columns:repeat(5,1fr)">
-      <div>กำหนดสมาชิก<small>ผู้อ่านหรือผู้แก้ไข · ผู้จัดการ LabClear</small></div>
-      <div>อัปโหลดร่าง<small>TXT/MD ไม่เกิน 256 KiB · ผู้แก้ไข</small></div>
-      <div>ดูตัวอย่างแล้วอนุมัติ<small>รุ่นใหม่แทนรุ่นเดิม · ผู้แก้ไข</small></div>
-      <div>สมาชิกค้นและดาวน์โหลด<small>ข้อความต้นฉบับ ไม่ใช่คำตอบจาก AI</small></div>
-      <div>ถอนหรือลบ<small>คำตอบครั้งต่อไปใช้ไม่ได้ทันที</small></div>
-    </div>
-    <div class="split" style="grid-template-columns:1.25fr 1fr;gap:40px;margin-top:26px;align-items:start">
-      <div><div class="shot" style="height:270px"><img src="img/orgs.png" alt="หน้าองค์กรของฉัน: เอกสารจำลองที่อนุมัติแล้ว ปุ่มรุ่นใหม่ ถอน และลบ"></div><p class="cap">หน้าองค์กรของฉันของผู้แก้ไข · ภาพจาก UAT R4-05 (เอกสารจำลอง)</p></div>
-      <ul class="notes-list">
-        <li>ต้องเปิด <code>ORG_DOCUMENTS_ENABLED</code> · ปิดเป็นค่าเริ่มต้น</li>
-        <li>เห็นเฉพาะองค์กรเดียวกัน ตรวจซ้ำทุกครั้งว่ายังอนุมัติ</li>
-        <li style="border-bottom:0">ผู้ช่วยใช้ข้อความเมื่อเปิด <code>ORG_REFERENCE_INFERENCE_ENABLED</code> และผู้ให้บริการผ่านการตั้งค่าแล้ว</li>
-      </ul>
-    </div>
-  </div>
-  <aside class="notes">[2:14–2:24] เอกสารขององค์กรใช้ระบบของ Codex ผู้จัดการกำหนดสมาชิก ผู้แก้ไขขององค์กรอัปโหลดและอนุมัติเอง มีรุ่น ถอนได้ และเห็นเฉพาะคนในองค์กร ผู้ช่วยจะใช้เอกสารเหล่านี้ก็ต่อเมื่อเจ้าของเปิด</aside>
-</section>
-
-<!-- 11 · CEO 1: knowledge base -->
-<section>
-  <div class="frame">
-    <div class="ceo">ความเห็น CEO <b>1</b></div>
-    <h2>ฐานที่ค้น 58 รายการ · แหล่งใหม่รอตรวจ 111 รายการ</h2>
-    <div class="split" style="grid-template-columns:1.25fr 1fr;gap:50px;align-items:start">
-      <ul class="bars" style="margin-top:8px">
-        <li style="font-size:18px;color:var(--muted);display:block;margin-bottom:6px">ระเบียนจาก Claude branch ที่รอตรวจ (90 รายการ 26 ผู้เผยแพร่)</li>
-        <li><span>แหล่งอ้างอิงสากล</span><span class="bar"><i style="width:100%"></i></span><span class="v">32</span></li>
-        <li><span>หน่วยงานสากล</span><span class="bar"><i style="width:84.4%"></i></span><span class="v">27</span></li>
-        <li><span>สมาคมวิชาชีพไทย</span><span class="bar"><i style="width:40.6%"></i></span><span class="v">13</span></li>
-        <li><span>โรงพยาบาลไทย (ร่าง)</span><span class="bar"><i style="width:40.6%"></i></span><span class="v">13</span></li>
-        <li><span>หน่วยงานรัฐไทย</span><span class="bar"><i style="width:15.6%"></i></span><span class="v">5</span></li>
-        <li style="margin-top:22px;font-size:17px;color:var(--muted);display:block">อีก 21 รายการเป็นแหล่งและลิงก์โรงพยาบาลที่ Codex รวบรวม ทั้งหมดอยู่ใน <code>knowledge/acquisition/</code> สถานะ NOT_APPROVED</li>
-      </ul>
-      <ul class="notes-list">
-        <li><b class="num">58 รายการที่ตรวจแล้ว</b>ศิริราช ศรีนครินทร์ และ MedlinePlus ค้นด้วย BM25 พร้อมชื่อไทย</li>
-        <li><b class="num">77 + 13 รายการจาก Claude</b>เขียนโดยไม่ได้เปิดหน้าเว็บต้นทาง จึงยังไม่ใช้ ทดสอบแล้วว่าไม่ถูกค้น</li>
-        <li style="border-bottom:0"><b>ก่อนนำเข้า</b>คนเปิดต้นฉบับ ยืนยันข้อความ สิทธิ์ และความถูกต้องทางคลินิก</li>
-      </ul>
-    </div>
-  </div>
-  <aside class="notes">[2:24–2:32] เราไม่เพิ่มแหล่งที่ยังไม่มีใครเทียบกับต้นฉบับเข้าระบบ ฐานที่ค้นยัง 58 รายการ แหล่งใหม่ 111 รายการรอตรวจ เมื่อตรวจแล้วจึงย้ายเข้าทีละรายการ</aside>
-</section>
-
-<!-- 12 · testing evidence -->
-<section>
-  <div class="frame">
-    <h2>ผลทดสอบของรุ่นรวม และสิ่งที่ยังไม่ได้วัด</h2>
+    <h2>A request can no longer hang or end in a raw 502</h2>
     <div class="stats">
-      <div><div class="n">328</div><div class="l">pytest ผ่านทั้งหมด<br>Codex 265 + รุ่นรวม 63</div></div>
-      <div><div class="n">46/46</div><div class="l">ชุด browser เดิมของ Codex<br>36 + upgrade 10</div></div>
-      <div><div class="n">53/53</div><div class="l">web UAT ของ Next.js<br>flag ปิดทั้งหมด 5/5</div></div>
-      <div><div class="n">20/20</div><div class="l">ชุดตามโจทย์ 10 · 5 · 5 รันครบ<br>OFFLINE · ผ่านเกณฑ์ pipeline 15</div></div>
+      <div><div class="n num">220 s</div><div class="l">one deadline for the whole chat request</div></div>
+      <div><div class="n num">10 s</div><div class="l">heartbeat while waiting for the model</div></div>
+      <div><div class="n num">2 / 1</div><div class="l">AI / OCR requests at once; then 503 with Retry-After</div></div>
+      <div><div class="n num">12 / 12</div><div class="l">fault cases R01–R12 passed, 183 assertions</div></div>
     </div>
-    <div class="split" style="grid-template-columns:1fr 1fr;gap:44px;margin-top:16px">
+    <div class="split" style="grid-template-columns:1fr 1fr;align-items:start;margin-top:28px">
+      <ul class="notes-list">
+        <li><b>Exactly one terminal event</b><code>accepted</code>, steps, heartbeats, then <code>done</code> or <code>error</code> with a request ID</li>
+        <li><b>Stop really stops</b>the provider call is cancelled and the slot freed</li>
+        <li style="border-bottom:0"><b>Render-ready</b><code>/ready</code> readiness and a 20-second drain on SIGTERM</li>
+      </ul>
       <div>
-        <h3>3 จุดปรับปรุง (วัดก่อน–หลัง)</h3>
-        <ul class="notes-list">
-          <li><b>คำแนะนำเลือกตามงาน</b>เส้นทางที่ได้คำสั่งผิดหรือขาด 5/8 → 0/8</li>
-          <li><b>อัปโหลดภาพสังเคราะห์</b>ภาพที่ไปถึงคำอธิบาย 0/5 → 5/5</li>
-          <li style="border-bottom:0"><b>free-only</b>เรียกปลายทางเสียเงินจาก slot ค้าง 30 → 0 ครั้ง</li>
-        </ul>
-      </div>
-      <div>
-        <h3>ยังไม่ได้วัด</h3>
-        <ul class="notes-list">
-          <li>ทุกผลข้างบนใช้ข้อมูลจำลองและ AI จำลอง คำตอบเป็นของตัวแทน ไม่ใช่ Typhoon</li>
-          <li style="border-bottom:0">รอบ LIVE_FREE ยังไม่ได้รัน: ยังไม่มี key และยังไม่ได้ยืนยันว่าบัญชีใช้ฟรี · คนยังไม่ได้ตรวจคำตอบ</li>
-        </ul>
+        <div class="shot" style="height:190px"><img src="../docs/assets/screenshots/chat-recovery.jpg" alt="Thai recovery message after a proxy 502" style="object-position:-450px -640px;width:auto;height:auto;max-width:none"></div>
+        <p class="cap">A proxy 502 becomes a Thai message; the text returns to the composer (browser suite 10/10)</p>
       </div>
     </div>
   </div>
-  <aside class="notes">[2:32–2:42] รุ่นรวมผ่าน pytest 328 ข้อ browser เดิมของ Codex 46 สถานการณ์ และ web UAT 53 สถานการณ์ ชุดตามโจทย์รันครบ 20 กรณีด้วย AI จำลอง และวัดสามจุดปรับปรุงแบบก่อนหลังได้ แต่คำตอบของโมเดลจริงยังไม่ได้วัด เพราะรอบ LIVE_FREE ยังรอ key และการยืนยันสิทธิ์ฟรี</aside>
+  <aside class="notes">[1:50–2:05] On Render's free plan long model calls could end in a proxy 502. Now every request has a deadline and a heartbeat, the server refuses extra work politely, and the browser recovers with a clear Thai message.</aside>
 </section>
 
-<!-- 13 · deployment -->
+<!-- 9 · Results -->
 <section>
   <div class="frame">
-    <div class="ceo">ความเห็น CEO <b>3</b></div>
-    <h2>Deploy บน Render: API ก่อน แล้วเว็บ</h2>
-    <div class="flow" style="grid-template-columns:repeat(5,1fr)">
-      <div>ตรวจรับและ merge<small>เจ้าของนำเข้า bundle แล้ว merge เอง</small></div>
-      <div>API เดิม deploy<small><code>render.yaml</code> ไม่เปลี่ยน flag ใหม่ยังปิด</small></div>
-      <div>สร้างบริการเว็บ<small>Root <code>web</code> · <code>npm run start:render</code></small></div>
-      <div>เชื่อมสองบริการ<small><code>API_ORIGIN</code> ที่เว็บ · <code>TRUSTED_ORIGINS</code> ที่ API</small></div>
-      <div>ตั้ง AI และงบ<small>ตั้งผู้ให้บริการ กด Test ประเมินจริงภายในงบ</small></div>
-    </div>
-    <div class="split" style="grid-template-columns:1fr 1fr;gap:44px;margin-top:30px;align-items:start">
-      <div>
-        <h3>ตรวจรับ</h3>
-        <ul class="notes-list" style="margin-bottom:16px">
-          <li><code>/health</code> ตอบ <code>4.0.0-rc2</code> และ commit ที่ deploy</li>
-          <li>สมัครบัญชีได้ (ถ้าได้ 403 แปลว่า <code>TRUSTED_ORIGINS</code> ไม่ตรง)</li>
-          <li style="border-bottom:0">แชตผู้เยี่ยมชมหายหลังรีเฟรช · ย้อนรุ่นด้วยการปิด flag หรือ deploy ก่อนหน้า</li>
-        </ul>
-        <span class="pill warn">ยังไม่ได้ deploy และยังไม่ได้แก้ ENV ของระบบจริง</span>
-      </div>
-      <div>
-        <h3>ค่าใช้จ่ายต่อเดือน</h3>
-        <table class="t" style="font-size:21px">
-          <tr><td>Render: API และเว็บ (แผนฟรี)</td><td class="num" style="text-align:right">0</td></tr>
-          <tr><td>Render PostgreSQL ฟรี (หมดอายุ 30 วัน)</td><td class="num" style="text-align:right">0</td></tr>
-          <tr><td>ผู้ให้บริการ AI</td><td style="text-align:right">ภายใน 300 บาท</td></tr>
-          <tr><td>Cloudflare Workers Paid</td><td style="text-align:right">ไม่ใช้ (เลื่อนไว้)</td></tr>
-        </table>
-      </div>
-    </div>
+    <h2>What has been measured, and what has not</h2>
+    <table class="t" style="font-size:20px">
+      <tr><th style="width:340px">Test</th><th style="width:200px">Result</th><th>Scope</th></tr>
+      <tr><td>10 questions · 5 images · 5 safety cases</td><td class="num"><strong>7/10 · 1/5 · 5/5</strong></td><td>3.0.1 with Typhoon on Render, reviewed answer by answer</td></tr>
+      <tr><td>Coursework benchmark A / B / C (OFFLINE)</td><td class="num"><strong>15/20 each</strong></td><td>the real app with model stand-ins; images fail on Tesseract read errors</td></tr>
+      <tr><td>pytest · browser UAT · upgrade · TH/EN</td><td class="num"><strong>371 · 36/36 · 10/10 · 43/43</strong></td><td>4.0.0-rc3, synthetic data, no outbound calls</td></tr>
+      <tr><td>Resilience R01–R12 · browser recovery</td><td class="num"><strong>12/12 · 10/10</strong></td><td>deterministic fault suite; not uptime, not Render latency</td></tr>
+      <tr class="lead"><td>LIVE_FREE with Typhoon and iApp</td><td><span class="pill warn">not run</span></td><td>preflight blocked: policy not reviewed, free status unverified, no trial keys</td></tr>
+    </table>
   </div>
-  <aside class="notes">[2:42–2:50] deploy บน Render ห้าขั้น บริการ API เดิมไม่เปลี่ยน สร้างบริการเว็บแล้วเชื่อมสองบริการ จากนั้นจึงตั้ง AI และงบ ไม่มีค่าแผน Workers Paid</aside>
+  <aside class="notes">[2:05–2:25] Real-model numbers come from release 3.0.1. This candidate passes every software suite, but its live run with Typhoon and iApp is still blocked until the free status and keys are confirmed. We do not claim clinical accuracy.</aside>
 </section>
 
-<!-- 14 · limitations and next steps -->
+<!-- 10 · Improvements -->
 <section>
   <div class="frame">
-    <h2>สิ่งที่ยังไม่รู้ และงานก่อนส่ง 17 ต.ค.</h2>
-    <div class="split" style="grid-template-columns:1fr 1fr;gap:50px;align-items:start">
+    <h2>Three fixes found in live runs, measured before and after</h2>
+    <table class="t" style="font-size:20px">
+      <tr><th style="width:44px"></th><th>Before</th><th>Fix</th><th style="width:300px">After (rounds 2 and 3)</th></tr>
+      <tr><td class="k">1</td><td>Q01 and Q02 withheld (HTTP 502): citation limit too low, report values attached to package answers</td><td>Business sources always citable; stray values dropped; links stripped instead of rejecting</td><td>Q01 and Q02 answered and passed in both rounds</td></tr>
+      <tr><td class="k">2</td><td>Q07 quoted the corporate price twice (1,980 instead of 990 baht)</td><td>Every amount checked against the catalog; one rewrite, then withheld</td><td>990 / 1,490 / 2,390 baht per person, correct</td></tr>
+      <tr><td class="k">3</td><td>Q08 and Q09 answered without searching the knowledge base</td><td>Questions naming a test always search; medical claims need medical sources</td><td>Sources cited; Q08 still overstated its source</td></tr>
+    </table>
+  </div>
+  <aside class="notes">[2:25–2:40] Three problems we found on the live system, fixed in code with tests, and re-measured. Fix three improved retrieval but Q08 still went beyond its source, so it stays on the list for the next live run.</aside>
+</section>
+
+<!-- 11 · Deploy and next -->
+<section>
+  <div class="frame">
+    <h2>Ready for review; next we measure on the real system</h2>
+    <div class="split" style="grid-template-columns:1fr 1fr;align-items:start">
       <div>
-        <h3>ข้อจำกัดตอนนี้</h3>
-        <ul class="notes-list">
-          <li>คุณภาพภาษาไทย ความเร็ว และ OCR ของโมเดลจริงยังไม่ได้วัดกับรุ่นนี้</li>
-          <li>ผ่านบริการเว็บ ผู้ใช้ทุกคนใช้ rate limit ก้อนเดียว · Google sign-in ยังไม่ได้ทดสอบ</li>
-          <li>API มี 1 instance แชตผู้เยี่ยมชมหายเมื่อ restart แผนฟรีหลับเมื่อไม่มีคนใช้</li>
-          <li style="border-bottom:0">ข้อมูลธุรกิจและใบผลเป็นข้อมูลจำลอง ระบบไม่วินิจฉัยโรค</li>
-        </ul>
+        <h3>Deploy</h3>
+        <ol class="steps" style="margin-top:14px">
+          <li>Owner merges into <code>main</code><span>the Blueprint deploys automatically</span></li>
+          <li>Set secrets in the Render Dashboard<span>database, data key, provider keys, budget cycle</span></li>
+          <li>Check <code>/health</code> and <code>/ready</code><span>version, commit and readiness</span></li>
+        </ol>
       </div>
       <div>
-        <h3>ลำดับงานต่อไป</h3>
-        <ol class="steps">
-          <li>ตรวจรับ merge และ deploy บน Render</li>
-          <li>รัน LIVE_FREE 10 / 5 / 5 เมื่อยืนยันสิทธิ์ฟรีแล้ว ให้คนตรวจทุกข้อ</li>
-          <li>ตรวจแหล่งความรู้ที่รอ แล้วนำเข้าทีละรายการ</li>
-          <li>เปิด flag ใหม่ทีละตัวตามประตูของเจ้าของ</li>
-          <li>อัดคลิปสาธิตไม่เกิน 3 นาที</li>
+        <h3>Next</h3>
+        <ol class="steps" style="margin-top:14px">
+          <li>LIVE_FREE 10 / 5 / 5 with synthetic data<span>after the owner confirms free status and keys</span></li>
+          <li>Clinical and Thai-reader review<span>every coursework answer</span></li>
+          <li>Demo clip, three minutes or less</li>
         </ol>
       </div>
     </div>
   </div>
-  <aside class="notes">[2:50–2:57] สิ่งที่เรายังไม่รู้คือผลของโมเดลจริงบนระบบจริง งานถัดไปคือ deploy รันชุดทดสอบของวิชา ตรวจแหล่งอ้างอิง และเปิดความสามารถใหม่ทีละส่วน</aside>
+  <aside class="notes">[2:40–2:55] The candidate is ready for the owner to review and merge. After deploy we run the live coursework set, have the answers reviewed and record the demo clip.</aside>
 </section>
 
-<!-- 15 · Closing -->
+<!-- 12 · Closing -->
 <section class="night" data-background-color="#1b1328">
   <div class="dots"></div>
   <div class="frame">
-    <div class="brand"><img src="../web/public/img/mark.svg" alt="">LabClear 4.0.0-rc2</div>
-    <h2 style="font-family:var(--serif);font-size:52px;line-height:1.45;margin:56px 0 24px;max-width:1040px">รุ่นรวมพร้อมให้ตรวจรับ<br>ขั้นต่อไปคือวัดผลบนระบบจริง</h2>
-    <p class="lede">หน้าเว็บภาษาไทยบน backend ที่ตรวจความปลอดภัยแล้ว ลบแชตผู้เยี่ยมชมเมื่อรีเฟรชหรือเข้าสู่ระบบ รันบน Render และหยุดเรียก AI ที่ 300 บาท</p>
-    <div class="people">โค้ดและเอกสาร: github.com/siriponsri/LabClear · รายงานทางเทคนิค docs/report/LabClear_Technical_Report_4_0_0.pdf<br>นายวัชรินทร์ บัวสอน · นายศิริพล ศรีเฮงไพบูลย์</div>
+    <div class="brand"><img src="../static/img/mark.svg" alt="">LabClear 4.0.0-rc3</div>
+    <h2 style="font-family:var(--serif);font-size:54px;line-height:1.25;margin:60px 0 24px;max-width:1040px">Answers from the clinic's data.<br>Explanations the customer can check.</h2>
+    <p class="lede">One FastAPI service on Render, Thai first, every step visible, every model call inside a budget, and no request left hanging.</p>
+    <div class="people">Code and documentation: github.com/siriponsri/LabClear · reports in docs/report/<br>นายวัชรินทร์ บัวสอน · นายศิริพล ศรีเฮงไพบูลย์</div>
   </div>
-  <aside class="notes">[2:57–3:00] สรุปคือรุ่นรวมพร้อมให้ตรวจรับ และจะวัดผลบนระบบจริงต่อ ขอบคุณครับ</aside>
+  <aside class="notes">[2:55–3:00] Thank you.</aside>
 </section>
 
 </div></div>

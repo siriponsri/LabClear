@@ -188,7 +188,7 @@ deterministic fault cases, not uptime or latency on Render.
 | `notebooks/` | Harness demonstration notebook |
 | `scripts/` | Start, staff setup, i18n build, benchmark, scoring and maintenance scripts |
 | `tests/` | Python tests, benchmark doubles, browser suites |
-| `docs/` | Documentation, diagrams, reports and evidence |
+| `docs/` | Documentation, diagrams, evidence, and the [reports](docs/report/README.md) (Final Project report in Word; business and architecture reports in PDF) |
 | `presentation/` | reveal.js slides |
 | `data/` | Local SQLite database and key (git-ignored) |
 

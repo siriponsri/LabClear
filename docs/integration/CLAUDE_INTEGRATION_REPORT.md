@@ -27,8 +27,8 @@ Requirements as the owner stated them (Thai) and how they were met.
 | 10 | Evaluation benchmark แบบ deterministic พร้อม script | Deterministic evaluation benchmark and scorer | Done | `scripts/benchmark_labclear.py`, `scripts/score_benchmark.py`; scores reproduce the owner's runs |
 | 11 | Notebook แสดง multi-agent พร้อม prompt และ rollout | Multi-agent notebook with prompts and rollout | Done | `notebooks/LabClear_Harness_Demo.ipynb` (executed) |
 | 12 | Repo hygiene: เหลือ blueprint ที่ใช้จริง, report/presentation ล่าสุด | Repository hygiene | Done | unused deploy targets, old reports and evidence removed (kept in git history) |
-| 13 | README/docs/presentation เป็นภาษาอังกฤษแบบ professional | English README, docs and presentation | Partly done | README and `docs/` done; presentation not yet updated to rc3 |
-| 14 | Report ยึดการตอบโจทย์ Final Project.docx | Thai report structured on the Final Project brief | Not done | the 4.0.0 report is still in `docs/report/` |
+| 13 | README/docs/presentation เป็นภาษาอังกฤษแบบ professional | English README, docs and presentation | Done | README, `docs/`, `presentation/index.html` (12 slides) and `docs/report/LabClear_Slides.pdf` |
+| 14 | Report ยึดการตอบโจทย์ Final Project.docx (3 ฉบับ ตามสไตล์ Technical Report และ skill Thai Report Format) | Thai reports: Final Project (Word, placeholders), business, architecture and agent flow (PDF) | Done (placeholders to fill) | [docs/report/README.md](../report/README.md) |
 | 15 | แผนลด 502: P0-A ถึง P0-D + benchmark R01–R12 | Resilience P0-A to P0-D and fault suite R01–R12 | Done | [operations/resilience.md](../operations/resilience.md); fault suite 12/12 |
 | 16 | ตรวจ free tier จากเอกสารทางการ, รัน preflight ใหม่ | Free-tier check from official documentation; preflight again | Done (LIVE_FREE still blocked) | [provider-free-tier-check.md](../evidence/current/provider-free-tier-check.md), `live-preflight.json` |
 | 17 | Regression เต็มบน candidate สุดท้าย | Full regression on the final candidate | Done | section 4 |
@@ -46,7 +46,8 @@ Requirements as the owner stated them (Thai) and how they were met.
 | `36336b4` | i18n override order, organization page states |
 | `92f1d9e` | Request resilience P0-A to P0-D (section 3) |
 | `ebdaa6f`, `3191f93` | Reproducible score hash; turn ID in the execution context and logs |
-| `da10abf`, `8445db6` and later | Evidence, notebook execution, provider free-tier check, this report |
+| `da10abf`, `8445db6`, `8356fb8` | Evidence, notebook execution, provider free-tier check, this report |
+| last commit | Three Thai reports, English slides, updated diagrams and screenshots |
 
 ## 3. Request resilience (handoff of 9 October 2026)
 
@@ -106,9 +107,7 @@ confirms free status on the account and sets the trial keys in the shell.
 
 | Item | Next step |
 |---|---|
-| Thai report on the Final Project brief | Rebuild `docs/report/` (Word and PDF) |
-| Presentation | Update `presentation/index.html` to rc3 in English |
-| Delivery set | Source ZIP, git bundle and SHA-256 manifest of the final commit (an interim bundle of this branch was delivered) |
+| Final Project report placeholders | Team: demo clip link, deployed URL, LIVE_FREE tables, who did each progress item; then update fields in Word and export PDF |
 | LIVE_FREE runs | Owner: reviewed policy, keys in the shell, preflight, smoke, coursework A/B/C |
 | Render Free | Sleep and restarts can still return 502 at the proxy; a paid plan is the owner's decision (current price not verified here) |
 | `/ready` depends on PostgreSQL | A new deploy goes live only when the database answers |

@@ -35,6 +35,6 @@ Documentation for LabClear 4.0.0-rc3. Start with the [project README](../README.
 - [team.md](team.md): roles and progress log.
 - [../CHANGELOG.md](../CHANGELOG.md): release history.
 - [integration/CLAUDE_INTEGRATION_REPORT.md](integration/CLAUDE_INTEGRATION_REPORT.md): 4.0.0-rc3 integration report and acceptance matrix.
-- [report/](report/): final coursework report (Thai, Word and PDF), structured on the Final Project brief.
+- [report/](report/README.md): the Final Project submission report (Thai, Word), the business report and the architecture, tech stack and agent flow report (Thai, PDF), and the slides as PDF.
 - [../presentation/index.html](../presentation/index.html): presentation deck (open in a browser; English).
 - [assets/](assets/): architecture and message-flow diagrams (built by `scripts/build_diagrams.py`).

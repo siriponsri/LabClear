@@ -135,7 +135,7 @@ def architecture() -> Svg:
     s.arrow([(750, 156), (750, 238)], "HTTPS", (758, 190), LINK)
     s.box(60, 240, 880, 90, "module", "API + UI", "labclear · FastAPI · Python 3.12",
           ["Jinja pages + vanilla JS · Thai-first TH/EN switch · answers stream step by step (NDJSON)",
-           "session · CSRF · same-origin · role and ownership checks · rate limit · one instance"], 16)
+           "session · CSRF · same-origin · role checks · rate limit · admission 2 AI / 1 OCR · deadline · one instance"], 16)
     for x in (160, 386, 613, 840):
         s.arrow([(x, 330), (x, 368)])
     s.box(60, 370, 200, 116, "core", "CORE", "Chat pipeline", ["guards · planner · roles", "typed tools · skills", "writer · checks · reviewer"])
@@ -155,7 +155,7 @@ def architecture() -> Svg:
     s.arrow([(640, 486), (640, 558)], "READ", (648, 538))
     s.arrow([(713, 440), (726, 440), (726, 608), (738, 608)])
     s.arrow([(840, 486), (840, 558)], "SQL", (848, 528))
-    for i, line in enumerate(["render.yaml Blueprint: auto-deploy on every commit to main; /health check.",
+    for i, line in enumerate(["render.yaml Blueprint: auto-deploy on every commit to main; health check /ready, drain on SIGTERM.",
                               "Flags default off in config.py; the Blueprint turns on runtime skills and hospital links.",
                               "Secrets are set in the Render dashboard, never committed."]):
         s.text(430, 694 + 18 * i, line, 11, 400, MUTED, "start")
@@ -173,7 +173,7 @@ def architecture() -> Svg:
 
 FLOW = [
     # (kind, tag, title, detail, shown in Process Explainability?)
-    ("server", "API", "POST /api/business/chat", "session · CSRF · same-origin · rate limit · the answer streams as NDJSON", False),
+    ("server", "API", "POST /api/business/chat", "session · CSRF · rate limit · admission · 220 s deadline · NDJSON: accepted, heartbeat 10 s, one terminal event", False),
     ("server", "HARNESS", "Company Harness snapshot", "configuration revision, skills on/off, tool limits (one snapshot per message)", True),
     ("llm", "GUARD", "Input safety check", "iApp OpenThai-SystemOne · anything not clearly safe is blocked", True),
     ("llm", "LLM", "Planner", "JSON plan: action, role, search terms, package IDs · sees test names, never report values", True),
@@ -191,7 +191,7 @@ FLOW = [
 
 def message_flow() -> Svg:
     top, step, h = 70, 70, 54
-    height = top + step * len(FLOW) + 150
+    height = top + step * len(FLOW) + 166
     s = Svg(1000, height, f"LabClear {VERSION}: data flow of one chat message",
             "One customer message passes thirteen stages: the API request, the Company Harness snapshot, the input "
             "safety check, the planner, role permissions, typed tools, runtime skills, the writer, deterministic checks, "
@@ -234,8 +234,10 @@ def message_flow() -> Svg:
     s.text(286, ly + 31, "Server code, no model", 11.5, 400, MUTED, "start")
     s.add(f'<circle cx="469" cy="{ly + 27}" r="4" fill="{ACCENT}"/>')
     s.text(482, ly + 31, "Listed under Process Explainability", 11.5, 400, MUTED, "start")
-    s.text(40, ly + 66, "A failed check withholds the answer and shows the step that stopped it. Report questions also pass the "
-                        "medical analyzer and Thai composer when that profile is configured.", 11, 400, MUTED, "start")
+    s.text(40, ly + 66, "A failed check, timeout, Stop or closed connection ends the stream with one error event (code, step, request ID) "
+                        "and cancels the provider call.", 11, 400, MUTED, "start")
+    s.text(40, ly + 84, "Report questions also pass the medical analyzer and Thai composer when that profile is configured.",
+           11, 400, MUTED, "start")
     return s
 
 
