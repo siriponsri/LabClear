@@ -124,4 +124,9 @@ if __name__ == "__main__":
     import uvicorn
     from main import app
     print(f"dev_mock_api: MOCKED AI, flags={FLAGS}, trusted origins={ORIGINS}, storage={folder}", flush=True)
-    uvicorn.run(app, host="127.0.0.1", port=PORT, log_level="warning")
+    # The Next.js /api proxy reuses idle connections through Node's keep-alive agent (5 s idle timeout).
+    # uvicorn also closes idle connections after 5 s by default, so a reused socket could be reset
+    # mid-request ("socket hang up" -> 500 in the browser). Keeping server-side idle connections
+    # longer than the client's lets the client close first. Local web UAT only; the Render entrypoint
+    # scripts/run_business.py is unchanged.
+    uvicorn.run(app, host="127.0.0.1", port=PORT, log_level="warning", timeout_keep_alive=65)
