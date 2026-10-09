@@ -118,7 +118,7 @@ Backend FastAPI, session/CSRF/origin/rate limit, Fernet store, Guest privacy (�
 | ไฟล์ | คำอธิบาย |
 |---|---|
 | `LabClear-4.0.0-rc2-source.zip` | `git archive` ของ commit ส่งมอบ (ไม่มี `.env`, ฐานข้อมูล, `node_modules`, `.venv`, `eval_runs/`) |
-| `LabClear-4.0.0-rc2.bundle` | Git bundle: `integration/labclear-4.0-rc1` (ทั้ง history จาก `c970410`) + `release/4.0.0` (ประวัติ Claude) + `main` อ้างอิง |
+| `LabClear-4.0.0-rc2.bundle` | Git bundle: `integration/labclear-4.0-rc1` (ทั้ง history จาก `c970410`) + `release/4.0.0` (ประวัติ Claude) + tag `base/codex-main-c970410` (ฐาน Codex `main`) |
 | `MANIFEST-SHA256.txt` | ขนาดและ SHA-256 ของทุกไฟล์ในชุด, commit ส่งมอบ, คำสั่งตรวจ |
 | `CLAUDE_INTEGRATION_REPORT.md` | ฉบับนี้ |
 
