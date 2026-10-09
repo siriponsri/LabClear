@@ -1,6 +1,9 @@
 # Evidence files are verified by SHA-256 at runtime; keep their bytes identical on every OS.
 knowledge/** -text
 runtime_skills/thai_health/** -text
+# Coursework benchmark: frozen dataset, scorer-only rubric and image answer key (eval/coursework/MANIFEST.json).
+eval/coursework/** -text
+examples/thai_lab_reference_v3/** -text
 *.png binary
 *.jpg binary
 *.pdf binary

@@ -5,6 +5,7 @@ Runs without starting a server: the scoring functions and the dataset checks are
 from __future__ import annotations
 
 import ast
+import fnmatch
 import importlib.util
 import json
 import re
@@ -145,3 +146,28 @@ def test_live_free_preflight_dry_run_is_blocked_here_and_calls_nothing(capsys, m
     out = capsys.readouterr().out
     report = json.loads(out[out.index("{"):])
     assert code == 2 and report["status"] == "BLOCKED" and report["inference_calls_made"] == 0
+
+
+def test_frozen_files_keep_their_bytes_on_every_os():
+    """Every SHA-256-frozen dataset file must be exempt from Git line-ending conversion.
+
+    With core.autocrlf=true (the Windows default) a text JSON file is checked out with CRLF and its
+    hash no longer matches eval/coursework/MANIFEST.json, although nothing was edited."""
+    root = Path(__file__).resolve().parents[1]
+    rules = []
+    for line in (root / ".gitattributes").read_text(encoding="utf-8").splitlines():
+        parts = line.split()
+        if len(parts) >= 2 and not parts[0].startswith("#") and ("-text" in parts[1:] or "binary" in parts[1:]):
+            rules.append(parts[0])
+
+    def exempt(path: str) -> bool:
+        for rule in rules:
+            if rule.endswith("/**") and path.startswith(rule[:-2]):
+                return True
+            if "/" not in rule and fnmatch.fnmatch(path.rsplit("/", 1)[-1], rule):
+                return True
+        return False
+
+    frozen = json.loads((root / "eval/coursework/MANIFEST.json").read_text(encoding="utf-8"))["files"]
+    assert frozen and not [f for f in frozen if not exempt(f)]
+
