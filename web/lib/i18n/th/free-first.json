@@ -34,5 +34,7 @@
   "Typed tools ({v})": "เครื่องมือแบบมีชนิดข้อมูล ({v})",
   "scope {s}": "ขอบเขต {s}",
   "timeout {n} s": "หมดเวลา {n} วินาที",
-  "Instruction modules ({v})": "โมดูลคำแนะนำ ({v})"
+  "Instruction modules ({v})": "โมดูลคำแนะนำ ({v})",
+  "Baseline in the free-first benchmark": "ใช้เป็นฐานในชุดทดสอบ free-first",
+  "Deferred for this benchmark round": "พักไว้ในรอบทดสอบนี้ (ไม่ใช่ผลว่าไม่ผ่าน)"
 }

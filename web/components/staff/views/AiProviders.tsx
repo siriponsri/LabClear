@@ -44,7 +44,8 @@ type Harness = {
 };
 type AiView = { slots: Record<Kind, SlotView>; agents: Record<string, SlotView & { slot: string; help: string }>; presets: Preset[]; network_enabled: boolean;
   free_policy?: FreePolicy; harness?: Harness };
-type Candidate = { model_id: string; roles: string[]; approval_status: string; price_status: string; privacy_approval: string; last_live_eval: string | null; notes: string };
+type Candidate = { model_id: string; roles: string[]; approval_status: string; price_status: string; privacy_approval: string; last_live_eval: string | null; notes: string;
+  free_first_benchmark?: "BASELINE_FOR_THIS_BENCHMARK" | "DEFERRED_FOR_THIS_BENCHMARK" | string };
 type Registry = { version: string; status: string; models: Candidate[] };
 
 /** Opt-in roles added by the Codex upgrade: disabled until configured, no inherited key. */
@@ -292,6 +293,8 @@ function RegistryPanel({ r }: { r: Registry | { error: string } }) {
             <Icon name="doc" size={15} />
             <span>
               <span className="mono">{m.model_id}</span> · {m.roles.join(", ")} · {m.price_status} · {m.approval_status}
+              {m.free_first_benchmark === "BASELINE_FOR_THIS_BENCHMARK" ? " · " + t("Baseline in the free-first benchmark") : ""}
+              {m.free_first_benchmark === "DEFERRED_FOR_THIS_BENCHMARK" ? " · " + t("Deferred for this benchmark round") : ""}
             </span>
           </li>
         ))}

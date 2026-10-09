@@ -9,6 +9,26 @@ cover Python, both browser suites and the evaluation fixture. Current evidence i
 fixture checks. These counts are software evidence only; all live model quality
 and clinical measurements are NOT_RUN. Older counts below belong to previous releases.
 
+## Integration 4.0.0-rc2 regression and coursework benchmark
+
+Current software evidence for the integrated candidate (commit `d4b1025`, see
+[evidence/integration-4.0-rc2](evidence/integration-4.0-rc2/README.md)): **328** Python tests, **36/36**
+legacy and **10/10** upgrade browser scenarios, **60** fixture checks, boot PASS, web build, **53/53** web
+UAT and **5/5** flags-off UAT, all with test doubles. The coursework benchmark (10 questions, 5 images,
+5 safety cases from `scripts/course_eval.py`, frozen in `eval/coursework/` with a scorer-only rubric) runs
+through `scripts/benchmark_labclear.py` in three separate modes:
+
+| Mode | Command | Counts as |
+|---|---|---|
+| OFFLINE | `python scripts/benchmark_labclear.py run --mode offline --suite coursework --profile C` | pipeline evidence (retrieval/tools, validators, non-model guards, side effects, accounting); not answer quality |
+| REPLAY | `... run --mode replay --replay-from <run-id>` | parsing/UI regression on recorded responses; never live scores |
+| LIVE_FREE | `... run --mode live-free --policy <reviewed policy> ...` | real free-tier answers, still PENDING_HUMAN_REVIEW; **not run** (no key, free status unverified) |
+
+Results, the three before/after improvements and the blocker evidence are in
+[ceo-upgrade/COURSEWORK_BENCHMARK_REPORT_TH.md](ceo-upgrade/COURSEWORK_BENCHMARK_REPORT_TH.md); the owner
+runbook is [ceo-upgrade/FREE_PROVIDER_PREFLIGHT.md](ceo-upgrade/FREE_PROVIDER_PREFLIGHT.md). The live
+sections below (7 October 2026, versions 3.0.x) are historical.
+
 The 2026-10-08 upgrade is a disabled-by-default software candidate. Its current scope, evidence, configuration and remaining owner gates are recorded in the [upgrade index](ceo-upgrade/README.md). Earlier release counts and screenshots below are historical; they do not establish live model or clinical validation.
 
 # Testing

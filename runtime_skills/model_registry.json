@@ -1,6 +1,7 @@
 {
   "version": "2026-10-08",
   "status": "LIVE_EVAL_NOT_RUN",
+  "free_first_benchmark_note": "Integration 4.0.0-rc2 (2026-10-09): the free-first benchmark uses Typhoon text/OCR and iApp OpenThai-SystemOne only. DEFERRED_FOR_THIS_BENCHMARK means not used in this benchmark round; it is not a finding that a model is unsuitable or failed. Neither status is a price, privacy or live approval.",
   "models": [
     {
       "model_id": "deepseek/deepseek-v4.1-flash",
@@ -27,7 +28,8 @@
       "price_status": "PRICE_UNVERIFIED",
       "quota_bucket": "account_shared",
       "last_live_eval": null,
-      "notes": "Metadata proposal, never a provider default or permission to call."
+      "notes": "Metadata proposal, never a provider default or permission to call.",
+      "free_first_benchmark": "DEFERRED_FOR_THIS_BENCHMARK"
     },
     {
       "model_id": "openai/gpt-6-luna",
@@ -53,7 +55,8 @@
       "price_status": "PRICE_UNVERIFIED",
       "quota_bucket": "account_shared",
       "last_live_eval": null,
-      "notes": "Metadata proposal, never a provider default or permission to call."
+      "notes": "Metadata proposal, never a provider default or permission to call.",
+      "free_first_benchmark": "DEFERRED_FOR_THIS_BENCHMARK"
     },
     {
       "model_id": "inclusionai/ling-3.0-flash-sante:free",
@@ -78,7 +81,8 @@
       "price_status": "PRICE_UNVERIFIED",
       "quota_bucket": "account_shared",
       "last_live_eval": null,
-      "notes": "Metadata proposal, never a provider default or permission to call."
+      "notes": "Metadata proposal, never a provider default or permission to call.",
+      "free_first_benchmark": "DEFERRED_FOR_THIS_BENCHMARK"
     },
     {
       "model_id": "typhoon-v2.5-30b-a3b-instruct",
@@ -103,7 +107,8 @@
       "price_status": "PRICE_UNVERIFIED",
       "quota_bucket": "account_shared",
       "last_live_eval": null,
-      "notes": "Metadata proposal, never a provider default or permission to call."
+      "notes": "Metadata proposal, never a provider default or permission to call.",
+      "free_first_benchmark": "BASELINE_FOR_THIS_BENCHMARK"
     },
     {
       "model_id": "typhoon-ocr",
@@ -129,7 +134,8 @@
       "price_status": "PRICE_UNVERIFIED",
       "quota_bucket": "account_shared",
       "last_live_eval": null,
-      "notes": "Metadata proposal, never a provider default or permission to call."
+      "notes": "Metadata proposal, never a provider default or permission to call.",
+      "free_first_benchmark": "BASELINE_FOR_THIS_BENCHMARK"
     },
     {
       "model_id": "openai/text-embedding-3-small",
@@ -154,7 +160,8 @@
       "price_status": "PRICE_UNVERIFIED",
       "quota_bucket": "account_shared",
       "last_live_eval": null,
-      "notes": "Metadata proposal, never a provider default or permission to call."
+      "notes": "Metadata proposal, never a provider default or permission to call.",
+      "free_first_benchmark": "DEFERRED_FOR_THIS_BENCHMARK"
     },
     {
       "model_id": "openthai-systemone",
@@ -179,7 +186,8 @@
       "price_status": "PRICE_UNVERIFIED",
       "quota_bucket": "account_shared",
       "last_live_eval": null,
-      "notes": "Metadata proposal, never a provider default or permission to call."
+      "notes": "Metadata proposal, never a provider default or permission to call.",
+      "free_first_benchmark": "BASELINE_FOR_THIS_BENCHMARK"
     },
     {
       "model_id": "cloudflare/clef-flash",
@@ -204,7 +212,8 @@
       "price_status": "PRICE_UNVERIFIED",
       "quota_bucket": "account_shared",
       "last_live_eval": null,
-      "notes": "Metadata proposal, never a provider default or permission to call."
+      "notes": "Metadata proposal, never a provider default or permission to call.",
+      "free_first_benchmark": "DEFERRED_FOR_THIS_BENCHMARK"
     },
     {
       "model_id": "meta-llama/llama-guard-4-12b",
@@ -229,7 +238,8 @@
       "price_status": "PRICE_UNVERIFIED",
       "quota_bucket": "account_shared",
       "last_live_eval": null,
-      "notes": "Metadata proposal, never a provider default or permission to call."
+      "notes": "Metadata proposal, never a provider default or permission to call.",
+      "free_first_benchmark": "DEFERRED_FOR_THIS_BENCHMARK"
     }
   ]
 }

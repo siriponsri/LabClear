@@ -9,6 +9,24 @@ is authoritative. `/api/business/staff/ai-providers/registry` is manager-only
 read-only proposal metadata; it never changes settings or calls a provider.
 Default-off pages are `/preview/landing`, `/organization-references`, `/hospital-links`.
 
+## Integration 4.0 additions
+
+- `GET /api/business/site/common|home|sources|packages/{id}|compare|features|hospital-links|membership`
+  (read-only, `routers/public.py`) feed the Next.js site. `/site/hospital-links` is 404 while
+  `HOSPITAL_LINKS_ENABLED` is off; `/site/membership` reports the caller's organization role only.
+- `TRUSTED_ORIGINS` (exact `scheme://host[:port]`, empty by default) lets the web service's same-site
+  proxy pass the Origin check; it never accepts wildcards, paths or credentials.
+- `GET /api/business/staff/ai-providers` now also returns `free_policy` (status of the free-only trial
+  policy; `{"active": false}` in normal deployments) and `harness` (typed tools with scope/timeout and
+  runtime skill modules with version/SHA-256). `GET /api/business/staff/budget` adds `free_policy_active`
+  and `free_quota` (trial usage). No key or argument is ever returned.
+- Chat answers include `checks.tools` (tool, version, scope, argument hash, ok/code, ms, items) and
+  `checks.skills` (package, module IDs, combined hash). Reports include `raw_fields` (rows as read)
+  beside the confirmed `fields`; raw rows never reach a model.
+- New error codes: `free_policy_blocked`, `free_policy_unverified`, `free_policy_invalid` (409/503),
+  `free_quota_exhausted` (429), `tool_arguments_invalid`, `tool_forbidden`, `tool_timeout`,
+  `tool_output_too_large`, `tool_unknown`.
+
 The 2026-10-08 upgrade is a disabled-by-default software candidate. Its current scope, evidence, configuration and remaining owner gates are recorded in the [upgrade index](ceo-upgrade/README.md). Earlier release counts and screenshots below are historical; they do not establish live model or clinical validation.
 
 # API reference

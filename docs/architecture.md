@@ -8,6 +8,29 @@ existing reviewer/guard. Organization documents reuse encrypted entities; runtim
 instructions are fixed hash-checked files. No database table, worker platform or
 deployment entrypoint is added. Acquisition metadata is outside active RAG.
 
+## Integration 4.0 (rc1 web, rc2 free-first harness)
+
+Hosting stays on **Render**: the unchanged API service (`render.yaml`, `scripts/run_business.py`) and an
+optional second Render web service for the Thai-first TH/EN Next.js site in `web/`, which rewrites
+`/api/*` and `/health` to the API; the API accepts that exact origin through `TRUSTED_ORIGINS`
+([deploy/render-web.md](deploy/render-web.md)). Cloudflare Workers/Containers files are kept as a deferred
+option; Cloudflare Free may later front the web service as DNS/proxy only.
+
+The message pipeline is Codex's, with the free-first harness (rc2) inside it:
+
+`session/CSRF/origin → input guard (regex pre-guard + System One) → planner (LLM proposes action, role,
+search terms) → typed tools (services/agent_tools.py: lookup_packages, compare_packages, lookup_branches,
+lookup_policies, retrieve_evidence = BM25 over the 58 reviewed sources, get_confirmed_report_rows,
+preview_booking; scope = the role's server-defined reads/actions; strict inputs; timeout; output limit;
+audit) → writer with per-task runtime skill modules (services/runtime_skills.select) → deterministic
+validators (citations, prices, observations, content checks) → reviewer → output guard → UI`.
+
+Every provider call goes through `conversation_transport.post_json`: free-only policy (only when
+`FREE_ONLY_POLICY_PATH` is set by a trial server) → durable call cap → THB ledger → network. Retrieval is
+BM25 only; no embedding API is called. OpenRouter roles (medical analyzer, Thai composer), DeepSeek,
+Luna, Santé, Clef and embeddings are **DEFERRED_FOR_THIS_BENCHMARK**, not rejected or measured. Diagrams:
+`docs/assets/architecture-4.0.png` and `docs/assets/message-flow-4.0.png`.
+
 The 2026-10-08 upgrade is a disabled-by-default software candidate. Its current scope, evidence, configuration and remaining owner gates are recorded in the [upgrade index](ceo-upgrade/README.md). Earlier release counts and screenshots below are historical; they do not establish live model or clinical validation.
 
 # Architecture
