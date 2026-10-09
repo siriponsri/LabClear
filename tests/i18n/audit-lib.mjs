@@ -165,7 +165,7 @@ export function problems(row, { switchRequired = true } = {}) {
 export async function startJudge(root) {
   const py = process.env.TEST_PYTHON || path.join(root, process.platform === "win32" ? ".venv/Scripts/python.exe" : ".venv/bin/python");
   if (!fs.existsSync(py)) return { status: `NOT_RUN (no Python at ${py})`, judge: null };
-  const proc = spawn(py, [path.join(root, "scripts/thai_break_check.py")], { stdio: ["pipe", "pipe", "pipe"] });
+  const proc = spawn(py, ["-X", "utf8", path.join(root, "scripts/thai_break_check.py")], { stdio: ["pipe", "pipe", "pipe"] });
   const rl = readline.createInterface({ input: proc.stdout });
   const queue = [];
   rl.on("line", (line) => queue.shift()?.(JSON.parse(line)));
@@ -181,8 +181,13 @@ export async function startJudge(root) {
     status: "RUN (PyThaiNLP dictionary)",
     judge: {
       ask: (req) =>
-        new Promise((res) => {
-          queue.push(res);
+        new Promise((res, reject) => {
+          if (proc.exitCode !== null || proc.killed) return reject(new Error("Thai line-break judge exited"));
+          const timer = setTimeout(() => {
+            proc.kill();
+            reject(new Error("Thai line-break judge did not respond within 15 seconds"));
+          }, 15000);
+          queue.push(value => { clearTimeout(timer); res(value); });
           proc.stdin.write(JSON.stringify(req) + "\n");
         }),
       stop: () => proc.kill(),

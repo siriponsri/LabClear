@@ -33,6 +33,11 @@ def main():
         if key.lower() not in keep:
             del os.environ[key]
     with tempfile.TemporaryDirectory(prefix="labclear-offline-") as folder:
+        # Keep temporary files from this run and its document workers in one owned
+        # directory. R07 must not mistake another concurrent run's OS-temp files
+        # for leaked uploads. Native child processes follow TEMP/TMP as well.
+        tempfile.tempdir = folder
+        os.environ.update(TEMP=folder, TMP=folder, TMPDIR=folder)
         os.environ.update(APP_ENV="test", DATABASE_URL="", PROVIDER_NETWORK_ENABLED="false",
                           BUSINESS_DB_PATH=str(Path(folder) / "business.sqlite3"),
                           BUSINESS_KEY_PATH=str(Path(folder) / "business.key"),

@@ -249,3 +249,65 @@ def test_blueprint_uses_readiness_and_valid_resilience_defaults():
     assert {k: values.get(k) for k in expected} == expected
     s = Settings(_env_file=None, **{k: float(v) if "." in v else int(v) for k, v in expected.items()})
     assert s.SHUTDOWN_DRAIN_SECONDS < 30  # inside Render's default shutdown window
+
+
+def test_offline_socket_counter_excludes_socketpair_and_counts_denials(monkeypatch):
+    import socket
+    from tests.resilience import harness
+
+    # Retain the offline guard installed by offline_check; restore every wrapper.
+    for target, name in ((socket.socket, "connect"), (socket.socket, "connect_ex"),
+                         (socket, "create_connection"), (socket, "getaddrinfo")):
+        monkeypatch.setattr(target, name, getattr(target, name))
+    monkeypatch.setattr(harness, "SOCKETS", {"attempts": 0})
+    harness.count_sockets()
+    left, right = socket.socketpair()
+    try:
+        left.send(b"x")
+        assert right.recv(1) == b"x"
+        assert harness.SOCKETS["attempts"] == 0
+    finally:
+        left.close()
+        right.close()
+    with socket.socket() as sock:
+        calls = [lambda: sock.connect(("192.0.2.1", 443)),
+                 lambda: sock.connect_ex(("192.0.2.1", 443)),
+                 lambda: socket.create_connection(("192.0.2.1", 443)),
+                 lambda: socket.getaddrinfo("offline.invalid", 443)]
+        for expected, call in enumerate(calls, 1):
+            with pytest.raises(RuntimeError, match="OFFLINE_CHECK: outbound network forbidden"):
+                call()
+            assert harness.SOCKETS["attempts"] == expected
+
+
+@pytest.mark.parametrize("stream", [False, True])
+def test_unexpected_workflow_error_does_not_log_private_exception(monkeypatch, caplog, stream):
+    from types import SimpleNamespace
+    from services import providers
+    private = "PRIVATE_REPORT_AND_KEY_CANARY"
+    monkeypatch.setattr(providers, "_read_saved", lambda: {})
+    caplog.set_level("INFO", logger="labclear.request")
+
+    async def run():
+        async def disconnected():
+            return False
+        async def fail(emit):
+            raise ValueError(private)
+        request = SimpleNamespace(headers={"accept": "application/x-ndjson" if stream else "application/json"},
+                                  is_disconnected=disconnected)
+        ctx = execution.start("/chat", "ai")
+        if stream:
+            response = await execution.respond(request, ctx, fail)
+            events = [json.loads(line) async for line in response.body_iterator]
+            assert events[-1]["code"] == "server_error"
+            assert private not in json.dumps(events)
+        else:
+            with pytest.raises(ConversationError) as error:
+                await execution.respond(request, ctx, fail)
+            assert error.value.code == "server_error"
+            assert private not in error.value.message
+        assert ctx.request_id not in execution.ACTIVE
+        assert ctx.slot.released
+    asyncio.run(run())
+    assert private not in caplog.text
+    assert any('workflow_failed' in r.getMessage() for r in caplog.records)

@@ -146,10 +146,11 @@ function Set-RenderEnv([string]$Key, [string]$Value) {
 Set-RenderEnv DATABASE_URL      (Read-Host "Internal Database URL" -MaskInput)
 Set-RenderEnv BUSINESS_DATA_KEY (Read-Host "Fernet key (keep the existing one)" -MaskInput)
 
-# Budget and call cap (keep the existing values on a running service)
-Set-RenderEnv PROVIDER_BUDGET_CYCLE_ID       "labclear-1"
-Set-RenderEnv CLOUD_CALL_LIMIT               "200"
-Set-RenderEnv PROJECT_BUDGET_PRIOR_SPEND_THB "0"
+# Existing service: preserve PROVIDER_BUDGET_CYCLE_ID, CLOUD_CALL_LIMIT,
+# PROJECT_BUDGET_PRIOR_SPEND_THB and the durable cost ledger unchanged.
+# Do not initialize them from example values or reset prior spend to zero.
+# If any are absent, resolve the actual prior spend and approved quota with the owner
+# before enabling AI; this deployment guide does not establish those values.
 
 # AI stays off until the providers are set on /staff
 Set-RenderEnv PROVIDER_NETWORK_ENABLED "false"

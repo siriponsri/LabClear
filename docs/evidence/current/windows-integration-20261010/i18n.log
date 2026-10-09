@@ -1,0 +1,84 @@
+Thai line-break check: RUN (PyThaiNLP dictionary)
+PASS I18N-00 Setup: a fresh customer (synthetic report confirmed, one chat answer, organization editor) and the admin (3394 ms)
+     note: customer customer_a370e9765206f6067a26f3cd, report report_b167848f548c89851bf98844.
+PASS I18N-P-home Landing / (guest): TH and EN at 390/768/1440 px, in-place switch (6908 ms)
+     note: 390px EN→TH changed, TH→EN changed; 1440px EN→TH changed, TH→EN changed
+PASS I18N-P-packages Package /packages (guest): TH and EN at 390/768/1440 px, in-place switch (4984 ms)
+     note: 390px EN→TH changed, TH→EN changed; 1440px EN→TH changed, TH→EN changed
+PASS I18N-P-package Package /packages/P02 (guest): TH and EN at 390/768/1440 px, in-place switch (4890 ms)
+     note: 390px EN→TH changed, TH→EN changed; 1440px EN→TH changed, TH→EN changed
+PASS I18N-P-compare Package /compare?ids=P01,P02 (guest): TH and EN at 390/768/1440 px, in-place switch (4528 ms)
+     note: 390px EN→TH changed, TH→EN changed; 1440px EN→TH changed, TH→EN changed
+PASS I18N-P-centers Website /centers (guest): TH and EN at 390/768/1440 px, in-place switch (4899 ms)
+     note: 390px EN→TH changed, TH→EN changed; 1440px EN→TH changed, TH→EN changed
+PASS I18N-P-help Website /help (guest): TH and EN at 390/768/1440 px, in-place switch (4692 ms)
+     note: 390px EN→TH changed, TH→EN changed; 1440px EN→TH changed, TH→EN changed
+PASS I18N-P-privacy Website /privacy (guest): TH and EN at 390/768/1440 px, in-place switch (4515 ms)
+     note: 390px EN→TH changed, TH→EN changed; 1440px EN→TH changed, TH→EN changed
+PASS I18N-P-sources Website /sources (guest): TH and EN at 390/768/1440 px, in-place switch (6086 ms)
+     note: 390px EN→TH changed, TH→EN changed; 1440px EN→TH changed, TH→EN changed
+PASS I18N-P-lab-reports Lab Report /lab-reports (guest): TH and EN at 390/768/1440 px, in-place switch (4765 ms)
+     note: 390px EN→TH changed, TH→EN changed; 1440px EN→TH changed, TH→EN changed
+PASS I18N-P-organizations Organization /organizations (guest): TH and EN at 390/768/1440 px, in-place switch (4734 ms)
+     note: 390px EN→TH changed, TH→EN changed; 1440px EN→TH changed, TH→EN changed
+PASS I18N-P-hospital-links Package /hospital-links (guest): TH and EN at 390/768/1440 px, in-place switch (4878 ms)
+     note: 390px EN→TH changed, TH→EN changed; 1440px EN→TH changed, TH→EN changed
+PASS I18N-P-not-found Website /this-page-does-not-exist (guest): TH and EN at 390/768/1440 px, in-place switch (4553 ms)
+     note: 390px EN→TH changed, TH→EN changed; 1440px EN→TH changed, TH→EN changed
+PASS I18N-P-app-chat-guest Chatbot /app (guest): TH and EN at 390/768/1440 px, in-place switch (188285 ms)
+     note: 390px EN→TH changed, TH→EN changed; 1440px EN→TH changed, TH→EN changed
+PASS I18N-P-app-chat Chatbot /app (customer): TH and EN at 390/768/1440 px, in-place switch (4391 ms)
+     note: 390px EN→TH changed, TH→EN changed; 1440px EN→TH changed, TH→EN changed
+PASS I18N-P-app-packages Package /app?view=packages (customer): TH and EN at 390/768/1440 px, in-place switch (4813 ms)
+     note: 390px EN→TH changed, TH→EN changed; 1440px EN→TH changed, TH→EN changed
+PASS I18N-P-app-book Package /app?view=book (customer): TH and EN at 390/768/1440 px, in-place switch (4764 ms)
+     note: 390px EN→TH changed, TH→EN changed; 1440px EN→TH changed, TH→EN changed
+PASS I18N-P-app-bookings Package /app?view=bookings (customer): TH and EN at 390/768/1440 px, in-place switch (4913 ms)
+     note: 390px EN→TH changed, TH→EN changed; 1440px EN→TH changed, TH→EN changed
+PASS I18N-P-app-labs Lab Report /app?view=labs (customer): TH and EN at 390/768/1440 px, in-place switch (5168 ms)
+     note: 390px EN→TH changed, TH→EN changed; 1440px EN→TH changed, TH→EN changed
+PASS I18N-P-app-reports Lab Report /app?view=reports (customer): TH and EN at 390/768/1440 px, in-place switch (5147 ms)
+     note: 390px EN→TH changed, TH→EN changed; 1440px EN→TH changed, TH→EN changed
+PASS I18N-P-app-plan Lab Report /app?view=plan (customer): TH and EN at 390/768/1440 px, in-place switch (5203 ms)
+     note: 390px EN→TH changed, TH→EN changed; 1440px EN→TH changed, TH→EN changed
+PASS I18N-P-app-notifications Chatbot /app?view=notifications (customer): TH and EN at 390/768/1440 px, in-place switch (5036 ms)
+     note: 390px EN→TH changed, TH→EN changed; 1440px EN→TH changed, TH→EN changed
+PASS I18N-P-lab-report Lab Report /lab-report/<id> (customer): TH and EN at 390/768/1440 px, in-place switch (5640 ms)
+     note: 390px EN→TH changed, TH→EN changed; 1440px EN→TH changed, TH→EN changed
+PASS I18N-P-organizations-signed-in Organization /organizations (customer): TH and EN at 390/768/1440 px, in-place switch (5793 ms)
+     note: 390px EN→TH changed, TH→EN changed; 1440px EN→TH changed, TH→EN changed
+PASS I18N-P-staff-overview Staff/Admin /staff (admin): TH and EN at 390/768/1440 px, in-place switch (7126 ms)
+     note: 390px EN→TH changed, TH→EN changed; 1440px EN→TH changed, TH→EN changed
+PASS I18N-P-staff-staff Staff/Admin /staff?view=staff (admin): TH and EN at 390/768/1440 px, in-place switch (6341 ms)
+     note: 390px EN→TH changed, TH→EN changed; 1440px EN→TH changed, TH→EN changed
+PASS I18N-P-staff-operations Staff/Admin /staff?view=operations (admin): TH and EN at 390/768/1440 px, in-place switch (6369 ms)
+     note: 390px EN→TH changed, TH→EN changed; 1440px EN→TH changed, TH→EN changed
+PASS I18N-P-staff-customers Staff/Admin /staff?view=customers (admin): TH and EN at 390/768/1440 px, in-place switch (4972 ms)
+     note: 390px EN→TH changed, TH→EN changed; 1440px EN→TH changed, TH→EN changed
+PASS I18N-P-staff-payments Staff/Admin /staff?view=payments (admin): TH and EN at 390/768/1440 px, in-place switch (4994 ms)
+     note: 390px EN→TH changed, TH→EN changed; 1440px EN→TH changed, TH→EN changed
+PASS I18N-P-staff-notifications Staff/Admin /staff?view=notifications (admin): TH and EN at 390/768/1440 px, in-place switch (4958 ms)
+     note: 390px EN→TH changed, TH→EN changed; 1440px EN→TH changed, TH→EN changed
+PASS I18N-P-staff-catalog-admin Staff/Admin /staff?view=catalog-admin (admin): TH and EN at 390/768/1440 px, in-place switch (5675 ms)
+     note: 390px EN→TH changed, TH→EN changed; 1440px EN→TH changed, TH→EN changed
+PASS I18N-P-staff-centers Staff/Admin /staff?view=centers (admin): TH and EN at 390/768/1440 px, in-place switch (5034 ms)
+     note: 390px EN→TH changed, TH→EN changed; 1440px EN→TH changed, TH→EN changed
+PASS I18N-P-staff-roles Staff/Admin /staff?view=roles (admin): TH and EN at 390/768/1440 px, in-place switch (5380 ms)
+     note: 390px EN→TH changed, TH→EN changed; 1440px EN→TH changed, TH→EN changed
+PASS I18N-P-staff-harness Staff/Admin /staff?view=harness (admin): TH and EN at 390/768/1440 px, in-place switch (5519 ms)
+     note: 390px EN→TH changed, TH→EN changed; 1440px EN→TH changed, TH→EN changed
+PASS I18N-P-staff-knowledge Staff/Admin /staff?view=knowledge (admin): TH and EN at 390/768/1440 px, in-place switch (6489 ms)
+     note: 390px EN→TH changed, TH→EN changed; 1440px EN→TH changed, TH→EN changed
+PASS I18N-P-staff-ai Staff/Admin /staff?view=ai (admin): TH and EN at 390/768/1440 px, in-place switch (5111 ms)
+     note: 390px EN→TH changed, TH→EN changed; 1440px EN→TH changed, TH→EN changed
+PASS I18N-P-staff-channels Staff/Admin /staff?view=channels (admin): TH and EN at 390/768/1440 px, in-place switch (5714 ms)
+     note: 390px EN→TH changed, TH→EN changed; 1440px EN→TH changed, TH→EN changed
+PASS I18N-P-staff-audit Staff/Admin /staff?view=audit (admin): TH and EN at 390/768/1440 px, in-place switch (4260 ms)
+     note: 390px EN→TH changed, TH→EN changed; 1440px EN→TH changed, TH→EN changed
+PASS I18N-S-signin-error Sign-in dialog: wrong password error in TH and EN (873 ms)
+PASS I18N-S-chat-failure Chat: a message that cannot be sent shows the failure in TH and EN (2923 ms)
+PASS I18N-S-loading Loading states (slow workspace view, slow service desk) in TH and EN (6805 ms)
+PASS I18N-S-empty-search Catalog: a search with no match shows the empty state in TH and EN (2402 ms)
+PASS I18N-Z No uncaught page errors during the run (0 ms)
+
+43 passed, 0 failed -> C:\Users\User\Desktop\myProject\LabClear\test-results\windows-integration\i18n-final\i18n-audit.json

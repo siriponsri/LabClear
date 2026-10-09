@@ -1,0 +1,10 @@
+{
+  "base_commit": "b29cb13edeb94be15ab264aec8ffd2ef58a54bac",
+  "files": {
+    "services/execution.py": "b3a1d4789bca39098459c7e631562abff45f40bccc6120c8467896fa00d1dfe3",
+    "scripts/offline_check.py": "7928cb6aafda2e5681a57d729e6fbf08dc0838f386692b4e84ab803fd80edd8b",
+    "tests/resilience/harness.py": "ec3b4656cf9aa6995e799dbbeb27dd138879e6fc687d30a7abe23d088c6f6647",
+    "tests/test_resilience.py": "e998d148ab0ff19ba2f21f6754db9f66292f31be0ac7dea320c49795e9b07cf7",
+    "tests/i18n/audit-lib.mjs": "f011f613a86664df07da63a08a3608fab0079cc0b2b3cca27a9d303498b9b3ab"
+  }
+}

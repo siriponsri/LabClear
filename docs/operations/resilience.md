@@ -303,3 +303,12 @@ Results: [`docs/evidence/current/resilience/`](../evidence/current/resilience/RE
   a whole multi-agent chain, a booking or a payment is never replayed automatically.
 - **Durable jobs and polling** for long OCR, only if measurements show OCR regularly exceeding its
   budget, and without adding paid infrastructure automatically.
+
+
+### Windows integration follow-up, 10 October 2026
+
+The [Windows verification record](../evidence/current/windows-integration-20261010/README.md)
+adds evidence for both seeds with zero outbound attempts. Internal Windows socketpair setup is
+excluded from outbound counts by retaining the offline guard; denied connect/DNS APIs are counted.
+Temporary files are scoped to each offline run. Unexpected workflow errors log their type and
+request ID only, never exception messages or traceback lines that may contain private data.

@@ -1,0 +1,17 @@
+server cases (virtual clock)…
+client cases (Node)…
+SIGTERM case (real process)…
+regression tests…
+R01 PASS 23/23  Provider hangs or sends data slowly without end
+R02 PASS 37/37  Provider 502/503/429 and malformed output
+R03 PASS 14/14  A proxy answers with an HTML 502/503/504 page
+R04 PASS 14/14  Idle stream, a stream cut before done, an invalid line
+R05 PASS 13/13  Stop or a closed connection while waiting for AI
+R06 PASS 14/14  More users than the concurrency limit
+R07 PASS 13/13  Broken PDF, too many pages, too many pixels, a stuck worker
+R08 PASS 13/13  Slow storage: connection, query or lock
+R09 PASS 10/10  SIGTERM during a chat and a report read
+R10 PASS 11/11  Retry clicked twice, or while the original request is active
+R11 PASS 11/11  Cold start and pages that are not JSON
+R12 PASS 10/10  Request IDs, logs without secrets, existing regressions
+score 100.0 (12/12), skipped 0, outbound connection attempts 0 -> test-results\windows-integration\release-seed-7\report.json

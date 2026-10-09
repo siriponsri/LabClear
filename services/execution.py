@@ -408,8 +408,10 @@ async def respond(request, ctx: Execution, run: Callable[[Callable], Awaitable[A
         except asyncio.CancelledError:
             _ended(ctx.cancel_error())
             raise
-        except Exception:
-            log.exception("workflow_failed request_id=%s", ctx.request_id)
+        except Exception as exc:
+            # Exception text and traceback source lines can contain report data or
+            # provider credentials. Keep a request ID and type, never the payload.
+            log_event("workflow_failed", request_id=ctx.request_id, reason=type(exc).__name__)
             exc = ConversationError("server_error", "Something went wrong on our side. Please try again.", 500)
             _ended(exc)
             if channel is None:

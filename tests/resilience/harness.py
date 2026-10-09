@@ -113,15 +113,28 @@ SOCKETS = {"attempts": 0}
 
 
 def count_sockets() -> None:
-    """offline_check already denies outbound sockets; also count every attempt for the report."""
-    import socket
-    original = socket.socket.connect
+    """Count calls denied by offline_check, not Windows' internal socketpair.
 
-    def counted(sock, address):
-        if not (isinstance(address, str) or sock.family == getattr(socket, "AF_UNIX", -1)):
-            SOCKETS["attempts"] += 1
-        return original(sock, address)
-    socket.socket.connect = counted
+    The offline guard owns the policy. Its thread-local socketpair exemption is
+    required by asyncio on Windows; a successful internal connect is not an
+    outbound attempt. Keep all four denied entry points observable, including
+    DNS and connect_ex, without weakening or replacing the guard.
+    """
+    import socket
+
+    def counted(original):
+        def call(*args, **kwargs):
+            try:
+                return original(*args, **kwargs)
+            except RuntimeError as exc:
+                if str(exc).startswith("OFFLINE_CHECK: outbound network forbidden"):
+                    SOCKETS["attempts"] += 1
+                raise
+        return call
+
+    for target, name in ((socket.socket, "connect"), (socket.socket, "connect_ex"),
+                         (socket, "create_connection"), (socket, "getaddrinfo")):
+        setattr(target, name, counted(getattr(target, name)))
 
 
 def setup(workdir: Path):
