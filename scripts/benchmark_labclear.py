@@ -119,10 +119,13 @@ def provenance() -> dict:
         tools = getattr(agent_tools, "SCHEMA_VERSION", "unknown")
     except Exception:
         tools = "none (pre-tools candidate)"
+    data = source_digest()["files"]
+    business = {k: v for k, v in data.items() if not k.startswith("runtime_skills/")}
     return {"prompt_version": "services/business_agent.py sha256 " + sha256_file(ROOT / "services/business_agent.py")[:16],
             "skill_package": f"{manifest.get('id')} {manifest.get('version')}",
             "skill_hashes": manifest.get("modules", {}), "tool_schema_version": tools,
-            "source_digest": source_digest()["digest"]}
+            "source_digest": source_digest()["digest"],
+            "business_knowledge_digest": sha256_text(json.dumps(business, sort_keys=True))}
 
 
 def load_dataset() -> tuple[dict, dict, dict]:
@@ -975,8 +978,20 @@ def cmd_compare(args) -> int:
         confounds.append(f"profile {rb['profile']} vs {ra['profile']}")
     if rb.get("trap_paid_review_slot") != ra.get("trap_paid_review_slot"):
         confounds.append("trap configuration differs")
-    if rb["provenance"]["source_digest"] != ra["provenance"]["source_digest"]:
-        confounds.append("business/knowledge/skill manifest data differ")
+    variables = []
+    changed = git("diff", "--name-only", rb["candidate"]["candidate_sha"], ra["candidate"]["candidate_sha"], "--",
+                  "business_data", "knowledge", "runtime_skills", "services", "routers", "config.py").splitlines()
+    if any(c.startswith(("business_data/", "knowledge/")) for c in changed):
+        confounds.append("business data or knowledge catalog changed between the commits")
+    if any(c.startswith("runtime_skills/") for c in changed):
+        variables.append("runtime skill modules changed")
+    code = [c for c in changed if c.startswith(("services/", "routers/")) or c == "config.py"]
+    if code:
+        variables.append("application code changed: " + ", ".join(code))
+    if bool(rb.get("free_only")) != bool(ra.get("free_only")):
+        variables.append(f"free-only policy enforced: {bool(rb.get('free_only'))} -> {bool(ra.get('free_only'))}")
+    if rb.get("doubles", {}).get("file_sha256") != ra.get("doubles", {}).get("file_sha256"):
+        confounds.append("test doubles differ")
     rows = []
     for cid in [c for c in rb["case_ids"] if c in ra["case_ids"]]:
         b, a = fb.get(cid, {}), fa.get(cid, {})
@@ -993,6 +1008,7 @@ def cmd_compare(args) -> int:
                      "total_ms": [b.get("total_ms"), a.get("total_ms")]})
     out = {"before": rb["run_id"], "after": ra["run_id"], "before_sha": rb["candidate"]["candidate_sha"],
            "after_sha": ra["candidate"]["candidate_sha"], "mode": [rb["mode"], ra["mode"]], "confounds": confounds,
+           "variables_under_test": variables,
            "comparable": not confounds, "rows": rows}
     target = Path(args.out) if args.out else root / f"compare-{rb['run_id']}-vs-{ra['run_id']}.json"
     target.write_text(json.dumps(out, ensure_ascii=False, indent=1), encoding="utf-8")
