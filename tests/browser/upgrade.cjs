@@ -4,7 +4,7 @@ const { spawn, execFileSync } = require('child_process');
 const fs = require('fs'), path = require('path');
 const root = path.resolve(__dirname, '../..');
 // Integration 4.0: UAT_OUT and TEST_PYTHON allow a run outside Windows without overwriting the Codex evidence.
-const out = process.env.UAT_OUT ? path.resolve(root, process.env.UAT_OUT) : path.join(root, 'docs/ceo-upgrade/evidence/browser');
+const out = process.env.UAT_OUT ? path.resolve(root, process.env.UAT_OUT) : path.join(root, 'docs/evidence/current/browser');
 fs.mkdirSync(out, { recursive: true });
 const base = 'http://127.0.0.1:8099';
 const python = process.env.TEST_PYTHON || path.join(root, '.venv/Scripts/python.exe');

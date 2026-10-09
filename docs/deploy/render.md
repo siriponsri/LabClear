@@ -1,119 +1,190 @@
-<!-- ceo-upgrade-20261008 -->
-
-## Upgrade deployment compatibility
-
-The overnight candidate retains `render.yaml`, `scripts/run_business.py`, dependencies
-and storage schema. No new key is required; all six new flags default false. An
-isolated smoke check started/stopped the actual entrypoint and checked eight routes.
-Production PostgreSQL and deployment identity remain separate checks. Follow the
-[config and rollback handoff](../ceo-upgrade/ENV_HANDOVER.md); preserve saved settings,
-encryption key, prior spend and counters. No ENV change is authorized by publication alone.
-
-The 2026-10-08 upgrade is a disabled-by-default software candidate. Its current scope, evidence, configuration and remaining owner gates are recorded in the [upgrade index](../ceo-upgrade/README.md). Earlier release counts and screenshots below are historical; they do not establish live model or clinical validation.
-
-> **Integration 4.0.0-rc2:** Render remains the deployment target and this service is unchanged.
-> The Next.js website from the Claude branch is an optional second Render service that proxies
-> `/api` to this one: see [render-web.md](render-web.md). The Cloudflare work is deferred:
-> [cloudflare.md](cloudflare.md).
-
 # Deploy LabClear to Render
 
-Render runs LabClear as one Python web service with a managed PostgreSQL database. Both work on the free plan.
+LabClear 4.0.0-rc3 deploys as **one** Render web service from the Blueprint in
+[`render.yaml`](../../render.yaml). The FastAPI service serves the website, the API and the admin
+views. There is no separate front-end service.
 
-**Time:** about 10 minutes · **You need:** a GitHub account, a Render account, and API keys for the AI providers you want to use.
+## What the Blueprint defines
 
-## 1. Create the database
-
-Render → **New → Postgres** → plan **Free** → **Create Database**.
-When it is ready, copy the **Internal Database URL**.
-
-> Free Render databases expire after 30 days. Upgrade the database or create a new one before then.
-
-## 2. Create an encryption key
-
-LabClear encrypts all business data, including saved API keys, with this key. Generate it once on your computer and keep it safe; data cannot be read without it.
-
-```bash
-python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
-```
-
-## 3. Create the web service
-
-Render → **New → Blueprint** → select your LabClear repository. Render reads [`render.yaml`](../../render.yaml) and asks for these values:
-
-| Variable | Value |
+| Field | Value |
 |---|---|
-| `DATABASE_URL` | Internal Database URL from step 1 |
-| `BUSINESS_DATA_KEY` | Key from step 2 |
-| `PROVIDER_NETWORK_ENABLED` | `true` to allow AI calls |
-| `PROVIDER_BUDGET_CYCLE_ID` | Any name, e.g. `labclear-1` (a new name restarts the count) |
-| `CLOUD_CALL_LIMIT` | Maximum AI calls, e.g. `500` (one message uses five) |
-| `PROJECT_BUDGET_PRIOR_SPEND_THB` | `0` for a new project |
-| `LLM_PROVIDER`, `LLM_API_KEY` | Optional. Leave empty and set providers in the admin page instead |
-| `GUARD_PROVIDER`, `GUARD_API_KEY` | Optional, as above (`iapp_systemone`, `typesafe_jev` or `llama_guard`) |
-| `VISION_ENABLED`, `VISION_API_KEY` | Optional, as above (`true` turns on report reading) |
-| `DEMO_ACCESS_CODE` | Optional. Set 12+ characters to require a code before using the AI; leave empty for open access |
-| `DEMO_ACCOUNTS` | Optional. `true` turns on the shared demo accounts `test-01`, `test-02` and `admin` (password `1234`). Anyone who knows them can sign in, `admin` included, so set it back to `false` after the demo. They are typed in the sign-in dialog, not listed |
-| `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` | Optional. Turns on **Continue with Google** for customers (see below) |
-| `BUSINESS_PUBLIC_URL` | Optional. `https://<your-service>.onrender.com`; used for Google's redirect address |
+| Service | `type: web`, `name: labclear`, `runtime: python`, `plan: free` |
+| Repository | `https://github.com/siriponsri/LabClear`, `branch: main` |
+| Deploys | `autoDeployTrigger: commit` (every commit to `main`) |
+| Build | `pip install -r requirements.txt` |
+| Start | `python scripts/run_business.py` |
+| Health check | `healthCheckPath: /health` |
+| Fixed values | `PYTHON_VERSION=3.12.10`, `APP_ENV=production`, `BUSINESS_EXTERNAL_ENABLED=false`, `RUNTIME_SKILLS_ENABLED=true`, `HOSPITAL_LINKS_ENABLED=true` |
+| Secrets | Every other variable is `sync: false`: entered in the dashboard, never committed |
+| Region | Not set, so Render's default (Oregon) applies to a new service |
 
-Press **Apply**. The first build takes a few minutes. Open `https://<your-service>.onrender.com/health`; it should return `"status": "ok"`.
+`MEDICAL_HARNESS_ENABLED` stays off. The PostgreSQL database is created separately (step 1) and
+connected through `DATABASE_URL`.
 
-## 4. Create a manager account
+## First deployment
 
-**Quick option for a class demo:** set `DEMO_ACCOUNTS=true`, redeploy, and sign in as `admin` / `1234`. Signing in with a manager account on `/app` opens the service desk at `/staff`. Turn it off after the demo.
+1. **Create the database.** Render → **New → Postgres**. When it is ready, copy its **Internal
+   Database URL**. Render's free PostgreSQL plan expires after a fixed period; upgrade it before then
+   or the data is lost.
+2. **Create the encryption key.** It encrypts all business data, including saved API keys. Generate
+   it once and keep it somewhere safe; data cannot be read without it.
 
-**Your own account:** Render's free plan has no shell, so run this from your computer against the Render database. Use the **External Database URL** (Postgres → Connect) and the same `BUSINESS_DATA_KEY`:
+   ```bash
+   python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
+   ```
 
-```bash
-# macOS / Linux
-DATABASE_URL="<external database url>" BUSINESS_DATA_KEY="<key>" \
-  python scripts/create_staff.py --email you@example.com --role manager
+3. **Create the Blueprint.** Render → **New → Blueprint** → select the LabClear repository. Render
+   reads `render.yaml`.
+4. **Review the plan Render shows.** It matches services by name. If a service named `labclear`
+   already exists, check that the plan updates it rather than creating a new one, and keep its
+   region: if the existing service is not in Oregon, first add `region: <its region>` to the
+   service in `render.yaml` and commit. The region cannot change after creation.
+5. **Enter the values** Render asks for (see the table below). At minimum: `DATABASE_URL`,
+   `BUSINESS_DATA_KEY`, `PROVIDER_BUDGET_CYCLE_ID`, `CLOUD_CALL_LIMIT`,
+   `PROJECT_BUDGET_PRIOR_SPEND_THB`. Render asks for `sync: false` values only when it creates them;
+   values already set on an existing service are kept.
+6. **Apply.** The first build takes a few minutes.
+7. **Check health.** Open `https://<service>.onrender.com/health` (see [Health check](#health-check)).
+8. **Create a manager.** For a class demo, set `DEMO_ACCOUNTS=true`, redeploy, and sign in as
+   `admin` / `1234`; set it back to `false` afterwards. For a personal account, run this on your
+   computer against the **External Database URL** with the same key:
 
-# Windows PowerShell
-$env:DATABASE_URL="<external database url>"; $env:BUSINESS_DATA_KEY="<key>"
-python scripts/create_staff.py --email you@example.com --role manager
+   ```bash
+   DATABASE_URL="<external database url>" BUSINESS_DATA_KEY="<key>" \
+     python scripts/create_staff.py --email you@example.com --role manager
+   ```
+
+   On Windows PowerShell, set `$env:DATABASE_URL` and `$env:BUSINESS_DATA_KEY` first.
+9. **Turn on the AI.** Set `PROVIDER_NETWORK_ENABLED=true`, then sign in at `/staff` → **AI
+   providers**, choose providers, paste keys and press **Test connection**. See
+   [../ai-providers.md](../ai-providers.md).
+
+## Migrating from the two-service setup
+
+Earlier release candidates could run a second Render web service, `labclear-web`, for a Next.js
+website that proxied `/api` to `labclear`. That website has been removed from the repository; the
+FastAPI service now serves the whole interface.
+
+1. Deploy `labclear` from the Blueprint as above and confirm `/health` and the website work.
+2. If a custom domain points at `labclear-web`, move it to `labclear`.
+3. Clear `TRUSTED_ORIGINS` on `labclear` if it was set to the `labclear-web` origin.
+4. Suspend or delete `labclear-web` in the Render dashboard.
+
+Keep the same `DATABASE_URL` and `BUSINESS_DATA_KEY` on `labclear`. A different key cannot decrypt
+existing data, and a different database starts empty. Also keep `PROVIDER_BUDGET_CYCLE_ID` and
+`PROJECT_BUDGET_PRIOR_SPEND_THB` so the call count and the THB ledger continue.
+
+## Environment variables
+
+From [`config.py`](../../config.py), [`render.yaml`](../../render.yaml) and the services that read the
+environment directly. Render sets `PORT`, `RENDER` and `RENDER_GIT_COMMIT` itself.
+
+### In `render.yaml`
+
+| Variable | Value or default | Purpose |
+|---|---|---|
+| `PYTHON_VERSION` | `3.12.10` | Python runtime |
+| `APP_ENV` | `production` | Hosted mode: PostgreSQL and the data key are required |
+| `BUSINESS_EXTERNAL_ENABLED` | `false` | Keep real payment and LINE integrations off |
+| `RUNTIME_SKILLS_ENABLED` | `true` | Default for runtime skills until a manager saves the Company Harness |
+| `HOSPITAL_LINKS_ENABLED` | `true` | Official hospital links page, API and chat links |
+| `DATABASE_URL` | secret | PostgreSQL URL (Internal Database URL) |
+| `BUSINESS_DATA_KEY` | secret | Fernet key for all stored data |
+| `PROVIDER_NETWORK_ENABLED` | `false` if unset | `true` allows AI calls |
+| `LLM_PROVIDER`, `LLM_API_KEY` | `typhoon`, empty | Language model fallback when nothing is saved in Admin |
+| `GUARD_PROVIDER`, `GUARD_API_KEY` | `iapp_systemone`, empty | Safety check fallback (`iapp_systemone`, `typesafe_jev`, `llama_guard`) |
+| `VISION_ENABLED`, `VISION_API_KEY` | `false`, empty | Report reading fallback (Typhoon OCR by default) |
+| `PROVIDER_BUDGET_CYCLE_ID` | required for AI | Name of the call-count cycle, e.g. `labclear-1` |
+| `CLOUD_CALL_LIMIT` | `200` | Maximum AI calls in the cycle |
+| `PROJECT_BUDGET_PRIOR_SPEND_THB` | required for AI | THB already spent before this ledger (`0` for a new project) |
+| `DEMO_ACCESS_CODE` | empty | 12+ characters to require a code before AI use |
+| `DEMO_ACCOUNTS` | off when hosted | `true` enables `test-01`, `test-02`, `admin` (password `1234`) |
+| `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` | empty | Sign in with Google for customers |
+
+### Optional, set in the dashboard when needed
+
+| Variable | Default | Purpose |
+|---|---|---|
+| `LLM_MODEL`, `LLM_BASE_URL`, `VISION_PROVIDER`, `VISION_MODEL`, `VISION_BASE_URL`, `GUARD_MODEL`, `GUARD_BASE_URL` | provider defaults | More provider fallbacks (Admin settings win) |
+| `LLM_TIMEOUT_SECONDS`, `VISION_TIMEOUT_SECONDS`, `GUARD_TIMEOUT_SECONDS` | 60, 60, 20 | Provider timeouts |
+| `PROJECT_BUDGET_THB` | `300` | Project-total THB budget |
+| `COST_LEDGER_ENABLED` | `true` | Keep on |
+| `MODEL_PRICES_THB` | empty | JSON price override per model |
+| `COST_IMAGE_TOKEN_ESTIMATE` | `1500` | Token allowance per image |
+| `CHAT_RATE_LIMIT_REQUESTS`, `CHAT_RATE_LIMIT_WINDOW_SECONDS` | `120`, `60` | Per-client rate limit |
+| `BUSINESS_PUBLIC_URL` | empty | Public base URL, used for the Google redirect |
+| `GOOGLE_REDIRECT_URI` | empty | Only if the redirect differs from `BUSINESS_PUBLIC_URL` + `/api/business/auth/google/callback` |
+| `GOOGLE_MAPS_EMBED_KEY` | empty | Embedded maps on the centers page |
+| `CORS_ALLOWED_ORIGINS`, `TRUSTED_ORIGINS` | empty | Only for a separate trusted front end; leave empty |
+| `MEDICAL_HARNESS_ENABLED` | `false` | Medical analyzer and Thai composer (synthetic reports only) |
+| `LANDING_PREVIEW_ENABLED`, `ORG_DOCUMENTS_ENABLED`, `ORG_REFERENCE_INFERENCE_ENABLED` | `false` | Optional preview and organization-document features |
+| `BUSINESS_WORKER_ENABLED`, `BUSINESS_WORKER_SECRET` | off, empty | LINE worker in the same process; secret for `/api/business/worker/run` |
+
+Not for Render: `FREE_ONLY_POLICY_PATH`, `FREE_ONLY_RUN_ID`, `FREE_ONLY_ALLOW_OFFLINE_DOUBLES` (set by
+benchmark trial servers), `SYNTHETIC_FIXTURE_MANIFEST` (test environments only),
+`BUSINESS_DB_PATH`, `BUSINESS_KEY_PATH` (local SQLite only).
+
+Settings saved by a manager on `/staff` → AI providers take precedence over the provider variables.
+Feature flags and budget values are read at startup; a change needs a redeploy or restart.
+
+## Health check
+
+`GET /health` returns:
+
+```json
+{"status": "ok", "app": "LabClear", "environment": "production", "version": "4.0.0-rc3", "commit": "<40-character SHA>"}
 ```
 
-## 5. Choose the AI providers
+Render uses it as the health check. Compare `commit` with the commit you expect: an HTTP 200 alone
+does not show which code is running. `/health` does not test the database; open `/app` and sign in
+to check storage.
 
-Sign in at `/staff` → **AI providers**. For each step pick a provider, paste its key and press **Test**. The status pill on `/app` turns to **Assistant online** once the language model and the safety check are both set up.
+## Rollback
 
-| Step | Recommended | Get a key |
-|---|---|---|
-| Language model | Typhoon | [playground.opentyphoon.ai](https://playground.opentyphoon.ai) |
-| Safety check | iApp OpenThai-SystemOne | [iapp.co.th](https://iapp.co.th/en/docs/llm/openthai-systemone) |
-| Report reading | Typhoon OCR (same Typhoon key) | [playground.opentyphoon.ai](https://playground.opentyphoon.ai) |
+1. In the dashboard, open the `labclear` service's deploy history and roll back to (or redeploy) the
+   previous successful commit.
+2. Keep `DATABASE_URL` and `BUSINESS_DATA_KEY` unchanged. A rollback does not change the database.
+3. Auto-deploy stays on, so the next commit to `main` deploys again. Revert the faulty commit on
+   `main` before pushing anything else.
+
+To switch features off without a code rollback, set the flags to `false` and redeploy. A manager can
+also restore an earlier Company Harness revision or pause records and tools on `/staff`.
+
+## Operating notes
+
+- Run one instance. Guest chats and rate limits live in process memory; a second instance would
+  return 401 for guest pages and split the limits.
+- Free web services spin down when idle; the first request afterwards takes about a minute.
+- Never commit `.env`, keys or database URLs. Secrets belong in the Render dashboard or, for provider
+  keys, on the AI providers page.
 
 ## Troubleshooting
 
-| Message | What to do |
+| Symptom | What to do |
 |---|---|
-| First page load takes about a minute | Free services sleep after 15 minutes without traffic; the first request wakes them. |
-| `Assistant offline` | Set `PROVIDER_NETWORK_ENABLED=true`, then make sure the language model and safety check show **Saved here** or **From server environment**. |
-| `… rejected the request (HTTP 401)` | The key for the named service is wrong. Paste it again on the AI providers page. |
-| `… rejected the request (HTTP 402)` or `429` | The account is out of credit or over its rate limit. |
-| `The model's plan / answer / review could not be verified (…)` | The model did not return the JSON the chat needs, even after one retry. Press **Test** on the language model; if it reports no JSON, choose another model. The names in brackets are the fields it got wrong (also written to the Render log as `model_output_invalid`). |
-| `PROVIDER_BUDGET_CYCLE_ID` / `CLOUD_CALL_LIMIT` | Set both; the call count is kept in the database. |
-| `budget_exhausted` | The call cap or the 300 THB budget is used up. Start a new cycle name or raise the limit. |
-| A report sent in the chat is not read | `VISION_ENABLED=true` and a report reader must be set. The error under the image names the step that stopped (reading, safety check or rows). |
-| `Hosted business features require a durable PostgreSQL DATABASE_URL` | `DATABASE_URL` is missing or not a PostgreSQL URL. |
-
-Never commit `.env` or any key. Keys belong in the Render dashboard or the AI providers page.
+| `Hosted business features require a durable PostgreSQL DATABASE_URL` | Set `DATABASE_URL` to the PostgreSQL URL |
+| `Configure BUSINESS_DATA_KEY and DATABASE_URL before using accounts` | Set `BUSINESS_DATA_KEY` |
+| `AI is not connected yet` | Set `PROVIDER_NETWORK_ENABLED=true` |
+| `cycle_required` | Set `PROVIDER_BUDGET_CYCLE_ID` and a positive `CLOUD_CALL_LIMIT` |
+| `budget_prior_unknown` | Set `PROJECT_BUDGET_PRIOR_SPEND_THB` (`0` for a new project) |
+| `budget_exhausted` | The call cap or THB budget is used up; raise the limit or start a new cycle deliberately |
+| `… rejected the request (HTTP 401)` | The key for the named service is wrong; save it again |
+| `… (HTTP 402)` or `(HTTP 429)` | The provider account is out of credit or over its rate limit |
+| `The safety check is not set up` | Configure the safety check on the AI providers page or with `GUARD_*` |
+| Report reading not connected | Turn on report reading and set its key (`VISION_ENABLED=true` or Admin) |
 
 ## Sign in with Google (optional)
 
-Customers can sign in with a Google account when an OAuth client is set. Staff and managers keep their password.
+Customers can sign in with Google when an OAuth client is configured. Staff and managers keep their
+password.
 
-1. In [Google Cloud Console](https://console.cloud.google.com/) create or pick a project, then **APIs & Services → OAuth consent screen**: user type **External**, app name LabClear, your email as support and developer contact. While the app is in **Testing**, add the Google accounts that may sign in under **Test users**.
-2. **APIs & Services → Credentials → Create credentials → OAuth client ID**, application type **Web application**.
-3. Under **Authorized redirect URIs** add `https://<your-service>/api/business/auth/google/callback` (for a local run also `http://localhost:8000/api/business/auth/google/callback`, and set `GOOGLE_REDIRECT_URI` to it).
-4. Copy the client ID and secret into the host's environment as `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` (never into Git), and redeploy.
+1. In Google Cloud Console, configure the OAuth consent screen (External). While the app is in
+   Testing, add the accounts that may sign in as test users.
+2. Create an OAuth client ID of type **Web application**.
+3. Add the redirect URI `https://<service>.onrender.com/api/business/auth/google/callback`.
+4. Set `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` and `BUSINESS_PUBLIC_URL` in the dashboard and
+   redeploy.
 
-The sign-in dialogs then show **Continue with Google**. LabClear asks only for `openid email profile`, checks the state, PKCE verifier, nonce, audience, issuer, expiry and verified email, and creates a customer account for a new email (without importing the temporary guest chat).
-
-### Guest privacy in 3.0.2
-
-Use the supplied single-process entrypoint for this pilot. Guest rows live only in bounded process memory (100 page sessions, 64 MiB total, 20-minute inactivity expiry). They never enter PostgreSQL/SQLite. Multiple workers without affinity may return 401 for a guest page; do not add workers until the temporary-session architecture has been reviewed. Registered accounts remain in encrypted durable storage.
-
-The first store transaction runs an idempotent migration that deletes old unregistered website guests and their owned rows, plus linked notifications/audits. Password/Google accounts and verified LINE identities are preserved. Historical deployment/database backups follow the owner's existing retention policy. New guest sessions use a page-memory header token, never a cookie or local/session storage. Page close sends a best-effort revocation; the expiry sweep covers an unclean browser exit.
+LabClear requests `openid email profile` and checks the state, PKCE verifier, nonce, audience,
+issuer, expiry and verified email. A new email creates a customer account; a guest chat is not
+imported.

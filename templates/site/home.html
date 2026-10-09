@@ -117,7 +117,7 @@
   <p id="proof-title" class="band-label tiny">Answers cite {{ source_count }} approved reference records from</p>
   <p class="tiny muted band-note">Includes summaries approved by the owner whose source check is still pending. <a href="/sources">See the status of each record</a>.</p>
   <ul class="source-grid">
-    {% for name, n in publishers[:8] %}<li data-reveal style="--i:{{ loop.index0 }}"><span class="source-name">{{ name }}</span><span class="num muted tiny">{{ n }} {{ 'record' if n == 1 else 'records' }}</span></li>{% endfor %}
+    {% for name, n in publishers[:8] %}<li data-reveal style="--i:{{ loop.index0 }}"><span class="source-name" translate="no" lang="{{ text_lang(name) }}">{{ name }}</span><span class="num muted tiny">{{ n }} {{ 'record' if n == 1 else 'records' }}</span></li>{% endfor %}
   </ul>
 </section>
 

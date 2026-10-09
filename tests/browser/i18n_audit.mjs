@@ -19,7 +19,8 @@
  * titles, names people typed (translate="no" in the page, or an element with its own lang).
  *
  * MOCKED_TEST_ONLY for the language model and the report reader. Writes
- * docs/evidence/integration-4.0-rc3/i18n/i18n-audit.json and shots/ (I18N_OUT overrides).
+ * docs/evidence/current/i18n-audit.json (I18N_OUT overrides the folder) and the screenshots to
+ * eval_runs/i18n-shots/ (not committed; I18N_SHOTS overrides).
  * I18N_ONLY=prefix,prefix runs a subset; I18N_WIDTHS=390,1440 limits widths. Exit 1 on failure.
  */
 import { chromium } from "playwright";
@@ -31,8 +32,8 @@ import { auditPage, uniq, problems, startJudge, judgeBreaks } from "../i18n/audi
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const BASE = (process.env.BASE || "http://127.0.0.1:8000").replace(/\/$/, "");
 const API = BASE + "/api/business";
-const OUT = process.env.I18N_OUT ? path.resolve(process.env.I18N_OUT) : path.join(ROOT, "docs/evidence/integration-4.0-rc3/i18n");
-const SHOTS = path.join(OUT, "shots");
+const OUT = process.env.I18N_OUT ? path.resolve(process.env.I18N_OUT) : path.join(ROOT, "docs/evidence/current");
+const SHOTS = process.env.I18N_SHOTS ? path.resolve(process.env.I18N_SHOTS) : path.join(ROOT, "eval_runs/i18n-shots");
 const ONLY = (process.env.I18N_ONLY || "").split(",").map((s) => s.trim()).filter(Boolean);
 const WIDTHS = (process.env.I18N_WIDTHS || "390,768,1440").split(",").map(Number);
 const LANGS = ["th", "en"];
@@ -43,7 +44,8 @@ const DICT = JSON.parse(src.slice(src.indexOf("=") + 1, src.lastIndexOf(";")));
 const T = (en) => DICT[en] ?? en;
 // Product and package names stay as they are in both languages (catalog and plans).
 const catalog = JSON.parse(fs.readFileSync(path.join(ROOT, "business_data/catalog.json"), "utf8"));
-const NAMES = [...catalog.packages.map((p) => p.name), "Workday", "Essential", "Comprehensive"];
+// Feature names the owner keeps in English in both languages (technical terms, 2026-10-09).
+const NAMES = [...catalog.packages.map((p) => p.name), "Workday", "Essential", "Comprehensive", "Company Harness", "Process Explainability", "Runtime skills", "Typed tools"];
 const KEYS = Object.entries(DICT).filter(([en, th]) => en !== th && /[A-Za-z]{2}/.test(en) && en.length >= 3).map(([en]) => en);
 
 const CONTENT = [
@@ -177,7 +179,7 @@ async function audit(page, target, lang, width) {
     clipped: uniq(r.clipped, (x) => x.where),
     overflow: r.overflow,
     texts_checked: r.texts,
-    screenshot: "shots/" + file,
+    screenshot: path.relative(ROOT, path.join(SHOTS, file)),
   };
   rows.push(row);
   return row;
@@ -243,7 +245,17 @@ const APP = [
   ["app-plan", "Lab Report", "/app?view=plan"],
   ["app-notifications", "Chatbot", "/app?view=notifications"],
 ];
-const STAFF = ["overview", "staff", "operations", "customers", "payments", "notifications", "catalog-admin", "centers", "roles", "ai", "channels", "audit"];
+const STAFF = ["overview", "staff", "operations", "customers", "payments", "notifications", "catalog-admin", "centers", "roles", "harness", "knowledge", "ai", "channels", "audit"];
+// Admin views with something to open: the first skill and tool, and the first knowledge record's PDF page.
+const STAFF_PREPARE = {
+  harness: async (page) => {
+    for (const d of (await page.locator(".admin-harness details.admin-disclosure").all()).slice(0, 1)) await d.locator("summary").first().click();
+  },
+  knowledge: async (page) => {
+    await page.locator(".knowledge-item").first().click();
+    await page.locator(".pdf-page[src]").waitFor({ timeout: 20000 });
+  },
+};
 
 async function main() {
   fs.mkdirSync(SHOTS, { recursive: true });
@@ -278,6 +290,11 @@ async function main() {
     await p.locator("#message").fill("UI_TEST_SOURCES");
     await p.locator("#send").click();
     await p.locator("#messages article.turn.ai .message-body").first().waitFor({ timeout: 30000 });
+    // The real agent pipeline with offline provider doubles (scripts/dev_mock_api.py, DEV_AGENT=pipeline):
+    // harness, typed-tool and skill steps under Process Explainability, plus official hospital links.
+    await p.locator("#message").fill("แนะนำแพ็กเกจตรวจสุขภาพประจำปีหน่อย");
+    await p.locator("#send").click();
+    await poll(() => p.locator("#messages article.turn.ai .message-body").count().then((n) => n >= 2), { timeout: 60000, message: "pipeline answer missing" });
     await p.close();
     const a = await newPage(adminCtx, "admin");
     await a.goto(BASE + "/staff", { waitUntil: "load" });
@@ -293,11 +310,11 @@ async function main() {
 
   const all = [
     ...PUBLIC.map(([id, area, p]) => ({ id, area, path: p, role: "guest", ctx: guestCtx, ready: (pg) => pg.locator("main h1, main h2").first().waitFor({ timeout: 20000 }) })),
-    { id: "app-chat-guest", area: "Chatbot", path: "/app", role: "guest", ctx: guestCtx, ready: appReady, draft: true },
+    { id: "app-chat-guest", area: "Chatbot", path: "/app", role: "guest", ctx: guestCtx, ready: appReady, draft: true, prepare: askPackages },
     ...APP.map(([id, area, p]) => ({ id, area, path: p, role: "customer", ctx: custCtx, ready: appReady, draft: id === "app-chat", prepare: id === "app-chat" ? openReceipt : null })),
     { id: "lab-report", area: "Lab Report", path: () => "/lab-report/" + encodeURIComponent(setup.reportId), role: "customer", ctx: custCtx, ready: (pg) => pg.locator("main table tbody tr, main .lab-table, main h1").first().waitFor({ timeout: 20000 }) },
     { id: "organizations-signed-in", area: "Organization", path: "/organizations", role: "customer", ctx: custCtx, ready: (pg) => pg.locator("main h1").first().waitFor() },
-    ...STAFF.map((v) => ({ id: "staff-" + v, area: "Staff/Admin", path: "/staff" + (v === "overview" ? "" : "?view=" + v), role: "admin", ctx: adminCtx, ready: appReady })),
+    ...STAFF.map((v) => ({ id: "staff-" + v, area: "Staff/Admin", path: "/staff" + (v === "overview" ? "" : "?view=" + v), role: "admin", ctx: adminCtx, ready: appReady, prepare: STAFF_PREPARE[v] || null })),
   ];
 
   for (const target of all) {
@@ -464,6 +481,16 @@ async function openReceipt(page) {
   if (!(await turn.count())) return;
   for (const b of await turn.locator("button.act[aria-expanded=false]").all()) await b.click().catch(() => {});
   await wait(300);
+  // Bring "Process Explainability" (the answer receipt) into the screenshot.
+  const receipt = turn.locator(".receipt").first();
+  if (await receipt.count()) await receipt.scrollIntoViewIfNeeded().catch(() => {});
+}
+/** A guest asks a package question; the real pipeline (offline doubles) answers with official hospital links. */
+async function askPackages(page, lang) {
+  await page.locator("#message").fill(lang === "th" ? "แนะนำแพ็กเกจตรวจสุขภาพประจำปีหน่อย" : "Which annual health check package would you recommend?");
+  await page.locator("#send").click();
+  await page.locator("#messages article.turn.ai .external-offers").first().waitFor({ timeout: 60000 });
+  await openReceipt(page);
 }
 
 let fatal = "";

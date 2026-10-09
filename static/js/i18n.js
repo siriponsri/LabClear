@@ -3,8 +3,8 @@
 
    Templates and scripts are written in English. This file (loaded in <head>, before the body is
    parsed) translates every interface text node and the aria-label / placeholder / title / alt
-   attributes into Thai with the shared dictionary (static/i18n/th.js, built from web/lib/i18n by
-   web/scripts/merge-i18n.mjs). A MutationObserver translates what the parser and the page scripts
+   attributes into Thai with the shared dictionary (static/i18n/th.js, built from i18n/ by
+   scripts/build_i18n.mjs). A MutationObserver translates what the parser and the page scripts
    add, before the browser paints it, so Thai pages never flash English. Switching language swaps
    the text in place (no reload): drafts, scroll position, open chats and dialogs stay as they are.
 

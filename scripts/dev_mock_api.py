@@ -1,7 +1,7 @@
 """Frontend development API: the real Codex FastAPI app with an OFFLINE stand-in for the AI.
 
-MOCKED, NEVER DEPLOY. Adapted from the Claude 4.0.0 branch for integration 4.0. Use it to build
-and test the Next.js UI (web/) without any provider key:
+MOCKED, NEVER DEPLOY. Use it to develop and test the website (templates/ and static/) without any
+provider key:
 
     python scripts/dev_mock_api.py                     # serves 127.0.0.1:8000, flags as in the fixture
     UAT_FLAGS=off python scripts/dev_mock_api.py       # every new Codex flag off (default deployment)
@@ -10,7 +10,7 @@ It runs inside the same isolation as ``scripts/offline_check.py``: the inherited
 cleared, storage is a temporary SQLite file and outbound sockets are refused. Every route,
 session, CSRF, origin, permission and storage rule is the real one. Only the language model and
 the report reader are replaced by tests/browser/fixture_server.py doubles, extended here with Thai
-sample replies. TRUSTED_ORIGINS lists the local Next.js origins so its /api proxy is accepted.
+sample replies. TRUSTED_ORIGINS (empty by default) lists any extra local origin allowed to call /api.
 """
 from __future__ import annotations
 
@@ -24,7 +24,7 @@ import tempfile
 ROOT = Path(__file__).resolve().parents[1]
 FLAGS = os.getenv("UAT_FLAGS", "fixture")
 PORT = int(os.getenv("PORT", "8000"))
-ORIGINS = os.getenv("TRUSTED_ORIGINS", "http://localhost:3000,http://127.0.0.1:3000")
+ORIGINS = os.getenv("TRUSTED_ORIGINS", "")
 
 # Same isolation as scripts/offline_check.py: no inherited configuration or credentials.
 keep = {"path", "home", "tmp", "temp", "systemroot", "windir"}
@@ -58,6 +58,8 @@ socket.create_connection = _denied
 sys.path.insert(0, str(ROOT))
 os.chdir(ROOT)
 from config import settings  # noqa: E402
+from services import business_agent as _business_agent  # noqa: E402
+_REAL_RUN = _business_agent.run  # before the fixture replaces it
 from tests.browser import fixture_server as fx  # noqa: E402  (patches the app on import)
 from routers import business as b  # noqa: E402
 from services import business_store as db  # noqa: E402
@@ -118,15 +120,42 @@ async def agent(message, context, emit=None):
                                               "patient-explanation" if observations else "lay-explanation"]}}}
 
 
+# DEV_AGENT=pipeline (default): any message that is not a UI_TEST_* fixture runs the REAL agent
+# pipeline (guards, planner, roles, typed tools, runtime skills, checks, reviewer) with the offline
+# provider doubles of tests/benchmark/doubles.py injected at the HTTP transport, exactly like the
+# OFFLINE benchmark. The answers are extractive stand-ins, not a language model. DEV_AGENT=canned keeps
+# the short scripted Thai replies above.
+if os.getenv("DEV_AGENT", "pipeline") == "pipeline":
+    import httpx
+    from services import conversation_transport as transport
+    from tests.benchmark import doubles
+
+    _real_run = _REAL_RUN
+    settings.LLM_PROVIDER, settings.LLM_API_KEY, settings.LLM_MODEL = "typhoon", "dev-mock-offline-key", ""
+    settings.GUARD_PROVIDER, settings.GUARD_API_KEY = "iapp_systemone", "dev-mock-offline-key"
+    settings.PROVIDER_BUDGET_CYCLE_ID, settings.CLOUD_CALL_LIMIT, settings.PROJECT_BUDGET_PRIOR_SPEND_THB = "dev-mock", 100000, "0"
+    settings.RUNTIME_SKILLS_ENABLED = FLAGS != "off"
+    handler = doubles.make_handler(doubles.Recorder(None), None)
+    doubles.load_skill_headers(ROOT / "runtime_skills" / "thai_health")
+    _client = httpx.AsyncClient
+
+    class _DoubleClient(_client):
+        def __init__(self, *args, **kwargs):
+            kwargs["transport"] = httpx.MockTransport(handler)
+            super().__init__(*args, **kwargs)
+
+    transport.httpx.AsyncClient = _DoubleClient
+    settings.PROVIDER_NETWORK_ENABLED = True  # only the in-process MockTransport is reachable
+
+    async def agent(message, context, emit=None):  # noqa: F811
+        if message.startswith("UI_TEST_"):
+            return await _test_double(message, context, emit)
+        return await _real_run(message, context, emit=emit)
+
 b.business_agent.run = agent
 
 if __name__ == "__main__":
     import uvicorn
     from main import app
-    print(f"dev_mock_api: MOCKED AI, flags={FLAGS}, trusted origins={ORIGINS}, storage={folder}", flush=True)
-    # The Next.js /api proxy reuses idle connections through Node's keep-alive agent (5 s idle timeout).
-    # uvicorn also closes idle connections after 5 s by default, so a reused socket could be reset
-    # mid-request ("socket hang up" -> 500 in the browser). Keeping server-side idle connections
-    # longer than the client's lets the client close first. Local web UAT only; the Render entrypoint
-    # scripts/run_business.py is unchanged.
+    print(f"dev_mock_api: MOCKED AI ({os.getenv('DEV_AGENT', 'pipeline')}), flags={FLAGS}, storage={folder}", flush=True)
     uvicorn.run(app, host="127.0.0.1", port=PORT, log_level="warning", timeout_keep_alive=65)

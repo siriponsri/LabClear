@@ -9,9 +9,8 @@ class Settings(BaseSettings):
     # Same-origin UI needs no CORS. Set an explicit comma-separated allowlist
     # only when a separate trusted frontend must call this API.
     CORS_ALLOWED_ORIGINS: str = ""
-    # Integration 4.0 (optional Next.js web service on Render): exact browser origins, e.g.
-    # https://labclear-web.onrender.com, whose same-site proxy may call /api. Empty keeps the
-    # original rule: the browser Origin must equal this service's own Host.
+    # Optional: exact browser origins of a separate front end whose proxy may call /api. Empty keeps
+    # the default rule: the browser Origin must equal this service's own Host.
     TRUSTED_ORIGINS: str = ""
 
     # CEO upgrade: opt-in only. Existing deployments keep their current paths.
@@ -76,7 +75,7 @@ class Settings(BaseSettings):
     # Free-first trial profile (off by default). FREE_ONLY_POLICY_PATH names a reviewed policy of exact
     # free endpoint/model tuples; every provider call must match it and pass its shared quota before the
     # call cap, the ledger and the network. See services/free_policy.py and
-    # docs/ceo-upgrade/FREE_PROVIDER_PREFLIGHT.md. The two other values are set by the benchmark servers.
+    # docs/testing.md (Live free-tier runs). The two other values are set by the benchmark servers.
     FREE_ONLY_POLICY_PATH: str = ""
     FREE_ONLY_RUN_ID: str = ""
     FREE_ONLY_ALLOW_OFFLINE_DOUBLES: bool = False

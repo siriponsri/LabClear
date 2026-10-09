@@ -49,5 +49,5 @@ runpy.run_path(str(ROOT / 'scripts/run_business.py'), run_name='__main__')
 result = {'status': 'PASS', 'entrypoint': 'scripts/run_business.py', 'storage': 'isolated temporary SQLite',
           'dotenv': 'suppressed for isolation', 'provider_doubles': False, 'provider_network': 'socket-denied',
           'production_postgresql': 'NOT_RUN', 'checks': records}
-(ROOT / 'docs/ceo-upgrade/evidence/boot.json').write_text(json.dumps(result, indent=2) + '\n')
+(ROOT / 'docs/evidence/current/boot.json').write_text(json.dumps(result, indent=2) + '\n')
 print('PASS: Render entrypoint started and stopped; 8 route checks; no new keys or provider network.')

@@ -1,6 +1,6 @@
 """Judge where a browser wrapped Thai text: between words, or inside a word (line protocol).
 
-Used by web/tests/uat-i18n.mjs. Each input line is JSON {"pairs": [[left, right], ...]}: for every
+Used by tests/browser/i18n_audit.mjs. Each input line is JSON {"pairs": [[left, right], ...]}: for every
 place the rendered text wraps, the browser's (ICU) word segment that ends the line and the one that
 starts the next line. A wrap is inside a word when either segment is Thai and is neither a PyThaiNLP
 dictionary word nor made only of dictionary words ("ไม่มี" = ไม่+มี is fine; "พร้|อม" and "แช|ตนั้"

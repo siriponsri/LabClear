@@ -1541,7 +1541,7 @@
         await api('/staff/ai-providers/' + slot, { method: 'PUT', body: JSON.stringify({ preset: prov.input.value, model: model.input.value.trim(), api_key: key.input.value.trim(), base_url: url.input.value.trim(), enabled: kind === 'vision' ? box2.checked : true, price_in: pin.input.value === '' ? null : Number(pin.input.value), price_out: pout.input.value === '' ? null : Number(pout.input.value), provider_allowlist: endpoints.input.value.split(',').map(s => s.trim()).filter(Boolean) }) });
         notice(cur.label + ' saved.'); await navigate('ai', false); connection();
       }, 'btn primary sm'),
-      button('Test connection', async () => { const r = await post('/staff/ai-providers/' + slot + '/test'); notice(r.message, r.ok ? '' : 'bad'); }, 'btn sm'));
+      button('Test connection', async () => { const r = await post('/staff/ai-providers/' + slot + '/test'); notice(r.message, r.ok ? '' : 'bad'); await navigate('ai', false); }, 'btn sm'));
     if (cur.source === 'app') actions.append(button(upgrade ? 'Disable this new role' : slot.startsWith('agent_') ? 'Use the shared language model' : 'Use server settings', async () => {
       await api('/staff/ai-providers/' + slot, { method: 'DELETE' });
       notice(upgrade ? cur.label + ' is disabled.' : slot.startsWith('agent_') ? cur.label + ' uses the shared language model again.' : 'Saved settings removed; the server environment is used again.');
@@ -1549,7 +1549,14 @@
     }, 'btn sm'));
     f.append(actions); f.onsubmit = e => e.preventDefault();
     const wrap = el('div', null, 'stack');
-    wrap.append(el('p', 'Configuration: ' + cur.config_status + '. Live verification: not recorded. Test uses the saved provider/model shown above and may incur charges.', 'small muted'), f, keyLink);
+    // The server keeps a receipt of the last connection test for exactly these saved settings
+    // (services/providers.py record_test); changing the provider, model, URL or key clears it.
+    const CONFIG = { SCHEMA_CHECK_ONLY: 'Saved and complete', NOT_CONFIGURED: 'Not configured', DISABLED: 'Disabled' };
+    const when = cur.tested_at ? new Date(cur.tested_at * 1000).toLocaleString(LOC(), { dateStyle: 'medium', timeStyle: 'short' }) : '';
+    const live = cur.live_test_status === 'LIVE_TESTED' ? badge('Connection test passed ' + when, 'ok')
+      : cur.live_test_status === 'LIVE_TEST_FAILED' ? badge('Connection test failed ' + when, 'bad') : badge('No connection test yet', 'neutral');
+    const status = el('div', null, 'row small'); status.append(badge(CONFIG[cur.config_status] || cur.config_status, cur.config_status === 'SCHEMA_CHECK_ONLY' ? 'ok' : 'warn'), live);
+    wrap.append(status, el('p', 'Test makes one real call with the saved provider and model, and may incur charges. A passed test checks the connection and the response format, not answer quality.', 'small muted'), f, keyLink);
     return wrap;
   }
   async function aiProviders() {

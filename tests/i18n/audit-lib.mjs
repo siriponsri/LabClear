@@ -1,6 +1,5 @@
 /*
- * Shared by the interface-language audits: tests/browser/i18n_audit.mjs (the FastAPI website, the
- * main UI) and web/tests/uat-i18n.mjs (the deferred Next.js site).
+ * Used by the interface-language audit tests/browser/i18n_audit.mjs (the FastAPI website).
  *
  * auditPage() runs inside the page and reports, for the rendered DOM: html[lang], the TH/EN switch,
  * interface text in the wrong language (Thai in English; in Thai, English dictionary sources shown as

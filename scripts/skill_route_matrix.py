@@ -1,11 +1,11 @@
 """Enumerate every realistic answer route and compare runtime-skill selection: 0.2 whole profile vs 0.3 per task.
 
-    python scripts/skill_route_matrix.py [--out docs/evidence/free-first/skill-route-matrix.json]
+    python scripts/skill_route_matrix.py [--out docs/evidence/current/skill-route-matrix.json]
 
 No model call. The 0.2 behaviour is reproduced exactly as business_agent used it before commit 599f407:
 bundle('medical' if a confirmed report is present else 'general') for every message. The routes are
 the answering roles in business_data/dots.json with the evidence they can receive. Live round 2
-(docs/evidence/round2/course_eval_results.json, Q09) shows the Report Explainer answering a knowledge
+(the round-2 live evaluation of 3.0.0, question Q09) shows the Report Explainer answering a knowledge
 question without a report, so that route is real, not hypothetical.
 """
 from __future__ import annotations

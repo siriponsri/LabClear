@@ -259,3 +259,24 @@ def test_each_agent_calls_its_own_slot(monkeypatch):
     monkeypatch.setattr(providers, "AGENTS", {**providers.AGENTS})
     asyncio.run(business_agent.run("What is glucose?", {}))
     assert calls == ["agent_plan", "agent_advisor", "agent_review"]
+
+
+def test_connection_test_leaves_a_receipt_for_exactly_these_settings(monkeypatch):
+    """Admin → AI providers shows the last test result; changing the saved settings clears it."""
+    c = manager()
+    assert save(c).status_code == 200
+    replies = iter(['{"ok": true, "language": "Thai"}', "not json"])
+
+    async def complete(messages, **kw):
+        return next(replies)
+
+    monkeypatch.setattr(transport, "complete", complete)
+    assert c.post("/api/business/staff/ai-providers/llm/test").json()["ok"]
+    llm = c.get("/api/business/staff/ai-providers").json()["slots"]["llm"]
+    assert llm["live_test_status"] == "LIVE_TESTED" and llm["tested_at"] > 0
+    assert KEY not in json.dumps(c.get("/api/business/staff/ai-providers").json())
+    assert not c.post("/api/business/staff/ai-providers/llm/test").json()["ok"]
+    assert c.get("/api/business/staff/ai-providers").json()["slots"]["llm"]["live_test_status"] == "LIVE_TEST_FAILED"
+    # New settings have not been tested: the old receipt no longer applies.
+    assert save(c, model="gpt-4o").status_code == 200
+    assert c.get("/api/business/staff/ai-providers").json()["slots"]["llm"]["live_test_status"] == "NOT_RUN"

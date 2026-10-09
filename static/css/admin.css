@@ -21,7 +21,6 @@
 .harness-settings{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px 24px;align-items:end}
 .admin-harness label.check{display:flex;align-items:center;gap:8px;font-size:var(--text-sm);min-height:40px}
 .admin-harness label.check input{width:16px;height:16px;accent-color:var(--color-primary)}
-.admin-harness label.check input:disabled+span::after{content:" · locked";color:var(--color-fg-muted);font-size:12px}
 .skill-source{margin:0;font:12px/1.7 var(--font-mono);white-space:pre-wrap;overflow-wrap:anywhere;max-height:260px;overflow:auto;background:var(--color-bg-subtle);border:1px solid var(--color-border);border-radius:var(--radius-md);padding:14px 16px;color:var(--color-fg-muted)}
 .harness-save{position:sticky;bottom:0;z-index:2;display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:14px 0;margin-top:8px;background:var(--color-bg);border-top:1px solid var(--color-border)}
 

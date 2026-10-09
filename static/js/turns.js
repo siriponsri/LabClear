@@ -129,7 +129,8 @@ window.RSTurns = (() => {
       const price = make('span', o.price_thb ? '฿' + new Intl.NumberFormat('en-US').format(o.price_thb) : '', 'num small');
       a.append(name, variant, price, make('span', ' (opens in a new tab)', 'sr-only')); box.append(a);
     });
-    const note = make('p', null, 'tiny muted'); note.append(document.createTextNode('External links, separate from our simulated packages: no partnership or booking. Prices as shown on each page when checked ' + (list[0]?.checked_at || '') + '. '));
+    const note = make('p', null, 'tiny muted');
+    note.append(make('span', 'External links, separate from our simulated packages: no partnership or booking. Prices as shown on each page when checked ' + (list[0]?.checked_at || '') + '.'), document.createTextNode(' '));
     const all = make('a', 'All hospital links'); all.href = '/hospital-links'; note.append(all); box.append(note);
     return box;
   }

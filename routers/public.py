@@ -1,12 +1,11 @@
-"""Read-only data for the Next.js website (web/). No personal data, no model calls.
+"""Read-only public JSON (catalog, centers, sources, feature flags). No personal data, no model calls.
 
 Every endpoint is session-free except /membership, which reports only the caller's own
-organization role (Codex membership) so the website does not have to probe with a 403.
+organization role so a client does not have to probe with a 403.
 
-Integration 4.0: adapted from the Claude 4.0.0 branch. Every page shows the same catalog,
-centers, policies and reviewed sources the assistant reads. Feature flags are reported as
-booleans so the website can hide pages that are switched off; the flags themselves are only
-changed by the server owner (see docs/ceo-upgrade/ENV_HANDOVER.md).
+It exposes the same catalog, centers, policies and sources the assistant reads. Feature flags are
+reported as booleans so a client can hide switched-off pages; the flags themselves are changed
+only by the server owner (see docs/deploy/render.md).
 """
 from __future__ import annotations
 
@@ -114,9 +113,12 @@ async def home():
 
 @router.get("/sources")
 async def sources():
+    from services.knowledge_admin import active_records
     src = _sources()
-    records = sorted(src["records"], key=lambda r: (r.get("publisher", ""), r.get("title", "")))
-    keep = ("id", "title", "url", "publisher", "aliases", "content", "data_class", "reviewed_at", "page", "language", "topics", "rights")
+    # Records a manager paused in Admin are not searched, so they are not listed either.
+    records = sorted(active_records(src["records"]), key=lambda r: (r.get("publisher", ""), r.get("title", "")))
+    keep = ("id", "title", "url", "publisher", "aliases", "content", "data_class", "reviewed_at", "page", "language", "topics", "rights",
+            "rag_approval", "verification_status")
     return {"version": src["version"], "publishers": src["publishers"], "publisher_types": src["publisher_types"],
             "records": [{**{k: r.get(k) for k in keep}, "publisher_type": _publisher_type(r)} for r in records]}
 

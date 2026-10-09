@@ -1,9 +1,9 @@
-"""Optional allowlist of browser origins for a separate web front end (integration 4.0).
+"""Optional allowlist of browser origins for a separate front end that proxies /api.
 
-The Next.js web service on Render proxies /api to this FastAPI service. The browser then sends
-``Origin: https://<web host>`` while the request reaches this service with its own Host, so the
-original same-origin rule would reject it. TRUSTED_ORIGINS lists the exact web origins that may
-do this. It is empty by default, which keeps the original rule unchanged.
+The website is served by this FastAPI service, so the same-origin rule applies by default. A
+separate front end that proxies /api makes the browser send ``Origin: https://<front-end host>``
+while the request reaches this service with its own Host. TRUSTED_ORIGINS lists the exact origins
+allowed to do this. It is empty by default, which keeps the same-origin rule unchanged.
 
 Matching is exact on scheme, host and port: no wildcards, suffixes, paths or credentials.
 """

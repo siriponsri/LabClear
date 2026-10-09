@@ -120,7 +120,7 @@ window.LabClearAdmin = ({ el, field, button, api, post, notice, request }) => {
     return root;
   }
 
-  const APPROVAL = { OWNER_APPROVED: ['Owner approved', 'warn'], LEGACY_REVIEWED: ['Reviewed', 'ok'] };
+  const APPROVAL = { OWNER_APPROVED: ['Owner approved', 'warn'], LEGACY_REVIEWED: ['Reviewed record', 'ok'] };
   const VERIFY = { OFFLINE_AUTHORED_NOT_FETCHED: 'Source check pending', LEGACY_REVIEWED: 'Source reviewed' };
 
   async function knowledge() {
@@ -129,7 +129,7 @@ window.LabClearAdmin = ({ el, field, button, api, post, notice, request }) => {
     const filters = el('div', null, 'row');
     const search = field('Search the library', 'search', '', 'Title, publisher or topic');
     const kind = field('Show', 'select');
-    [['all', 'All records'], ['OWNER_APPROVED', 'Owner approved (source check pending)'], ['LEGACY_REVIEWED', 'Reviewed'], ['paused', 'Paused']].forEach(([v, t]) => kind.input.add(new Option(t, v)));
+    [['all', 'All records'], ['OWNER_APPROVED', 'Owner approved (source check pending)'], ['LEGACY_REVIEWED', 'Reviewed records'], ['paused', 'Paused']].forEach(([v, t]) => kind.input.add(new Option(t, v)));
     filters.append(search.wrap, kind.wrap); root.append(filters);
     const layout = el('div', null, 'knowledge-layout'), list = el('div', null, 'knowledge-list'), viewer = el('section', null, 'knowledge-viewer');
     list.setAttribute('aria-label', 'Knowledge records'); viewer.setAttribute('aria-label', 'PDF display'); viewer.setAttribute('aria-live', 'polite');
@@ -188,7 +188,9 @@ window.LabClearAdmin = ({ el, field, button, api, post, notice, request }) => {
       for (const r of rows) {
         const b = button('', () => choose(r), 'knowledge-item');
         b.append(keep(el('strong', r.title), langOf(r.title)), keep(el('span', r.publisher, 'tiny'), langOf(r.publisher)));
-        const tags = el('span', null, 'tiny'); tags.append(document.createTextNode((APPROVAL[r.approval] || [r.approval])[0] + (r.enabled ? '' : ' · Paused'))); b.append(tags);
+        const tags = el('span', null, 'tiny'); tags.append(el('span', (APPROVAL[r.approval] || [r.approval || 'Reviewed record'])[0]));
+        if (!r.enabled) tags.append(document.createTextNode(' · '), el('span', 'Paused'));
+        b.append(tags);
         b.setAttribute('aria-pressed', String(r.id === selected?.id)); list.append(b);
       }
       if (!rows.length) list.append(el('p', 'No records match.', 'small muted'));

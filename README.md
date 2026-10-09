@@ -1,194 +1,216 @@
-<!-- ceo-upgrade-20261008 -->
+# LabClear
 
-The 2026-10-08 upgrade is a disabled-by-default software candidate. Its current scope, evidence, configuration and remaining owner gates are recorded in the [upgrade index](docs/ceo-upgrade/README.md). Earlier release counts and screenshots below are historical; they do not establish live model or clinical validation.
+LabClear is a Thai-first health-check assistant built for the course 06048308 Intelligent Chatbot
+Development. It runs a simulated health-check business: the packages, prices, centers, payments and
+lab reports are not real, and LabClear is not a clinic.
 
-<!-- integration-4.0 -->
+Version **4.0.0-rc3**. Hosted demo: <https://labclear.onrender.com> (Render free plan; the first
+request after an idle period is slow).
 
-**Integration candidate 4.0.0-rc2** (branch `integration/labclear-4.0-rc1`, on top of Codex `c970410`). Hosting target: the existing Render API service, plus an optional Render web service for the Thai-first TH/EN Next.js site in [`web/`](web/) ([guide](docs/deploy/render-web.md)); the Cloudflare Workers work is kept as a deferred option in [`deploy/cloudflare/`](deploy/cloudflare/README.md). The free-first trial profile (Typhoon text/OCR + iApp OpenThai-SystemOne) adds typed tools, per-task runtime skills, a free-only provider policy and a coursework benchmark with OFFLINE / REPLAY / LIVE_FREE modes. **LIVE_FREE has not been run**: no provider key or verified free-tier account was available in the build environment. Start with the [integration report](docs/integration/CLAUDE_INTEGRATION_REPORT.md), the [benchmark report](docs/ceo-upgrade/COURSEWORK_BENCHMARK_REPORT_TH.md) and the [free-only runbook](docs/ceo-upgrade/FREE_PROVIDER_PREFLIGHT.md).
+## What it does
 
-<div align="center">
+- **Compare packages.** Customers browse and compare 18 simulated health-check packages at three
+  demo centers, in Thai or English.
+- **Request appointments.** The assistant prepares a preview; the customer confirms it; staff then
+  confirm or decline the request. Nothing is booked or paid without these confirmations.
+- **Read a lab report.** A customer attaches an image or PDF in the chat. The AI reads the rows,
+  shows them for checking, and explains them only after the customer confirms the values. Each value
+  is compared only with the reference range printed on that report.
+- **Cite sources.** Medical answers cite records from a local knowledge library of 148 records;
+  prices and policies cite the business data. Answers that fail a check are withheld.
+- **Service desk.** Staff handle the inbox, take over chats, confirm appointments, issue corporate
+  quotations and record simulated payments at `/staff`.
+- **No-code admin.** Managers change AI providers, assistant roles, prices, capacity, the Company
+  Harness (skills and tool limits) and the Knowledge library without editing code.
 
-<br>
+## Key features
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/logo-dark.svg">
-  <img src="docs/assets/logo.svg" alt="LabClear" height="72">
-</picture>
+| Area | Summary |
+|---|---|
+| Multi-agent pipeline | Input guard, planner, role choice, typed tools, BM25 evidence search, runtime skills, writer, deterministic checks, independent reviewer, output guard |
+| Process Explainability | Every answer keeps its steps: which tools ran, which skills were loaded, how long each step took |
+| Report reading | OCR, document safety check, rows, customer confirmation; status computed by Python from the printed range |
+| Knowledge library | 148 records from 29 publishers, BM25 retrieval without an embedding API, PDF view in Admin |
+| Official hospital links | Reviewed links to real hospital package pages, kept separate from LabClear's simulated catalog |
+| Interface language | Thai by default, TH/EN switch on every page, IBM Plex Sans Thai and Trirong self-hosted |
+| Spending controls | AI off by default, durable call cap, project-total THB ledger, optional free-only policy |
+| Security | Same-origin checks, CSRF tokens, role and ownership checks, rate limits, encrypted storage |
 
-<h3>Book the check. Understand the result.</h3>
+## Architecture in brief
 
-<p>A Thai health-check assistant that recommends packages, books appointments<br>and explains lab reports — every answer backed by a cited source.</p>
+One Render Python web service runs FastAPI, Jinja templates and vanilla JavaScript. There is no
+Node.js at runtime. Business data is stored in one encrypted table: SQLite locally, PostgreSQL when
+hosted. AI providers are called over HTTPS from inside the same service.
 
-<p>
-  <img src="https://img.shields.io/badge/python-3.12-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python 3.12">
-  <img src="https://img.shields.io/badge/FastAPI-009688?style=flat-square&logo=fastapi&logoColor=white" alt="FastAPI">
-  <img src="https://img.shields.io/badge/RAG-58_Thai_sources-6539a9?style=flat-square" alt="RAG: 58 Thai sources">
-  <img src="https://img.shields.io/badge/AI_providers-12-6539a9?style=flat-square" alt="12 AI providers">
-  <img src="https://img.shields.io/badge/tests-205_%2B_34_UAT-2ea44f?style=flat-square" alt="205 tests and 34 browser scenarios">
-</p>
-
-<p>
-  <a href="https://labclear.onrender.com"><b>Live demo</b></a> ·
-  <a href="presentation/index.html"><b>Slides</b></a> ·
-  <a href="docs/report/LabClear_Report_TH_3_0_1.pdf"><b>Report</b></a> ·
-  <a href="docs/deploy/render.md"><b>Deploy to Render</b></a> ·
-  <a href="docs/deploy/vercel.md"><b>Deploy to Vercel</b></a>
-</p>
-
-<br>
-
-<img src="docs/assets/screenshots/home.jpg" alt="LabClear home page" width="880">
-
-</div>
-
-<br>
-
-## Highlights
-
-<table>
-<tr>
-<td width="50%" valign="top">
-
-**Grounded answers in Thai**<br>
-<sub>BM25 retrieval over 58 reviewed medical sources with Thai aliases. Prices and policies come from the same files as the website, so the chat never invents them.</sub>
-
-</td>
-<td width="50%" valign="top">
-
-**Lab reports in the chat**<br>
-<sub>Attach a photo or PDF like in any chat app. LabClear reads every row, shows the values next to your image and explains them after one click to confirm.</sub>
-
-</td>
-</tr>
-<tr>
-<td valign="top">
-
-**Shows its work**<br>
-<sub>While it answers you see each step: safety check, plan and role, sources found, draft, second review, safety check. The steps stay under "How this was checked".</sub>
-
-</td>
-<td valign="top">
-
-**Chats and projects**<br>
-<sub>A chat list like Claude or ChatGPT: switch, rename and delete chats, and group them into projects such as a yearly check-up.</sub>
-
-</td>
-</tr>
-<tr>
-<td valign="top">
-
-**Any AI provider, any safety model**<br>
-<sub>Typhoon, OpenAI, Claude, Gemini, Hugging Face, OpenRouter, Grok, Kimi, Qwen, DeepSeek or any OpenAI-compatible API, screened by iApp OpenThai-SystemOne, TypeSafe Jev or Llama Guard 4.</sub>
-
-</td>
-<td valign="top">
-
-**A real back office**<br>
-<sub>Staff confirm bookings, reply to customers, issue quotations, run test payments and cap AI spending (call limit and a THB budget).</sub>
-
-</td>
-</tr>
-</table>
-
-<p align="center"><img src="docs/assets/screenshots/chat.jpg" alt="A lab report confirmed in the chat, explained with cited sources and the steps that were checked" width="880"><br>
-<sub>Offline UI harness with a synthetic sample report</sub></p>
+Details, a component table and a walkthrough of one chat message are in
+[docs/architecture.md](docs/architecture.md).
 
 ## Quick start
 
-Requires **Python 3.12**.
+Requires **Python 3.12**. Without AI keys, the website, catalog, booking and service desk work;
+chat replies and report reading stop with an error that names the missing setting.
+
+### Windows
+
+Double-click `START.bat`. It runs [`scripts/start.ps1`](scripts/start.ps1), which:
+
+1. creates `.venv` with `py -3.12` if it does not exist,
+2. installs `requirements.txt`,
+3. copies `.env.example` to `.env` if `.env` does not exist,
+4. opens <http://127.0.0.1:8000> and starts `uvicorn main:app` on `127.0.0.1:8000`.
+
+### macOS and Linux
 
 ```bash
-git clone https://github.com/siriponsri/LabClear.git && cd LabClear
-python -m venv .venv
-source .venv/bin/activate                 # Windows: .venv\Scripts\activate
+python3.12 -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
-cp .env.example .env                      # Windows: copy .env.example .env
-uvicorn main:app --port 8000
+cp .env.example .env
+uvicorn main:app --host 127.0.0.1 --port 8000
 ```
 
-Open **<http://127.0.0.1:8000>**. On Windows you can simply double-click `START.bat`.
+`python scripts/run_business.py` is the entry point Render uses. It listens on `0.0.0.0` and the
+port in `PORT` (default 8000), and it can also start the LINE worker when
+`BUSINESS_WORKER_ENABLED=true`.
 
-The website, catalog, booking and staff desk work straight away, with data in an encrypted SQLite file under `data/`.
+Local data goes to `data/business.sqlite3`, encrypted with a key generated in `data/business.key`.
+To match the hosted feature set, add `RUNTIME_SKILLS_ENABLED=true` and `HOSPITAL_LINKS_ENABLED=true`
+to `.env`.
 
 ### Demo accounts
 
-Local runs come with three shared accounts. They are not listed on the site: type the username and password in the sign-in dialog (top right).
+[`services/demo_accounts.py`](services/demo_accounts.py) creates three shared accounts. They are not
+listed on the site; type the username and password in the sign-in dialog.
 
-| Username | Password | What it is |
+| Username | Password | Account |
 |---|---|---|
-| `test-01` | `1234` | Customer on the Free plan (one AI report reading) |
-| `test-02` | `1234` | Customer with LabClear Plus (simulated) |
-| `admin` | `1234` | Manager with full access; opens the service desk at `/staff` |
+| `test-01` | `1234` | Customer, Free plan |
+| `test-02` | `1234` | Customer, LabClear Plus (simulated) |
+| `admin` | `1234` | Manager with full access to `/staff` |
 
-They are off on Render and Vercel unless you set `DEMO_ACCOUNTS=true`. Customers can also use **Continue with Google** once `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` are set (see [docs/deploy/render.md](docs/deploy/render.md#sign-in-with-google-optional)).
+`DEMO_ACCOUNTS` controls them. Empty means on for a local run and off when hosted (Render, or
+`APP_ENV=production`). Set `true` to use them on a hosted demo and `false` again afterwards: anyone
+who knows them can sign in, `admin` included. To create a personal manager account, run
+`python scripts/create_staff.py --email you@example.com --role manager`.
 
 ### Turn on the AI
 
 1. Set `PROVIDER_NETWORK_ENABLED=true` in `.env` and restart.
-2. Sign in as `admin` → **AI providers** (or create your own manager with `python scripts/create_staff.py --email you@example.com --role manager`).
-3. Choose a provider for each step, paste its API key and press **Test**.
+2. Sign in as a manager and open `/staff` → **AI providers**.
+3. Choose a provider for the language model, the safety check and report reading, paste each key,
+   save, and press **Test connection**.
 
-| Step | Default | Also supported |
-|---|---|---|
-| Language model | Typhoon `typhoon-v2.5-30b-a3b-instruct` | OpenAI · Claude · Gemini · Hugging Face · OpenRouter · Grok · Kimi · Qwen · DeepSeek · custom |
-| Safety check | iApp OpenThai-SystemOne | TypeSafe Jev · Llama Guard 4 (OpenRouter) |
-| Report reading | Typhoon OCR | OpenAI · Gemini · OpenRouter · custom |
+The defaults are Typhoon (language model), iApp OpenThai-SystemOne (safety check) and Typhoon OCR
+(report reading). See [docs/ai-providers.md](docs/ai-providers.md).
 
-Keys are stored encrypted in the database and never shown again. Prefer environment variables? Every setting has a fallback in [`.env.example`](.env.example).
+### Offline UI without keys
 
-<p align="center"><img src="docs/assets/screenshots/ai-providers.jpg" alt="AI providers page" width="760"></p>
+```bash
+python scripts/dev_mock_api.py
+```
 
-## How it works
+This serves the real application on `127.0.0.1:8000` (`PORT` overrides) with temporary storage,
+demo accounts on and outbound network blocked. Chat messages run the real pipeline (guards, planner,
+roles, typed tools, runtime skills, checks, reviewer) with offline provider doubles at the HTTP
+transport, so answers are stand-ins, not model output. `UAT_FLAGS=off` turns the optional feature
+flags off. Never deploy this script.
 
-<p align="center"><img src="docs/assets/architecture.png" alt="LabClear architecture" width="680"></p>
+## Deployment
 
-One web service (FastAPI, Jinja, vanilla JavaScript) serves the website, the customer workspace at `/app` and the staff desk at `/staff`. The chatbot pipeline searches the knowledge base and makes five AI calls per message, streaming each step to the page as it happens. Bookings, chats, provider settings and the spending cap live in PostgreSQL (SQLite locally), encrypted with Fernet. The full message flow is in [docs/assets/message-flow.png](docs/assets/message-flow.png).
+The repository deploys as a single Render web service named `labclear` from the
+[`render.yaml`](render.yaml) Blueprint. Render deploys automatically on every commit to `main` and
+checks `/health`. Secrets (`DATABASE_URL`, `BUSINESS_DATA_KEY`, provider keys) are entered in the
+Render dashboard and never committed. Step-by-step runbook: [docs/deploy/render.md](docs/deploy/render.md).
 
-## Tests
+## Testing
 
 ```bash
 pip install -r requirements-dev.txt
-python -m pytest -q                                    # 170 tests, no real AI calls
-npm install && npx playwright install chromium
-TEST_PYTHON=.venv/bin/python npm run uat               # 34 browser scenarios
-python scripts/course_eval.py --base http://127.0.0.1:8000   # live evaluation (real AI)
+python scripts/offline_check.py pytest -q
 ```
 
-## Project structure
+The Python suite (345 tests at 4.0.0-rc3) runs with isolated storage, no `.env` and outbound
+sockets denied. Browser suites use Playwright (`npm install`, then `npx playwright install chromium`):
 
-```text
-main.py              FastAPI app, security headers, pages
-routers/             business API, chats and projects, staff API, AI provider settings, website
-services/            chatbot pipeline, safety check, providers, RAG search, report reader, storage
-templates/ static/   website and workspace UI (no build step)
-knowledge/           58-source evidence catalog
-business_data/       simulated packages, branches, policies, plans
-examples/            six fictional Thai lab reports
-docs/                deployment guides, report, diagrams
-presentation/        reveal.js slides
-```
+| Suite | Command |
+|---|---|
+| Business UAT | `TEST_PYTHON=.venv/bin/python npm run uat` |
+| Upgrade scenarios | `TEST_PYTHON=.venv/bin/python UAT_OUT=test-results/upgrade node tests/browser/upgrade.cjs` |
+| TH/EN language audit | start `scripts/dev_mock_api.py`, then `node tests/browser/i18n_audit.mjs` |
+
+More detail: [docs/testing.md](docs/testing.md).
+
+## Evaluation and benchmark
+
+| Tool | Purpose |
+|---|---|
+| [`scripts/benchmark_labclear.py`](scripts/benchmark_labclear.py) | Runs the frozen coursework suite (10 questions, 5 images, 5 safety cases) and the OCR file suite in OFFLINE, REPLAY or LIVE_FREE mode through the public API; also `preflight`, `resume`, `compare`, `report` |
+| [`scripts/score_benchmark.py`](scripts/score_benchmark.py) | Deterministic scorer of a recorded run: no network, model judge, clock or randomness; re-scoring gives byte-identical output |
+| [`notebooks/LabClear_Harness_Demo.ipynb`](notebooks/LabClear_Harness_Demo.ipynb) | Executable walkthrough of the pipeline with offline doubles; needs `requirements-eval.txt` (`python scripts/execute_notebook.py notebooks/LabClear_Harness_Demo.ipynb`) |
+
+Recorded evidence is in [docs/evidence/current](docs/evidence/current/README.md). All recorded runs
+are **OFFLINE**: the real application with provider doubles and a Tesseract stand-in for OCR.
+
+| Run | Cases | Automated pass | Exact OCR values |
+|---|---:|---:|---:|
+| Coursework, profile A (no runtime skills) | 20 | 15 | 88/93 |
+| Coursework, profile B (A + runtime skills) | 20 | 15 | 88/93 |
+| Coursework, profile C (B + medical harness) | 20 | 15 | 88/93 |
+| OCR file suite, profile C | 12 | 0 fully correct | 217/252 (86.11%) |
+
+These numbers describe the offline pipeline. They are not Thai API scores, latency or clinical
+quality. LIVE_FREE has not been run because no provider keys were available.
+
+## Repository layout
+
+| Path | Contents |
+|---|---|
+| `main.py`, `config.py` | FastAPI app, security headers, `/health`, `/app`, `/staff`; settings and feature flags |
+| `routers/` | Website pages and the JSON API (business, chats, staff, admin, public site data) |
+| `services/` | Agent pipeline, typed tools, guards, providers, report reader, storage, harness config |
+| `templates/`, `static/` | Jinja pages, CSS, JavaScript, self-hosted fonts and vendor scripts |
+| `i18n/` | Thai dictionary sources; built into `static/i18n/th.js` |
+| `business_data/` | Simulated catalog, centers, policies, plans, assistant roles, hospital links |
+| `knowledge/` | Evidence catalog, publisher PDFs, acquisition lists ([README](knowledge/README.md)) |
+| `runtime_skills/` | Reviewed instruction modules with SHA-256 manifest; model registry |
+| `examples/` | Synthetic Thai lab reports used as samples and test inputs |
+| `eval/` | Frozen benchmark datasets, rubric and free-only policy templates |
+| `notebooks/` | Harness demonstration notebook |
+| `scripts/` | Start, staff setup, i18n build, benchmark, scoring and maintenance scripts |
+| `tests/` | Python tests, benchmark doubles, browser suites |
+| `docs/` | Documentation, diagrams, reports and evidence |
+| `presentation/` | reveal.js slides |
+| `data/` | Local SQLite database and key (git-ignored) |
 
 ## Documentation
 
-| | |
+| Topic | Document |
 |---|---|
-| **Product** | [Business](docs/business.md) · [Customer journey](docs/customer-journey.md) · [Chatbot specification](docs/chatbot-spec.md) |
-| **System** | [Architecture](docs/architecture.md) · [AI providers and agents](docs/ai-providers.md) · [Safety](docs/safety.md) · [API](docs/api.md) |
-| **Quality** | [Testing](docs/testing.md) · [Team and progress](docs/team.md) |
-| **Run it** | [Deploy to Render](docs/deploy/render.md) · [Deploy to Vercel](docs/deploy/vercel.md) |
-| **Course** | [Final report (PDF)](docs/report/LabClear_Report.pdf) · [Slides](presentation/index.html) |
-| **Data** | [Knowledge base](knowledge/README.md) · [Sample reports](examples/README.md) · [Notices](NOTICE.md) |
+| Index | [docs/README.md](docs/README.md) |
+| Architecture | [docs/architecture.md](docs/architecture.md) |
+| API reference | [docs/api.md](docs/api.md) |
+| Admin guide for managers | [docs/admin.md](docs/admin.md) |
+| AI providers and spending | [docs/ai-providers.md](docs/ai-providers.md) |
+| Deploy to Render | [docs/deploy/render.md](docs/deploy/render.md) |
+| Testing | [docs/testing.md](docs/testing.md) |
+| Knowledge library | [knowledge/README.md](knowledge/README.md) |
+| Changes | [CHANGELOG.md](CHANGELOG.md) |
 
-<br>
+## Limitations
 
-<sub>Built for 06048308 Intelligent Chatbot Development. Packages, prices, centers, payments and lab reports are simulated. LabClear gives general health information, not a diagnosis.</sub>
+- Coursework simulation. Packages, prices, centers, payments, LINE and Stripe flows are simulated.
+- Synthetic data only. Do not upload real patient reports.
+- Not a clinic and not a medical device. LabClear gives general information, not a diagnosis,
+  treatment or dose.
+- No clinical validation. The 90 records added on 2026-10-09 are owner-approved summaries whose
+  source check is still pending. The Thai wording of the runtime skills has not had a native-speaker
+  or lay-reader review.
+- Benchmark evidence is OFFLINE. It does not measure live Thai API quality, latency or clinical
+  accuracy.
+- Single-process design. Guest chats and the request rate limit live in process memory, so the
+  service runs as one instance.
 
-## ชุดส่งมอบ 3.0.1
+## Notices
 
-[คำสั่งนำเข้า bundle, ทดสอบ, deploy และสถานะข้อจำกัด](docs/release-3.0.1.md) · [รายงานภาษาไทย Word](docs/report/LabClear_Report_TH_3_0_1.docx) · [PDF](docs/report/LabClear_Report_TH_3_0_1.pdf)
-
-ผล local: pytest 205/205 และ UAT 34/34 (ใช้ model doubles) ส่วนคุณภาพโมเดลจริงหลังแก้รอทดสอบรอบ 3
-
-## ชุดแก้ไข 3.0.2
-
-[รายละเอียดและวิธีนำเข้า bundle](docs/release-3.0.2.md): Guest ใช้แชต/ภาพชั่วคราวเฉพาะหน้าปัจจุบัน ไม่บันทึกประวัติถาวร; ลดการบล็อกคำตอบเรื่องบริการผิดด้วยการปรับ routing และแก้คำตอบได้หนึ่งครั้งโดยตรวจ guardrail ครบ; แก้เมนูและฟอร์มจองที่เปลี่ยนหน้าผิด ผลโมเดลจริงรอบ 3 อยู่ใน `docs/evidence/round3/` ส่วนรอบ 4 ต้องรันหลัง deploy รุ่นนี้ด้วย `scripts/Run-LabClearEval.ps1`
+Third-party components, fonts, medical sources and the coursework starter are listed in
+[NOTICE.md](NOTICE.md).

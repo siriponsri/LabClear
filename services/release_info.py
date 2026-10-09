@@ -5,11 +5,11 @@ from functools import lru_cache
 from pathlib import Path
 import subprocess
 
-VERSION = '4.0.0-rc2'
+VERSION = '4.0.0-rc3'
 
 @lru_cache(maxsize=1)
 def build_commit():
-    value = os.getenv('RENDER_GIT_COMMIT') or os.getenv('VERCEL_GIT_COMMIT_SHA') or os.getenv('LABCLEAR_COMMIT_SHA')
+    value = os.getenv('RENDER_GIT_COMMIT') or os.getenv('LABCLEAR_COMMIT_SHA')
     if not value:
         try:
             value = subprocess.check_output(['git','rev-parse','HEAD'],cwd=Path(__file__).resolve().parents[1],stderr=subprocess.DEVNULL,timeout=2,text=True).strip()

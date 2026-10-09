@@ -1,8 +1,0 @@
-.env
-.venv
-data
-docs
-presentation
-tests
-node_modules
-test-results

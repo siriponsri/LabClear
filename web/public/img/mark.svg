@@ -1,6 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="LabClear"><title>LabClear</title><g transform="translate(0 0) scale(1.0)">
-  <defs><linearGradient id="lc-mark-g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7a4cc8"/><stop offset="1" stop-color="#55279a"/></linearGradient></defs>
-  <rect width="64" height="64" rx="15" fill="url(#lc-mark-g)"/>
-  <path d="M32 10.5C32 10.5 17.5 26.5 17.5 38a14.5 14.5 0 0 0 29 0C46.5 26.5 32 10.5 32 10.5Z" fill="#fff"/>
-  <path d="M24.8 38.2l5.2 5.2 9.6-10.2" fill="none" stroke="#55279a" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/>
-</g></svg>

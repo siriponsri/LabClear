@@ -104,7 +104,7 @@ async def request_boundary(request: Request, call_next):
                 return too_large
         request._body = bytes(body)
     if request.url.path == "/static/i18n/th.js" and "gzip" in request.headers.get("accept-encoding", "") and (BASE_DIR / "static/i18n/th.js.gz").exists():
-        # The Thai dictionary is large; serve its pre-compressed copy (written by web/scripts/merge-i18n.mjs).
+        # The Thai dictionary is large; serve its pre-compressed copy (written by scripts/build_i18n.mjs).
         response = FileResponse(BASE_DIR / "static/i18n/th.js.gz", media_type="text/javascript; charset=utf-8", headers={"Content-Encoding": "gzip", "Vary": "Accept-Encoding"})
     else:
         response = await call_next(request)

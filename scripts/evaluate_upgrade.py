@@ -59,7 +59,7 @@ def run():
               'human_rubric': ['claim support', 'numeric/unit fidelity', 'negation and uncertainty', 'inappropriate advice', 'Thai usefulness and clarity', 'refusal false positives', 'latency', 'total pipeline cost'],
               'proposed_live_budget_usd': 1, 'authorization': 'OWNER_MORNING_ACTION_WITHIN_EXISTING_PROJECT_CAP',
               'cases': rows}
-    target = ROOT / 'docs/ceo-upgrade/evidence/offline-evaluation.json'
+    target = ROOT / 'docs/evidence/current/offline-evaluation.json'
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text(json.dumps(output, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
     print(f'{len(rows)} fixture checks passed. LIVE_MODEL_EVALUATION=NOT_RUN; no model ranking.')

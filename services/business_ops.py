@@ -61,9 +61,15 @@ def modes() -> dict:
         "calendar": {"mode": "SIMULATED_INTEGRATION", "label": "Center calendar and .ics export"},
         "email": {"mode": "NOT_CONNECTED", "label": "Email delivery is not connected; notifications appear in the app"},
         "maps": {"mode": "PROVIDER_SANDBOX" if os.getenv("GOOGLE_MAPS_EMBED_KEY") else "LINK_ONLY", "label": "Maps"},
-        "retrieval": {"mode": "LOCAL_BM25", "label": "Evidence search (BM25 over 58 verified sources)"},
+        "retrieval": {"mode": "LOCAL_BM25", "label": f"Evidence search (BM25 over {_source_count()} approved records)"},
         "plans": {"mode": "SIMULATED_INTEGRATION", "label": "LabClear Plus, 355 THB for 30 days (test payment only)"},
     }
+
+
+def _source_count() -> int:
+    from services.evidence_search import corpus
+    from services.knowledge_admin import active_records
+    return len(active_records(corpus()))
 
 
 # ---------------------------------------------------------------- catalog
