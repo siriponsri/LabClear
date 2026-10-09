@@ -1,0 +1,92 @@
+{
+ "run_id": "R4-C",
+ "mode": "OFFLINE",
+ "suite": "regression",
+ "only": null,
+ "profile": "C",
+ "case_ids": [
+  "Q01",
+  "Q02",
+  "Q03",
+  "Q04",
+  "Q05",
+  "Q06",
+  "Q07",
+  "Q08",
+  "Q09",
+  "Q10",
+  "I01",
+  "I02",
+  "I03",
+  "I04",
+  "I05",
+  "S01",
+  "S02",
+  "S03",
+  "S04",
+  "S05",
+  "B01",
+  "B02",
+  "B03",
+  "B04",
+  "B05",
+  "D01",
+  "D02",
+  "D03"
+ ],
+ "started_at": "2026-10-09T01:49:09+00:00",
+ "candidate": {
+  "candidate_sha": "c082a05b8516ee4432a7f08c363f8a3753b0bac6",
+  "branch": "integration/labclear-4.0-rc1",
+  "working_tree_dirty": false,
+  "dirty_files": [],
+  "app_version": "4.0.0-rc1"
+ },
+ "dataset": {
+  "dataset_id": "labclear-coursework",
+  "dataset_version": "1.0.0",
+  "dataset_digest": "63e5c85e93b93b67c69c6b5f20ae208260585f2b23b5aff066306fc1f3542511"
+ },
+ "provenance": {
+  "prompt_version": "services/business_agent.py sha256 634bcc5d3efe0f58",
+  "skill_package": "labclear-thai-health-communication 0.3.0-offline",
+  "skill_hashes": {
+   "SOURCES.md": "51c4d7b080181d881599add7133c730d85d713a43a44cc588e9c567b15112fa5",
+   "core.md": "b098db355cbb49b0361a41580b9ac5d20a8d175899436a80be7966a26a64f2bd",
+   "evidence-citation.md": "e6a818eb514755d4c89cc5c7ae936059186e7293d678c36882cac1f8e31322ed",
+   "lay-explanation.md": "13f01fdf04f2b4675ae3c0ea721332e2eba4bd301b14eaf3a7f621a5f416d44f",
+   "package-advice.md": "140953c844ff2207d6f10b75f37536bdf47c2e6d629353a3b73e36597105ee80",
+   "package-compare.md": "3aabd716f90740301a5934282a06c348eab3ff34ba2bd95dc4cb944e89f703f9",
+   "patient-explanation.md": "7f3dcb5ad4952dd35dcc96863e4d541561b0b92ccc0e8249e1fe1cccdf0e307a",
+   "scope-uncertainty.md": "356394f93d7efc9a178f3417643852e7d87a8844daad73aa6bdbb2035c64c77c",
+   "thai-style.md": "760a7bc48210a81a662574fa9e09dedce3a6015309c42d11219a11cd9544ca63"
+  },
+  "tool_schema_version": "labclear-tools-1.0.0",
+  "source_digest": "91be0d46dfa0b5427492fa1fb065fd4a6a30b8dfefc470e223260f407d6efff1"
+ },
+ "trap_paid_review_slot": false,
+ "confirm": "raw",
+ "free_only": true,
+ "label": "after free-only policy",
+ "record_replay": false,
+ "canaries": {
+  "name": "ทดสอบ แคนารี",
+  "phone": "0899990001",
+  "email": "canary-other@example.invalid"
+ },
+ "limits": {
+  "retries_per_case": 2,
+  "max_minutes": 60
+ },
+ "doubles": {
+  "version": "1.1.0",
+  "ocr_engine": "tesseract",
+  "ocr_engine_version": "tesseract 5.3.4",
+  "file_sha256": "5d8967fffede4d27819ca1c755300a48c2783000f8634b77baf22cd21767e453"
+ },
+ "canary_key": "offline-canary-dedcece927b27e62",
+ "provider_label": "OFFLINE_DOUBLES",
+ "model_label": "none (test doubles; see verdict_scope)",
+ "price_status": "NOT_APPLICABLE_OFFLINE",
+ "policy_version": "rubric 1.0.0; labels eval/policies/free_only.offline.json"
+}

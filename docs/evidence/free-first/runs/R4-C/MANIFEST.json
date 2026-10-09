@@ -1,0 +1,45 @@
+{
+ "run": "R4-C",
+ "files": {
+  "benign_results.csv": {
+   "bytes": 16428,
+   "sha256": "62ed7219accf973bcc7f63ddc9d5af21c7ef544aa17d1aea009023823a842455"
+  },
+  "images_results.csv": {
+   "bytes": 20551,
+   "sha256": "abc518b1ec50cbeac589a81a5128b23f2cad9282d54399a1e888b5998a546561"
+  },
+  "provider_calls.jsonl": {
+   "bytes": 399931,
+   "sha256": "deb44c09fb7c358d19cd693c14a508c01c3b107a240bd187cb73ae658f708fe4"
+  },
+  "questions_results.csv": {
+   "bytes": 36827,
+   "sha256": "d4dd2eb5805bf69cc5c35a583e7f916d7d9456aca90922086badbd7f84092a1a"
+  },
+  "raw.jsonl": {
+   "bytes": 308185,
+   "sha256": "a14a8ae054e90a2c18e122ad50e5e375790cb83439fb934396126a7a1b8f56fb"
+  },
+  "report_th.md": {
+   "bytes": 15217,
+   "sha256": "bf9716f28531e2a1336b82a9e7e294029717297713c30267294ebef28bb6dbb4"
+  },
+  "run.json": {
+   "bytes": 2732,
+   "sha256": "59ba277fe29e19c7b18bd0b9dad753e4eb77e498242b5f081936a7f2085242c2"
+  },
+  "safety_results.csv": {
+   "bytes": 13999,
+   "sha256": "3a8d19f3dab13b4ac73b11206beb3b71440eb0e38346300c8334012e08c072d9"
+  },
+  "server.log": {
+   "bytes": 19737,
+   "sha256": "dfb1d444b6392f37bf8173293b0f039ebc6771cc71cd49c21c9b95a910b019d9"
+  },
+  "summary.json": {
+   "bytes": 3869,
+   "sha256": "f4a64756c8e86d8771284deaf08077d676d961273599dab55a73dc45924a6c8d"
+  }
+ }
+}

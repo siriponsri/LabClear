@@ -1,0 +1,152 @@
+{
+ "status": "BLOCKED",
+ "checked_at": "2026-10-09T02:20:40+00:00",
+ "profile": "C",
+ "cases": 20,
+ "blockers": [
+  "POLICY_NOT_REVIEWED: reviewed_by, reviewed_at and account_label are required",
+  "DATA_POLICY_NOT_REVIEWED: confirm the providers' data terms allow these synthetic inputs",
+  "FREE_STATUS_UNVERIFIED: text api.opentyphoon.ai/v1/chat/completions model typhoon-v2.5-30b-a3b-instruct",
+  "FREE_STATUS_UNVERIFIED: ocr api.opentyphoon.ai/v1/chat/completions model typhoon-ocr",
+  "FREE_STATUS_UNVERIFIED: guard api.iapp.co.th/v3/store/openthai/systemone model openthai-systemone",
+  "NO_CREDENTIALS: LABCLEAR_TRIAL_TYPHOON_API_KEY is not set in the runner's environment (owner's secure channel; never in chat, files or the ZIP)",
+  "NO_CREDENTIALS: LABCLEAR_TRIAL_IAPP_API_KEY is not set in the runner's environment (owner's secure channel; never in chat, files or the ZIP)"
+ ],
+ "warnings": [],
+ "checks": {
+  "candidate": {
+   "candidate_sha": "4127bb52328332baa980c363e4130572a4877a85",
+   "branch": "integration/labclear-4.0-rc1",
+   "working_tree_dirty": false,
+   "dirty_files": [],
+   "app_version": "4.0.0-rc2"
+  },
+  "policy": {
+   "policy_id": "free-only-trial",
+   "version": "1",
+   "mode": "LIVE_FREE",
+   "reviewed_by": false,
+   "reviewed_at": "",
+   "account_label": false
+  },
+  "endpoints": {
+   "text api.opentyphoon.ai/v1/chat/completions typhoon-v2.5-30b-a3b-instruct": "FREE_STATUS_UNVERIFIED",
+   "ocr api.opentyphoon.ai/v1/chat/completions typhoon-ocr": "FREE_STATUS_UNVERIFIED",
+   "guard api.iapp.co.th/v3/store/openthai/systemone openthai-systemone": "FREE_STATUS_UNVERIFIED"
+  },
+  "quota_estimate": {
+   "text_calls": 130,
+   "ocr_calls": 5,
+   "guard_decisions": 230,
+   "basis": "worst case per case: planner, writer + one rewrite, reviewer + one rewrite, JSON retry; guard 5 labels per message direction, 3 per document check"
+  },
+  "credentials_present": {
+   "LABCLEAR_TRIAL_TYPHOON_API_KEY": false,
+   "LABCLEAR_TRIAL_IAPP_API_KEY": false
+  },
+  "effective_slots": {
+   "llm": {
+    "source": "environment",
+    "preset": "typhoon",
+    "protocol": "openai_chat",
+    "host": "api.opentyphoon.ai",
+    "path": "/v1/chat/completions",
+    "model": "typhoon-v2.5-30b-a3b-instruct",
+    "ready": false,
+    "key_present": false,
+    "will_be_called": true
+   },
+   "vision": {
+    "source": "environment",
+    "preset": "typhoon_ocr",
+    "protocol": "typhoon_ocr",
+    "host": "api.opentyphoon.ai",
+    "path": "/v1/chat/completions",
+    "model": "typhoon-ocr",
+    "ready": false,
+    "key_present": false,
+    "will_be_called": true
+   },
+   "guard": {
+    "source": "environment",
+    "preset": "iapp_systemone",
+    "protocol": "systemone_iapp",
+    "host": "api.iapp.co.th",
+    "path": "/v3/store/openthai/systemone",
+    "model": "openthai-systemone",
+    "ready": false,
+    "key_present": false,
+    "will_be_called": true
+   },
+   "agent_plan": {
+    "source": "shared",
+    "preset": "typhoon",
+    "protocol": "openai_chat",
+    "host": "api.opentyphoon.ai",
+    "path": "/v1/chat/completions",
+    "model": "typhoon-v2.5-30b-a3b-instruct",
+    "ready": false,
+    "key_present": false,
+    "will_be_called": true
+   },
+   "agent_advisor": {
+    "source": "shared",
+    "preset": "typhoon",
+    "protocol": "openai_chat",
+    "host": "api.opentyphoon.ai",
+    "path": "/v1/chat/completions",
+    "model": "typhoon-v2.5-30b-a3b-instruct",
+    "ready": false,
+    "key_present": false,
+    "will_be_called": true
+   },
+   "agent_explainer": {
+    "source": "shared",
+    "preset": "typhoon",
+    "protocol": "openai_chat",
+    "host": "api.opentyphoon.ai",
+    "path": "/v1/chat/completions",
+    "model": "typhoon-v2.5-30b-a3b-instruct",
+    "ready": false,
+    "key_present": false,
+    "will_be_called": true
+   },
+   "agent_review": {
+    "source": "shared",
+    "preset": "typhoon",
+    "protocol": "openai_chat",
+    "host": "api.opentyphoon.ai",
+    "path": "/v1/chat/completions",
+    "model": "typhoon-v2.5-30b-a3b-instruct",
+    "ready": false,
+    "key_present": false,
+    "will_be_called": true
+   },
+   "agent_medical_analyzer": {
+    "source": "not_configured",
+    "preset": "openrouter",
+    "protocol": "openai_chat",
+    "host": "openrouter.ai",
+    "path": "/api/v1/chat/completions",
+    "model": "",
+    "ready": false,
+    "key_present": false,
+    "will_be_called": false
+   },
+   "agent_thai_composer": {
+    "source": "not_configured",
+    "preset": "openrouter",
+    "protocol": "openai_chat",
+    "host": "openrouter.ai",
+    "path": "/api/v1/chat/completions",
+    "model": "",
+    "ready": false,
+    "key_present": false,
+    "will_be_called": false
+   }
+  },
+  "target": "local trial server started by the runner (127.0.0.1); production URLs are never accepted",
+  "inputs": "the benchmark dataset is synthetic only and hash-verified by the runner before every run"
+ },
+ "inference_calls_made": 0
+}

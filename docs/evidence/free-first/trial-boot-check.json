@@ -1,0 +1,76 @@
+{
+ "command": "scripts/live_free_server.py (as started by benchmark_labclear.py)",
+ "keys_present": false,
+ "policy": "eval/policies/free_only.example.json",
+ "inference_calls_made": 0,
+ "health": {
+  "status": "ok",
+  "version": "4.0.0-rc2",
+  "commit": "4127bb52328332baa980c363e4130572a4877a85",
+  "environment": "test"
+ },
+ "budget": {
+  "network_enabled": true,
+  "free_policy_active": true,
+  "free_quota": {
+   "run_id": "trial-boot-check",
+   "started_at": 1791512443.9919865,
+   "text_calls": 0,
+   "ocr_calls": 0,
+   "guard_requests": 0,
+   "guard_decisions": 0,
+   "input_tokens": 0,
+   "output_tokens": 0,
+   "provider_ms": 0,
+   "queue_ms": 0,
+   "blocked": 0,
+   "failed": 0
+  },
+  "ledger_enabled": true,
+  "call_cycle": "trial-boot-check"
+ },
+ "free_policy": {
+  "active": true,
+  "valid": true,
+  "policy_id": "free-only-trial",
+  "mode": "LIVE_FREE",
+  "endpoints": [
+   {
+    "family": "text",
+    "host": "api.opentyphoon.ai",
+    "path": "/v1/chat/completions",
+    "model": "typhoon-v2.5-30b-a3b-instruct",
+    "price_status": "FREE_STATUS_UNVERIFIED",
+    "callable": false,
+    "reason": "free_status_unverified"
+   },
+   {
+    "family": "ocr",
+    "host": "api.opentyphoon.ai",
+    "path": "/v1/chat/completions",
+    "model": "typhoon-ocr",
+    "price_status": "FREE_STATUS_UNVERIFIED",
+    "callable": false,
+    "reason": "free_status_unverified"
+   },
+   {
+    "family": "guard",
+    "host": "api.iapp.co.th",
+    "path": "/v3/store/openthai/systemone",
+    "model": "openthai-systemone",
+    "price_status": "FREE_STATUS_UNVERIFIED",
+    "callable": false,
+    "reason": "free_status_unverified"
+   }
+  ]
+ },
+ "slots_ready": {
+  "llm": false,
+  "vision": false,
+  "guard": false
+ },
+ "harness": {
+  "tools": 8,
+  "skills": "0.3.0-offline"
+ }
+}

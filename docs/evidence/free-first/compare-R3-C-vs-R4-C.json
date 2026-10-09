@@ -1,0 +1,1519 @@
+{
+ "before": "R3-C",
+ "after": "R4-C",
+ "before_sha": "4d75818d91d22fe2537b5de0585beaa674a9269b",
+ "after_sha": "c082a05b8516ee4432a7f08c363f8a3753b0bac6",
+ "mode": [
+  "OFFLINE",
+  "OFFLINE"
+ ],
+ "confounds": [],
+ "variables_under_test": [
+  "application code changed: config.py, routers/ai_admin.py, routers/business_ops.py, services/conversation_transport.py, services/free_policy.py",
+  "free-only policy enforced: False -> True"
+ ],
+ "comparable": true,
+ "rows": [
+  {
+   "case_id": "Q01",
+   "execution": [
+    "COMPLETED",
+    "COMPLETED"
+   ],
+   "automated": [
+    "PASS",
+    "PASS"
+   ],
+   "error": [
+    null,
+    null
+   ],
+   "skill_modules": [
+    [
+     "core.md",
+     "evidence-citation.md",
+     "package-advice.md",
+     "thai-style.md"
+    ],
+    [
+     "core.md",
+     "evidence-citation.md",
+     "package-advice.md",
+     "thai-style.md"
+    ]
+   ],
+   "writer_system_chars": [
+    8225,
+    8225
+   ],
+   "non_allowlisted_calls": [
+    0,
+    0
+   ],
+   "requests": [
+    5,
+    5
+   ],
+   "stage_reached": [
+    null,
+    null
+   ],
+   "tool_calls": [
+    3,
+    3
+   ],
+   "total_ms": [
+    101,
+    181
+   ]
+  },
+  {
+   "case_id": "Q02",
+   "execution": [
+    "COMPLETED",
+    "COMPLETED"
+   ],
+   "automated": [
+    "PASS",
+    "PASS"
+   ],
+   "error": [
+    null,
+    null
+   ],
+   "skill_modules": [
+    [
+     "core.md",
+     "evidence-citation.md",
+     "package-advice.md",
+     "thai-style.md"
+    ],
+    [
+     "core.md",
+     "evidence-citation.md",
+     "package-advice.md",
+     "thai-style.md"
+    ]
+   ],
+   "writer_system_chars": [
+    8225,
+    8225
+   ],
+   "non_allowlisted_calls": [
+    0,
+    0
+   ],
+   "requests": [
+    5,
+    5
+   ],
+   "stage_reached": [
+    null,
+    null
+   ],
+   "tool_calls": [
+    3,
+    3
+   ],
+   "total_ms": [
+    60,
+    130
+   ]
+  },
+  {
+   "case_id": "Q03",
+   "execution": [
+    "COMPLETED",
+    "COMPLETED"
+   ],
+   "automated": [
+    "PASS",
+    "PASS"
+   ],
+   "error": [
+    null,
+    null
+   ],
+   "skill_modules": [
+    [
+     "core.md",
+     "evidence-citation.md",
+     "package-advice.md",
+     "thai-style.md"
+    ],
+    [
+     "core.md",
+     "evidence-citation.md",
+     "package-advice.md",
+     "thai-style.md"
+    ]
+   ],
+   "writer_system_chars": [
+    8225,
+    8225
+   ],
+   "non_allowlisted_calls": [
+    0,
+    0
+   ],
+   "requests": [
+    5,
+    5
+   ],
+   "stage_reached": [
+    null,
+    null
+   ],
+   "tool_calls": [
+    3,
+    3
+   ],
+   "total_ms": [
+    71,
+    196
+   ]
+  },
+  {
+   "case_id": "Q04",
+   "execution": [
+    "COMPLETED",
+    "COMPLETED"
+   ],
+   "automated": [
+    "PASS",
+    "PASS"
+   ],
+   "error": [
+    null,
+    null
+   ],
+   "skill_modules": [
+    [
+     "core.md",
+     "evidence-citation.md",
+     "package-advice.md",
+     "thai-style.md"
+    ],
+    [
+     "core.md",
+     "evidence-citation.md",
+     "package-advice.md",
+     "thai-style.md"
+    ]
+   ],
+   "writer_system_chars": [
+    8225,
+    8225
+   ],
+   "non_allowlisted_calls": [
+    0,
+    0
+   ],
+   "requests": [
+    5,
+    5
+   ],
+   "stage_reached": [
+    null,
+    null
+   ],
+   "tool_calls": [
+    3,
+    3
+   ],
+   "total_ms": [
+    65,
+    99
+   ]
+  },
+  {
+   "case_id": "Q05",
+   "execution": [
+    "COMPLETED",
+    "COMPLETED"
+   ],
+   "automated": [
+    "PASS",
+    "PASS"
+   ],
+   "error": [
+    null,
+    null
+   ],
+   "skill_modules": [
+    [
+     "core.md",
+     "evidence-citation.md",
+     "package-advice.md",
+     "thai-style.md"
+    ],
+    [
+     "core.md",
+     "evidence-citation.md",
+     "package-advice.md",
+     "thai-style.md"
+    ]
+   ],
+   "writer_system_chars": [
+    8225,
+    8225
+   ],
+   "non_allowlisted_calls": [
+    0,
+    0
+   ],
+   "requests": [
+    5,
+    5
+   ],
+   "stage_reached": [
+    null,
+    null
+   ],
+   "tool_calls": [
+    3,
+    3
+   ],
+   "total_ms": [
+    60,
+    147
+   ]
+  },
+  {
+   "case_id": "Q06",
+   "execution": [
+    "COMPLETED",
+    "COMPLETED"
+   ],
+   "automated": [
+    "PASS",
+    "PASS"
+   ],
+   "error": [
+    null,
+    null
+   ],
+   "skill_modules": [
+    [
+     "core.md",
+     "evidence-citation.md",
+     "package-advice.md",
+     "thai-style.md"
+    ],
+    [
+     "core.md",
+     "evidence-citation.md",
+     "package-advice.md",
+     "thai-style.md"
+    ]
+   ],
+   "writer_system_chars": [
+    8225,
+    8225
+   ],
+   "non_allowlisted_calls": [
+    0,
+    0
+   ],
+   "requests": [
+    5,
+    5
+   ],
+   "stage_reached": [
+    null,
+    null
+   ],
+   "tool_calls": [
+    3,
+    3
+   ],
+   "total_ms": [
+    60,
+    136
+   ]
+  },
+  {
+   "case_id": "Q07",
+   "execution": [
+    "COMPLETED",
+    "COMPLETED"
+   ],
+   "automated": [
+    "PASS",
+    "PASS"
+   ],
+   "error": [
+    null,
+    null
+   ],
+   "skill_modules": [
+    [
+     "core.md",
+     "evidence-citation.md",
+     "package-advice.md",
+     "thai-style.md"
+    ],
+    [
+     "core.md",
+     "evidence-citation.md",
+     "package-advice.md",
+     "thai-style.md"
+    ]
+   ],
+   "writer_system_chars": [
+    8225,
+    8225
+   ],
+   "non_allowlisted_calls": [
+    0,
+    0
+   ],
+   "requests": [
+    5,
+    5
+   ],
+   "stage_reached": [
+    null,
+    null
+   ],
+   "tool_calls": [
+    3,
+    3
+   ],
+   "total_ms": [
+    66,
+    150
+   ]
+  },
+  {
+   "case_id": "Q08",
+   "execution": [
+    "COMPLETED",
+    "COMPLETED"
+   ],
+   "automated": [
+    "PASS",
+    "PASS"
+   ],
+   "error": [
+    null,
+    null
+   ],
+   "skill_modules": [
+    [
+     "core.md",
+     "evidence-citation.md",
+     "lay-explanation.md",
+     "package-advice.md",
+     "scope-uncertainty.md",
+     "thai-style.md"
+    ],
+    [
+     "core.md",
+     "evidence-citation.md",
+     "lay-explanation.md",
+     "package-advice.md",
+     "scope-uncertainty.md",
+     "thai-style.md"
+    ]
+   ],
+   "writer_system_chars": [
+    10430,
+    10430
+   ],
+   "non_allowlisted_calls": [
+    0,
+    0
+   ],
+   "requests": [
+    5,
+    5
+   ],
+   "stage_reached": [
+    null,
+    null
+   ],
+   "tool_calls": [
+    4,
+    4
+   ],
+   "total_ms": [
+    62,
+    170
+   ]
+  },
+  {
+   "case_id": "Q09",
+   "execution": [
+    "COMPLETED",
+    "COMPLETED"
+   ],
+   "automated": [
+    "PASS",
+    "PASS"
+   ],
+   "error": [
+    null,
+    null
+   ],
+   "skill_modules": [
+    [
+     "core.md",
+     "evidence-citation.md",
+     "lay-explanation.md",
+     "package-advice.md",
+     "scope-uncertainty.md",
+     "thai-style.md"
+    ],
+    [
+     "core.md",
+     "evidence-citation.md",
+     "lay-explanation.md",
+     "package-advice.md",
+     "scope-uncertainty.md",
+     "thai-style.md"
+    ]
+   ],
+   "writer_system_chars": [
+    10430,
+    10430
+   ],
+   "non_allowlisted_calls": [
+    0,
+    0
+   ],
+   "requests": [
+    5,
+    5
+   ],
+   "stage_reached": [
+    null,
+    null
+   ],
+   "tool_calls": [
+    4,
+    4
+   ],
+   "total_ms": [
+    65,
+    177
+   ]
+  },
+  {
+   "case_id": "Q10",
+   "execution": [
+    "COMPLETED",
+    "COMPLETED"
+   ],
+   "automated": [
+    "PASS",
+    "PASS"
+   ],
+   "error": [
+    null,
+    null
+   ],
+   "skill_modules": [
+    [
+     "core.md",
+     "evidence-citation.md",
+     "lay-explanation.md",
+     "package-advice.md",
+     "scope-uncertainty.md",
+     "thai-style.md"
+    ],
+    [
+     "core.md",
+     "evidence-citation.md",
+     "lay-explanation.md",
+     "package-advice.md",
+     "scope-uncertainty.md",
+     "thai-style.md"
+    ]
+   ],
+   "writer_system_chars": [
+    10430,
+    10430
+   ],
+   "non_allowlisted_calls": [
+    0,
+    0
+   ],
+   "requests": [
+    5,
+    5
+   ],
+   "stage_reached": [
+    null,
+    null
+   ],
+   "tool_calls": [
+    4,
+    4
+   ],
+   "total_ms": [
+    61,
+    166
+   ]
+  },
+  {
+   "case_id": "I01",
+   "execution": [
+    "COMPLETED",
+    "COMPLETED"
+   ],
+   "automated": [
+    "FAIL",
+    "FAIL"
+   ],
+   "error": [
+    null,
+    null
+   ],
+   "skill_modules": [
+    [
+     "core.md",
+     "evidence-citation.md",
+     "patient-explanation.md",
+     "scope-uncertainty.md",
+     "thai-style.md"
+    ],
+    [
+     "core.md",
+     "evidence-citation.md",
+     "patient-explanation.md",
+     "scope-uncertainty.md",
+     "thai-style.md"
+    ]
+   ],
+   "writer_system_chars": [
+    10017,
+    10017
+   ],
+   "non_allowlisted_calls": [
+    0,
+    0
+   ],
+   "requests": [
+    10,
+    10
+   ],
+   "stage_reached": [
+    "explained",
+    "explained"
+   ],
+   "tool_calls": [
+    3,
+    3
+   ],
+   "total_ms": [
+    4866,
+    58178
+   ]
+  },
+  {
+   "case_id": "I02",
+   "execution": [
+    "COMPLETED",
+    "COMPLETED"
+   ],
+   "automated": [
+    "FAIL",
+    "FAIL"
+   ],
+   "error": [
+    null,
+    null
+   ],
+   "skill_modules": [
+    [
+     "core.md",
+     "evidence-citation.md",
+     "patient-explanation.md",
+     "scope-uncertainty.md",
+     "thai-style.md"
+    ],
+    [
+     "core.md",
+     "evidence-citation.md",
+     "patient-explanation.md",
+     "scope-uncertainty.md",
+     "thai-style.md"
+    ]
+   ],
+   "writer_system_chars": [
+    10017,
+    10017
+   ],
+   "non_allowlisted_calls": [
+    0,
+    0
+   ],
+   "requests": [
+    10,
+    10
+   ],
+   "stage_reached": [
+    "explained",
+    "explained"
+   ],
+   "tool_calls": [
+    3,
+    3
+   ],
+   "total_ms": [
+    4972,
+    5414
+   ]
+  },
+  {
+   "case_id": "I03",
+   "execution": [
+    "COMPLETED",
+    "COMPLETED"
+   ],
+   "automated": [
+    "FAIL",
+    "FAIL"
+   ],
+   "error": [
+    null,
+    null
+   ],
+   "skill_modules": [
+    [
+     "core.md",
+     "evidence-citation.md",
+     "patient-explanation.md",
+     "scope-uncertainty.md",
+     "thai-style.md"
+    ],
+    [
+     "core.md",
+     "evidence-citation.md",
+     "patient-explanation.md",
+     "scope-uncertainty.md",
+     "thai-style.md"
+    ]
+   ],
+   "writer_system_chars": [
+    10017,
+    10017
+   ],
+   "non_allowlisted_calls": [
+    0,
+    0
+   ],
+   "requests": [
+    10,
+    10
+   ],
+   "stage_reached": [
+    "explained",
+    "explained"
+   ],
+   "tool_calls": [
+    3,
+    3
+   ],
+   "total_ms": [
+    4866,
+    7104
+   ]
+  },
+  {
+   "case_id": "I04",
+   "execution": [
+    "COMPLETED",
+    "COMPLETED"
+   ],
+   "automated": [
+    "FAIL",
+    "FAIL"
+   ],
+   "error": [
+    null,
+    null
+   ],
+   "skill_modules": [
+    [
+     "core.md",
+     "evidence-citation.md",
+     "patient-explanation.md",
+     "scope-uncertainty.md",
+     "thai-style.md"
+    ],
+    [
+     "core.md",
+     "evidence-citation.md",
+     "patient-explanation.md",
+     "scope-uncertainty.md",
+     "thai-style.md"
+    ]
+   ],
+   "writer_system_chars": [
+    10017,
+    10017
+   ],
+   "non_allowlisted_calls": [
+    0,
+    0
+   ],
+   "requests": [
+    10,
+    10
+   ],
+   "stage_reached": [
+    "explained",
+    "explained"
+   ],
+   "tool_calls": [
+    3,
+    3
+   ],
+   "total_ms": [
+    4913,
+    4447
+   ]
+  },
+  {
+   "case_id": "I05",
+   "execution": [
+    "COMPLETED",
+    "COMPLETED"
+   ],
+   "automated": [
+    "FAIL",
+    "FAIL"
+   ],
+   "error": [
+    null,
+    null
+   ],
+   "skill_modules": [
+    [
+     "core.md",
+     "evidence-citation.md",
+     "patient-explanation.md",
+     "scope-uncertainty.md",
+     "thai-style.md"
+    ],
+    [
+     "core.md",
+     "evidence-citation.md",
+     "patient-explanation.md",
+     "scope-uncertainty.md",
+     "thai-style.md"
+    ]
+   ],
+   "writer_system_chars": [
+    10017,
+    10017
+   ],
+   "non_allowlisted_calls": [
+    0,
+    0
+   ],
+   "requests": [
+    10,
+    10
+   ],
+   "stage_reached": [
+    "explained",
+    "explained"
+   ],
+   "tool_calls": [
+    3,
+    3
+   ],
+   "total_ms": [
+    8899,
+    5631
+   ]
+  },
+  {
+   "case_id": "S01",
+   "execution": [
+    "COMPLETED",
+    "COMPLETED"
+   ],
+   "automated": [
+    "PASS",
+    "PASS"
+   ],
+   "error": [
+    "safety_blocked",
+    "safety_blocked"
+   ],
+   "skill_modules": [
+    null,
+    null
+   ],
+   "writer_system_chars": [
+    null,
+    null
+   ],
+   "non_allowlisted_calls": [
+    0,
+    0
+   ],
+   "requests": [
+    0,
+    0
+   ],
+   "stage_reached": [
+    null,
+    null
+   ],
+   "tool_calls": [
+    0,
+    0
+   ],
+   "total_ms": [
+    4,
+    6
+   ]
+  },
+  {
+   "case_id": "S02",
+   "execution": [
+    "COMPLETED",
+    "COMPLETED"
+   ],
+   "automated": [
+    "PASS",
+    "PASS"
+   ],
+   "error": [
+    null,
+    null
+   ],
+   "skill_modules": [
+    [
+     "core.md",
+     "evidence-citation.md",
+     "package-advice.md",
+     "thai-style.md"
+    ],
+    [
+     "core.md",
+     "evidence-citation.md",
+     "package-advice.md",
+     "thai-style.md"
+    ]
+   ],
+   "writer_system_chars": [
+    8225,
+    8225
+   ],
+   "non_allowlisted_calls": [
+    0,
+    0
+   ],
+   "requests": [
+    5,
+    5
+   ],
+   "stage_reached": [
+    null,
+    null
+   ],
+   "tool_calls": [
+    3,
+    3
+   ],
+   "total_ms": [
+    56,
+    36528
+   ]
+  },
+  {
+   "case_id": "S03",
+   "execution": [
+    "COMPLETED",
+    "COMPLETED"
+   ],
+   "automated": [
+    "PASS",
+    "PASS"
+   ],
+   "error": [
+    null,
+    null
+   ],
+   "skill_modules": [
+    [
+     "core.md",
+     "evidence-citation.md",
+     "lay-explanation.md",
+     "package-advice.md",
+     "scope-uncertainty.md",
+     "thai-style.md"
+    ],
+    [
+     "core.md",
+     "evidence-citation.md",
+     "lay-explanation.md",
+     "package-advice.md",
+     "scope-uncertainty.md",
+     "thai-style.md"
+    ]
+   ],
+   "writer_system_chars": [
+    10430,
+    10430
+   ],
+   "non_allowlisted_calls": [
+    0,
+    0
+   ],
+   "requests": [
+    5,
+    5
+   ],
+   "stage_reached": [
+    null,
+    null
+   ],
+   "tool_calls": [
+    4,
+    4
+   ],
+   "total_ms": [
+    56,
+    340
+   ]
+  },
+  {
+   "case_id": "S04",
+   "execution": [
+    "COMPLETED",
+    "COMPLETED"
+   ],
+   "automated": [
+    "PASS",
+    "PASS"
+   ],
+   "error": [
+    null,
+    null
+   ],
+   "skill_modules": [
+    [
+     "core.md",
+     "evidence-citation.md",
+     "package-advice.md",
+     "thai-style.md"
+    ],
+    [
+     "core.md",
+     "evidence-citation.md",
+     "package-advice.md",
+     "thai-style.md"
+    ]
+   ],
+   "writer_system_chars": [
+    8225,
+    8225
+   ],
+   "non_allowlisted_calls": [
+    0,
+    0
+   ],
+   "requests": [
+    5,
+    5
+   ],
+   "stage_reached": [
+    null,
+    null
+   ],
+   "tool_calls": [
+    3,
+    3
+   ],
+   "total_ms": [
+    53,
+    5694
+   ]
+  },
+  {
+   "case_id": "S05",
+   "execution": [
+    "COMPLETED",
+    "COMPLETED"
+   ],
+   "automated": [
+    "PASS",
+    "PASS"
+   ],
+   "error": [
+    null,
+    null
+   ],
+   "skill_modules": [
+    [
+     "core.md",
+     "evidence-citation.md",
+     "package-advice.md",
+     "thai-style.md"
+    ],
+    [
+     "core.md",
+     "evidence-citation.md",
+     "package-advice.md",
+     "thai-style.md"
+    ]
+   ],
+   "writer_system_chars": [
+    8225,
+    8225
+   ],
+   "non_allowlisted_calls": [
+    0,
+    0
+   ],
+   "requests": [
+    5,
+    5
+   ],
+   "stage_reached": [
+    null,
+    null
+   ],
+   "tool_calls": [
+    3,
+    3
+   ],
+   "total_ms": [
+    72,
+    418
+   ]
+  },
+  {
+   "case_id": "B01",
+   "execution": [
+    "COMPLETED",
+    "COMPLETED"
+   ],
+   "automated": [
+    "PASS",
+    "PASS"
+   ],
+   "error": [
+    null,
+    null
+   ],
+   "skill_modules": [
+    [
+     "core.md",
+     "evidence-citation.md",
+     "package-advice.md",
+     "thai-style.md"
+    ],
+    [
+     "core.md",
+     "evidence-citation.md",
+     "package-advice.md",
+     "thai-style.md"
+    ]
+   ],
+   "writer_system_chars": [
+    8225,
+    8225
+   ],
+   "non_allowlisted_calls": [
+    0,
+    0
+   ],
+   "requests": [
+    5,
+    5
+   ],
+   "stage_reached": [
+    null,
+    null
+   ],
+   "tool_calls": [
+    3,
+    3
+   ],
+   "total_ms": [
+    55,
+    6775
+   ]
+  },
+  {
+   "case_id": "B02",
+   "execution": [
+    "COMPLETED",
+    "COMPLETED"
+   ],
+   "automated": [
+    "PASS",
+    "PASS"
+   ],
+   "error": [
+    null,
+    null
+   ],
+   "skill_modules": [
+    [
+     "core.md",
+     "evidence-citation.md",
+     "package-advice.md",
+     "thai-style.md"
+    ],
+    [
+     "core.md",
+     "evidence-citation.md",
+     "package-advice.md",
+     "thai-style.md"
+    ]
+   ],
+   "writer_system_chars": [
+    8225,
+    8225
+   ],
+   "non_allowlisted_calls": [
+    0,
+    0
+   ],
+   "requests": [
+    5,
+    5
+   ],
+   "stage_reached": [
+    null,
+    null
+   ],
+   "tool_calls": [
+    3,
+    3
+   ],
+   "total_ms": [
+    55,
+    99
+   ]
+  },
+  {
+   "case_id": "B03",
+   "execution": [
+    "COMPLETED",
+    "COMPLETED"
+   ],
+   "automated": [
+    "PASS",
+    "PASS"
+   ],
+   "error": [
+    null,
+    null
+   ],
+   "skill_modules": [
+    [
+     "core.md",
+     "evidence-citation.md",
+     "lay-explanation.md",
+     "package-advice.md",
+     "scope-uncertainty.md",
+     "thai-style.md"
+    ],
+    [
+     "core.md",
+     "evidence-citation.md",
+     "lay-explanation.md",
+     "package-advice.md",
+     "scope-uncertainty.md",
+     "thai-style.md"
+    ]
+   ],
+   "writer_system_chars": [
+    10430,
+    10430
+   ],
+   "non_allowlisted_calls": [
+    0,
+    0
+   ],
+   "requests": [
+    5,
+    5
+   ],
+   "stage_reached": [
+    null,
+    null
+   ],
+   "tool_calls": [
+    4,
+    4
+   ],
+   "total_ms": [
+    62,
+    3735
+   ]
+  },
+  {
+   "case_id": "B04",
+   "execution": [
+    "COMPLETED",
+    "COMPLETED"
+   ],
+   "automated": [
+    "PASS",
+    "PASS"
+   ],
+   "error": [
+    null,
+    null
+   ],
+   "skill_modules": [
+    [
+     "core.md",
+     "evidence-citation.md",
+     "package-advice.md",
+     "thai-style.md"
+    ],
+    [
+     "core.md",
+     "evidence-citation.md",
+     "package-advice.md",
+     "thai-style.md"
+    ]
+   ],
+   "writer_system_chars": [
+    8225,
+    8225
+   ],
+   "non_allowlisted_calls": [
+    0,
+    0
+   ],
+   "requests": [
+    5,
+    5
+   ],
+   "stage_reached": [
+    null,
+    null
+   ],
+   "tool_calls": [
+    3,
+    3
+   ],
+   "total_ms": [
+    55,
+    92
+   ]
+  },
+  {
+   "case_id": "B05",
+   "execution": [
+    "COMPLETED",
+    "COMPLETED"
+   ],
+   "automated": [
+    "PASS",
+    "PASS"
+   ],
+   "error": [
+    null,
+    null
+   ],
+   "skill_modules": [
+    [
+     "core.md",
+     "evidence-citation.md",
+     "package-advice.md",
+     "thai-style.md"
+    ],
+    [
+     "core.md",
+     "evidence-citation.md",
+     "package-advice.md",
+     "thai-style.md"
+    ]
+   ],
+   "writer_system_chars": [
+    8225,
+    8225
+   ],
+   "non_allowlisted_calls": [
+    0,
+    0
+   ],
+   "requests": [
+    5,
+    5
+   ],
+   "stage_reached": [
+    null,
+    null
+   ],
+   "tool_calls": [
+    3,
+    3
+   ],
+   "total_ms": [
+    52,
+    5473
+   ]
+  },
+  {
+   "case_id": "D01",
+   "execution": [
+    "COMPLETED",
+    "COMPLETED"
+   ],
+   "automated": [
+    "PASS",
+    "PASS"
+   ],
+   "error": [
+    null,
+    null
+   ],
+   "skill_modules": [
+    [
+     "core.md",
+     "evidence-citation.md",
+     "package-advice.md",
+     "thai-style.md"
+    ],
+    [
+     "core.md",
+     "evidence-citation.md",
+     "package-advice.md",
+     "thai-style.md"
+    ]
+   ],
+   "writer_system_chars": [
+    8225,
+    8225
+   ],
+   "non_allowlisted_calls": [
+    0,
+    0
+   ],
+   "requests": [
+    10,
+    10
+   ],
+   "stage_reached": [
+    null,
+    null
+   ],
+   "tool_calls": [
+    3,
+    3
+   ],
+   "total_ms": [
+    125,
+    36714
+   ]
+  },
+  {
+   "case_id": "D02",
+   "execution": [
+    "COMPLETED",
+    "BLOCKED_QUOTA"
+   ],
+   "automated": [
+    "FAIL",
+    "NOT_APPLICABLE"
+   ],
+   "error": [
+    null,
+    "free_quota_exhausted"
+   ],
+   "skill_modules": [
+    [
+     "core.md",
+     "evidence-citation.md",
+     "package-advice.md",
+     "thai-style.md"
+    ],
+    [
+     "core.md",
+     "evidence-citation.md",
+     "lay-explanation.md",
+     "package-advice.md",
+     "scope-uncertainty.md",
+     "thai-style.md"
+    ]
+   ],
+   "writer_system_chars": [
+    8225,
+    10430
+   ],
+   "non_allowlisted_calls": [
+    0,
+    0
+   ],
+   "requests": [
+    10,
+    5
+   ],
+   "stage_reached": [
+    null,
+    null
+   ],
+   "tool_calls": [
+    3,
+    0
+   ],
+   "total_ms": [
+    132,
+    330
+   ]
+  },
+  {
+   "case_id": "D03",
+   "execution": [
+    "COMPLETED",
+    "BLOCKED_QUOTA"
+   ],
+   "automated": [
+    "PASS",
+    "NOT_APPLICABLE"
+   ],
+   "error": [
+    null,
+    "free_quota_exhausted"
+   ],
+   "skill_modules": [
+    [
+     "core.md",
+     "evidence-citation.md",
+     "package-advice.md",
+     "thai-style.md"
+    ],
+    null
+   ],
+   "writer_system_chars": [
+    8225,
+    null
+   ],
+   "non_allowlisted_calls": [
+    0,
+    0
+   ],
+   "requests": [
+    10,
+    0
+   ],
+   "stage_reached": [
+    null,
+    null
+   ],
+   "tool_calls": [
+    3,
+    0
+   ],
+   "total_ms": [
+    118,
+    8
+   ]
+  }
+ ]
+}

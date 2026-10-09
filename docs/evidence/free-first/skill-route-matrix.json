@@ -1,0 +1,231 @@
+{
+ "summary": {
+  "routes": 8,
+  "v0_2_routes_with_violations": 5,
+  "v0_3_routes_with_violations": 0,
+  "v0_2_mean_chars": 5136,
+  "v0_3_mean_chars": 7482
+ },
+ "routes": [
+  {
+   "role": "advisor",
+   "has_report": false,
+   "medical_evidence": false,
+   "compare_tool": false,
+   "v0_2": {
+    "modules": [
+     "core.md",
+     "thai-style.md",
+     "package-advice.md"
+    ],
+    "chars": 4971,
+    "violations": []
+   },
+   "v0_3": {
+    "modules": [
+     "core.md",
+     "thai-style.md",
+     "evidence-citation.md",
+     "package-advice.md"
+    ],
+    "chars": 6278,
+    "violations": []
+   }
+  },
+  {
+   "role": "advisor",
+   "has_report": false,
+   "medical_evidence": false,
+   "compare_tool": true,
+   "v0_2": {
+    "modules": [
+     "core.md",
+     "thai-style.md",
+     "package-advice.md"
+    ],
+    "chars": 4971,
+    "violations": [
+     "comparison table without comparison guidance"
+    ]
+   },
+   "v0_3": {
+    "modules": [
+     "core.md",
+     "thai-style.md",
+     "evidence-citation.md",
+     "package-advice.md",
+     "package-compare.md"
+    ],
+    "chars": 7136,
+    "violations": []
+   }
+  },
+  {
+   "role": "advisor",
+   "has_report": false,
+   "medical_evidence": true,
+   "compare_tool": false,
+   "v0_2": {
+    "modules": [
+     "core.md",
+     "thai-style.md",
+     "package-advice.md"
+    ],
+    "chars": 4971,
+    "violations": [
+     "no explanation guidance for a medical question"
+    ]
+   },
+   "v0_3": {
+    "modules": [
+     "core.md",
+     "thai-style.md",
+     "evidence-citation.md",
+     "scope-uncertainty.md",
+     "lay-explanation.md",
+     "package-advice.md"
+    ],
+    "chars": 8483,
+    "violations": []
+   }
+  },
+  {
+   "role": "advisor",
+   "has_report": false,
+   "medical_evidence": true,
+   "compare_tool": true,
+   "v0_2": {
+    "modules": [
+     "core.md",
+     "thai-style.md",
+     "package-advice.md"
+    ],
+    "chars": 4971,
+    "violations": [
+     "no explanation guidance for a medical question",
+     "comparison table without comparison guidance"
+    ]
+   },
+   "v0_3": {
+    "modules": [
+     "core.md",
+     "thai-style.md",
+     "evidence-citation.md",
+     "scope-uncertainty.md",
+     "lay-explanation.md",
+     "package-advice.md",
+     "package-compare.md"
+    ],
+    "chars": 9341,
+    "violations": []
+   }
+  },
+  {
+   "role": "explainer",
+   "has_report": false,
+   "medical_evidence": false,
+   "compare_tool": false,
+   "v0_2": {
+    "modules": [
+     "core.md",
+     "thai-style.md",
+     "package-advice.md"
+    ],
+    "chars": 4971,
+    "violations": [
+     "sales module for a role that cannot quote"
+    ]
+   },
+   "v0_3": {
+    "modules": [
+     "core.md",
+     "thai-style.md",
+     "evidence-citation.md"
+    ],
+    "chars": 5135,
+    "violations": []
+   }
+  },
+  {
+   "role": "explainer",
+   "has_report": false,
+   "medical_evidence": true,
+   "compare_tool": false,
+   "v0_2": {
+    "modules": [
+     "core.md",
+     "thai-style.md",
+     "package-advice.md"
+    ],
+    "chars": 4971,
+    "violations": [
+     "sales module for a role that cannot quote",
+     "no explanation guidance for a medical question"
+    ]
+   },
+   "v0_3": {
+    "modules": [
+     "core.md",
+     "thai-style.md",
+     "evidence-citation.md",
+     "scope-uncertainty.md",
+     "lay-explanation.md"
+    ],
+    "chars": 7340,
+    "violations": []
+   }
+  },
+  {
+   "role": "explainer",
+   "has_report": true,
+   "medical_evidence": false,
+   "compare_tool": false,
+   "v0_2": {
+    "modules": [
+     "core.md",
+     "thai-style.md",
+     "patient-explanation.md"
+    ],
+    "chars": 5629,
+    "violations": []
+   },
+   "v0_3": {
+    "modules": [
+     "core.md",
+     "thai-style.md",
+     "evidence-citation.md",
+     "scope-uncertainty.md",
+     "patient-explanation.md"
+    ],
+    "chars": 8070,
+    "violations": []
+   }
+  },
+  {
+   "role": "explainer",
+   "has_report": true,
+   "medical_evidence": true,
+   "compare_tool": false,
+   "v0_2": {
+    "modules": [
+     "core.md",
+     "thai-style.md",
+     "patient-explanation.md"
+    ],
+    "chars": 5629,
+    "violations": []
+   },
+   "v0_3": {
+    "modules": [
+     "core.md",
+     "thai-style.md",
+     "evidence-citation.md",
+     "scope-uncertainty.md",
+     "patient-explanation.md"
+    ],
+    "chars": 8070,
+    "violations": []
+   }
+  }
+ ]
+}

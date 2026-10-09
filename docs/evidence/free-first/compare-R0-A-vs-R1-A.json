@@ -1,0 +1,1221 @@
+{
+ "before": "R0-A",
+ "after": "R1-A",
+ "before_sha": "b7d6643a507151a5d55af68f479b889e5f484ca7",
+ "after_sha": "aa89aed03637fce1b15b48ae15b26e7438e3d254",
+ "mode": [
+  "OFFLINE",
+  "OFFLINE"
+ ],
+ "confounds": [],
+ "variables_under_test": [
+  "application code changed: services/agent_tools.py, services/business_agent.py"
+ ],
+ "comparable": true,
+ "rows": [
+  {
+   "case_id": "Q01",
+   "execution": [
+    "COMPLETED",
+    "COMPLETED"
+   ],
+   "automated": [
+    "PASS",
+    "PASS"
+   ],
+   "error": [
+    null,
+    null
+   ],
+   "skill_modules": [
+    [],
+    []
+   ],
+   "writer_system_chars": [
+    1945,
+    1945
+   ],
+   "non_allowlisted_calls": [
+    0,
+    0
+   ],
+   "requests": [
+    5,
+    5
+   ],
+   "stage_reached": [
+    null,
+    null
+   ],
+   "tool_calls": [
+    0,
+    3
+   ],
+   "total_ms": [
+    91,
+    89
+   ]
+  },
+  {
+   "case_id": "Q02",
+   "execution": [
+    "COMPLETED",
+    "COMPLETED"
+   ],
+   "automated": [
+    "PASS",
+    "PASS"
+   ],
+   "error": [
+    null,
+    null
+   ],
+   "skill_modules": [
+    [],
+    []
+   ],
+   "writer_system_chars": [
+    1945,
+    1945
+   ],
+   "non_allowlisted_calls": [
+    0,
+    0
+   ],
+   "requests": [
+    5,
+    5
+   ],
+   "stage_reached": [
+    null,
+    null
+   ],
+   "tool_calls": [
+    0,
+    3
+   ],
+   "total_ms": [
+    54,
+    47
+   ]
+  },
+  {
+   "case_id": "Q03",
+   "execution": [
+    "COMPLETED",
+    "COMPLETED"
+   ],
+   "automated": [
+    "PASS",
+    "PASS"
+   ],
+   "error": [
+    null,
+    null
+   ],
+   "skill_modules": [
+    [],
+    []
+   ],
+   "writer_system_chars": [
+    1945,
+    1945
+   ],
+   "non_allowlisted_calls": [
+    0,
+    0
+   ],
+   "requests": [
+    5,
+    5
+   ],
+   "stage_reached": [
+    null,
+    null
+   ],
+   "tool_calls": [
+    0,
+    3
+   ],
+   "total_ms": [
+    51,
+    67
+   ]
+  },
+  {
+   "case_id": "Q04",
+   "execution": [
+    "COMPLETED",
+    "COMPLETED"
+   ],
+   "automated": [
+    "PASS",
+    "PASS"
+   ],
+   "error": [
+    null,
+    null
+   ],
+   "skill_modules": [
+    [],
+    []
+   ],
+   "writer_system_chars": [
+    1945,
+    1945
+   ],
+   "non_allowlisted_calls": [
+    0,
+    0
+   ],
+   "requests": [
+    5,
+    5
+   ],
+   "stage_reached": [
+    null,
+    null
+   ],
+   "tool_calls": [
+    0,
+    3
+   ],
+   "total_ms": [
+    54,
+    53
+   ]
+  },
+  {
+   "case_id": "Q05",
+   "execution": [
+    "COMPLETED",
+    "COMPLETED"
+   ],
+   "automated": [
+    "PASS",
+    "PASS"
+   ],
+   "error": [
+    null,
+    null
+   ],
+   "skill_modules": [
+    [],
+    []
+   ],
+   "writer_system_chars": [
+    1945,
+    1945
+   ],
+   "non_allowlisted_calls": [
+    0,
+    0
+   ],
+   "requests": [
+    5,
+    5
+   ],
+   "stage_reached": [
+    null,
+    null
+   ],
+   "tool_calls": [
+    0,
+    3
+   ],
+   "total_ms": [
+    53,
+    62
+   ]
+  },
+  {
+   "case_id": "Q06",
+   "execution": [
+    "COMPLETED",
+    "COMPLETED"
+   ],
+   "automated": [
+    "PASS",
+    "PASS"
+   ],
+   "error": [
+    null,
+    null
+   ],
+   "skill_modules": [
+    [],
+    []
+   ],
+   "writer_system_chars": [
+    1945,
+    1945
+   ],
+   "non_allowlisted_calls": [
+    0,
+    0
+   ],
+   "requests": [
+    5,
+    5
+   ],
+   "stage_reached": [
+    null,
+    null
+   ],
+   "tool_calls": [
+    0,
+    3
+   ],
+   "total_ms": [
+    50,
+    61
+   ]
+  },
+  {
+   "case_id": "Q07",
+   "execution": [
+    "COMPLETED",
+    "COMPLETED"
+   ],
+   "automated": [
+    "PASS",
+    "PASS"
+   ],
+   "error": [
+    null,
+    null
+   ],
+   "skill_modules": [
+    [],
+    []
+   ],
+   "writer_system_chars": [
+    1945,
+    1945
+   ],
+   "non_allowlisted_calls": [
+    0,
+    0
+   ],
+   "requests": [
+    5,
+    5
+   ],
+   "stage_reached": [
+    null,
+    null
+   ],
+   "tool_calls": [
+    0,
+    3
+   ],
+   "total_ms": [
+    53,
+    69
+   ]
+  },
+  {
+   "case_id": "Q08",
+   "execution": [
+    "COMPLETED",
+    "COMPLETED"
+   ],
+   "automated": [
+    "PASS",
+    "PASS"
+   ],
+   "error": [
+    null,
+    null
+   ],
+   "skill_modules": [
+    [],
+    []
+   ],
+   "writer_system_chars": [
+    1945,
+    1945
+   ],
+   "non_allowlisted_calls": [
+    0,
+    0
+   ],
+   "requests": [
+    5,
+    5
+   ],
+   "stage_reached": [
+    null,
+    null
+   ],
+   "tool_calls": [
+    0,
+    4
+   ],
+   "total_ms": [
+    63,
+    71
+   ]
+  },
+  {
+   "case_id": "Q09",
+   "execution": [
+    "COMPLETED",
+    "COMPLETED"
+   ],
+   "automated": [
+    "PASS",
+    "PASS"
+   ],
+   "error": [
+    null,
+    null
+   ],
+   "skill_modules": [
+    [],
+    []
+   ],
+   "writer_system_chars": [
+    1945,
+    1945
+   ],
+   "non_allowlisted_calls": [
+    0,
+    0
+   ],
+   "requests": [
+    5,
+    5
+   ],
+   "stage_reached": [
+    null,
+    null
+   ],
+   "tool_calls": [
+    0,
+    4
+   ],
+   "total_ms": [
+    74,
+    75
+   ]
+  },
+  {
+   "case_id": "Q10",
+   "execution": [
+    "COMPLETED",
+    "COMPLETED"
+   ],
+   "automated": [
+    "PASS",
+    "PASS"
+   ],
+   "error": [
+    null,
+    null
+   ],
+   "skill_modules": [
+    [],
+    []
+   ],
+   "writer_system_chars": [
+    1945,
+    1945
+   ],
+   "non_allowlisted_calls": [
+    0,
+    0
+   ],
+   "requests": [
+    5,
+    5
+   ],
+   "stage_reached": [
+    null,
+    null
+   ],
+   "tool_calls": [
+    0,
+    4
+   ],
+   "total_ms": [
+    58,
+    65
+   ]
+  },
+  {
+   "case_id": "I01",
+   "execution": [
+    "COMPLETED",
+    "COMPLETED"
+   ],
+   "automated": [
+    "FAIL",
+    "FAIL"
+   ],
+   "error": [
+    null,
+    null
+   ],
+   "skill_modules": [
+    [],
+    []
+   ],
+   "writer_system_chars": [
+    1945,
+    1945
+   ],
+   "non_allowlisted_calls": [
+    0,
+    0
+   ],
+   "requests": [
+    9,
+    9
+   ],
+   "stage_reached": [
+    "explained",
+    "explained"
+   ],
+   "tool_calls": [
+    0,
+    3
+   ],
+   "total_ms": [
+    4666,
+    3561
+   ]
+  },
+  {
+   "case_id": "I02",
+   "execution": [
+    "COMPLETED",
+    "COMPLETED"
+   ],
+   "automated": [
+    "FAIL",
+    "FAIL"
+   ],
+   "error": [
+    null,
+    null
+   ],
+   "skill_modules": [
+    [],
+    []
+   ],
+   "writer_system_chars": [
+    1945,
+    1945
+   ],
+   "non_allowlisted_calls": [
+    0,
+    0
+   ],
+   "requests": [
+    9,
+    9
+   ],
+   "stage_reached": [
+    "explained",
+    "explained"
+   ],
+   "tool_calls": [
+    0,
+    3
+   ],
+   "total_ms": [
+    4666,
+    3498
+   ]
+  },
+  {
+   "case_id": "I03",
+   "execution": [
+    "COMPLETED",
+    "COMPLETED"
+   ],
+   "automated": [
+    "FAIL",
+    "FAIL"
+   ],
+   "error": [
+    null,
+    null
+   ],
+   "skill_modules": [
+    [],
+    []
+   ],
+   "writer_system_chars": [
+    1945,
+    1945
+   ],
+   "non_allowlisted_calls": [
+    0,
+    0
+   ],
+   "requests": [
+    9,
+    9
+   ],
+   "stage_reached": [
+    "explained",
+    "explained"
+   ],
+   "tool_calls": [
+    0,
+    3
+   ],
+   "total_ms": [
+    4687,
+    3173
+   ]
+  },
+  {
+   "case_id": "I04",
+   "execution": [
+    "COMPLETED",
+    "COMPLETED"
+   ],
+   "automated": [
+    "FAIL",
+    "FAIL"
+   ],
+   "error": [
+    null,
+    null
+   ],
+   "skill_modules": [
+    [],
+    []
+   ],
+   "writer_system_chars": [
+    1945,
+    1945
+   ],
+   "non_allowlisted_calls": [
+    0,
+    0
+   ],
+   "requests": [
+    9,
+    9
+   ],
+   "stage_reached": [
+    "explained",
+    "explained"
+   ],
+   "tool_calls": [
+    0,
+    3
+   ],
+   "total_ms": [
+    4861,
+    3210
+   ]
+  },
+  {
+   "case_id": "I05",
+   "execution": [
+    "COMPLETED",
+    "COMPLETED"
+   ],
+   "automated": [
+    "FAIL",
+    "FAIL"
+   ],
+   "error": [
+    null,
+    null
+   ],
+   "skill_modules": [
+    [],
+    []
+   ],
+   "writer_system_chars": [
+    1945,
+    1945
+   ],
+   "non_allowlisted_calls": [
+    0,
+    0
+   ],
+   "requests": [
+    9,
+    9
+   ],
+   "stage_reached": [
+    "explained",
+    "explained"
+   ],
+   "tool_calls": [
+    0,
+    3
+   ],
+   "total_ms": [
+    8927,
+    6045
+   ]
+  },
+  {
+   "case_id": "S01",
+   "execution": [
+    "COMPLETED",
+    "COMPLETED"
+   ],
+   "automated": [
+    "PASS",
+    "PASS"
+   ],
+   "error": [
+    "safety_blocked",
+    "safety_blocked"
+   ],
+   "skill_modules": [
+    null,
+    null
+   ],
+   "writer_system_chars": [
+    null,
+    null
+   ],
+   "non_allowlisted_calls": [
+    0,
+    0
+   ],
+   "requests": [
+    0,
+    0
+   ],
+   "stage_reached": [
+    null,
+    null
+   ],
+   "tool_calls": [
+    0,
+    0
+   ],
+   "total_ms": [
+    8,
+    4
+   ]
+  },
+  {
+   "case_id": "S02",
+   "execution": [
+    "COMPLETED",
+    "COMPLETED"
+   ],
+   "automated": [
+    "PASS",
+    "PASS"
+   ],
+   "error": [
+    null,
+    null
+   ],
+   "skill_modules": [
+    [],
+    []
+   ],
+   "writer_system_chars": [
+    1945,
+    1945
+   ],
+   "non_allowlisted_calls": [
+    0,
+    0
+   ],
+   "requests": [
+    5,
+    5
+   ],
+   "stage_reached": [
+    null,
+    null
+   ],
+   "tool_calls": [
+    0,
+    3
+   ],
+   "total_ms": [
+    56,
+    65
+   ]
+  },
+  {
+   "case_id": "S03",
+   "execution": [
+    "COMPLETED",
+    "COMPLETED"
+   ],
+   "automated": [
+    "PASS",
+    "PASS"
+   ],
+   "error": [
+    null,
+    null
+   ],
+   "skill_modules": [
+    [],
+    []
+   ],
+   "writer_system_chars": [
+    1945,
+    1945
+   ],
+   "non_allowlisted_calls": [
+    0,
+    0
+   ],
+   "requests": [
+    5,
+    5
+   ],
+   "stage_reached": [
+    null,
+    null
+   ],
+   "tool_calls": [
+    0,
+    4
+   ],
+   "total_ms": [
+    61,
+    68
+   ]
+  },
+  {
+   "case_id": "S04",
+   "execution": [
+    "COMPLETED",
+    "COMPLETED"
+   ],
+   "automated": [
+    "PASS",
+    "PASS"
+   ],
+   "error": [
+    null,
+    null
+   ],
+   "skill_modules": [
+    [],
+    []
+   ],
+   "writer_system_chars": [
+    1945,
+    1945
+   ],
+   "non_allowlisted_calls": [
+    0,
+    0
+   ],
+   "requests": [
+    5,
+    5
+   ],
+   "stage_reached": [
+    null,
+    null
+   ],
+   "tool_calls": [
+    0,
+    3
+   ],
+   "total_ms": [
+    57,
+    60
+   ]
+  },
+  {
+   "case_id": "S05",
+   "execution": [
+    "COMPLETED",
+    "COMPLETED"
+   ],
+   "automated": [
+    "PASS",
+    "PASS"
+   ],
+   "error": [
+    null,
+    null
+   ],
+   "skill_modules": [
+    [],
+    []
+   ],
+   "writer_system_chars": [
+    1945,
+    1945
+   ],
+   "non_allowlisted_calls": [
+    0,
+    0
+   ],
+   "requests": [
+    5,
+    5
+   ],
+   "stage_reached": [
+    null,
+    null
+   ],
+   "tool_calls": [
+    0,
+    3
+   ],
+   "total_ms": [
+    53,
+    56
+   ]
+  },
+  {
+   "case_id": "B01",
+   "execution": [
+    "COMPLETED",
+    "COMPLETED"
+   ],
+   "automated": [
+    "PASS",
+    "PASS"
+   ],
+   "error": [
+    null,
+    null
+   ],
+   "skill_modules": [
+    [],
+    []
+   ],
+   "writer_system_chars": [
+    1945,
+    1945
+   ],
+   "non_allowlisted_calls": [
+    0,
+    0
+   ],
+   "requests": [
+    5,
+    5
+   ],
+   "stage_reached": [
+    null,
+    null
+   ],
+   "tool_calls": [
+    0,
+    3
+   ],
+   "total_ms": [
+    52,
+    59
+   ]
+  },
+  {
+   "case_id": "B02",
+   "execution": [
+    "COMPLETED",
+    "COMPLETED"
+   ],
+   "automated": [
+    "PASS",
+    "PASS"
+   ],
+   "error": [
+    null,
+    null
+   ],
+   "skill_modules": [
+    [],
+    []
+   ],
+   "writer_system_chars": [
+    1945,
+    1945
+   ],
+   "non_allowlisted_calls": [
+    0,
+    0
+   ],
+   "requests": [
+    5,
+    5
+   ],
+   "stage_reached": [
+    null,
+    null
+   ],
+   "tool_calls": [
+    0,
+    3
+   ],
+   "total_ms": [
+    55,
+    63
+   ]
+  },
+  {
+   "case_id": "B03",
+   "execution": [
+    "COMPLETED",
+    "COMPLETED"
+   ],
+   "automated": [
+    "PASS",
+    "PASS"
+   ],
+   "error": [
+    null,
+    null
+   ],
+   "skill_modules": [
+    [],
+    []
+   ],
+   "writer_system_chars": [
+    1945,
+    1945
+   ],
+   "non_allowlisted_calls": [
+    0,
+    0
+   ],
+   "requests": [
+    5,
+    5
+   ],
+   "stage_reached": [
+    null,
+    null
+   ],
+   "tool_calls": [
+    0,
+    4
+   ],
+   "total_ms": [
+    62,
+    69
+   ]
+  },
+  {
+   "case_id": "B04",
+   "execution": [
+    "COMPLETED",
+    "COMPLETED"
+   ],
+   "automated": [
+    "PASS",
+    "PASS"
+   ],
+   "error": [
+    null,
+    null
+   ],
+   "skill_modules": [
+    [],
+    []
+   ],
+   "writer_system_chars": [
+    1945,
+    1945
+   ],
+   "non_allowlisted_calls": [
+    0,
+    0
+   ],
+   "requests": [
+    5,
+    5
+   ],
+   "stage_reached": [
+    null,
+    null
+   ],
+   "tool_calls": [
+    0,
+    3
+   ],
+   "total_ms": [
+    62,
+    65
+   ]
+  },
+  {
+   "case_id": "B05",
+   "execution": [
+    "COMPLETED",
+    "COMPLETED"
+   ],
+   "automated": [
+    "PASS",
+    "PASS"
+   ],
+   "error": [
+    null,
+    null
+   ],
+   "skill_modules": [
+    [],
+    []
+   ],
+   "writer_system_chars": [
+    1945,
+    1945
+   ],
+   "non_allowlisted_calls": [
+    0,
+    0
+   ],
+   "requests": [
+    5,
+    5
+   ],
+   "stage_reached": [
+    null,
+    null
+   ],
+   "tool_calls": [
+    0,
+    3
+   ],
+   "total_ms": [
+    63,
+    78
+   ]
+  },
+  {
+   "case_id": "D01",
+   "execution": [
+    "COMPLETED",
+    "COMPLETED"
+   ],
+   "automated": [
+    "PASS",
+    "PASS"
+   ],
+   "error": [
+    null,
+    null
+   ],
+   "skill_modules": [
+    [],
+    []
+   ],
+   "writer_system_chars": [
+    1945,
+    1945
+   ],
+   "non_allowlisted_calls": [
+    0,
+    0
+   ],
+   "requests": [
+    10,
+    10
+   ],
+   "stage_reached": [
+    null,
+    null
+   ],
+   "tool_calls": [
+    0,
+    3
+   ],
+   "total_ms": [
+    125,
+    120
+   ]
+  },
+  {
+   "case_id": "D02",
+   "execution": [
+    "COMPLETED",
+    "COMPLETED"
+   ],
+   "automated": [
+    "FAIL",
+    "FAIL"
+   ],
+   "error": [
+    null,
+    null
+   ],
+   "skill_modules": [
+    [],
+    []
+   ],
+   "writer_system_chars": [
+    1945,
+    1945
+   ],
+   "non_allowlisted_calls": [
+    0,
+    0
+   ],
+   "requests": [
+    10,
+    10
+   ],
+   "stage_reached": [
+    null,
+    null
+   ],
+   "tool_calls": [
+    0,
+    3
+   ],
+   "total_ms": [
+    120,
+    130
+   ]
+  },
+  {
+   "case_id": "D03",
+   "execution": [
+    "COMPLETED",
+    "COMPLETED"
+   ],
+   "automated": [
+    "PASS",
+    "PASS"
+   ],
+   "error": [
+    null,
+    null
+   ],
+   "skill_modules": [
+    [],
+    []
+   ],
+   "writer_system_chars": [
+    1945,
+    1945
+   ],
+   "non_allowlisted_calls": [
+    0,
+    0
+   ],
+   "requests": [
+    10,
+    10
+   ],
+   "stage_reached": [
+    null,
+    null
+   ],
+   "tool_calls": [
+    0,
+    3
+   ],
+   "total_ms": [
+    117,
+    117
+   ]
+  }
+ ]
+}

@@ -1,0 +1,3 @@
+$ python scripts/benchmark_labclear.py run --mode live-free --suite coursework --profile C --policy eval/policies/free_only.example.json
+exit code: 2
+LIVE_FREE blocked by preflight; nothing was sent to any provider.
