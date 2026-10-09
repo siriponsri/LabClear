@@ -87,7 +87,10 @@ async def budget_status(request: Request):
         user = staff(tx, request)
         if user["data"]["role"] != "manager":
             raise ConversationError("forbidden", "Manager access required.", 403)
+    from services import free_policy
+    free = free_policy.status()
     return {"cost": cost_ledger.status(), "network_enabled": settings.PROVIDER_NETWORK_ENABLED,
+            "free_policy_active": free.get("active", False), "free_quota": free.get("usage"),
             "call_cycle": settings.PROVIDER_BUDGET_CYCLE_ID or None,
             "hosted_calls": __import__("services.conversation_transport", fromlist=["durable_call_status"]).durable_call_status()}
 

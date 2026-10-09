@@ -8,6 +8,7 @@ from __future__ import annotations
 from fastapi import APIRouter, Request
 from pydantic import Field
 
+from config import settings
 from routers.business import ConversationError, Strict, staff
 from services import business_store as db
 from services import providers
@@ -43,7 +44,16 @@ def _slot(slot: str) -> str:
 async def view(request: Request):
     with db.transaction() as tx:
         _manager(tx, request)
-        return providers.public_view(tx)
+        data = providers.public_view(tx)
+    from services import agent_tools, free_policy, runtime_skills
+    manifest = runtime_skills._manifest()
+    data["free_policy"] = free_policy.status()
+    data["harness"] = {"tools_schema": agent_tools.SCHEMA_VERSION,
+                       "tools": [{k: t[k] for k in ("name", "version", "scope", "timeout_seconds", "max_items", "description")} for t in agent_tools.describe()],
+                       "skills": {"package": manifest["id"], "version": manifest["version"], "enabled": settings.RUNTIME_SKILLS_ENABLED,
+                                  "modules": [{"file": name, "id": meta["id"], "version": meta["version"], "sha256": manifest["modules"][name][:16]}
+                                              for name, meta in manifest.get("module_meta", {}).items()]}}
+    return data
 
 
 @router.get('/registry')

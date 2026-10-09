@@ -73,6 +73,14 @@ class Settings(BaseSettings):
     MODEL_PRICES_THB: str = ""
     COST_IMAGE_TOKEN_ESTIMATE: int = 1500
 
+    # Free-first trial profile (off by default). FREE_ONLY_POLICY_PATH names a reviewed policy of exact
+    # free endpoint/model tuples; every provider call must match it and pass its shared quota before the
+    # call cap, the ledger and the network. See services/free_policy.py and
+    # docs/ceo-upgrade/FREE_PROVIDER_PREFLIGHT.md. The two other values are set by the benchmark servers.
+    FREE_ONLY_POLICY_PATH: str = ""
+    FREE_ONLY_RUN_ID: str = ""
+    FREE_ONLY_ALLOW_OFFLINE_DOUBLES: bool = False
+
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",

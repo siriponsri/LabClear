@@ -1,7 +1,9 @@
 """Bounded AI provider calls: one attempt, no fallback, no request-body logging, no secrets in errors.
 
 Every call first counts against the durable call cap (PROVIDER_BUDGET_CYCLE_ID / CLOUD_CALL_LIMIT)
-and the project THB ledger, both stored in the business database."""
+and the project THB ledger, both stored in the business database. With FREE_ONLY_POLICY_PATH set
+(free-first trial), services/free_policy.py checks the exact endpoint/model and the shared quota
+before either of them, so a refused call never reaches the network."""
 from __future__ import annotations
 
 import asyncio
@@ -104,9 +106,22 @@ def durable_call_status() -> dict | None:
             "by_slot": data.get("by_slot", {}), "storage": "postgresql" if os.getenv("DATABASE_URL") else "sqlite"}
 
 
+def _settle_gate(gate, usage, outcome: str) -> None:
+    if gate is not None:
+        from services import free_policy
+        free_policy.settle(gate, usage, outcome)
+
+
 async def post_json(url: str, headers: dict[str, str], body: dict, slot: str, timeout: float,
                     price: dict | None = None, model: str = "", label: str = "") -> dict:
     endpoint = validate_server_url(url)
+    gate = None
+    if settings.FREE_ONLY_POLICY_PATH:
+        if not settings.PROVIDER_NETWORK_ENABLED:
+            raise ConversationError("offline", "AI is not connected yet. The site owner needs to set PROVIDER_NETWORK_ENABLED=true.")
+        from services import free_policy
+        gate = await free_policy.admit(endpoint, model or str(body.get("model") or ""), body)
+        price = gate.price  # zero only because the reviewed policy verified this exact endpoint as free
     await reserve(slot)
     from services import cost_ledger
     # THB reservation after the call-count gate; both must pass before any request.
@@ -131,12 +146,15 @@ async def post_json(url: str, headers: dict[str, str], body: dict, slot: str, ti
                 if not isinstance(result, dict):
                     raise ValueError
         cost_ledger.settle(cost, result.get("usage"), "succeeded")
+        _settle_gate(gate, result.get("usage"), "succeeded")
         return result
     except asyncio.CancelledError:
         cost_ledger.settle(cost, None, "cancelled")
+        _settle_gate(gate, None, "cancelled")
         raise
     except (httpx.HTTPError, ValueError, ConversationError) as exc:
         cost_ledger.settle(cost, None, "failed")
+        _settle_gate(gate, None, "failed")
         if isinstance(exc, ConversationError):
             raise
         raise ConversationError("service_unavailable", "A connected service could not complete this request. Please try again.", 502) from None

@@ -49,6 +49,7 @@ def main(config_path: str) -> None:
     if config.get("free_only_policy") and hasattr(settings, "FREE_ONLY_POLICY_PATH"):
         settings.FREE_ONLY_POLICY_PATH = config["free_only_policy"]
         settings.FREE_ONLY_RUN_ID = config["cycle"]
+        settings.FREE_ONLY_ALLOW_OFFLINE_DOUBLES = True  # the offline policy's entries are test doubles
     # Only the in-process MockTransport can be reached; offline_check already denies sockets.
     settings.PROVIDER_NETWORK_ENABLED = True
 

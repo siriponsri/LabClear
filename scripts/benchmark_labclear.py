@@ -205,7 +205,9 @@ class Server:
                "trap_paid_review_slot": self.run.get("trap_paid_review_slot", False),
                "recorder": str(self.run_dir / "provider_calls.jsonl"),
                "label_policy": str(ROOT / "eval/policies/free_only.offline.json"),
-               "free_only_policy": str(ROOT / "eval/policies/free_only.offline.json") if self.run.get("free_only") else None,
+               "free_only_policy": (self.run.get("policy_file") if self.mode == "LIVE_FREE" else
+                                    str(ROOT / "eval/policies/free_only.offline.json") if self.run.get("free_only") else None),
+               "state_dir": str(self.run_dir / "trial-state") if self.mode == "LIVE_FREE" else None,
                "canary_key": self.run["canary_key"], "manager_password": self.manager_password,
                "canaries": self.run.get("canaries", {}), "ready_file": str(self.run_dir / ".ready"),
                "record_replay_to": str(self.run_dir / "replay.jsonl") if self.run.get("record_replay") else None,
@@ -1014,6 +1016,22 @@ def cmd_freeze(args) -> int:
 
 # ------------------------------------------------------------------ preflight (no inference)
 
+def effective_slots(policy_path: str | None, profile: str) -> dict | None:
+    """Resolve every AI slot exactly as the trial server would, in a clean process (no .env, temp DB)."""
+    if not policy_path:
+        return None
+    import tempfile
+    with tempfile.TemporaryDirectory(prefix="labclear-preflight-") as folder:
+        cfg = Path(folder) / "config.json"
+        cfg.write_text(json.dumps({"profile": profile, "free_only_policy": str(Path(policy_path).resolve()), "cycle": "preflight",
+                                   "manager_password": secrets.token_urlsafe(12), "canaries": {}, "state_dir": folder}), encoding="utf-8")
+        done = subprocess.run([PY, str(ROOT / "scripts/live_free_server.py"), "--print-effective-slots", str(cfg)], cwd=folder,
+                              env=live_env({}), capture_output=True, text=True, timeout=120)
+        if done.returncode != 0:
+            return {"error": {"will_be_called": True, "host": "unresolved", "path": "", "model": "", "source": done.stderr[-300:]}}
+        return json.loads(done.stdout.strip().splitlines()[-1])
+
+
 def preflight(policy_path: str | None, profile: str, cases: list[dict], write: Path | None) -> dict:
     """Checks before any live call. Imports the free-only policy engine; never calls a provider."""
     sys.path.insert(0, str(ROOT))
@@ -1022,7 +1040,12 @@ def preflight(policy_path: str | None, profile: str, cases: list[dict], write: P
     except ImportError:
         report = {"status": "BLOCKED", "checked_at": now(), "blockers": ["FREE_POLICY_NOT_IMPLEMENTED in this candidate"]}
     else:
-        report = free_policy.preflight(policy_path, profile=profile, cases=cases, env=os.environ, candidate=candidate())
+        try:
+            slots = effective_slots(policy_path, profile) if policy_path and Path(policy_path).exists() else None
+        except (OSError, ValueError, subprocess.SubprocessError) as exc:
+            slots = {"error": {"will_be_called": True, "host": "unresolved", "path": "", "model": "", "source": type(exc).__name__}}
+        report = free_policy.preflight(policy_path, profile=profile, cases=cases, env=os.environ, candidate=candidate(),
+                                       effective_slots=slots)
     if write:
         write.write_text(json.dumps(report, ensure_ascii=False, indent=1), encoding="utf-8")
     return report
