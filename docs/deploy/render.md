@@ -124,6 +124,47 @@ on macOS/Linux use `sha256sum` instead of `Get-FileHash` and `curl` instead of `
    `render deploys create srv-XXXX --commit <previous-sha> --wait --confirm`. Then revert the faulty
    merge on `main`, because the next commit deploys again.
 
+## Setting variables from the command line
+
+The Render CLI has no command that changes environment variables on an existing service, so use the
+Render API with an API key (Dashboard → Account Settings → API Keys). Each call below changes one
+variable and keeps the others. A change takes effect at the next deploy, so set the variables
+before merging (the merge deploys), or run `render deploys create` afterwards. Windows PowerShell 7:
+
+```powershell
+$env:RENDER_API_KEY = Read-Host "Render API key" -MaskInput
+render services                                  # find the labclear service ID (srv-...)
+$svc = "srv-XXXXXXXXXXXXXXXXXXXX"                # paste it here
+$h = @{ Authorization = "Bearer $env:RENDER_API_KEY" }
+function Set-RenderEnv([string]$Key, [string]$Value) {
+  Invoke-RestMethod -Method Put -Uri "https://api.render.com/v1/services/$svc/env-vars/$Key" -Headers $h `
+    -ContentType "application/json" -Body (@{ value = $Value } | ConvertTo-Json) | Out-Null
+  "set $Key"
+}
+
+# Secrets: typed at the prompt, never written to a file or the shell history
+Set-RenderEnv DATABASE_URL      (Read-Host "Internal Database URL" -MaskInput)
+Set-RenderEnv BUSINESS_DATA_KEY (Read-Host "Fernet key (keep the existing one)" -MaskInput)
+
+# Budget and call cap (keep the existing values on a running service)
+Set-RenderEnv PROVIDER_BUDGET_CYCLE_ID       "labclear-1"
+Set-RenderEnv CLOUD_CALL_LIMIT               "200"
+Set-RenderEnv PROJECT_BUDGET_PRIOR_SPEND_THB "0"
+
+# AI stays off until the providers are set on /staff
+Set-RenderEnv PROVIDER_NETWORK_ENABLED "false"
+Set-RenderEnv DEMO_ACCOUNTS            "false"
+
+# Check the keys (names only, no values)
+(Invoke-RestMethod -Uri "https://api.render.com/v1/services/$svc/env-vars?limit=100" -Headers $h).envVar.key
+```
+
+The same request with curl (macOS/Linux): `curl -X PUT -H "Authorization: Bearer $RENDER_API_KEY"
+-H "Content-Type: application/json" -d '{"value":"…"}'
+https://api.render.com/v1/services/$SVC/env-vars/<KEY>`. Do not use `PUT …/env-vars` without a key
+in the path: it replaces every variable of the service. The values fixed in `render.yaml` (resilience
+settings, flags) come from the Blueprint sync and do not need to be set by hand.
+
 ## Migrating from the two-service setup
 
 Earlier release candidates could run a second Render web service, `labclear-web`, for a Next.js
