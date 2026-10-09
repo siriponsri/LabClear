@@ -360,6 +360,8 @@ export function OrgsView() {
   const { api, t, tf, user, requireAccount } = useWorkspace();
   const signedIn = !!user?.registered;
   const [replacing, setReplacing] = useState<Doc | null>(null);
+  // A fresh form after each upload, so the emptied required fields do not show as errors.
+  const [uploads, setUploads] = useState(0);
   const res = useLoad<Loaded | null>(async () => {
     if (!signedIn) return null;
     const features = await loadFeatures();
@@ -432,8 +434,9 @@ export function OrgsView() {
           )}
           {can_edit ? (
             <div className="org-admin stack">
-              <UploadForm key={replacing?.id || "new"} replacing={replacing} onCancel={() => setReplacing(null)} onDone={async () => {
+              <UploadForm key={(replacing?.id || "new") + ":" + uploads} replacing={replacing} onCancel={() => setReplacing(null)} onDone={async () => {
                 setReplacing(null);
+                setUploads((n) => n + 1);
                 await reload();
               }} />
             </div>
