@@ -1,6 +1,6 @@
 {
   "id": "labclear-thai-health-communication",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "clinical_validation": "NOT_RUN",
   "language_review": "PENDING (no native-speaker or lay-reader review yet)",
   "selection": "Per task by services/runtime_skills.select from server facts: role capabilities, planned action, confirmed report, evidence classes and tools that ran. Model output, user text and documents cannot select, install or edit modules.",
@@ -8,12 +8,12 @@
     "SOURCES.md": "51c4d7b080181d881599add7133c730d85d713a43a44cc588e9c567b15112fa5",
     "core.md": "b098db355cbb49b0361a41580b9ac5d20a8d175899436a80be7966a26a64f2bd",
     "evidence-citation.md": "e6a818eb514755d4c89cc5c7ae936059186e7293d678c36882cac1f8e31322ed",
-    "lay-explanation.md": "5664e5687f7c43731eef477af73c852ee29e632370c1f138364a94e6b384b774",
+    "lay-explanation.md": "1c46d0963b4b113c879e07fd28bce028971919befd2ecf7dfcc72970fb112e66",
     "package-advice.md": "140953c844ff2207d6f10b75f37536bdf47c2e6d629353a3b73e36597105ee80",
     "package-compare.md": "3aabd716f90740301a5934282a06c348eab3ff34ba2bd95dc4cb944e89f703f9",
     "patient-explanation.md": "4c6e53ba6cb4bbb988ac28f8d344ea489f107b7a45607ac571c9ab0627101a60",
     "scope-uncertainty.md": "b937b46b08c996e965818e037dbdd908785c62975ddf3fdd32a40a723230e5bc",
-    "thai-style.md": "431e90cc46104c26dc37e0fe38e56c77b64640f540e9aba74c18a75d8ec0d48d"
+    "thai-style.md": "d9003fe53a7a378c28cc6fd8732e078c24eda9bfd01631b3e0346167ab724449"
   },
   "module_meta": {
     "core.md": {
@@ -24,7 +24,7 @@
     },
     "thai-style.md": {
       "id": "thai-style",
-      "version": "0.4.0",
+      "version": "0.4.1",
       "requires": {},
       "boundary": "Input: any answer draft. Output: plain Thai (or the language the user asked for) with numbers, units, negation and uncertainty unchanged."
     },
@@ -42,7 +42,7 @@
     },
     "lay-explanation.md": {
       "id": "lay-explanation",
-      "version": "0.4.0",
+      "version": "0.4.1",
       "requires": {},
       "boundary": "Input: medical evidence without a confirmed report. Output: general explanation of a test; no personal conclusion from typed values."
     },

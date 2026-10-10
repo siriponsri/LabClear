@@ -38,7 +38,7 @@ def failed_checks(review):
 
 def recovery(message, language, has_report):
     # Local, reviewed UI copy: no generated clinical content, no echoed user/report/source data.
-    thai = bool(re.search(r'[ก-๙]', message)) or str(language).lower() in {'thai', 'th', 'ไทย'}
+    thai = str(language).lower() in {'thai', 'th', 'ไทย'} if str(language).lower() in {'thai','th','ไทย','english','en'} else bool(re.search(r'[ก-๙]', message))
     if thai:
         text = 'ฉันยังตรวจยืนยันคำอธิบายร่างนี้ไม่ได้ จึงไม่แสดงร่างนั้น ปัญหานี้ไม่ได้แปลว่าคุณให้ข้อมูลไม่ครบ '
         text += ('ค่าผลตรวจที่คุณยืนยันยังคงอยู่ คุณอยากเริ่มอธิบายการตรวจรายการไหนก่อน?' if has_report else

@@ -9,6 +9,7 @@ from zoneinfo import ZoneInfo
 from fastapi import APIRouter,Request,Response,UploadFile,File,Form
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel,ConfigDict,Field
+from typing import Literal
 from services import business_store as db,business_agent,business_ops as ops,business_plans as plans,demo_accounts as demo,chat_sessions as chats
 from services.chat_sessions import conversation
 from services.conversation_transport import ConversationError
@@ -31,6 +32,7 @@ class LoginInput(Strict):
     email:str=Field(min_length=3,max_length=180)
     password:str=Field(min_length=4,max_length=200)
 class PageContext(Strict):
+    language:Literal["th","en"]|None=None
     path:str=Field(default='',max_length=120,pattern=r'^[A-Za-z0-9/_\-]*$')
     package_id:str=Field(default='',max_length=10,pattern=r'^[A-Z0-9]*$')
     compare_ids:list[str]=Field(default_factory=list,max_length=3)
@@ -418,7 +420,7 @@ def admitted(request,route,kind,owner):
 async def chat(body:Chat,request:Request):
     provider_authorize(request)
     u=await stored(lambda tx:session_row(tx,request)[0])
-    page=body.page.model_dump() if body.page else None
+    page=body.page.model_dump(exclude_none=True) if body.page else None
     if page:page['compare_ids']=[i for i in page['compare_ids'] if re.fullmatch(r'P\d{2}',i)]
     ctx=admitted(request,'/chat','ai',u['id'])
     return await execution.respond(request,ctx,lambda emit:turn(u['id'],body.message,page=page,emit=emit))

@@ -38,6 +38,8 @@ def _aliases() -> list[tuple[str, re.Pattern]]:
 
 def medical_terms(text: str, limit: int = 8) -> list[str]:
     terms: list[str] = []
+    if re.search(r"reference\s+(?:range|interval)|printed\s+(?:reference\s+)?interval|ช่วงอ้างอิง|ค่าอ้างอิง", text, re.I):
+        terms.append("reference interval")
     for alias, pattern in _aliases():
         if pattern.search(text) and not any(alias.casefold() in t.casefold() for t in terms):
             terms.append(alias)
@@ -105,7 +107,7 @@ def critical_note(report: dict | None, reply: str, message: str = "") -> str:
     return NOTE_TH if re.search(r"[฀-๿]", message + reply) else NOTE_EN
 
 
-def content_issues(reply: str, evidence: list[dict], report: dict | None = None) -> list[str]:
+def content_issues(reply: str, evidence: list[dict], report: dict | None = None, message: str = "") -> list[str]:
     """Bounded regression checks, not a clinical classifier or proof of entailment.
 
     Catch observed source-type and named-row range failures before model review.
@@ -114,6 +116,13 @@ def content_issues(reply: str, evidence: list[dict], report: dict | None = None)
     issues = []
     sources = {e['id']: e for e in evidence}
     plain = re.sub(r'[*_`]', '', reply).replace('–', '-').replace('−', '-').replace('—', '-')
+    # Observed live regression: a unit-less number was labelled normal by guessing a unit.
+    # A bounded affirmative-pattern check, not a general clinical classifier.
+    missing_unit = re.search(r'without (?:a |the )?unit|unit (?:is |was )?not (?:given|provided)|ไม่มีหน่วย|ไม่(?:ได้)?ระบุหน่วย', message, re.I)
+    if missing_unit:
+        classification = re.search(r'(?:ค่า\s*)?\d+(?:\.\d+)?\s*(?:ถือว่า|อยู่ในเกณฑ์)(?:ปกติ|สูง|ต่ำ)|\b\d+(?:\.\d+)?\s+(?:is|would be|counts as)\s+(?:normal|high|low)\b', plain, re.I)
+        if classification and not re.search(r'cannot|can not|not know|whether|ไม่สามารถ|บอกไม่ได้', plain[max(0,classification.start()-30):classification.start()], re.I):
+            issues.append('numeric_classification_without_unit')
     # Disease staging is outside the report explainer's remit, even when hedged.
     if report and re.search(r'(?:ไตวาย|โรคไต|มะเร็ง)\s*(?:เรื้อรัง\s*)?ระยะ(?:ที่)?\s*\d|(?:kidney\s+(?:disease|failure)|cancer).{0,20}stage\s*\d|stage\s*\d.{0,20}(?:kidney|cancer)', plain, re.I):
         issues.append('personal_disease_staging')

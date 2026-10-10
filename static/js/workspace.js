@@ -406,7 +406,7 @@
   }
 
   /* ------------------------------------------------------------ sending */
-  const defaultQuestion = () => (window.LabClearI18n?.language || navigator.language || '').toLowerCase().startsWith('th') ? 'ช่วยอ่านและอธิบายผลแล็บนี้ให้หน่อย' : 'Please read this report and explain it.';
+  const defaultQuestion = () => (window.LC_I18N?.lang || document.documentElement.lang || 'th').toLowerCase().startsWith('th') ? 'ช่วยอ่านและอธิบายผลแล็บนี้ให้หน่อย' : 'Please read this report and explain it.';
   async function finishTurn() {
     busy = false; $('response-tone').disabled = false; $('send').disabled = false; $('stop').hidden = true; $('chat-status').textContent = ''; controller = null;
     document.body.classList.remove('turn-active');
@@ -458,7 +458,7 @@
         const form = new FormData(); files.forEach(f => form.append('files', f.file)); form.append('message', question); if (sample) form.append('demo_id', sample.id);
         const r = await stream('/chat/report', { method: 'POST', body: form, signal: controller.signal }, live?.step, 150000);
         if (r.entitlement && state) { state.plan = r.entitlement; syncFileInput(); }
-      } else await stream('/chat', { method: 'POST', body: JSON.stringify({ message: question, page: { path: '/app', view } }), signal: controller.signal }, live?.step);
+      } else await stream('/chat', { method: 'POST', body: JSON.stringify({ message: question, page: { path: '/app', view, language: window.LC_I18N?.lang || 'th' } }), signal: controller.signal }, live?.step);
     } catch (e) {
       if (e.kind !== 'aborted' && e.name !== 'AbortError') { failed = e; live?.fail(e.message, e); if (e.code === 'subscription_required') upgradeDialog(e.message); else notice(e.message, 'bad'); }
     } finally {

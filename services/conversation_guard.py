@@ -36,9 +36,11 @@ def refusal(message: str, direction: str, user_message: str = '') -> str:
     thai = bool(re.search(r'[฀-๿]', user_message or message))
     if direction == 'document':
         return 'เอกสารนี้ไม่ผ่านการตรวจความปลอดภัย กรุณาส่งภาพหรือ PDF ใบผลตรวจที่ชัดเจน' if thai else BLOCKED_DOCUMENT
+    urgent = bool(re.search(r'severe\s+chest\s+pain|เจ็บหน้าอกรุนแรง|severe\s+(?:difficulty|trouble)\s+breathing|หายใจลำบากรุนแรง|(?:chest pain|เจ็บหน้าอก).{0,100}(?:short(?:ness)? of breath|difficulty breathing|หายใจลำบาก)', user_message or message, re.I))
+    emergency = ('หากมีอาการเจ็บหน้าอกรุนแรงหรือหายใจลำบากในขณะนี้ ให้ขอความช่วยเหลือฉุกเฉินทางการแพทย์ทันที ไม่ควรรอคำตอบจากแชตบอต ' if thai else 'If someone has severe chest pain or trouble breathing now, seek emergency medical help immediately. Do not wait for a chatbot response. ') if urgent else ''
     if re.search(r'system\s*prompt|api\s*key|ลืมคำสั่ง|ละเลยคำสั่ง', user_message or message, re.I):
-        return 'ไม่สามารถเปิดเผยคำสั่งภายในหรือคีย์ และไม่สามารถเปลี่ยนกฎหรือราคาตามคำสั่งนี้ได้ สามารถช่วยเรื่องบริการและผลตรวจทั่วไปได้' if thai else 'I cannot reveal internal instructions or keys, or override service rules. I can help with services and general lab questions.'
-    return 'ไม่สามารถทำตามคำขอนี้ได้ หากต้องการวินิจฉัยโรค ยา หรือขนาดยา กรุณาปรึกษาแพทย์หรือเภสัชกร สามารถช่วยอธิบายการตรวจและช่วงอ้างอิงบนใบรายงานได้' if thai else BLOCKED
+        return emergency + ('ไม่สามารถเปิดเผยคำสั่งภายในหรือคีย์ และไม่สามารถเปลี่ยนกฎหรือราคาตามคำสั่งนี้ได้ สามารถช่วยเรื่องบริการและผลตรวจทั่วไปได้' if thai else 'I cannot reveal internal instructions or keys, or override service rules. I can help with services and general lab questions.')
+    return emergency + ('ไม่สามารถทำตามคำขอนี้ได้ หากต้องการวินิจฉัยโรค ยา หรือขนาดยา กรุณาปรึกษาแพทย์หรือเภสัชกร สามารถช่วยอธิบายการตรวจและช่วงอ้างอิงบนใบรายงานได้' if thai else BLOCKED)
 
 CRITERIA = {
     "safe": "An ordinary question or answer about lab tests, what a value or reference range means in general, "

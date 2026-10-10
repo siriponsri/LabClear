@@ -4,6 +4,7 @@ const {spawn}=require('child_process');
 const fs=require('fs'),path=require('path'),assert=require('node:assert/strict');
 const root=path.resolve(__dirname,'../..'),out=path.join(root,'test-results/review-tone-browser');
 fs.mkdirSync(out,{recursive:true});
+const pageRequest=p=>p.waitForRequest(r=>r.method()==='POST'&&r.url().endsWith('/api/business/chat'));
 const port=8103,base='http://127.0.0.1:'+port,wait=ms=>new Promise(r=>setTimeout(r,ms));
 let browser,server;const records=[],errors=[];
 (async()=>{try{
@@ -33,7 +34,7 @@ let browser,server;const records=[],errors=[];
       records.push({id:`tone-${width}-${lang}`,status:'PASS',checks:'default; three styles; draft preserved; translated label; no overflow'});
     }
     await tone.selectOption('playful');await p.waitForFunction(()=>!document.getElementById('response-tone').disabled);
-    await draft.fill('UI_TEST_SOURCES');await p.locator('#send').click();
+    await draft.fill('UI_TEST_SOURCES');const sent=pageRequest(p);await p.locator('#send').click();assert.equal((await sent).postDataJSON().page.language,'en');
     await p.waitForFunction(()=>!document.getElementById('send').disabled);
     assert.equal(await tone.inputValue(),'playful');
     await draft.fill('UI_TEST_SOURCES');await p.locator('#send').click();await p.waitForFunction(()=>!document.getElementById('send').disabled);

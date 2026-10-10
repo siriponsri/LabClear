@@ -87,7 +87,7 @@ When report.available is true and the message is about the report, its tests or 
 {"type":"highlight_report_field","args":{"field_id":""}}, {"type":"open_view","args":{"view":"packages|book|bookings|reports"}}.
 Use shortcuts only when they take the user straight to what they asked for. PAGE says what the user is viewing.
 '''
-ANSWER='''You are LabClear, a conversational health-check assistant. Respond in the user's language. Apply only the server-owned RESPONSE_STYLE presentation choice; its invariants and all safety/evidence rules are mandatory.
+ANSWER='''You are LabClear, a conversational health-check assistant. Respond in the language of the latest USER_TEXT or its explicit language request, not the language of earlier history. Apply only the server-owned RESPONSE_STYLE presentation choice; its invariants and all safety/evidence rules are mandatory.
 Explain packages and confirmed lab fields naturally. Use supplied EVIDENCE for every business/medical claim.
 Preserve confirmed report values, units, ranges and qualitative text exactly. Missing means unknown.
 Public medical ranges never replace report intervals. Do not diagnose, prescribe or recommend medication changes.
@@ -273,6 +273,10 @@ async def run(message,context,emit=None):
     payload={'RESPONSE_STYLE':response_style.selected(context.get('tone')),'USER_TEXT':message,'ROLE':role,'REPORT':role_report,'PREVIOUS_REPORTS':context.get('previous_reports',[]) if role_report else [],'EVIDENCE':evidence,'ACTION':action,'decision':plan.model_dump(exclude={'ui'}),'customer_state':customer_state}
     writer=_agent(dot['id'])
     instructions=ANSWER
+    preferred_language=(context.get('page') or {}).get('language')
+    if preferred_language in {'th','en'}:
+        language_name='Thai' if preferred_language=='th' else 'English'
+        instructions+='\nThe current interface language is '+language_name+'. Use this language unless the latest USER_TEXT explicitly requests another language. Earlier conversation language does not override this setting.'
     skills=None
     if runtime_config['skills_enabled']:
         # Reviewed modules chosen per task by the server (role capability, action, report, evidence, tools).
@@ -316,7 +320,7 @@ async def run(message,context,emit=None):
             if bad:
                 repair='Incorrect amounts: '+', '.join(bad)+'. Copy price_thb exactly; preserve per-person/per-pair units. Totals may only multiply by the number of people the customer gave.'
                 raise transport.ConversationError('price_invalid','The answer quoted an unsupported price and was withheld. Please try again or ask our team.',502)
-            issues=answer_checks.content_issues(answer.reply+'\n'+'\n'.join(answer.followups),evidence,role_report)
+            issues=answer_checks.content_issues(answer.reply+'\n'+'\n'.join(answer.followups),evidence,role_report,message=message)
             if issues:
                 repair='Failed content checks: '+', '.join(issues)+'. Copy each named row and its own range exactly. Medical explanations must cite medical evidence; business sources support services and prices only. Do not infer personal disease stages.'
                 raise transport.ConversationError('evidence_review_failed','The explanation did not match the report or source types and was withheld. Please try again or contact our team.',502)
@@ -344,7 +348,7 @@ async def run(message,context,emit=None):
             if attempt and exc.code=='review_failed':
                 # The rejected clinical draft stays private. This fixed response admits a verification
                 # failure; it never pretends missing customer information caused it or passed review.
-                answer=review_policy.recovery(message,plan.language,bool(role_report))
+                answer=review_policy.recovery(message,preferred_language or plan.language,bool(role_report))
                 note=answer_checks.critical_note(role_report,answer.reply,message)
                 if note:answer.reply+='\n\n'+note
                 validate_answer(answer,[],None)

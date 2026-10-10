@@ -1,0 +1,51 @@
+{
+  "mode": "MOCKED_TEST_ONLY",
+  "records": [
+    {
+      "id": "tone-390-th",
+      "status": "PASS",
+      "checks": "default; three styles; draft preserved; translated label; no overflow"
+    },
+    {
+      "id": "tone-390-en",
+      "status": "PASS",
+      "checks": "default; three styles; draft preserved; translated label; no overflow"
+    },
+    {
+      "id": "lifecycle-390",
+      "status": "PASS",
+      "checks": "two turns retain tone; new chat and guest reload reset; no browser tone/history storage"
+    },
+    {
+      "id": "tone-768-th",
+      "status": "PASS",
+      "checks": "default; three styles; draft preserved; translated label; no overflow"
+    },
+    {
+      "id": "tone-768-en",
+      "status": "PASS",
+      "checks": "default; three styles; draft preserved; translated label; no overflow"
+    },
+    {
+      "id": "lifecycle-768",
+      "status": "PASS",
+      "checks": "two turns retain tone; new chat and guest reload reset; no browser tone/history storage"
+    },
+    {
+      "id": "tone-1440-th",
+      "status": "PASS",
+      "checks": "default; three styles; draft preserved; translated label; no overflow"
+    },
+    {
+      "id": "tone-1440-en",
+      "status": "PASS",
+      "checks": "default; three styles; draft preserved; translated label; no overflow"
+    },
+    {
+      "id": "lifecycle-1440",
+      "status": "PASS",
+      "checks": "two turns retain tone; new chat and guest reload reset; no browser tone/history storage"
+    }
+  ],
+  "errors": []
+}
