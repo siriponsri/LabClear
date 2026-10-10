@@ -1,0 +1,10 @@
+Thai line-break check: RUN (PyThaiNLP dictionary)
+PASS I18N-00 Setup: a fresh customer (synthetic report confirmed, one chat answer, organization editor) and the admin (3199 ms)
+     note: customer customer_5e8113cdaaff1d348aeb23c8, report report_431965c40afe64f5e5d145db.
+PASS I18N-P-lab-reports Lab Report /lab-reports (guest): TH and EN at 390/768/1440 px, in-place switch (5083 ms)
+     note: 390px EN→TH changed, TH→EN changed; 1440px EN→TH changed, TH→EN changed
+PASS I18N-P-lab-report Lab Report /lab-report/<id> (customer): TH and EN at 390/768/1440 px, in-place switch (4702 ms)
+     note: 390px EN→TH changed, TH→EN changed; 1440px EN→TH changed, TH→EN changed
+PASS I18N-Z No uncaught page errors during the run (0 ms)
+
+4 passed, 0 failed -> C:\Users\User\Desktop\myProject\LabClear\test-results\windows-integration\report-switch\i18n-audit.json

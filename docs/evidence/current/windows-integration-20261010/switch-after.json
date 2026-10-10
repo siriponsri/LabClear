@@ -1,0 +1,193 @@
+{
+  "started": "2026-10-09T23:51:12.856Z",
+  "finished": "2026-10-09T23:51:24.935Z",
+  "base": "http://127.0.0.1:8000",
+  "ui": "FastAPI website (templates/ + static/js), the main UI since 4.0.0-rc3",
+  "candidate_commit": "b5e62e786a95df3b58dadf17f93fab95a3b91839",
+  "mode": "MOCKED_TEST_ONLY for the language model and report reader (scripts/dev_mock_api.py); real UI, routes, sessions, CSRF, permissions.",
+  "widths": [
+    390,
+    768,
+    1440
+  ],
+  "languages": [
+    "th",
+    "en"
+  ],
+  "content_exclusions": [
+    {
+      "selector": ".language-switch",
+      "reason": "the TH/EN control names both languages on purpose"
+    },
+    {
+      "selector": "[translate=no]",
+      "reason": "content kept in its own language: chat messages, model answers, report values, source titles"
+    }
+  ],
+  "explicit_language_regions": "elements with their own lang attribute are content in that language",
+  "reviewed_exceptions": [],
+  "thai_line_break_check": "RUN (PyThaiNLP dictionary)",
+  "dictionary_strings": 3187,
+  "scenarios": [
+    {
+      "id": "I18N-P-home",
+      "title": "Landing / (guest): TH and EN at 390/768/1440 px, in-place switch",
+      "ok": true,
+      "ms": 11477,
+      "note": "390px EN→TH changed, TH→EN changed; 1440px EN→TH changed, TH→EN changed"
+    }
+  ],
+  "passed": 1,
+  "failed": 0,
+  "areas": {
+    "Landing": {
+      "pages": [
+        "home"
+      ],
+      "page_language_width_rows": 6,
+      "rows_without_findings": 6
+    }
+  },
+  "rows": [
+    {
+      "target": "home",
+      "area": "Landing",
+      "path": "/",
+      "role": "guest",
+      "lang": "th",
+      "width": 390,
+      "html_lang": "th",
+      "title": "LabClear | แ⁠พ็⁠ก⁠เ⁠ก⁠จ​ตรวจสุขภาพ เข้าใจผลและนัดหมายได้ในที่เดียว",
+      "switch": {
+        "visible": true,
+        "pressed": "th"
+      },
+      "untranslated": [],
+      "allowed": [],
+      "split_words": [],
+      "mid_word_breaks": [],
+      "thai_breaks_checked": 73,
+      "clipped": [],
+      "overflow": null,
+      "texts_checked": 379,
+      "screenshot": "test-results\\windows-integration\\switch-after\\shots\\home-th-390.jpg"
+    },
+    {
+      "target": "home",
+      "area": "Landing",
+      "path": "/",
+      "role": "guest",
+      "lang": "en",
+      "width": 390,
+      "html_lang": "en",
+      "title": "LabClear | Health checks, explained and booked",
+      "switch": {
+        "visible": true,
+        "pressed": "en"
+      },
+      "untranslated": [],
+      "allowed": [],
+      "split_words": [],
+      "mid_word_breaks": [],
+      "thai_breaks_checked": 0,
+      "clipped": [],
+      "overflow": null,
+      "texts_checked": 388,
+      "screenshot": "test-results\\windows-integration\\switch-after\\shots\\home-en-390.jpg"
+    },
+    {
+      "target": "home",
+      "area": "Landing",
+      "path": "/",
+      "role": "guest",
+      "lang": "th",
+      "width": 768,
+      "html_lang": "th",
+      "title": "LabClear | แ⁠พ็⁠ก⁠เ⁠ก⁠จ​ตรวจสุขภาพ เข้าใจผลและนัดหมายได้ในที่เดียว",
+      "switch": {
+        "visible": true,
+        "pressed": "th"
+      },
+      "untranslated": [],
+      "allowed": [],
+      "split_words": [],
+      "mid_word_breaks": [],
+      "thai_breaks_checked": 16,
+      "clipped": [],
+      "overflow": null,
+      "texts_checked": 386,
+      "screenshot": "test-results\\windows-integration\\switch-after\\shots\\home-th-768.jpg"
+    },
+    {
+      "target": "home",
+      "area": "Landing",
+      "path": "/",
+      "role": "guest",
+      "lang": "en",
+      "width": 768,
+      "html_lang": "en",
+      "title": "LabClear | Health checks, explained and booked",
+      "switch": {
+        "visible": true,
+        "pressed": "en"
+      },
+      "untranslated": [],
+      "allowed": [],
+      "split_words": [],
+      "mid_word_breaks": [],
+      "thai_breaks_checked": 0,
+      "clipped": [],
+      "overflow": null,
+      "texts_checked": 395,
+      "screenshot": "test-results\\windows-integration\\switch-after\\shots\\home-en-768.jpg"
+    },
+    {
+      "target": "home",
+      "area": "Landing",
+      "path": "/",
+      "role": "guest",
+      "lang": "th",
+      "width": 1440,
+      "html_lang": "th",
+      "title": "LabClear | แ⁠พ็⁠ก⁠เ⁠ก⁠จ​ตรวจสุขภาพ เข้าใจผลและนัดหมายได้ในที่เดียว",
+      "switch": {
+        "visible": true,
+        "pressed": "th"
+      },
+      "untranslated": [],
+      "allowed": [],
+      "split_words": [],
+      "mid_word_breaks": [],
+      "thai_breaks_checked": 30,
+      "clipped": [],
+      "overflow": null,
+      "texts_checked": 391,
+      "screenshot": "test-results\\windows-integration\\switch-after\\shots\\home-th-1440.jpg"
+    },
+    {
+      "target": "home",
+      "area": "Landing",
+      "path": "/",
+      "role": "guest",
+      "lang": "en",
+      "width": 1440,
+      "html_lang": "en",
+      "title": "LabClear | Health checks, explained and booked",
+      "switch": {
+        "visible": true,
+        "pressed": "en"
+      },
+      "untranslated": [],
+      "allowed": [],
+      "split_words": [],
+      "mid_word_breaks": [],
+      "thai_breaks_checked": 0,
+      "clipped": [],
+      "overflow": null,
+      "texts_checked": 400,
+      "screenshot": "test-results\\windows-integration\\switch-after\\shots\\home-en-1440.jpg"
+    }
+  ],
+  "console_errors": [],
+  "page_errors": []
+}

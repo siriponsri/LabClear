@@ -1,0 +1,352 @@
+{
+  "started": "2026-10-09T23:59:36.588Z",
+  "finished": "2026-10-09T23:59:50.163Z",
+  "base": "http://127.0.0.1:8000",
+  "ui": "FastAPI website (templates/ + static/js), the main UI since 4.0.0-rc3",
+  "candidate_commit": "b5e62e786a95df3b58dadf17f93fab95a3b91839",
+  "mode": "MOCKED_TEST_ONLY for the language model and report reader (scripts/dev_mock_api.py); real UI, routes, sessions, CSRF, permissions.",
+  "widths": [
+    390,
+    768,
+    1440
+  ],
+  "languages": [
+    "th",
+    "en"
+  ],
+  "content_exclusions": [
+    {
+      "selector": ".language-switch",
+      "reason": "the TH/EN control names both languages on purpose"
+    },
+    {
+      "selector": "[translate=no]",
+      "reason": "content kept in its own language: chat messages, model answers, report values, source titles"
+    }
+  ],
+  "explicit_language_regions": "elements with their own lang attribute are content in that language",
+  "reviewed_exceptions": [],
+  "thai_line_break_check": "RUN (PyThaiNLP dictionary)",
+  "dictionary_strings": 3187,
+  "scenarios": [
+    {
+      "id": "I18N-00",
+      "title": "Setup: a fresh customer (synthetic report confirmed, one chat answer, organization editor) and the admin",
+      "ok": true,
+      "ms": 3199,
+      "note": "customer customer_5e8113cdaaff1d348aeb23c8, report report_431965c40afe64f5e5d145db."
+    },
+    {
+      "id": "I18N-P-lab-reports",
+      "title": "Lab Report /lab-reports (guest): TH and EN at 390/768/1440 px, in-place switch",
+      "ok": true,
+      "ms": 5083,
+      "note": "390px EN→TH changed, TH→EN changed; 1440px EN→TH changed, TH→EN changed"
+    },
+    {
+      "id": "I18N-P-lab-report",
+      "title": "Lab Report /lab-report/<id> (customer): TH and EN at 390/768/1440 px, in-place switch",
+      "ok": true,
+      "ms": 4702,
+      "note": "390px EN→TH changed, TH→EN changed; 1440px EN→TH changed, TH→EN changed"
+    },
+    {
+      "id": "I18N-Z",
+      "title": "No uncaught page errors during the run",
+      "ok": true,
+      "ms": 0
+    }
+  ],
+  "passed": 4,
+  "failed": 0,
+  "areas": {
+    "Lab Report": {
+      "pages": [
+        "lab-reports",
+        "lab-report"
+      ],
+      "page_language_width_rows": 12,
+      "rows_without_findings": 12
+    }
+  },
+  "rows": [
+    {
+      "target": "lab-reports",
+      "area": "Lab Report",
+      "path": "/lab-reports",
+      "role": "guest",
+      "lang": "th",
+      "width": 390,
+      "html_lang": "th",
+      "title": "อ่านผลแล็บด้วย AI | LabClear",
+      "switch": {
+        "visible": true,
+        "pressed": "th"
+      },
+      "untranslated": [],
+      "allowed": [],
+      "split_words": [],
+      "mid_word_breaks": [],
+      "thai_breaks_checked": 28,
+      "clipped": [],
+      "overflow": null,
+      "texts_checked": 98,
+      "screenshot": "test-results\\windows-integration\\report-switch\\shots\\lab-reports-th-390.jpg"
+    },
+    {
+      "target": "lab-reports",
+      "area": "Lab Report",
+      "path": "/lab-reports",
+      "role": "guest",
+      "lang": "en",
+      "width": 390,
+      "html_lang": "en",
+      "title": "AI Lab Report | LabClear",
+      "switch": {
+        "visible": true,
+        "pressed": "en"
+      },
+      "untranslated": [],
+      "allowed": [],
+      "split_words": [],
+      "mid_word_breaks": [],
+      "thai_breaks_checked": 0,
+      "clipped": [],
+      "overflow": null,
+      "texts_checked": 98,
+      "screenshot": "test-results\\windows-integration\\report-switch\\shots\\lab-reports-en-390.jpg"
+    },
+    {
+      "target": "lab-reports",
+      "area": "Lab Report",
+      "path": "/lab-reports",
+      "role": "guest",
+      "lang": "th",
+      "width": 768,
+      "html_lang": "th",
+      "title": "อ่านผลแล็บด้วย AI | LabClear",
+      "switch": {
+        "visible": true,
+        "pressed": "th"
+      },
+      "untranslated": [],
+      "allowed": [],
+      "split_words": [],
+      "mid_word_breaks": [],
+      "thai_breaks_checked": 10,
+      "clipped": [],
+      "overflow": null,
+      "texts_checked": 99,
+      "screenshot": "test-results\\windows-integration\\report-switch\\shots\\lab-reports-th-768.jpg"
+    },
+    {
+      "target": "lab-reports",
+      "area": "Lab Report",
+      "path": "/lab-reports",
+      "role": "guest",
+      "lang": "en",
+      "width": 768,
+      "html_lang": "en",
+      "title": "AI Lab Report | LabClear",
+      "switch": {
+        "visible": true,
+        "pressed": "en"
+      },
+      "untranslated": [],
+      "allowed": [],
+      "split_words": [],
+      "mid_word_breaks": [],
+      "thai_breaks_checked": 0,
+      "clipped": [],
+      "overflow": null,
+      "texts_checked": 99,
+      "screenshot": "test-results\\windows-integration\\report-switch\\shots\\lab-reports-en-768.jpg"
+    },
+    {
+      "target": "lab-reports",
+      "area": "Lab Report",
+      "path": "/lab-reports",
+      "role": "guest",
+      "lang": "th",
+      "width": 1440,
+      "html_lang": "th",
+      "title": "อ่านผลแล็บด้วย AI | LabClear",
+      "switch": {
+        "visible": true,
+        "pressed": "th"
+      },
+      "untranslated": [],
+      "allowed": [],
+      "split_words": [],
+      "mid_word_breaks": [],
+      "thai_breaks_checked": 17,
+      "clipped": [],
+      "overflow": null,
+      "texts_checked": 104,
+      "screenshot": "test-results\\windows-integration\\report-switch\\shots\\lab-reports-th-1440.jpg"
+    },
+    {
+      "target": "lab-reports",
+      "area": "Lab Report",
+      "path": "/lab-reports",
+      "role": "guest",
+      "lang": "en",
+      "width": 1440,
+      "html_lang": "en",
+      "title": "AI Lab Report | LabClear",
+      "switch": {
+        "visible": true,
+        "pressed": "en"
+      },
+      "untranslated": [],
+      "allowed": [],
+      "split_words": [],
+      "mid_word_breaks": [],
+      "thai_breaks_checked": 0,
+      "clipped": [],
+      "overflow": null,
+      "texts_checked": 104,
+      "screenshot": "test-results\\windows-integration\\report-switch\\shots\\lab-reports-en-1440.jpg"
+    },
+    {
+      "target": "lab-report",
+      "area": "Lab Report",
+      "path": "/lab-report/report_431965c40afe64f5e5d145db",
+      "role": "customer",
+      "lang": "th",
+      "width": 390,
+      "html_lang": "th",
+      "title": "Synthetic lipid report · รายงานผลแล็บ | LabClear",
+      "switch": {
+        "visible": true,
+        "pressed": "th"
+      },
+      "untranslated": [],
+      "allowed": [],
+      "split_words": [],
+      "mid_word_breaks": [],
+      "thai_breaks_checked": 7,
+      "clipped": [],
+      "overflow": null,
+      "texts_checked": 70,
+      "screenshot": "test-results\\windows-integration\\report-switch\\shots\\lab-report-th-390.jpg"
+    },
+    {
+      "target": "lab-report",
+      "area": "Lab Report",
+      "path": "/lab-report/report_431965c40afe64f5e5d145db",
+      "role": "customer",
+      "lang": "en",
+      "width": 390,
+      "html_lang": "en",
+      "title": "Synthetic lipid report · Lab Report | LabClear",
+      "switch": {
+        "visible": true,
+        "pressed": "en"
+      },
+      "untranslated": [],
+      "allowed": [],
+      "split_words": [],
+      "mid_word_breaks": [],
+      "thai_breaks_checked": 0,
+      "clipped": [],
+      "overflow": null,
+      "texts_checked": 70,
+      "screenshot": "test-results\\windows-integration\\report-switch\\shots\\lab-report-en-390.jpg"
+    },
+    {
+      "target": "lab-report",
+      "area": "Lab Report",
+      "path": "/lab-report/report_431965c40afe64f5e5d145db",
+      "role": "customer",
+      "lang": "th",
+      "width": 768,
+      "html_lang": "th",
+      "title": "Synthetic lipid report · รายงานผลแล็บ | LabClear",
+      "switch": {
+        "visible": true,
+        "pressed": "th"
+      },
+      "untranslated": [],
+      "allowed": [],
+      "split_words": [],
+      "mid_word_breaks": [],
+      "thai_breaks_checked": 2,
+      "clipped": [],
+      "overflow": null,
+      "texts_checked": 71,
+      "screenshot": "test-results\\windows-integration\\report-switch\\shots\\lab-report-th-768.jpg"
+    },
+    {
+      "target": "lab-report",
+      "area": "Lab Report",
+      "path": "/lab-report/report_431965c40afe64f5e5d145db",
+      "role": "customer",
+      "lang": "en",
+      "width": 768,
+      "html_lang": "en",
+      "title": "Synthetic lipid report · Lab Report | LabClear",
+      "switch": {
+        "visible": true,
+        "pressed": "en"
+      },
+      "untranslated": [],
+      "allowed": [],
+      "split_words": [],
+      "mid_word_breaks": [],
+      "thai_breaks_checked": 0,
+      "clipped": [],
+      "overflow": null,
+      "texts_checked": 71,
+      "screenshot": "test-results\\windows-integration\\report-switch\\shots\\lab-report-en-768.jpg"
+    },
+    {
+      "target": "lab-report",
+      "area": "Lab Report",
+      "path": "/lab-report/report_431965c40afe64f5e5d145db",
+      "role": "customer",
+      "lang": "th",
+      "width": 1440,
+      "html_lang": "th",
+      "title": "Synthetic lipid report · รายงานผลแล็บ | LabClear",
+      "switch": {
+        "visible": true,
+        "pressed": "th"
+      },
+      "untranslated": [],
+      "allowed": [],
+      "split_words": [],
+      "mid_word_breaks": [],
+      "thai_breaks_checked": 3,
+      "clipped": [],
+      "overflow": null,
+      "texts_checked": 76,
+      "screenshot": "test-results\\windows-integration\\report-switch\\shots\\lab-report-th-1440.jpg"
+    },
+    {
+      "target": "lab-report",
+      "area": "Lab Report",
+      "path": "/lab-report/report_431965c40afe64f5e5d145db",
+      "role": "customer",
+      "lang": "en",
+      "width": 1440,
+      "html_lang": "en",
+      "title": "Synthetic lipid report · Lab Report | LabClear",
+      "switch": {
+        "visible": true,
+        "pressed": "en"
+      },
+      "untranslated": [],
+      "allowed": [],
+      "split_words": [],
+      "mid_word_breaks": [],
+      "thai_breaks_checked": 0,
+      "clipped": [],
+      "overflow": null,
+      "texts_checked": 76,
+      "screenshot": "test-results\\windows-integration\\report-switch\\shots\\lab-report-en-1440.jpg"
+    }
+  ],
+  "console_errors": [],
+  "page_errors": []
+}

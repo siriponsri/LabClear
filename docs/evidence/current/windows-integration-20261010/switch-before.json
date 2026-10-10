@@ -1,0 +1,99 @@
+{
+  "started": "2026-10-09T23:50:37.884Z",
+  "finished": "2026-10-09T23:50:41.219Z",
+  "base": "http://127.0.0.1:8000",
+  "ui": "FastAPI website (templates/ + static/js), the main UI since 4.0.0-rc3",
+  "candidate_commit": "b5e62e786a95df3b58dadf17f93fab95a3b91839",
+  "mode": "MOCKED_TEST_ONLY for the language model and report reader (scripts/dev_mock_api.py); real UI, routes, sessions, CSRF, permissions.",
+  "widths": [
+    390
+  ],
+  "languages": [
+    "th",
+    "en"
+  ],
+  "content_exclusions": [
+    {
+      "selector": ".language-switch",
+      "reason": "the TH/EN control names both languages on purpose"
+    },
+    {
+      "selector": "[translate=no]",
+      "reason": "content kept in its own language: chat messages, model answers, report values, source titles"
+    }
+  ],
+  "explicit_language_regions": "elements with their own lang attribute are content in that language",
+  "reviewed_exceptions": [],
+  "thai_line_break_check": "RUN (PyThaiNLP dictionary)",
+  "dictionary_strings": 3187,
+  "scenarios": [
+    {
+      "id": "I18N-P-home",
+      "title": "Landing / (guest): TH and EN at 390 px, in-place switch",
+      "ok": false,
+      "ms": 2740,
+      "error": "after in-place switch to en: [{\"kind\":\"document.title\",\"text\":\"LabClear | แ⁠พ็⁠ก⁠เ⁠ก⁠จ​ตรวจสุขภาพ เข้าใจผลและนัดหมายได้ในที่เดียว\",\"where\":\"head > title\"},{\"kind\":\"text\",\"text\":\"อ่านผลแล็บฟรี 1 รายงาน · Plus ฿355 / 30 วัน\",\"where\":\"main#main.rails > section.hero > div.hero-inner > a.pill-badge.is-in\"},{\"kind\":\"text\",\"text\":\"คำตอบอ้างอิงจาก\",\"where\":\"main#main.rails > section.hero > div.hero-inner > p.hero-credit.tiny\"},{\"kind\":\"text\",\"text\":\"· ระบบจำลองเพื่อการศึกษา ไม่ใช่คลินิก\",\"where\":\"main#main.rails > section.hero > div.hero-inner > p.hero-credit.tiny\"},{\"kind\":\"text\",\"text\":\"Essential Check ราคา ฿1,190 มีรายการตรวจ 4 รายการ\",\"where\":\"div.deck-stack > figure#deck-ask.deck-card.is-in > div.deck-body.mini-turn > p.typed\"},{\"kind\":\"text\",\"text\":\"ส่วน Workday Check ราคา ฿1,690 เพิ่มไขมันในเลือด (Lipid profile) และ​เ⁠อ⁠น⁠ไ⁠ซ⁠ม์​ตับ (ALT)\",\"where\":\"div.deck-stack > figure#deck-ask.deck-card.is-in > div.deck-body.mini-turn > p.typed\"},{\"kind\":\"text\",\"text\":\"ฉันตรวจค่าเหล่านี้กับรายงานของฉันแล้ว\",\"where\":\"div.deck-stack > figure#deck-read.deck-card > div.deck-body > p.check-line\"},{\"kind\":\"text\",\"text\":\"รวมบทสรุปที่เจ้าของอนุมัติแล้วแต่ยังรอตรวจแหล่งต้นฉบับ\",\"where\":\"main#main.rails > section.band.sources-band > p.tiny.muted\"},{\"kind\":\"text\",\"text\":\"ตรวจสุขภาพพื้นฐาน\",\"where\":\"div.product-pair > article.product.is-in > ul.product-facts > li\"},{\"kind\":\"text\",\"text\":\"แ⁠พ็⁠ก⁠เ⁠ก⁠จ ขอนัดหมายได้เลย\",\"where\":\"div.product-pair > article.product.is-in > ul.product-facts > li\"},{\"kind\":\"text\",\"text\":\"ตรวจติดตามผล\",\"where\":\"div.product-pair > article.product.is-in > ul.product-facts > li\"},{\"kind\":\"text\",\"text\":\"รายการ ที่ทีมทบทวนกับคุณก่อนนัด\",\"where\":\"div.product-pair > article.product.is-in > ul.product-facts > li\"}]"
+    }
+  ],
+  "passed": 0,
+  "failed": 1,
+  "areas": {
+    "Landing": {
+      "pages": [
+        "home"
+      ],
+      "page_language_width_rows": 2,
+      "rows_without_findings": 2
+    }
+  },
+  "rows": [
+    {
+      "target": "home",
+      "area": "Landing",
+      "path": "/",
+      "role": "guest",
+      "lang": "th",
+      "width": 390,
+      "html_lang": "th",
+      "title": "LabClear | แ⁠พ็⁠ก⁠เ⁠ก⁠จ​ตรวจสุขภาพ เข้าใจผลและนัดหมายได้ในที่เดียว",
+      "switch": {
+        "visible": true,
+        "pressed": "th"
+      },
+      "untranslated": [],
+      "allowed": [],
+      "split_words": [],
+      "mid_word_breaks": [],
+      "thai_breaks_checked": 73,
+      "clipped": [],
+      "overflow": null,
+      "texts_checked": 379,
+      "screenshot": "test-results\\windows-integration\\switch-before\\shots\\home-th-390.jpg"
+    },
+    {
+      "target": "home",
+      "area": "Landing",
+      "path": "/",
+      "role": "guest",
+      "lang": "en",
+      "width": 390,
+      "html_lang": "en",
+      "title": "LabClear | Health checks, explained and booked",
+      "switch": {
+        "visible": true,
+        "pressed": "en"
+      },
+      "untranslated": [],
+      "allowed": [],
+      "split_words": [],
+      "mid_word_breaks": [],
+      "thai_breaks_checked": 0,
+      "clipped": [],
+      "overflow": null,
+      "texts_checked": 388,
+      "screenshot": "test-results\\windows-integration\\switch-before\\shots\\home-en-390.jpg"
+    }
+  ],
+  "console_errors": [],
+  "page_errors": []
+}

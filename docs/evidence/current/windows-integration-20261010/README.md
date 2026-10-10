@@ -70,38 +70,52 @@ thresholds were not changed, and expected answers were not injected into the pro
 Tesseract is absent on this Windows machine, so a fresh OCR extraction benchmark remains BLOCKED;
 re-scoring existing raw extractions is complete. Live model/OCR quality remains NOT_RUN.
 
-## Render checkpoint (no push/deploy yet)
+## Authorized Render deployment and production smoke check
 
-Target: Python Free service `srv-db2o3c0m7kps73blhpb0`, https://labclear.onrender.com.
-Its dashboard is accessible in Chrome. Main tracks the existing repository; last deployed commit
-was 3c15550. The following env NAMES were observed, values kept masked:
-APP_ENV, BUSINESS_DATA_KEY, BUSINESS_EXTERNAL_ENABLED, CLOUD_CALL_LIMIT, DATABASE_URL,
-DEMO_ACCOUNTS, GUARD_API_KEY, LLM_API_KEY, MODEL_PRICES_THB, PROJECT_BUDGET_PRIOR_SPEND_THB,
-PROVIDER_BUDGET_CYCLE_ID, PROVIDER_NETWORK_ENABLED, PYTHON_VERSION, TRUSTED_ORIGINS,
-VISION_API_KEY, VISION_ENABLED. Presence does not verify validity or entitlement.
+The user subsequently authorized commit/push/deploy and non-secret settings on the existing
+Python Free service `srv-db2o3c0m7kps73blhpb0`, https://labclear.onrender.com. Main was pushed
+without force at `b5e62e786a95df3b58dadf17f93fab95a3b91839`. Render's automatic commit deploy
+and Blueprint sync deployed that SHA; the final Blueprint deployment `dep-db4npojpegos7395f2dg`
+was live at 2026-10-09T23:49:03Z. No manual duplicate deployment was requested.
 
-Missing from the observed list: RUNTIME_SKILLS_ENABLED, HOSPITAL_LINKS_ENABLED and the named
-resilience env overrides. Resilience values have application defaults; the intended feature flags
-and /ready health path still need controlled application to the confirmed existing service.
-Preserve database/data-key/cost variables and all current secrets. Do not use a bulk env replacement.
+Added only RUNTIME_SKILLS_ENABLED=true and HOSPITAL_LINKS_ENABLED=true via Save only. The
+existing Blueprint then applied its tracked non-secret resilience values and `/ready` health path.
+Compute remains Free, one Python process/instance, same build and start commands. Secret values,
+prior spend, budget cycle and quota were not revealed or edited; the Blueprint leaves these
+owner-managed values as `sync: false`.
 
-Obsolete frontend: `srv-db49c3bncjis73c937jg`, labclear-web.onrender.com, Node Free, root web/.
-Auto-Deploy was changed from On Commit to Off and verified in its saved dashboard field, so it
-will no longer rebuild on the subsequent main push. No service was deleted or suspended.
-No custom domains were listed, no linked environment groups were listed, and its only env names
-were API_ORIGIN, NEXT_TELEMETRY_DISABLED, NODE_VERSION. Values were not revealed.
-Deletion dialog says: "All resources for labclear-web will stop working immediately. This action
-cannot be undone." It requires typing `sudo delete web service labclear-web`. The dialog was cancelled.
-Parent must obtain action-time irreversible-deletion confirmation; preserve the separate PostgreSQL.
+HTTP checks at 23:48 UTC returned 200 for `/health` and `/ready`, version 4.0.0-rc3 and the exact
+pushed SHA; readiness reported startup done, not draining, storage ok, AI limit 2/OCR limit 1.
+The public landing, package P01 and hospital-links pages rendered. The Thai landing retains its
+approved design, IBM Plex Sans Thai body and Trirong heading font stacks.
+
+After explicit action-time confirmation of irreversible deletion, only obsolete Node service
+`labclear-web` (`srv-db49c3bncjis73c937jg`) was deleted. Its project showed Services (0), and the
+connector service list no longer contained it. Python labclear remained active. PostgreSQL
+`result-scopr-db` (`dpg-db2e02ui0phs73ebaofg-a`) remained available and was not changed; its free
+instance reports an expiry of 2026-11-05. The unrelated suspended resultscope service was untouched.
+
+## Production language regression follow-up
+
+The production smoke check exposed incomplete in-place TH-to-EN translation of inline sentences
+and the document title. A fresh page in English was correct, explaining why the earlier 43-case
+fresh-page checks passed. The new assertion reproduced the defect before the fix (switch-before.json).
+The DOM walker now restores saved sentence nodes before skipping generated Thai nodes, and title
+tracking keeps the English source separately from the last rendered title. The targeted landing
+retest passed at 390/768/1440 (switch-after.json). The strengthened full audit also checks every
+switch for untranslated interface text, while retaining the no-reload and draft-preservation checks.
+
+The strengthened full run passed 42/43 cases and exposed one additional date-formatting defect
+in the printable report (`i18n-switch-full.json`). The report now rerenders its already-loaded
+data on language changes, without a refetch; a focused rerun covers the affected report and
+asserts that analyte names and values do not change. The focused rerun passed 4/4 at 390/768/1440, including the affected report and zero uncaught page errors (`report-switch.json`). The failed full-run evidence is retained; the full 43-case audit was not rerun after this report-only fix.
 
 ## Remaining gates
 
-- Finish primary Render non-secret settings/health readiness, commit/push, deployment and read-only
-  browser verification of the exact deployed SHA. Existing free plan must remain unchanged.
 - No live AI/OCR calls or credential setup were performed. Free policy/entitlement and provider
   credentials still require their authorized owner flow; no claim of end-to-end AI completion.
-- Coursework owner/contribution data, actual live 10-question/5-image/5-safety results, deployed
-  release verification and video are still incomplete. Original report placeholders were not invented.
+- Coursework owner/contribution data, actual live 10-question/5-image/5-safety results and
+  video are still incomplete. The deployed URL and initial release verification are now evidenced. Original report placeholders were not invented.
 - Supplied course context: Oct 10 progress report/exam, Oct 17 final submission, Oct 24 presentation;
   exact class time unknown. A video no longer than 3 minutes satisfies the supplied conflicting limits.
 - Library handoff was read successfully through Library, but local materialization returned HTTP 403.

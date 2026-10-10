@@ -1,0 +1,18 @@
+{
+  "base_commit": "b5e62e786a95df3b58dadf17f93fab95a3b91839",
+  "state": "working tree atop base commit; full audit 42/43 followed by report-only fix and focused 4/4 retest",
+  "files": [
+    {
+      "path": "static/js/i18n.js",
+      "sha256": "46bc725a92736ba653a9da466f3746bb82931dafde7bd8b7937210ea68585ae5"
+    },
+    {
+      "path": "static/js/lab_report.js",
+      "sha256": "88d36135e0d6d089c7ba0ed50c87d0e0bc62ce4ee93275264963cb7a7b2b84a9"
+    },
+    {
+      "path": "tests/browser/i18n_audit.mjs",
+      "sha256": "b0e411635f2855e6608f5ee5498d4ff80c05fbb9640474e5ab8e3e82d5fb4da0"
+    }
+  ]
+}

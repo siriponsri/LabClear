@@ -197,6 +197,8 @@ const chromeText = (page) =>
 /** Click the other language on the page's own TH/EN control: the page follows without reloading. */
 async function switchCheck(page, to) {
   const before = await chromeText(page);
+  const reportValues = () => page.locator('.lab-table tbody tr').evaluateAll(rows => rows.map(row => [...row.children].slice(0, 2).map(cell => cell.textContent)));
+  const originalValues = await reportValues();
   const marker = await page.evaluate(() => (window.__i18nMarker = Math.random()));
   const sw = page.locator(".language-switch:visible").first();
   await sw.locator(`button[data-lang="${to}"]`).click();
@@ -208,6 +210,9 @@ async function switchCheck(page, to) {
   assert(cookie === to, `cookie ${cookie} after switching to ${to}`);
   const same = await page.evaluate((m) => window.__i18nMarker === m, marker);
   assert(same, "the page reloaded to switch language (expected an in-place switch)");
+  assert(JSON.stringify(await reportValues()) === JSON.stringify(originalValues), "report values changed during language switch");
+  const translated = await page.evaluate(auditPage, { lang: to, keys: KEYS, contentSel: CONTENT_SEL, names: NAMES });
+  assert(!translated.untranslated.length, `after in-place switch to ${to}: ` + JSON.stringify(translated.untranslated.slice(0, 12)));
   return { changed: before !== after };
 }
 

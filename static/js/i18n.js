@@ -200,10 +200,12 @@
     for (let n = tw.nextNode(); n; n = tw.nextNode()) found.push(n);
     const done = new Set();
     for (const n of found) {
-      if (owned.has(n) || !n.isConnected) continue;
+      if (!n.isConnected) continue;
+      // Owned Thai nodes still lead us to their sentence parent on an EN switch.
+      // Skipping them first stranded inline sentences in Thai until a reload.
       const p = n.parentElement;
       if (p !== node && (sentences.has(p) || sentenceKey(p))) { if (!done.has(p)) { done.add(p); if (!applySentence(p)) for (const c of p.childNodes) if (c.nodeType === 3 && !owned.has(c)) applyText(c); } continue; }
-      applyText(n);
+      if (!owned.has(n)) applyText(n);
     }
     walkAttrs(node);
   }
@@ -211,11 +213,12 @@
     for (const a of ATTRS) if (node.hasAttribute?.(a) && !excludedAttr(node)) applyAttr(node, a);
     node.querySelectorAll('[aria-label],[placeholder],[title],[alt]').forEach(el => { if (!excludedAttr(el)) for (const a of ATTRS) if (el.hasAttribute(a)) applyAttr(el, a); });
   }
-  let titleEn = null;
+  let titleEn = null, titleRendered = null;
   function applyTitle() {
     const cur = document.title;
-    if (titleEn === null || (cur !== titleEn && cur !== title(titleEn))) titleEn = cur;
+    if (titleEn === null || cur !== titleRendered) titleEn = cur;
     const out = title(titleEn);
+    titleRendered = out;
     if (cur !== out) document.title = out;
   }
   // "Health checks | LabClear", "Service desk — LabClear": translate each part except the name.
