@@ -126,6 +126,15 @@ def content_issues(reply: str, evidence: list[dict], report: dict | None = None,
     # Disease staging is outside the report explainer's remit, even when hedged.
     if report and re.search(r'(?:ไตวาย|โรคไต|มะเร็ง)\s*(?:เรื้อรัง\s*)?ระยะ(?:ที่)?\s*\d|(?:kidney\s+(?:disease|failure)|cancer).{0,20}stage\s*\d|stage\s*\d.{0,20}(?:kidney|cancer)', plain, re.I):
         issues.append('personal_disease_staging')
+    # An educational disclaimer later in a reply does not undo an affirmative
+    # personal diagnosis earlier in it. This is a bounded regression check.
+    if report:
+        personal = re.search(
+            r"(?:ค่าเหล่านี้|ผล(?:ตรวจ)?(?:เหล่านี้|นี้|ของคุณ)).{0,35}(?:แสดงว่า|บ่งชี้ว่า|หมายความว่า)\s*(?:คุณ)?มี\s*(?:ภาวะ|โรค|มะเร็ง|เบาหวาน|โลหิตจาง)"
+            r"|(?:these|your)\s+(?:lab\s+)?results?.{0,35}(?:show|confirm|mean|indicate)\s+(?:that\s+)?you\s+have\b",
+            plain, re.I)
+        if personal and not re.search(r"ไม่(?:ได้)?|do not|does not|cannot|can't", personal.group(0), re.I):
+            issues.append('personal_diagnosis_asserted')
     for line in plain.splitlines():
         ids = re.findall(r'\[([a-z0-9][a-z0-9_-]+)\]', line)
         business = [i for i in ids if sources.get(i, {}).get('data_class') in {'synthetic_business', 'official_external'}]

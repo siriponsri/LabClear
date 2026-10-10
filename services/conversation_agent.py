@@ -56,6 +56,15 @@ class Answer(BaseModel):
 
     drop_nulls = model_validator(mode="before")(_drop_nulls)
 
+    @field_validator("reply")
+    @classmethod
+    def _real_reply(cls, value):
+        if value.strip().casefold().strip('`* ') in {
+            "markdown", "markdown answer in the user's language", "reply", "string"
+        }:
+            raise ValueError("A format placeholder is not an answer")
+        return value
+
     @field_validator("evidence_ids", mode="before")
     @classmethod
     def _ids(cls, value):
@@ -190,7 +199,8 @@ async def complete_json(messages: list[dict], model, *, step: str, max_tokens: i
         execution.checkpoint("json_repair")  # the corrective call shares the workflow deadline and quota
         retry = [*messages, {"role": "user", "content": (
             f"Your previous reply could not be used: {exc.message} Reply again with only the JSON object "
-            "described in the instructions, using only the allowed values. Keep the reply short enough to finish.")}]
+            "described in the instructions, using only the allowed values. Keep the reply short enough to finish. "
+            + ("The reply field must contain your actual answer to the customer, never a format label or schema placeholder." if model is Answer else ""))}]
         return parse_model(await transport.complete(retry, slot=slot, json_mode=True, max_tokens=max_tokens), model, step)
 
 

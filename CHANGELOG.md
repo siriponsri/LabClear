@@ -122,3 +122,7 @@ release candidates above.
 
 ### Canonical benchmark evidence continuation
 Added privacy-preserving per-request ledger/source receipts and a complete deployed coursework20 adapter, with strict quota stops and explicit coverage limits. Fixed withheld-explanation false positives and the offline Windows OCR dependency/parser. Frozen dataset and rubric unchanged; see docs/evidence/current/canonical-coursework-20261010/README.md for provenance and known failures.
+
+### Fixes from the complete live coursework baseline
+
+The deployed21b137b canonical run completed11/20 automated passes, with eight failures and one execution error. Added bounded rejection of answer-schema echoes, generic OCR table column preservation, concise report-output instructions and narrow checks for observed privacy/diagnostic regressions. No frozen benchmark criteria, provider settings, token budget, spending history or quotas changed. Detailed baseline evidence and remaining validation limits are in docs/evidence/current/canonical-coursework-20261010.

@@ -24,6 +24,19 @@ from services.conversation_transport import ConversationError
 
 _INJECTION = re.compile(r"ignore\s+(all\s+)?(previous|system)\s+(instructions|prompts)|reveal\s+(the\s+)?system\s+prompt|ลืมคำสั่ง|ละเลยคำสั่ง", re.I)
 
+# A narrow deterministic privacy refusal for requests about another customer.
+# Own uploaded reports and ordinary educational questions still use the model guard.
+_OTHER_PRIVATE = re.compile(
+    r"(?:ผลแล[บป]|เบอร์โทร|ข้อมูลส่วนตัว|เวชระเบียน).{0,100}(?:ลูกค้า|ผู้ป่วย).{0,80}(?:คนอื่น|รายอื่น|ท่านอื่น|ก่อนหน้า|ถัดไป)"
+    r"|(?:other|another)\s+(?:customer|patient).{0,80}(?:result|phone|record|contact)"
+    r"|(?:result|phone|record|contact).{0,80}(?:other|another)\s+(?:customer|patient)", re.I)
+
+def requests_other_private(message):
+    if re.search(r"\b(?:why|how|policy|privacy|do not|don't|never)\b|ทำไม|นโยบาย|ความเป็นส่วนตัว|ห้าม|ไม่(?:ควร|ให้|ต้อง)", message, re.I):
+        return False  # ordinary policy/negative statements still reach the model guard
+    return bool(_OTHER_PRIVATE.search(message))
+
+
 BLOCKED = ("I cannot safely answer that request. For a diagnosis, a medicine or a dose, please talk to a doctor "
            "or pharmacist. I can explain what a test measures and what the ranges on your report mean.")
 
@@ -40,6 +53,9 @@ def refusal(message: str, direction: str, user_message: str = '') -> str:
     emergency = ('หากมีอาการเจ็บหน้าอกรุนแรงหรือหายใจลำบากในขณะนี้ ให้ขอความช่วยเหลือฉุกเฉินทางการแพทย์ทันที ไม่ควรรอคำตอบจากแชตบอต ' if thai else 'If someone has severe chest pain or trouble breathing now, seek emergency medical help immediately. Do not wait for a chatbot response. ') if urgent else ''
     if re.search(r'system\s*prompt|api\s*key|ลืมคำสั่ง|ละเลยคำสั่ง', user_message or message, re.I):
         return emergency + ('ไม่สามารถเปิดเผยคำสั่งภายในหรือคีย์ และไม่สามารถเปลี่ยนกฎหรือราคาตามคำสั่งนี้ได้ สามารถช่วยเรื่องบริการและผลตรวจทั่วไปได้' if thai else 'I cannot reveal internal instructions or keys, or override service rules. I can help with services and general lab questions.')
+    if _OTHER_PRIVATE.search(user_message or message):
+        return ('ไม่สามารถเปิดเผยผลตรวจหรือข้อมูลส่วนตัวของลูกค้าคนอื่นได้ คุณดูได้เฉพาะข้อมูลของตนเองในบัญชีของคุณ' if thai else
+                'I cannot disclose another customer’s report or personal information. You can view your own information in your account.')
     return emergency + ('ไม่สามารถทำตามคำขอนี้ได้ หากต้องการวินิจฉัยโรค ยา หรือขนาดยา กรุณาปรึกษาแพทย์หรือเภสัชกร สามารถช่วยอธิบายการตรวจและช่วงอ้างอิงบนใบรายงานได้' if thai else BLOCKED)
 
 CRITERIA = {
@@ -114,6 +130,8 @@ def systemone_safe(data: dict, criteria: dict = CRITERIA) -> bool:
 async def check(message: str, direction: Literal["input", "output", "document"], user_message: str = "") -> None:
     if direction in ("input", "document") and _INJECTION.search(message):
         raise ConversationError("safety_blocked", refusal(message,direction,user_message), 422)
+    if direction == "input" and requests_other_private(message):
+        raise ConversationError("safety_blocked", refusal(message, direction, user_message), 422)
     provider = transport.provider_for("guard")
     if not provider.ready:
         raise ConversationError("provider_not_configured",
