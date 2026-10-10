@@ -2,12 +2,17 @@
 
 Dates are in 2026. Test counts are software evidence with test doubles, not live model results.
 
-## Candidate after b8e60ef (2026-10-10, local only)
+## Deployed 7343d7a (2026-10-10)
+
+- Owner-approved push and Render auto-deploy verified at the exact SHA. One unchanged live20 completed: 12 PASS, 5 FAIL, 3 errors; separate UX chats both rendered with content caveats. No case retries or provider/key/budget changes.
+- Recorded raw OCR regressions, request-scoped rejection reasons, unsupported policy/clinical statements and browser evidence. [Complete measured result](docs/evidence/current/canonical-coursework-20261010/LIVE-7343D7A.md). Quality acceptance remains open.
+
+## Candidate after b8e60ef (2026-10-10, pre-deployment record)
 
 - Preserve explicit native OCR table columns and glyphs; guarded fallback and human confirmation remain. Resolve answer observation IDs against authoritative confirmed rows.
 - Narrow organization and medical writer context, improve named-analyte retrieval, compare only explicit unambiguous supplied intervals, and reject unsupported refund percentages even inside denials.
 - Wait for initial workspace and final answer rendering before enabling controls. Join disconnected workflow cleanup with a bounded wait while retaining unfinished work in admission accounting.
-- Preserve every existing test and frozen scoring rule. [Evidence and remaining live blockers](docs/evidence/current/next-candidate-20261010/README.md) distinguish local passing checks from incomplete OCR and production acceptance. Production remains b8e60ef until separate approval of the next commit.
+- Preserve every existing test and frozen scoring rule. [Evidence and remaining live blockers](docs/evidence/current/next-candidate-20261010/README.md) distinguish local passing checks from incomplete OCR and production acceptance. Production at that checkpoint was b8e60ef; the later approved 7343d7a deployment result is recorded above.
 
 ## Local follow-up (2026-10-10)
 

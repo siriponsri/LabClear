@@ -1,0 +1,25 @@
+{
+  "health": {
+    "status": "ok",
+    "app": "LabClear",
+    "environment": "production",
+    "version": "4.0.0-rc3",
+    "commit": "7343d7a06f51de3a644f57e11bcf1fc52fa32aed"
+  },
+  "ready": {
+    "status": "ready",
+    "checks": {
+      "startup": "done",
+      "draining": false,
+      "storage": "ok"
+    },
+    "load": {
+      "ai_in_flight": 0,
+      "ocr_in_flight": 0,
+      "ai_limit": 2,
+      "ocr_limit": 1
+    },
+    "version": "4.0.0-rc3",
+    "commit": "7343d7a06f51de3a644f57e11bcf1fc52fa32aed"
+  }
+}

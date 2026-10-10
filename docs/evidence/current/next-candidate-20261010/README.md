@@ -1,5 +1,9 @@
 # Local continuation after deployed b8e60ef
 
+This is the pre-deployment checkpoint. The later exact-SHA approval, deployment and live result
+are recorded in [LIVE-7343D7A](../canonical-coursework-20261010/LIVE-7343D7A.md); they supersede
+the pending-approval/production-state statements below without changing these local results.
+
 This candidate addresses the recorded failures; it is not a new live result. No production provider request or deployment was made during this continuation. All existing tracked tests and frozen evaluation files remain unchanged.
 
 ## Root causes and limits of the evidence

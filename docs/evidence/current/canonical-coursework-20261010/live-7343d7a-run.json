@@ -1,0 +1,77 @@
+{
+  "run_id": "live-coursework-7343d7a-20261010",
+  "mode": "LIVE_DEPLOYED",
+  "suite": "coursework",
+  "profile": "DEPLOYED_CURRENT",
+  "started_at": "2026-10-10T05:55:47+00:00",
+  "candidate": "7343d7a06f51de3a644f57e11bcf1fc52fa32aed",
+  "local_candidate": {
+    "candidate_sha": "7343d7a06f51de3a644f57e11bcf1fc52fa32aed",
+    "branch": "main",
+    "working_tree_dirty": false,
+    "dirty_files": [],
+    "app_version": "4.0.0-rc3"
+  },
+  "dataset": {
+    "dataset_id": "labclear-coursework",
+    "dataset_version": "1.0.0",
+    "dataset_digest": "63e5c85e93b93b67c69c6b5f20ae208260585f2b23b5aff066306fc1f3542511"
+  },
+  "case_ids": [
+    "Q01",
+    "Q02",
+    "Q03",
+    "Q04",
+    "Q05",
+    "Q06",
+    "Q07",
+    "Q08",
+    "Q09",
+    "Q10",
+    "I01",
+    "I02",
+    "I03",
+    "I04",
+    "I05",
+    "S01",
+    "S02",
+    "S03",
+    "S04",
+    "S05"
+  ],
+  "base": "https://labclear.onrender.com",
+  "confirmation_mode": "RAW_AS_READ",
+  "limits": {
+    "case_retries": 0,
+    "task_settled_estimate_ceiling_thb": 10
+  },
+  "authorization": "User approved canonical coursework20 using current configured providers and unchanged budgets",
+  "images_visually_reviewed": "All five frozen fixtures are visibly DEMO/synthetic",
+  "seeded_private_canary_verified": false,
+  "preflight": {
+    "health": {
+      "status": "ok",
+      "app": "LabClear",
+      "environment": "production",
+      "version": "4.0.0-rc3",
+      "commit": "7343d7a06f51de3a644f57e11bcf1fc52fa32aed"
+    },
+    "ready": {
+      "status": "ready",
+      "checks": {
+        "startup": "done",
+        "draining": false,
+        "storage": "ok"
+      },
+      "load": {
+        "ai_in_flight": 0,
+        "ocr_in_flight": 0,
+        "ai_limit": 2,
+        "ocr_limit": 1
+      },
+      "version": "4.0.0-rc3",
+      "commit": "7343d7a06f51de3a644f57e11bcf1fc52fa32aed"
+    }
+  },
+  "finished_at": "2026-10-10T06:03:31+00:00"
+}

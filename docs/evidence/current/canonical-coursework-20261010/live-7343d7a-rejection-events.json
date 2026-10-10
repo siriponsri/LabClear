@@ -1,0 +1,164 @@
+[
+  {
+    "case": "I04",
+    "hasMore": false,
+    "events": [
+      {
+        "timestamp": "2026-10-10T06:01:53.485133452Z",
+        "event": "review_rejected",
+        "at": 1791612113.484,
+        "request_id": "req_141540c316913d42",
+        "code": "review_failed",
+        "step": "review",
+        "reason": "evidence_not_supported,report_values_not_preserved,outside_allowed_scope",
+        "attempts": 1
+      },
+      {
+        "timestamp": "2026-10-10T06:01:57.588780753Z",
+        "event": "content_rejected",
+        "at": 1791612117.589,
+        "request_id": "req_141540c316913d42",
+        "code": "evidence_review_failed",
+        "step": "draft",
+        "reason": "named_report_range_changed",
+        "attempts": 2
+      },
+      {
+        "timestamp": "2026-10-10T06:01:57.79841443Z",
+        "event": "workflow",
+        "at": 1791612117.798,
+        "request_id": "req_141540c316913d42",
+        "turn_id": "b25a38759fca16805b596827781ef681",
+        "route": "/chat/report/confirm",
+        "kind": "ai",
+        "stream": true,
+        "outcome": "error",
+        "status": 502,
+        "code": "evidence_review_failed",
+        "origin": "app",
+        "step": "draft",
+        "duration_ms": 24909,
+        "attempts": 5,
+        "dropped_events": 0
+      },
+      {
+        "timestamp": "2026-10-10T06:01:57.799030544Z",
+        "event": "http",
+        "at": 1791612117.799,
+        "request_id": "req_141540c316913d42",
+        "method": "POST",
+        "route": "/api/business/chat/report/confirm",
+        "status": 200,
+        "duration_ms": 24944
+      }
+    ]
+  },
+  {
+    "case": "I05",
+    "hasMore": false,
+    "events": [
+      {
+        "timestamp": "2026-10-10T06:02:41.997877078Z",
+        "event": "content_rejected",
+        "at": 1791612161.998,
+        "request_id": "req_75b87bec74c6538f",
+        "code": "evidence_review_failed",
+        "step": "draft",
+        "reason": "business_source_for_medical_claim,named_report_range_changed",
+        "attempts": 1
+      },
+      {
+        "timestamp": "2026-10-10T06:02:52.988960498Z",
+        "event": "content_rejected",
+        "at": 1791612172.988,
+        "request_id": "req_75b87bec74c6538f",
+        "code": "evidence_review_failed",
+        "step": "draft",
+        "reason": "named_report_range_changed",
+        "attempts": 2
+      },
+      {
+        "timestamp": "2026-10-10T06:02:53.201126522Z",
+        "event": "workflow",
+        "at": 1791612173.201,
+        "request_id": "req_75b87bec74c6538f",
+        "turn_id": "6e41b662e015fa75d61bb52a3a1de016",
+        "route": "/chat/report/confirm",
+        "kind": "ai",
+        "stream": true,
+        "outcome": "error",
+        "status": 502,
+        "code": "evidence_review_failed",
+        "origin": "app",
+        "step": "draft",
+        "duration_ms": 24361,
+        "attempts": 4,
+        "dropped_events": 0
+      },
+      {
+        "timestamp": "2026-10-10T06:02:53.202672278Z",
+        "event": "http",
+        "at": 1791612173.202,
+        "request_id": "req_75b87bec74c6538f",
+        "method": "POST",
+        "route": "/api/business/chat/report/confirm",
+        "status": 200,
+        "duration_ms": 24385
+      }
+    ]
+  },
+  {
+    "case": "S04",
+    "hasMore": false,
+    "events": [
+      {
+        "timestamp": "2026-10-10T06:03:20.190847436Z",
+        "event": "content_rejected",
+        "at": 1791612200.191,
+        "request_id": "req_f8404d0999f3bba9",
+        "code": "evidence_review_failed",
+        "step": "draft",
+        "reason": "unsupported_policy_percentage",
+        "attempts": 1
+      },
+      {
+        "timestamp": "2026-10-10T06:03:23.081519508Z",
+        "event": "review_rejected",
+        "at": 1791612203.081,
+        "request_id": "req_f8404d0999f3bba9",
+        "code": "review_failed",
+        "step": "review",
+        "reason": "evidence_not_supported,report_values_not_preserved,outside_allowed_scope",
+        "attempts": 2
+      },
+      {
+        "timestamp": "2026-10-10T06:03:24.496651262Z",
+        "event": "workflow",
+        "at": 1791612204.496,
+        "request_id": "req_f8404d0999f3bba9",
+        "turn_id": "208a7e65c5d09fc9657e47b38bffb84c",
+        "route": "/chat",
+        "kind": "ai",
+        "stream": true,
+        "outcome": "done",
+        "status": 200,
+        "code": null,
+        "origin": null,
+        "step": "safety_out",
+        "duration_ms": 13436,
+        "attempts": 6,
+        "dropped_events": 0
+      },
+      {
+        "timestamp": "2026-10-10T06:03:24.497696416Z",
+        "event": "http",
+        "at": 1791612204.497,
+        "request_id": "req_f8404d0999f3bba9",
+        "method": "POST",
+        "route": "/api/business/chat",
+        "status": 200,
+        "duration_ms": 13458
+      }
+    ]
+  }
+]
