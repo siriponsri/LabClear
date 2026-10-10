@@ -4,7 +4,7 @@
 
 **ผู้พัฒนา** นายวัชรินทร์ บัวสอน (68076055) · นายศิริพล ศรีเฮงไพบูลย์ (68076060)
 
-**รุ่น** 4.0.0-rc3 · branch `integration/labclear-4.0-rc1` · commit ที่ทดสอบ `3191f93` · **วันที่** 10 ตุลาคม 2569
+**รุ่น** 4.0.0-rc3 · branch `main` · commit ที่ทดสอบ `101e5e21968cc5ea8204f953ef60ceb9097bb677` · **วันที่** 10 ตุลาคม 2569
 
 > รายงานนี้อธิบายระบบตามโค้ดจริงของรุ่น 4.0.0-rc3 ทุกตัวเลขอ่านจากไฟล์ใน repository (ระบุไฟล์ไว้ในวงเล็บ) ไม่ใช่ค่าที่ออกแบบไว้ล่วงหน้า ส่วนที่ปิดอยู่หรือยังไม่ได้ทำระบุไว้ตรง ๆ ผลทดสอบทั้งหมดใช้ข้อมูลสังเคราะห์และตัวแทนโมเดล รุ่นนี้ยังไม่ได้ deploy และยังไม่ได้รันกับ Typhoon และ iApp จริง
 
@@ -393,6 +393,43 @@ route `turn()` ครอบไปป์ไลน์นี้: ตั้งสถ
 | Rate limit | route ของ AI ใช้ token ของ rate limit 2 ครั้งต่อคำขอ |
 | โค้ดเดิมที่ไม่อยู่ในเส้นทางจริง | `conversation_agent.run()`, `runtime_skills.bundle()` และ `image_validation.py` |
 | งานระดับ P1 | circuit breaker, นโยบายลองใหม่ และงานแบบ durable ยังไม่ได้ทำ |
+
+## 17. Checkpoint GL-03: bot/Admin Chat handoff
+
+รอบนี้แก้เฉพาะเส้นทางส่งต่อจากบอทไปเจ้าหน้าที่ โดยผูก ticket กับ `chat_id` ของบทสนทนาที่ร้องขอจริง ไม่ใช้ active conversation ของเจ้าของเป็นค่าเดาเมื่อผู้ใช้สลับแชตแล้ว
+
+| จุดตรวจ | ก่อนแก้ | หลังแก้ใน `101e5e2` | หลักฐาน |
+|---|---|---|---|
+| Ticket binding | ticket ไม่มี `chat_id`; staff route อ่าน active chat ของ owner | ticket เก็บ `chat_id`, `mode_epoch`, `conversation_version` และ `assignment_epoch` | `routers/business.py`, focused pytest |
+| Staff GET | อาจคืน transcript ของ active chat ที่ไม่ใช่เคส | lookup ตาม binding; missing binding/chat เป็น 404 และ archive ที่ตรงเท่านั้นถูกอ่านได้ | `test_handoff_binds_exact_chat_and_stale_staff_mutations_fail_closed` |
+| Staff state/reply | ไม่มี precondition สำหรับ request เก่า | รับ `expected_version` และ `assignment_epoch` แบบ optional; ค่าค้างคืน 409 ก่อนเขียนข้อมูล | focused pytest, UI-16 |
+| Takeover/return | เพิ่ม `version` แต่ไม่มีชื่อ epoch แยก | `mode_epoch` และ `version` เพิ่มพร้อมกัน ทำให้ finalization ของ bot ที่กำลังทำงานถูกทิ้ง | `test_staff_takeover_discards_inflight_model` |
+| Client compatibility | payload เดิมมีเพียง state/message | optional fields ไม่ทำให้ client เดิมเสีย | 91 focused tests, UAT 36/36 |
+
+การเปลี่ยนนี้ไม่เพิ่ม provider call ไม่เปิดเงินจริง และไม่เปลี่ยน package/payment simulator contract
+
+### 17.1 ผล Playwright รอบใหม่
+
+รันบน Windows PowerShell ด้วย `node tests/browser/uat.cjs` ใน `OFFLINE/MOCKED_TEST_ONLY` ใช้ข้อมูลสมมติและ isolated SQLite: **36 PASS, 0 FAIL, 0 browser errors** ครอบคลุม customer, staff/manager, bot↔admin handoff, history/privacy, package/payment simulator, negative cases และ 768/390 px mobile
+
+| Requirement | Test | ผลรอบนี้ | Evidence |
+|---|---|---|---|
+| Customer/admin | UI-01, UI-05–UI-13, UI-17, UI-23, UI-25, UI-28–UI-32 | PASS | [`evidence-matrix.md`](../evidence/current/browser-uat-gl03-20261010/evidence-matrix.md) |
+| Bot↔admin handoff | UI-16, UI-18, UI-34 และ GL-03 pytest | PASS | [`browser-uat.json`](../evidence/current/browser-uat-gl03-20261010/browser-uat.json) |
+| History/retention/privacy | UI-14, UI-19, UI-31, UI-33 และ privacy tests | PASS ในขอบเขตที่มีจริง | [`guest-temporary-1440.png`](../evidence/current/browser-uat-gl03-20261010/guest-temporary-1440.png) |
+| Package/payment แบบจำลอง | UI-02–UI-04, UI-06–UI-07, UI-15, UI-26–UI-27 | PASS แบบ simulator | [`payment-simulator-1440.png`](../evidence/current/browser-uat-gl03-20261010/payment-simulator-1440.png) |
+| Mobile | UI-21-tablet, UI-21-mobile, UI-31 | PASS, no overflow | [`app-390.png`](../evidence/current/browser-uat-gl03-20261010/app-390.png) |
+| Negative cases | UI-02b, UI-04, UI-08, UI-19–UI-20, UI-22, UI-33–UI-34 | PASS ตาม assertions; ภาพเฉพาะบาง state เป็น NOT_RUN | [`evidence-matrix.md`](../evidence/current/browser-uat-gl03-20261010/evidence-matrix.md) |
+
+รายละเอียดขั้นตอน, expected/actual, case ID และรายการภาพอยู่ใน [`playwright-test-plan.md`](../evidence/current/browser-uat-gl03-20261010/playwright-test-plan.md) และ [`evidence-matrix.md`](../evidence/current/browser-uat-gl03-20261010/evidence-matrix.md) Raw JSON มี candidate SHA เดียวกับรายงานนี้
+
+### 17.2 ข้อจำกัดและ remaining risks
+
+- ผลรอบนี้เป็น software/UI evidence ใน mock/offline เท่านั้น ไม่ใช่ผล live LLM/OCR, clinical accuracy, Render, uptime หรือเงินจริง
+- retention purge ตามเวลาจริง, backup restore, durable message sequencing และ cross-process race ยังไม่ได้รับรองจากรอบนี้ จึงคงเป็น `NOT_RUN`/remaining risk ตามแผน GL-01/GL-04
+- screenshot เฉพาะ error/permission/aggregate บาง case ไม่ได้ถูก capture โดย runner รอบนี้ และถูกระบุ `NOT_RUN` ใน matrix ไม่ใช้ภาพ state อื่นแทน
+- independent review โดย REVIEW/O1 ไม่ได้รันใน account แยกในรอบนี้ จึงมี reduced account independence; ผลนี้เป็น owner-run evidence ไม่ใช่ independent sign-off
+- ยังไม่ push, merge ไป remote, deploy, เรียก quota จริง หรือเปลี่ยน budget/plan/key
 
 ## ภาคผนวก ก. เอกสารอ้างอิงใน repository
 

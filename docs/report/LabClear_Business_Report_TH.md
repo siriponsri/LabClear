@@ -187,6 +187,39 @@ LabClear เป็นคลินิกตรวจสุขภาพขนา�
 | 5 | ถ่ายคลิปสาธิตและส่งรายงานรายวิชา (17 ต.ค. 2569) | ทีม | รอ |
 | 6 | ระยะถัดไป: ชำระเงินจริง LINE OA จริง และข้อตกลงกับโรงพยาบาลพันธมิตร | เจ้าของ | ยังไม่เริ่ม |
 
+## 11. ผลการทดสอบ checkpoint GL-03 และการตรวจรับฟังก์ชัน
+
+การตรวจรอบนี้ยึดข้อมูลสมมติและโหมด `OFFLINE/MOCKED_TEST_ONLY` เท่านั้น ไม่ใช้ live LLM/OCR API ไม่โอนเงินจริง และไม่ push/deploy ผลหลักผูกกับ commit `101e5e21968cc5ea8204f953ef60ceb9097bb677`
+
+### 11.1 ผลก่อนและหลังแก้
+
+| สถานะ | ผลที่ตรวจพบ | การแก้ที่ทำ | ผลหลังแก้ |
+|---|---|---|---|
+| ก่อนแก้ | handoff ticket ไม่เก็บ chat ที่ร้องขอ และ staff route อ้าง active chat ของ owner ได้ | เพิ่ม immutable `chat_id`, `mode_epoch`, `conversation_version`, `assignment_epoch` และ exact-chat lookup | focused regression ผ่าน; chat อื่นไม่ถูกนำมาแสดง |
+| ก่อนแก้ | staff state/reply ไม่มี version precondition | เพิ่ม optional `expected_version`/`assignment_epoch`; stale request fail ด้วย 409 | stale mutation ไม่เขียน ticket/conversation |
+| ก่อนแก้ | takeover ใช้ version เดิมเป็นกลไกเดียว | bump `version` และ `mode_epoch` เมื่อ handoff/takeover/return | late bot result ถูก discard ตาม finalization guard |
+| หลังแก้ | client เดิมส่งเฉพาะ state/message | คง fields ใหม่เป็น optional | UAT และ focused existing tests ผ่าน |
+
+### 11.2 Requirement → test → evidence
+
+| Requirement | Test cases | ผล | หลักฐานใหม่ |
+|---|---|---|---|
+| ลูกค้าเลือก package/จอง/ถาม/รายงาน | UI-01–UI-10, UI-24, UI-26, UI-30 | PASS | `browser-uat.json`, ภาพ package/booking/report |
+| staff/admin รับเคสและจัดการงาน | UI-11–UI-13, UI-17, UI-23, UI-25, UI-28, UI-32 | PASS | ภาพ staff/inbox/quote/admin |
+| bot↔admin handoff ปลอดภัย | UI-16, UI-18, UI-34; GL-03 pytest | PASS | `evidence-matrix.md`, focused pytest |
+| history/retention/privacy | UI-14, UI-19, UI-31, UI-33 | PASS ใน mock scope | `guest-temporary-1440.png`, raw JSON |
+| package/payment แบบจำลอง | UI-02–UI-04, UI-06–UI-07, UI-15, UI-26–UI-27 | PASS แบบ simulation | `payment-simulator-1440.png`, raw JSON |
+| mobile/tablet | UI-21-tablet, UI-21-mobile, UI-31 | PASS | `home-390.png`, `app-390.png`, `app-768.png` |
+| negative cases | UI-02b, UI-04, UI-08, UI-19–UI-20, UI-22, UI-33–UI-34 | PASS ตาม assertion | matrix ระบุภาพที่มี/NOT_RUN ตามจริง |
+
+### 11.3 ขอบเขตหลักฐานและความเสี่ยงคงเหลือ
+
+รอบ Playwright ใช้ Playwright 1.56.1, Node.js 24.19.0, Python 3.12.10 บน Windows PowerShell ผลดิบระบุ 36 PASS, 0 FAIL และ 0 browser errors; ภาพและรายละเอียด expected/actual อยู่ที่ `docs/evidence/current/browser-uat-gl03-20261010/` โดยใช้ font/theme เดิมของรายงานเมื่อ render
+
+ผลนี้ไม่รับรอง live model/OCR quality, retention purge จริง, backup restore, durable messaging, production deployment, real payment หรือ quota/งบจริง รายการดังกล่าวยังเป็น `NOT_RUN` หรือ remaining risk ห้ามใช้ผล mock นี้แทน live evidence
+
+Independent review โดย REVIEW/O1 ไม่ได้ดำเนินการใน account แยกในรอบนี้ จึงมี reduced account independence และไม่ถือเป็น independent sign-off รายงานยังคงสถานะรอ owner approval ก่อน merge/deploy/live test ตามเดิม
+
 ## ภาคผนวก ก. แพ็กเกจทั้งหมด
 
 | รหัส | แพ็กเกจ | รายการตรวจ | ราคา (บาท) | การจอง |
