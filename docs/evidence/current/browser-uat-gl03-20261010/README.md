@@ -27,7 +27,7 @@
 
 ไฟล์ `browser-uat.json` เป็นผลดิบจาก runner และ PNG ในโฟลเดอร์นี้ถูกคัดลอกจาก run เดียวกันทันทีหลังจบการทดสอบ ไม่ใช้ภาพจาก run ก่อนหน้า
 
-PDF ที่ rebuild จากรายงานนี้มี SHA-256 ดังนี้: Business `600b614dc96f26ef8ceff97171b340d4810bed7e8ac65a43f3dadbb0d2a63583`, Architecture `93386382a5b8e447ae1d395891005388fd399dedd2515c78b52340decdfd1f00`
+PDF ที่ rebuild จากรายงานนี้มี SHA-256 ดังนี้: Business `f4e94d28fb749edf6e2ad572c1a18d1ba55f0a0e2159a53585582f863ab47dbc`, Architecture `a0da9fe25936d7bffe724da4367e4cf4f37fc14388441396254c970d2cf748ab`
 
 ## คำสั่งที่ตรวจสอบได้
 
