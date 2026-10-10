@@ -12,10 +12,10 @@ const py = process.env.TEST_PYTHON || path.join(root, '.venv', process.platform 
 let sha = 'unknown', dirty = null; try { sha = execSync('git rev-parse HEAD', { cwd: root }).toString().trim(); dirty = execSync('git status --porcelain', { cwd: root }).toString().trim().length > 0; } catch { /* no git */ }
 const server = (() => { try { require('child_process').execSync(`node -e "fetch('${'http://127.0.0.1:' + (process.env.UI_TEST_PORT || 8098)}/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"`, { stdio: 'ignore' }); console.error('Port in use: another server answers on the UAT port. Stop it first; results would come from its database.'); process.exit(2); } catch { /* port free */ } return null; })() || spawn(py, ['scripts/offline_check.py', 'browser', String(port)], { cwd: root, env: { ...process.env, UI_TEST_PORT: String(port), PROVIDER_NETWORK_ENABLED: 'false', BUSINESS_DB_PATH: path.join(tmp, 'db.sqlite'), BUSINESS_KEY_PATH: path.join(tmp, 'key'), BUSINESS_DATA_KEY: '', DATABASE_URL: '', VERCEL: '', RENDER: '', APP_ENV: 'test', BUSINESS_EXTERNAL_ENABLED: '', STRIPE_SECRET_KEY: '', LINE_CHANNEL_SECRET: '', LINE_CHANNEL_ACCESS_TOKEN: '' }, stdio: ['ignore', 'ignore', 'pipe'] });
 let log = ''; server.on('error', e => { log += 'Fixture process failed: ' + e.message; }); server.stderr.on('data', x => { log += x; });
-let browser; const records = [], errors = [], shots = []; const wait = ms => new Promise(r => setTimeout(r, ms));
+let browser, activeCaseId = null; const records = [], errors = [], shots = [], screenshotEvidence = []; const wait = ms => new Promise(r => setTimeout(r, ms));
 const assert = (c, m) => { if (!c) throw Error(m); };
-async function check(id, name, fn) { const start = Date.now(); try { await fn(); records.push({ id, name, status: 'PASS', ms: Date.now() - start }); } catch (e) { records.push({ id, name, status: 'FAIL', ms: Date.now() - start, error: e.message.split('\n')[0] }); if (process.env.UAT_DEBUG && browser) { let n = 0; for (const ctx of browser.contexts()) for (const pg of ctx.pages()) await pg.screenshot({ path: path.join(out, 'fail-' + id + '-' + (n++) + '.png') }).catch(() => {}); } } }
-async function shot(page, name, full = false) { const file = name + '.png'; await page.screenshot({ path: path.join(out, file), fullPage: full }); shots.push(file); }
+async function check(id, name, fn) { const start = Date.now(); activeCaseId = id; try { await fn(); records.push({ id, name, status: 'PASS', ms: Date.now() - start }); } catch (e) { records.push({ id, name, status: 'FAIL', ms: Date.now() - start, error: e.message.split('\n')[0] }); if (process.env.UAT_DEBUG && browser) { let n = 0; for (const ctx of browser.contexts()) for (const pg of ctx.pages()) await pg.screenshot({ path: path.join(out, 'fail-' + id + '-' + (n++) + '.png') }).catch(() => {}); } } finally { activeCaseId = null; } }
+async function shot(page, name, full = false) { const caseId = activeCaseId || 'UNASSIGNED'; const file = caseId + '_' + name + '.png'; await page.screenshot({ path: path.join(out, file), fullPage: full }); shots.push(file); screenshotEvidence.push({ case_id: caseId, file, viewport: await page.evaluate(() => ({ width: innerWidth, height: innerHeight })) }); }
 const noOverflow = page => page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1);
 function nextOpenDay(days) { const d = new Date(Date.now() + 7 * 3600e3 + days * 86400e3); while (d.getUTCDay() === 0) d.setUTCDate(d.getUTCDate() + 1); return d.toISOString().slice(0, 10); }
 function watch(page, label) { page.on('pageerror', e => errors.push(label + ': ' + e.message)); page.on('console', m => { if (m.type() === 'error' && !/status of (4\d\d|502)|net::ERR_FAILED/.test(m.text())) errors.push(label + ' console: ' + m.text()); }); }
@@ -77,10 +77,15 @@ async function signUp(page, email) {
       assert((await c.getByRole('link', { name: 'Ask the assistant to compare for me' }).getAttribute('href')).includes('compare=P01,P02,P03'), 'assistant link');
       await shot(c, 'compare-1440'); await c.locator('[data-clear-compare]').click(); await c.waitForURL(/\/packages$/); assert(await c.locator('.compare-tray').isHidden(), 'tray still visible');
     });
-    await check('UI-04', 'Package detail CTA leads to booking view; guest must create an account', async () => {
+    await check('UI-04', 'Package detail CTA leads to booking view; guest account gate prevents booking; invalid package is 404', async () => {
       await c.goto(base + '/packages/P02', { waitUntil: 'networkidle' }); await c.getByRole('link', { name: 'Request an appointment' }).click();
       await c.waitForURL(/view=book/); await c.locator('select').first().waitFor(); assert(await c.locator('.field select').first().inputValue() === 'P02', 'package preselected');
-      assert((await c.goto(base + '/packages/P99')).status() === 404, '404 page');
+      await c.getByLabel('Center').selectOption('BKK01'); await c.getByLabel('Date').fill(day1); await c.getByLabel('Date').dispatchEvent('change');
+      await c.getByRole('button', { name: /^09:00/ }).click(); await c.getByRole('button', { name: 'Send appointment request' }).click();
+      await c.getByText('Create an account or sign in so you can follow your appointment request.').waitFor();
+      await shot(c, 'guest-account-required');
+      const guestWorkspace = await (await c.request.get(base + '/api/business/workspace')).json(); assert(guestWorkspace.bookings.length === 0, 'guest created a booking');
+      const invalidPackage = await c.goto(base + '/packages/P99'); assert(invalidPackage.status() === 404, 'invalid package did not return 404'); await shot(c, 'package-not-found');
     });
     await check('UI-05', 'Account: create account, label updates, survives reload', async () => {
       await c.goto(base + '/app', { waitUntil: 'networkidle' }); await signUp(c, 'customer@example.invalid');
@@ -443,7 +448,7 @@ async function signUp(page, email) {
     await check('UI-22', 'No uncaught browser JavaScript errors', async () => assert(!errors.length, JSON.stringify(errors.slice(0, 5))));
   } catch (e) { console.error(e.message); process.exitCode = 1; } finally {
     const failed = records.filter(r => r.status !== 'PASS').length; if (failed) process.exitCode = 1;
-    fs.writeFileSync(path.join(out, 'browser-uat.json'), JSON.stringify({ date: new Date().toISOString(), candidate_sha: sha, working_tree_dirty: dirty, mode: 'MOCKED_TEST_ONLY for LLM and OCR; real UI/API/storage/permissions. Not model or OCR quality evidence.', passed: records.length - failed, failed, records, errors, screenshots: shots }, null, 2));
+    fs.writeFileSync(path.join(out, 'browser-uat.json'), JSON.stringify({ date: new Date().toISOString(), candidate_sha: sha, working_tree_dirty: dirty, mode: 'MOCKED_TEST_ONLY for LLM and OCR; real UI/API/storage/permissions. Not model or OCR quality evidence.', passed: records.length - failed, failed, records, errors, screenshots: shots, screenshot_evidence: screenshotEvidence }, null, 2));
     console.log(records.map(r => `${r.status} ${r.id} ${r.name}${r.error ? ' — ' + r.error : ''}`).join('\n'));
     if (browser) await browser.close(); server.kill(); fs.rmSync(tmp, { recursive: true, force: true });
   }
