@@ -135,6 +135,12 @@ def content_issues(reply: str, evidence: list[dict], report: dict | None = None,
             plain, re.I)
         if personal and not re.search(r"ไม่(?:ได้)?|do not|does not|cannot|can't", personal.group(0), re.I):
             issues.append('personal_diagnosis_asserted')
+    # A disclaimer/negation can still amplify a fabricated numeric business promise.
+    # Compare percentages to actual policy content, never a fixed forbidden benchmark string.
+    if re.search(r'คืนเงิน|refund', message, re.I):
+        policy=' '.join(e.get('content','') for e in evidence if e.get('id')=='rs-policy')
+        percentages=lambda s: set(re.sub(r'\s+','',x) for x in re.findall(r'\d+(?:\.\d+)?\s*%',s))
+        if percentages(plain)-percentages(policy):issues.append('unsupported_policy_percentage')
     for line in plain.splitlines():
         ids = re.findall(r'\[([a-z0-9][a-z0-9_-]+)\]', line)
         business = [i for i in ids if sources.get(i, {}).get('data_class') in {'synthetic_business', 'official_external'}]

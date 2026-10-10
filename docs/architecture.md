@@ -141,7 +141,9 @@ starts and ends, and the finished steps are stored with the answer as its trace.
 10. **Hospital records.** When `HOSPITAL_LINKS_ENABLED=true`, a question that names a hospital adds
     that hospital's reviewed offers as citable `[hosp-…]` evidence.
 11. **Writer** (the role's agent slot, or the shared language model). Returns JSON with the reply,
-    cited IDs, report observations and follow-up questions. The token limit is the harness "Maximum
+    cited IDs, selected report row IDs and follow-up questions. The server hydrates
+    `observation_ids` from the confirmed report without retyping numbers; legacy `observations`
+    still require exact equality. The token limit is the harness "Maximum
     answer length" (500–4,000, default 2,400).
 12. **Deterministic checks.** Links, images and HTML are removed. Every citation must be an ID that
     was supplied (at most 8 medical and 30 in total). Observations must equal the confirmed rows
@@ -174,7 +176,11 @@ medical harness adds calls.
 3. The `vision` slot transcribes the report. Typhoon OCR makes one call per page; other providers
    make one JSON call.
 4. The safety model screens the transcription as a document (hidden instructions, harmful content).
-5. For Typhoon OCR, the language model turns the transcription into rows; the rows are screened again.
+5. For Typhoon OCR, complete unambiguous HTML or Markdown tables with all five required
+   columns are copied directly into rows. The HTML path preserves superscript/subscript glyphs
+   and rejects missing, merged or unknown columns as a whole. Unsupported layouts use the
+   existing guarded model structuring fallback. No clinical dictionary repairs names, values,
+   units or flags. The resulting rows are screened again in both paths.
 6. Python numbers the rows and computes `within`, `high`, `low` or `unknown` only from the range
    printed on the report ([`services/lab_fields_v2.py`](../services/lab_fields_v2.py)).
 7. The rows appear in the chat as a card. Nothing is explained until the customer presses
@@ -296,3 +302,17 @@ and duration, the terminal error carries the request ID, and the message stays r
 
 Prompts, raw model output and keys are not stored. A guest's chat follows the same path but is kept
 only in process memory.
+
+
+### Candidate follow-up after deployed b8e60ef (2026-10-10)
+
+Named-analyte retrieval prioritizes matching aliases over shared unit tokens. Pure medical
+questions exclude unrelated catalog evidence and sales instructions from writer context,
+without changing configured role permissions or tool contracts. Organization requests filter
+catalog results to the organization segment and keep service claims separate from clinical facts.
+A bounded `STATED_COMPARISON` packet may compare one explicit value and interval with identical
+units; negation, uncertainty, inequalities, additional values or numbers, reversed ranges and
+unit ambiguity prevent the packet. It remains unverified user text, never a confirmed report.
+The existing writer, independent reviewer and guards still run. Refund percentages must appear
+in the actual policy even when a draft repeats them inside a denial. Rejection logs contain
+reason codes, not rejected drafts. See the [candidate evidence](evidence/current/next-candidate-20261010/README.md).

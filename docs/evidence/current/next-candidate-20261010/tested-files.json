@@ -1,0 +1,31 @@
+{
+  "base_commit": "cdd8108a32460b95d04736867d095b8f9654f0e5",
+  "test_provenance": "Tests ran on this base plus uncommitted files; these SHA256 digests identify the final tested code. Original per-run commit labels are retained, not rewritten to imply a clean checkout.",
+  "tested_files_sha256": {
+    "services/answer_checks.py": "9b783200a9e180aa8daa7107cfa22daba44131dfb8e5df091fe2855b0ab596f9",
+    "services/business_agent.py": "a7d66fdf7bd1c269b79f9956a4d6850b6c0bfcd519a9dbc6c06ef03603da9dfd",
+    "services/conversation_agent.py": "a6a79434455e45604819b82ebc5419427342fc8ba0ee491ac519a9eb63c639b0",
+    "services/conversation_transport.py": "e2dce3ef6c4bf2e84e4a83cdcfeda50ccc3d796e4daaf759ca2364473b39c512",
+    "services/evidence_search.py": "0f316b70a4460e4f6e4a771c2c646187e4e9cc967a7fa890372a2284c915e707",
+    "services/execution.py": "003528a4ba15a415fa7b9b5960649f83595e52e781b44c3e210a36578cf0c9b5",
+    "services/report_reader_v2.py": "335a36e70f7751f26da22b53dbc2d09cb7e0ad5491a02efc73718f067af6d863",
+    "services/ocr_tables_html.py": "c44193dc9c1dcb0ca012a2c382af565008d40014f3b1cb350b56c458f53ce679",
+    "services/stated_comparison.py": "fa7215c64ac2518dae2332326624c6a3e01dd5ce682efb3533ba39e25b690d81",
+    "static/js/workspace.js": "476ca05964168d1b360a41f99b3ebbd3b60d6bf7f8266c11706f71cac4ce432c",
+    "tests/test_candidate_contracts.py": "5c4c90256afff787a0dbb976c01bb473dac2519e015ec0d5ad1fda4bef70a83c",
+    "tests/browser/workspace_readiness.cjs": "428f02a39aa02d0610f7fbcc8bdc43964e5bb722b6b1cd0853337635dbd049f3"
+  },
+  "existing_tracked_tests_and_eval_unchanged": true,
+  "dataset_digest": "63e5c85e93b93b67c69c6b5f20ae208260585f2b23b5aff066306fc1f3542511",
+  "evidence_sha256": {
+    "pytest-final.log": "2a244f3b839c58e9ab41a61db635b3639b5f9808d276da4d08b37b1de73c172f",
+    "resilience-seed-20261011.json": "7a2c6f835fe0f28477040b7eb7f146704b24f89202172a406996f532a6bc3f52",
+    "resilience-seed-20261010-before-final-strictness.json": "a82547edb9903d90ec07098187d15df6081d09f5d36dce3bdf87be4e01c93b84",
+    "offline20-score.json": "5512362b4664a1982dab48f98bf6caea6728a3fc94df9b4a9bd1572b6d2e9082",
+    "business-uat-final.json": "8447f5a1c52554e4335b2d1c28024b8ee8e22a45ed4d5b9d5dd7573d8785c15c",
+    "business-uat-first-timeout.json": "3f9a61086ed2ab23acd3ac07ed497de62bb3fa1ed64b69a8c17a9263d2d6c2bc",
+    "response-tone.json": "2477deba29c9fa20b4493d38f8b63d7feb773d33d60a9e673291bbb45bd40739",
+    "workspace-readiness.json": "e3d1ad8a0ae86ad996dcad29f01c3a5d21acc4d1f8d4b1492d651036b16b7026",
+    "workspace-readiness.png": "bd3b567ebc87cefb56557b5baf8b5f832f4a71abfc8078a4cf4376a64c38af0d"
+  }
+}

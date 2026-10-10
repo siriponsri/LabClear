@@ -25,6 +25,7 @@ import asyncio
 import collections
 import contextvars
 import json
+import inspect
 import logging
 import secrets
 import threading
@@ -351,7 +352,7 @@ class NDJSONResponse(StreamingResponse):
 
     media_type = "application/x-ndjson"
 
-    def __init__(self, content, on_close: Callable[[], None], headers: dict | None = None):
+    def __init__(self, content, on_close: Callable[[], Awaitable[None] | None], headers: dict | None = None):
         super().__init__(content, headers=headers, media_type=self.media_type)
         self.on_close = on_close
 
@@ -371,7 +372,12 @@ class NDJSONResponse(StreamingResponse):
         except* OSError:
             pass  # the client went away while we were writing
         finally:
-            self.on_close()
+            # Disconnect cancels the streaming task group, not the independently
+            # registered workflow's bounded storage cleanup.
+            with anyio.CancelScope(shield=True):
+                closing = self.on_close()
+                if inspect.isawaitable(closing):
+                    await closing
 
 
 def _line(event: dict) -> bytes:
@@ -466,10 +472,18 @@ async def respond(request, ctx: Execution, run: Callable[[Callable], Awaitable[A
                 yield _line(channel.terminal)
                 return
 
-    def on_close() -> None:
-        # The connection ended before the workflow produced its terminal event: cancel it.
+    async def on_close() -> None:
+        # Keep response teardown joined to workflow cleanup. A new request must
+        # not race an unfinished failed-turn write / busy-slot release.
         if channel.terminal is None and not task.done():
-            ctx.cancel("disconnect")
+            if not ctx.cancel_reason:
+                ctx.cancel("disconnect")
+            # wait() bounds this join without cancelling storage cleanup again.
+            # On timeout the workflow remains registered and owns its slot until
+            # its own finally block releases it; never pretend it is finished.
+            _, pending = await asyncio.wait({task}, timeout=CLEANUP_SECONDS)
+            if pending:
+                log_event("disconnect_cleanup_pending", request_id=ctx.request_id)
 
     return NDJSONResponse(lines(), on_close, headers={"Cache-Control": "no-store", "X-Accel-Buffering": "no",
                                                       "X-Request-ID": ctx.request_id})

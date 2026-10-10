@@ -2,6 +2,13 @@
 
 Dates are in 2026. Test counts are software evidence with test doubles, not live model results.
 
+## Candidate after b8e60ef (2026-10-10, local only)
+
+- Preserve explicit native OCR table columns and glyphs; guarded fallback and human confirmation remain. Resolve answer observation IDs against authoritative confirmed rows.
+- Narrow organization and medical writer context, improve named-analyte retrieval, compare only explicit unambiguous supplied intervals, and reject unsupported refund percentages even inside denials.
+- Wait for initial workspace and final answer rendering before enabling controls. Join disconnected workflow cleanup with a bounded wait while retaining unfinished work in admission accounting.
+- Preserve every existing test and frozen scoring rule. [Evidence and remaining live blockers](docs/evidence/current/next-candidate-20261010/README.md) distinguish local passing checks from incomplete OCR and production acceptance. Production remains b8e60ef until separate approval of the next commit.
+
 ## Local follow-up (2026-10-10)
 
 - Added a separate synthetic health-check Hub: discovery, filters, details, up-to-three comparison and a local inquiry preview. No provider partnership, real prices, real booking or external transmission is implied. The existing three-center catalog and landing remain intact.

@@ -223,7 +223,8 @@ async def complete(messages: list[dict], *, slot: str = "llm", json_mode: bool =
     # OpenAI's current models take max_completion_tokens; other compatible APIs use max_tokens.
     payload["max_completion_tokens" if provider.preset == "openai" else "max_tokens"] = max_tokens
     endpoint = provider.base_url.rstrip("/") + "/chat/completions"
-    if slot == "guard":
+    if slot == "guard" or provider.protocol == "typhoon_ocr" or (provider.preset == "typhoon" and json_mode):
+        # Structured transcription/planning/writing needs stable output, not sampling diversity.
         payload["temperature"] = 0
     from services.model_registry import supports_response_format
     if json_mode and supports_response_format(provider.model):

@@ -67,7 +67,17 @@ def lexical(query: str, limit: int = 6) -> list[dict]:
     vectors, lengths, frequencies = _index(json.dumps(docs,sort_keys=True,ensure_ascii=False))
     n = len(docs)
     avg = sum(lengths) / max(1,n)
-    q = set(tokens(query))
+    # Units shared by many analytes must not outrank the test actually named.
+    # Keep units for a units-only question; do not substitute medical cutoffs.
+    without_units = re.sub(r"\b(?:[munpk]?mol|[munpk]?g|IU|U|mEq)/(?:dL|mL|L|uL)\b", " ", query, flags=re.I)
+    q = set(tokens(without_units)) or set(tokens(query))
+    generic = {'normal','high','low','reference range','reference interval','ค่าอ้างอิง','ช่วงอ้างอิง','ผลแล็บ'}
+    def topic_match(record):
+        for alias in record.get('aliases', []):
+            alias = alias.strip()
+            if len(alias)<3 or alias.casefold() in generic:continue
+            if re.search(r'(?<![A-Za-z0-9])'+re.escape(alias)+r'(?![A-Za-z0-9])',query,re.I):return 1
+        return 0
     scores = []
     for index, vector in enumerate(vectors):
         score = 0.0
@@ -79,8 +89,8 @@ def lexical(query: str, limit: int = 6) -> list[dict]:
             idf = math.log(1 + (n - df + .5) / (df + .5))
             score += idf * (freq * 2.5) / (freq + 1.5 * (.25 + .75 * lengths[index] / max(1, avg)))
         if score > 0:
-            scores.append((score, index))
-    return [docs[i] for _, i in sorted(scores, key=lambda x: (-x[0], docs[x[1]]["id"]))[:limit]]
+            scores.append((topic_match(docs[index]), score, index))
+    return [docs[i] for _, _, i in sorted(scores, key=lambda x: (-x[0], -x[1], docs[x[2]]["id"]))[:limit]]
 
 
 async def search(query: str, limit: int = 6) -> tuple[list[dict], str]:

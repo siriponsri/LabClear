@@ -1,0 +1,10 @@
+{
+  "mode": "MOCKED_TEST_ONLY",
+  "checks": [
+    "Initial chat and tone controls remain disabled until workspace is ready",
+    "Professional tone is saved on the initialized guest chat",
+    "Terminal stream does not unlock another turn before workspace renders",
+    "One submitted question yields one rendered assistant response before controls unlock"
+  ],
+  "errors": []
+}

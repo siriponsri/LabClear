@@ -312,3 +312,17 @@ adds evidence for both seeds with zero outbound attempts. Internal Windows socke
 excluded from outbound counts by retaining the offline guard; denied connect/DNS APIs are counted.
 Temporary files are scoped to each offline run. Unexpected workflow errors log their type and
 request ID only, never exception messages or traceback lines that may contain private data.
+
+
+### Disconnect cleanup join (2026-10-10 candidate)
+
+The streamed response now joins its independently registered workflow's cleanup when the
+connection closes. The close callback is shielded from the streaming task group's cancellation
+and waits at most `CLEANUP_SECONDS` (5 seconds). It does not issue another cancellation when
+Stop or shutdown already cancelled the workflow. If cleanup exceeds the join budget, the
+workflow remains registered and retains its admission slot until its own `finally` releases it;
+`disconnect_cleanup_pending` records the request ID only. No premature idle state or free slot
+is reported, and cost reservations remain charged. This fixes the observed R05 race between
+HTTP teardown and the failed-turn/busy-state writes. New tests hold cleanup open to verify both
+the normal join and bounded timeout; unchanged R05 assertions pass. Full evidence is linked
+from [the candidate record](../evidence/current/next-candidate-20261010/README.md).

@@ -52,6 +52,7 @@ class Answer(BaseModel):
     reply: str = Field(min_length=1, max_length=6500)
     evidence_ids: list[str] = Field(default_factory=list)
     observations: list[Observation] = Field(default_factory=list, max_length=60)
+    observation_ids: list[str] = Field(default_factory=list, max_length=60)
     followups: list[str] = Field(default_factory=list, max_length=3)
 
     drop_nulls = model_validator(mode="before")(_drop_nulls)
@@ -263,6 +264,15 @@ def validate_answer(answer: Answer, evidence: list[dict], report: dict | None) -
             log.warning("answer_rejected reason=observation_changed")
             raise ConversationError("observation_invalid", "An answer changed a confirmed report value. It was withheld.", 502)
         kept.append(Observation(field_id=row["id"], value=str(row.get("value") or ""), unit=str(row.get("unit") or ""),
+                                reference=str(row.get("reference") or ""), status=row.get("status") if row.get("status") in STATUSES else "unknown"))
+    # New writers select row IDs instead of retyping authoritative numbers. Legacy
+    # observation objects still pass every exact-value check above; they are never repaired.
+    for field_id in answer.observation_ids:
+        row = fields.get(field_id)
+        if row is None:
+            raise ConversationError("observation_invalid", "An answer referenced an unknown confirmed report row.", 502)
+        if any(k.field_id == field_id for k in kept):continue
+        kept.append(Observation(field_id=field_id, value=str(row.get("value") or ""), unit=str(row.get("unit") or ""),
                                 reference=str(row.get("reference") or ""), status=row.get("status") if row.get("status") in STATUSES else "unknown"))
     answer.observations = kept
     if any(len(x) > 180 or not x.strip() for x in answer.followups):

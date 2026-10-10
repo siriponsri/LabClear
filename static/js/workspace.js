@@ -408,9 +408,11 @@
   /* ------------------------------------------------------------ sending */
   const defaultQuestion = () => (window.LC_I18N?.lang || document.documentElement.lang || 'th').toLowerCase().startsWith('th') ? 'ช่วยอ่านและอธิบายผลแล็บนี้ให้หน่อย' : 'Please read this report and explain it.';
   async function finishTurn() {
+    // The turn is not ready for another interaction until its saved answer is rendered.
+    lastMessages = ''; await refresh().catch(() => {});
     busy = false; $('response-tone').disabled = false; $('send').disabled = false; $('stop').hidden = true; $('chat-status').textContent = ''; controller = null;
     document.body.classList.remove('turn-active');
-    lastMessages = ''; await refresh().catch(() => {}); $('message').focus({ preventScroll: true });
+    $('message').focus({ preventScroll: true });
   }
   function startTurn() {
     busy = true; $('response-tone').disabled = true; $('send').disabled = true; $('stop').hidden = false; controller = new AbortController();
@@ -1745,12 +1747,13 @@
     if (['package', 'ask', 'compare', 'topic'].some(k => p.has(k)) && !p.get('view')) { window.history.replaceState({}, '', '/app'); $('message').focus(); }
   }
   async function init() {
+    if (!STAFF_MODE) { $('send').disabled = true; $('response-tone').disabled = true; }
     setMenu(false);
     if (!STAFF_MODE && matchMedia('(max-width:640px)').matches) $('message').placeholder = 'Ask a question';
     const p = new URLSearchParams(location.search);
     try {
       const s = await api('/session'); guestToken = s.guest_token || ''; csrf = s.csrf; googleSignIn = !!s.google; updateUser(s.user);
-      if (!STAFF_MODE) { await loadBusiness().catch(() => {}); await refresh(); syncFileInput(); } else setBell(0);
+      if (!STAFF_MODE) { await loadBusiness().catch(() => {}); await refresh(); syncFileInput(); $('send').disabled = false; $('response-tone').disabled = false; } else setBell(0);
       await navigate(p.get('view') || view, false, Object.fromEntries(p));
       await checkLink(); await applyDeepLinks(p);
       if (STAFF_MODE && !isStaff()) account();
