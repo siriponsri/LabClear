@@ -98,7 +98,7 @@ window.RSTurns = (() => {
       if (!m.trace.some(x => x.id === 'harness')) harness(c).forEach(li => ul.append(li));
       return ul;
     }
-    const items = ['Safety check on your question', c.citations_validated ? 'Each claim matched to ' + c.citations_validated + (c.citations_validated === 1 ? ' cited source' : ' cited sources') : 'No source needed for this reply', 'Second review: supported, values unchanged, in scope', 'Safety check on the answer'];
+    const items = ['Safety check on your question', c.citations_validated ? 'Each claim matched to ' + c.citations_validated + (c.citations_validated === 1 ? ' cited source' : ' cited sources') : 'No source needed for this reply', c.independent_review === 'withheld' ? 'Explanation withheld; safe next step shown' : 'Second review: supported, values unchanged, in scope', 'Safety check on the answer'];
     if (c.observations) items.splice(2, 0, c.observations + (c.observations === 1 ? ' report value' : ' report values') + ' matched exactly to your confirmed report');
     if (m.dot?.name) items.push('Answered by the ' + m.dot.name);
     items.forEach(t => ul.append(make('li', t)));

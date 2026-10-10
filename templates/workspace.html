@@ -112,6 +112,15 @@
         <div class="composer-area col">
           <div id="chat-status" class="chat-status" role="status"></div>
           <div id="context-chips" class="context-chips" aria-label="Conversation context"></div>
+          <div class="response-tone small">
+            <label for="response-tone">Response tone</label>
+            <select id="response-tone" aria-describedby="tone-help">
+              <option value="professional">Professional</option>
+              <option value="normal" selected>Normal</option>
+              <option value="playful">Playful</option>
+            </select>
+            <span id="tone-help" class="tiny muted">For this chat. Safety and facts stay the same.</span>
+          </div>
           <form id="chat-form" class="composer">
             <div id="attachments" class="attachments draft" aria-label="Files to send" hidden></div>
             <div class="attach-wrap">

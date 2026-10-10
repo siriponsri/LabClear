@@ -66,8 +66,11 @@ def test_failed_reviewer_gets_one_rewrite_without_bypassing_checks(monkeypatch,s
     seen=setup_answers(monkeypatch,['Glucose [nlm-x]']*2,[False,second_pass])
     if second_pass:assert asyncio.run(business_agent.run('Explain glucose',{'report':REPORT}))['reply']
     else:
-        with pytest.raises(ConversationError) as e:asyncio.run(business_agent.run('Explain glucose',{'report':REPORT}))
-        assert e.value.code=='review_failed'
+        out=asyncio.run(business_agent.run('Explain glucose',{'report':REPORT}))
+        assert out['checks']['independent_review']=='withheld'
+        assert out['checks']['answer_mode']=='verification_recovery'
+        assert out['sources']==[] and out['observations']==[]
+        assert 'Glucose [nlm-x]' not in out['reply'] and out['action'] is None
     assert seen==['plan','answer','review','answer','review']
 
 

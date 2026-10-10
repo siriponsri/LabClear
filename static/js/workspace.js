@@ -7,6 +7,7 @@
   const LOC = () => window.LC_I18N?.locale() || 'en-GB';   // dates follow the page language (static/js/i18n.js)
   const STAFF_MODE = document.body.dataset.staff === 'true';
   const STAFF_ROLES = ['staff', 'manager', 'clinical'];
+  let toneSaving = false;
   let guestToken = '', csrf = '', user = null, state = null, accessCode = '', busy = false, controller = null;
   let view = STAFF_MODE ? 'overview' : 'chat', lastMessages = '', activeTicket = '', ticketFilter = 'open', opsFilter = 'requested';
   let modes = null, catalogCache = null, branchCache = null, googleSignIn = false, chatList = null, lastChats = '';
@@ -313,6 +314,7 @@
     const next = await api('/workspace');
     if (identity !== user?.id || token !== guestToken) return;
     state = next;
+    if (!STAFF_MODE && !toneSaving) $('response-tone').value = state.conversation.tone || 'normal';
     updateUser(state.user);
     renderMessages(state.conversation);
     renderContext();
@@ -406,12 +408,12 @@
   /* ------------------------------------------------------------ sending */
   const defaultQuestion = () => (window.LabClearI18n?.language || navigator.language || '').toLowerCase().startsWith('th') ? 'ช่วยอ่านและอธิบายผลแล็บนี้ให้หน่อย' : 'Please read this report and explain it.';
   async function finishTurn() {
-    busy = false; $('send').disabled = false; $('stop').hidden = true; $('chat-status').textContent = ''; controller = null;
+    busy = false; $('response-tone').disabled = false; $('send').disabled = false; $('stop').hidden = true; $('chat-status').textContent = ''; controller = null;
     document.body.classList.remove('turn-active');
     lastMessages = ''; await refresh().catch(() => {}); $('message').focus({ preventScroll: true });
   }
   function startTurn() {
-    busy = true; $('send').disabled = true; $('stop').hidden = false; controller = new AbortController();
+    busy = true; $('response-tone').disabled = true; $('send').disabled = true; $('stop').hidden = false; controller = new AbortController();
     document.body.classList.add('turn-active');   // Retry buttons are inert while a workflow runs
   }
   /* After a failure the message stays on this page (in memory only, never in browser storage):
@@ -436,7 +438,7 @@
   async function send(text) {
     text = (text || '').trim();
     const files = draft.files.slice(), sample = draft.sample, withReport = files.length > 0 || !!sample;
-    if (busy || (!text && !withReport)) return;
+    if (busy || toneSaving || (!text && !withReport)) return;
     if (view !== 'chat') await navigate('chat');
     const human = state && state.conversation.mode !== 'bot';
     if (withReport && human) { notice('Our team has this conversation. Add the report on My reports instead.', 'bad'); return; }
@@ -578,7 +580,7 @@
     side.replaceChildren(top, pg, cg);
   }
   async function chatAction(run, done) {
-    if (busy) { notice('Wait for the current reply first.', 'bad'); return; }
+    if (busy || toneSaving) { notice('Wait for the current reply first.', 'bad'); return; }
     try { await run(); lastMessages = ''; lastChats = ''; closeModal(); setChats(false); await refresh(); if (view !== 'chat') await navigate('chat'); if (done) notice(done); }
     catch (e) { notice(e.message, 'bad'); }
   }
@@ -613,6 +615,17 @@
   }
 
   if (!STAFF_MODE) {
+    $('response-tone').addEventListener('change', async () => {
+      const select = $('response-tone'), previous = state?.conversation?.tone || 'normal';
+      const chatId = state?.conversation?.chat_id;
+      if (busy || toneSaving || !chatId) { select.value = previous; return; }
+      toneSaving = true; select.disabled = true; $('send').disabled = true;
+      try {
+        await api('/chats/' + encodeURIComponent(chatId), { method: 'PATCH', body: JSON.stringify({ tone: select.value }) });
+        if (state?.conversation?.chat_id === chatId) state.conversation.tone = select.value;
+      } catch (e) { select.value = previous; notice(e.message, 'bad'); }
+      finally { toneSaving = false; select.disabled = busy; $('send').disabled = busy; }
+    });
     $('chat-form').addEventListener('submit', e => { e.preventDefault(); send($('message').value); });
     $('message').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); $('chat-form').requestSubmit(); } });
     const grow = () => { const m = $('message'), n = m.value.length, c = $('char-count'); m.style.height = 'auto'; m.style.height = Math.min(m.scrollHeight, 200) + 'px'; c.hidden = n < 6000; c.textContent = new Intl.NumberFormat('en-US').format(n) + ' / 8,000'; c.classList.toggle('near', n > 7600); };

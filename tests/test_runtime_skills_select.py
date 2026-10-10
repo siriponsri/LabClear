@@ -1,4 +1,4 @@
-"""Runtime skills 0.3: per-task module selection, role allowlists, integrity and fixed test cases.
+"""Runtime skills 0.4: per-task module selection, role allowlists, integrity and fixed test cases.
 
 No model is called. The cases in runtime_skills/thai_health/cases.json are the module test cases
 required by the free-first brief; they check selection and boundaries, not Thai quality.
@@ -24,7 +24,7 @@ def roles():
 
 def test_manifest_lists_every_module_with_id_version_hash_and_boundary():
     manifest = json.loads((runtime_skills.ROOT / "manifest.json").read_text())
-    assert manifest["version"].startswith("0.3")
+    assert manifest["version"].startswith("0.4")
     for name in runtime_skills.ORDER:
         raw = (runtime_skills.ROOT / name).read_bytes()
         assert manifest["modules"][name] == hashlib.sha256(raw).hexdigest()

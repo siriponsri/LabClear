@@ -17,7 +17,7 @@ MAX_PROJECTS = 30
 
 def new_chat_data(project_id: str = "", version: int = 0) -> dict:
     return {"messages": [], "report_id": "", "mode": "bot", "version": version,
-            "chat_id": "chat_" + secrets.token_hex(8), "title": "", "project_id": project_id, "updated": time.time()}
+            "tone": "normal", "chat_id": "chat_" + secrets.token_hex(8), "title": "", "project_id": project_id, "updated": time.time()}
 
 
 def conversation(tx, owner: str) -> dict:
@@ -97,6 +97,7 @@ def new_chat(tx, owner: str, project_id: str = "") -> dict:
         return tx.put(current["id"], "conversation", owner, new_chat_data(version=current["data"]["version"] + 1))
     if not current["data"]["messages"]:
         current["data"]["project_id"] = project_id
+        current["data"]["tone"] = "normal"
         current["data"]["updated"] = time.time()
         return tx.put(current["id"], "conversation", owner, current["data"])
     _stash(tx, owner, current)
@@ -125,11 +126,18 @@ def open_chat(tx, owner: str, chat_id: str) -> dict:
     return tx.put(current["id"], "conversation", owner, data)
 
 
-def update_chat(tx, owner: str, chat_id: str, title: str | None, project_id: str | None) -> None:
+def update_chat(tx, owner: str, chat_id: str, title: str | None, project_id: str | None, tone: str | None = None) -> None:
     current = conversation(tx, owner)
     row = current if current["data"]["chat_id"] == chat_id else find_archive(tx, owner, chat_id)
     if not row:
         raise ConversationError("not_found", "This chat is unavailable.", 404)
+    if tone is not None:
+        from services.response_style import STYLES
+        if tone not in STYLES:
+            raise ConversationError("invalid_tone", "Choose an available response tone.", 422)
+        if row is current:
+            _idle(current)
+        row["data"]["tone"] = tone
     if title is not None:
         row["data"]["title"] = title_from(title)
     if project_id is not None:

@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from fastapi import APIRouter, Request
 from pydantic import Field
+from services.response_style import Tone
 
 from routers.business import Strict, session_row
 from services import business_store as db
@@ -16,6 +17,7 @@ class NewChat(Strict):
 
 
 class ChatChange(Strict):
+    tone: Tone | None = None
     title: str | None = Field(default=None, min_length=1, max_length=80)
     project_id: str | None = Field(default=None, max_length=40)
 
@@ -55,7 +57,7 @@ def open_chat(chat_id: str, request: Request):
 def change_chat(chat_id: str, body: ChatChange, request: Request):
     with db.transaction() as tx:
         owner = _owner(tx, request)
-        chats.update_chat(tx, owner, chat_id, body.title, body.project_id)
+        chats.update_chat(tx, owner, chat_id, body.title, body.project_id, body.tone)
         return chats.listing(tx, owner)
 
 

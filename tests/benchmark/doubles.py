@@ -82,7 +82,7 @@ def _stage(system: str, messages) -> str:
         return "planner"
     if system.startswith("You are LabClear, a conversational"):
         return "writer"
-    if system.startswith("Verify this draft"):
+    if system.startswith(("Verify this draft", "You independently verify a LabClear draft")):
         return "reviewer"
     if system.startswith("Read the laboratory report"):
         return "rows"

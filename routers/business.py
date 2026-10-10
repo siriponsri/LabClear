@@ -340,7 +340,7 @@ async def turn(owner,message,retry_id='',page=None,emit=None,reply_to=''):
         version=d['version'];d['busy_until']=time.time()+_hold();d['turn_id']=turn_id;tx.put(c['id'],'conversation',owner,d)
         report=tx.own(d['report_id'],owner,'report')['data'] if d.get('report_id') else None
         history=[{'role':'assistant' if x['role']=='staff' else x['role'],'content':x['content']} for x in earlier if x.get('content') and x.get('kind')!='report_read'][-12:]
-        context={'history':history,'report':report if report and report.get('confirmed') else None,'previous_reports':[], 'customer_state':{'bookings':[{'id':b['id'],**b['data'],'status':b['state']} for b in tx.find('booking',owner)[-5:]]},'page':page or {},'explain_report':bool(reply_to)}
+        context={'tone':d.get('tone','normal'),'history':history,'report':report if report and report.get('confirmed') else None,'previous_reports':[], 'customer_state':{'bookings':[{'id':b['id'],**b['data'],'status':b['state']} for b in tx.find('booking',owner)[-5:]]},'page':page or {},'explain_report':bool(reply_to)}
         if settings.ORG_DOCUMENTS_ENABLED or any(x.get('private_source_ids') or any(s.get('id','').startswith('orgsrc_') for s in x.get('sources',[])) for x in earlier):
             from services import organization_sources
             user=tx.get(owner)

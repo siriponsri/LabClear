@@ -121,3 +121,6 @@ asserts that analyte names and values do not change. The focused rerun passed 4/
 - Library handoff was read successfully through Library, but local materialization returned HTTP 403.
 - `send_message_to_thread` could not resolve the cloud parent (thread not found); this report is the
   persisted checkpoint for the platform's automatic return to the parent.
+
+
+Follow-up: the reviewer/tone patch reran the strengthened full language audit successfully (43/43), including the report-date fix. See ../reviewer-tone-20261010/README.md and i18n-final.json. This supersedes the earlier full-audit gap above.

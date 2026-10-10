@@ -1,0 +1,76 @@
+{
+  "suite": "chat recovery (browser)",
+  "passed": 10,
+  "total": 10,
+  "page_errors": [],
+  "records": [
+    {
+      "id": "UI-R03-502-1440",
+      "name": "Proxy HTML 502 at 1440 px",
+      "status": "PASS",
+      "ms": 288
+    },
+    {
+      "id": "UI-R03-504-1440",
+      "name": "Proxy HTML 504 at 1440 px",
+      "status": "PASS",
+      "ms": 92
+    },
+    {
+      "id": "UI-R11-200-1440",
+      "name": "200 HTML page instead of JSON at 1440 px",
+      "status": "PASS",
+      "ms": 99
+    },
+    {
+      "id": "UI-R04-eof-1440",
+      "name": "Stream cut before its terminal event at 1440 px",
+      "status": "PASS",
+      "ms": 194
+    },
+    {
+      "id": "UI-R04-invalid-1440",
+      "name": "Invalid NDJSON line at 1440 px",
+      "status": "PASS",
+      "ms": 92
+    },
+    {
+      "id": "UI-R03-reset-1440",
+      "name": "Network reset at 1440 px",
+      "status": "PASS",
+      "ms": 97
+    },
+    {
+      "id": "UI-R06-busy-1440",
+      "name": "LabClear 503 server_busy at 1440 px",
+      "status": "PASS",
+      "ms": 99
+    },
+    {
+      "id": "UI-R02-upstream-1440",
+      "name": "Terminal error event with interrupted step at 1440 px",
+      "status": "PASS",
+      "ms": 172
+    },
+    {
+      "id": "UI-R03-502-390",
+      "name": "Proxy HTML 502 at 390 px",
+      "status": "PASS",
+      "ms": 203
+    },
+    {
+      "id": "UI-R04-eof-390",
+      "name": "Stream cut before its terminal event at 390 px",
+      "status": "PASS",
+      "ms": 130
+    }
+  ],
+  "screenshots": [
+    "UI-R03-502-1440.png",
+    "UI-R04-eof-1440.png",
+    "UI-R02-upstream-1440.png",
+    "UI-R03-502-390.png",
+    "UI-R04-eof-390.png"
+  ],
+  "scope": "MOCKED_TEST_ONLY: route interception on the browser fixture; no provider calls. UI evidence only."
+}
