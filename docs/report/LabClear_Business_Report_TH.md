@@ -207,7 +207,8 @@ LabClear เป็นคลินิกตรวจสุขภาพขนา�
 | ลูกค้าเลือก package/จอง/ถาม/รายงาน | UI-01–UI-10, UI-24, UI-26, UI-30 | PASS | `browser-uat.json`, ภาพ package/booking/report |
 | staff/admin รับเคสและจัดการงาน | UI-11–UI-13, UI-17, UI-23, UI-25, UI-28, UI-32 | PASS | ภาพ staff/inbox/quote/admin |
 | bot↔admin handoff ปลอดภัย | UI-16, UI-18, UI-34; GL-03 pytest | PASS | `evidence-matrix.md`, focused pytest |
-| history/retention/privacy | UI-14, UI-19, UI-31, UI-33 | PASS ใน mock scope | `guest-temporary-1440.png`, raw JSON |
+| history/privacy | UI-14, UI-19, UI-31, UI-33 | PASS ใน mock scope | `guest-temporary-1440.png`, raw JSON |
+| retention purge/expiry/restore | ยังไม่มี controlled-clock และ restore run | NOT_RUN | `playwright-test-plan.md` ระบุข้อจำกัด |
 | package/payment แบบจำลอง | UI-02–UI-04, UI-06–UI-07, UI-15, UI-26–UI-27 | PASS แบบ simulation | `payment-simulator-1440.png`, raw JSON |
 | mobile/tablet | UI-21-tablet, UI-21-mobile, UI-31 | PASS | `home-390.png`, `app-390.png`, `app-768.png` |
 | negative cases | UI-02b, UI-04, UI-08, UI-19–UI-20, UI-22, UI-33–UI-34 | PASS ตาม assertion | matrix ระบุภาพที่มี/NOT_RUN ตามจริง |
