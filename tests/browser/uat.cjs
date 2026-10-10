@@ -81,10 +81,11 @@ async function signUp(page, email) {
       await c.goto(base + '/packages/P02', { waitUntil: 'networkidle' }); await c.getByRole('link', { name: 'Request an appointment' }).click();
       await c.waitForURL(/view=book/); await c.locator('select').first().waitFor(); assert(await c.locator('.field select').first().inputValue() === 'P02', 'package preselected');
       await c.getByLabel('Center').selectOption('BKK01'); await c.getByLabel('Date').fill(day1); await c.getByLabel('Date').dispatchEvent('change');
+      let bookingPostSeen = false; await c.route('**/api/business/bookings', async route => { bookingPostSeen = true; await route.continue(); });
       await c.getByRole('button', { name: /^09:00/ }).click(); await c.getByRole('button', { name: 'Send appointment request' }).click();
       await c.getByText('Create an account or sign in so you can follow your appointment request.').waitFor();
       await shot(c, 'guest-account-required');
-      const guestWorkspace = await (await c.request.get(base + '/api/business/workspace')).json(); assert(guestWorkspace.bookings.length === 0, 'guest created a booking');
+      assert(!bookingPostSeen, 'guest booking request reached the server'); await c.unroute('**/api/business/bookings');
       const invalidPackage = await c.goto(base + '/packages/P99'); assert(invalidPackage.status() === 404, 'invalid package did not return 404'); await shot(c, 'package-not-found');
     });
     await check('UI-05', 'Account: create account, label updates, survives reload', async () => {
