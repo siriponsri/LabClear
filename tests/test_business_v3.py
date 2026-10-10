@@ -146,6 +146,32 @@ def test_staff_requires_role_and_takeover():
     work=c.get('/api/business/workspace').json();assert work['conversation']['messages'][-1]['role']=='staff'
     assert work['conversation']['mode']=='staff'
 
+def test_handoff_binds_exact_chat_and_stale_staff_mutations_fail_closed():
+    c=client();c.post('/api/business/chat',json={'message':'Chat one'})
+    created=c.post('/api/business/handoffs',json={'summary':'Use chat one'});assert created.status_code==200
+    ticket=created.json();assert ticket['data']['chat_id']==c.get('/api/business/workspace').json()['conversation']['chat_id']
+    assert ticket['data']['mode_epoch']==ticket['data']['conversation_version']
+    s=client();promote(s)
+    assert s.get('/api/business/staff/tickets/'+ticket['id']).json()['conversation']['chat_id']==ticket['data']['chat_id']
+    with db.transaction() as tx:
+        current=business.conversation(tx,ticket['owner']);current['data']['mode']='bot';tx.put(current['id'],'conversation',ticket['owner'],current['data'])
+        business.chats.new_chat(tx,ticket['owner'])
+    archived_view=s.get('/api/business/staff/tickets/'+ticket['id']).json()
+    assert archived_view['conversation']['chat_id']==ticket['data']['chat_id']
+    assert any(m['content']=='Chat one' for m in archived_view['conversation']['messages'])
+    assert s.post('/api/business/staff/tickets/'+ticket['id']+'/state',json={'state':'staff'}).status_code==409
+    c2=client();c2.post('/api/business/chat',json={'message':'Chat two'})
+    ticket2=c2.post('/api/business/handoffs',json={'summary':'Use chat two'}).json()
+    assert s.post('/api/business/staff/tickets/'+ticket2['id']+'/state',json={'state':'staff','expected_version':999}).status_code==409
+    assert s.post('/api/business/staff/tickets/'+ticket2['id']+'/state',json={'state':'staff'}).status_code==200
+    current=s.get('/api/business/staff/tickets/'+ticket2['id']).json();epoch=current['ticket']['data']['assignment_epoch'];version=current['conversation']['version']
+    assert s.post('/api/business/staff/tickets/'+ticket2['id']+'/messages',json={'message':'stale','expected_version':version-1,'assignment_epoch':epoch}).status_code==409
+    assert s.post('/api/business/staff/tickets/'+ticket2['id']+'/messages',json={'message':'fresh','expected_version':version,'assignment_epoch':epoch}).status_code==200
+    with db.transaction() as tx:
+        row=tx.get(ticket2['id']);row['data']['chat_id']='chat_missing';tx.put(row['id'],'ticket',row['owner'],row['data'],row['state'],row['branch'])
+    assert s.get('/api/business/staff/tickets/'+ticket2['id']).status_code==404
+    assert s.post('/api/business/staff/tickets/'+ticket2['id']+'/state',json={'state':'bot'}).status_code==404
+
 def test_staff_queue_does_not_call_llm(monkeypatch):
     async def fail(*args,**kw):raise AssertionError('Model must not run during staff mode')
     monkeypatch.setattr(business.business_agent,'run',fail)

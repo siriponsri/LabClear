@@ -58,8 +58,14 @@ class TicketInput(Strict):summary:str=Field(min_length=1,max_length=1000)
 class GuestClose(Strict):
     guest_token:str=Field(min_length=20,max_length=100)
     csrf:str=Field(min_length=20,max_length=100)
-class StaffMessage(Strict):message:str=Field(min_length=1,max_length=4000)
-class TicketChange(Strict):state:str=Field(pattern='^(staff|bot|closed)$')
+class StaffMessage(Strict):
+    message:str=Field(min_length=1,max_length=4000)
+    expected_version:int|None=Field(default=None,ge=0)
+    assignment_epoch:int|None=Field(default=None,ge=0)
+class TicketChange(Strict):
+    state:str=Field(pattern='^(staff|bot|closed)$')
+    expected_version:int|None=Field(default=None,ge=0)
+    assignment_epoch:int|None=Field(default=None,ge=0)
 class LinkInput(Strict):token:str=Field(min_length=20,max_length=100);consent:bool
 class BookingChange(Strict):operation:str=Field(pattern='^(cancel|refund_request|reschedule)$');date:str='';time:str=''
 
@@ -110,7 +116,26 @@ def staff(tx,request):
 def staff_ticket(tx,request,id):
     u=staff(tx,request);t=tx.get(id)
     if not t or t['kind']!='ticket' or (u['data'].get('role')!='manager' and t['branch'] not in ['',u['data'].get('branch')]):raise ConversationError('not_found','This ticket is unavailable.',404)
+    if not t['data'].get('chat_id'):
+        raise ConversationError('chat_binding_missing','This ticket is unavailable.',404)
     return u,t
+
+def ticket_conversation(tx,t,active=False):
+    """Resolve a ticket only to its immutable chat binding; never fall back to owner active chat."""
+    chat_id=t['data'].get('chat_id')
+    current=conversation(tx,t['owner'])
+    if current['data'].get('chat_id')==chat_id:
+        return current
+    archived=chats.find_archive(tx,t['owner'],chat_id)
+    if archived and not active:
+        return archived
+    if archived and active:
+        raise ConversationError('chat_not_active','This ticket is no longer on the active chat.',409)
+    raise ConversationError('chat_unavailable','This ticket is unavailable.',404)
+
+def bump_mode(c,mode):
+    d=c['data'];d['mode']=mode;d['version']=d.get('version',0)+1;d['mode_epoch']=d.get('mode_epoch',d['version']-1)+1
+    d['busy_until']=0
 
 def msg(role,text,**kw):return {'id':secrets.token_hex(12),'role':role,'content':text,'at':time.time(),**kw}
 
@@ -161,13 +186,20 @@ def booking_create(tx,owner,payload):
 def ticket_create(tx,owner,summary,pause_bot=True,extra=None):
     if owner.startswith('guest_'):raise ConversationError('account_required','Sign in before sending a request to our team.',409)
     c=conversation(tx,owner);existing=next((x for x in tx.find('ticket',owner) if x['state']!='closed'),None)
+    chat_id=c['data'].get('chat_id')
+    if not chat_id:raise ConversationError('chat_binding_missing','This request cannot be created.',409)
     latest=tx.find('booking',owner)
     branch=(extra or {}).get('branch_id') or (latest[-1]['branch'] if latest else '')
-    row=existing or tx.put('ticket_'+secrets.token_hex(12),'ticket',owner,{'summary':summary,'assigned_to':'',**(extra or {})},'waiting',branch)
+    if existing and (existing['data'].get('chat_id') != chat_id):
+        raise ConversationError('ticket_conflict','Finish the existing team request before starting another chat.',409)
+    if pause_bot and c['data']['mode']=='bot':
+        bump_mode(c,'waiting');tx.put(c['id'],'conversation',owner,c['data'])
+    ticket_data={**(extra or {}),'summary':summary,'assigned_to':'','chat_id':chat_id,
+                 'mode_epoch':c['data'].get('mode_epoch',c['data'].get('version',0)),
+                 'conversation_version':c['data'].get('version',0),'assignment_epoch':0}
+    row=existing or tx.put('ticket_'+secrets.token_hex(12),'ticket',owner,ticket_data,'waiting',branch)
     if existing and extra:
         existing['data'].update(extra);existing['data']['summary']=summary;row=tx.put(existing['id'],'ticket',owner,existing['data'],existing['state'],existing['branch'] or branch)
-    if pause_bot and c['data']['mode']=='bot':
-        c['data']['mode']='waiting';c['data']['version']+=1;tx.put(c['id'],'conversation',owner,c['data'])
     tx.audit(owner,'handoff.requested',row['id'])
     if not existing:ops.notify_staff(tx,row['branch'],'New customer request',summary[:200],row['id'],'/staff')
     return row
@@ -781,16 +813,19 @@ def ticket_view(id:str,request:Request):
     with db.transaction() as tx:
         u,t=staff_ticket(tx,request,id)
         if t['data'].get('assigned_to') not in ['',u['id']] and u['data']['role']!='manager':raise ConversationError('assigned','This case belongs to another staff member.',403)
-        return {'ticket':t,'conversation':conversation(tx,t['owner'])['data'],'bookings':tx.find('booking',t['owner'])}
+        return {'ticket':t,'conversation':ticket_conversation(tx,t)['data'],'bookings':tx.find('booking',t['owner'])}
 
 @router.post('/staff/tickets/{id}/state')
 def ticket_state(id:str,body:TicketChange,request:Request):
     with db.transaction() as tx:
         u,t=staff_ticket(tx,request,id)
         if t['data'].get('assigned_to') not in ['',u['id']] and u['data']['role']!='manager':raise ConversationError('assigned','Another staff member owns this case.',409)
-        t['data']['assigned_to']=u['id'];tx.put(id,'ticket',t['owner'],t['data'],body.state,t['branch'])
-        c=conversation(tx,t['owner']);c['data']['mode']='staff' if body.state=='staff' else 'bot';c['data']['version']+=1;c['data']['busy_until']=0
-        tx.put(c['id'],'conversation',t['owner'],c['data']);tx.audit(u['id'],'handoff.'+body.state,id)
+        c=ticket_conversation(tx,t,active=True);d=c['data']
+        if body.expected_version is not None and d.get('version',0)!=body.expected_version:raise ConversationError('stale_ticket','This case changed. Refresh before trying again.',409)
+        if body.assignment_epoch is not None and t['data'].get('assignment_epoch',0)!=body.assignment_epoch:raise ConversationError('stale_ticket','This case changed. Refresh before trying again.',409)
+        t['data']['assigned_to']=u['id'];t['data']['assignment_epoch']=t['data'].get('assignment_epoch',0)+1
+        bump_mode(c,'staff' if body.state=='staff' else 'bot')
+        tx.put(id,'ticket',t['owner'],t['data'],body.state,t['branch']);tx.put(c['id'],'conversation',t['owner'],c['data']);tx.audit(u['id'],'handoff.'+body.state,id)
         text={'staff':('A team member joined your conversation','The assistant is paused while our team replies.'),'bot':('The assistant is back','Our team handed the conversation back to the assistant.'),'closed':('Your request was resolved','Our team closed this request. Start a new message any time.')}[body.state]
         ops.notify(tx,t['owner'],text[0],text[1],id,'/app')
     return {'ok':True}
@@ -800,7 +835,10 @@ def staff_send(id:str,body:StaffMessage,request:Request):
     with db.transaction() as tx:
         u,t=staff_ticket(tx,request,id)
         if t['state']!='staff' or t['data'].get('assigned_to')!=u['id']:raise ConversationError('takeover_required','Take over this case before replying.',409)
-        c=conversation(tx,t['owner']);c['data']['messages']=(c['data']['messages']+[msg('staff',body.message)])[-100:];tx.put(c['id'],'conversation',t['owner'],c['data']);tx.audit(u['id'],'staff.message',id)
+        c=ticket_conversation(tx,t,active=True);d=c['data']
+        if body.expected_version is not None and d.get('version',0)!=body.expected_version:raise ConversationError('stale_ticket','This case changed. Refresh before trying again.',409)
+        if body.assignment_epoch is not None and t['data'].get('assignment_epoch',0)!=body.assignment_epoch:raise ConversationError('stale_ticket','This case changed. Refresh before trying again.',409)
+        d['messages']=(d['messages']+[msg('staff',body.message)])[-100:];tx.put(c['id'],'conversation',t['owner'],d);tx.audit(u['id'],'staff.message',id)
         if not t['data'].get('first_response_at'):t['data']['first_response_at']=time.time();tx.put(id,'ticket',t['owner'],t['data'],t['state'],t['branch'])
         ops.notify(tx,t['owner'],'New reply from our team',body.message[:160],id,'/app')
         for link in tx.find('line_identity',t['owner']):

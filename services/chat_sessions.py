@@ -17,15 +17,22 @@ MAX_PROJECTS = 30
 
 def new_chat_data(project_id: str = "", version: int = 0) -> dict:
     return {"messages": [], "report_id": "", "mode": "bot", "version": version,
-            "tone": "normal", "chat_id": "chat_" + secrets.token_hex(8), "title": "", "project_id": project_id, "updated": time.time()}
+            "mode_epoch": version, "tone": "normal", "chat_id": "chat_" + secrets.token_hex(8),
+            "title": "", "project_id": project_id, "updated": time.time()}
 
 
 def conversation(tx, owner: str) -> dict:
     row = tx.get("conversation_" + owner)
     if not row:
         return tx.put("conversation_" + owner, "conversation", owner, new_chat_data())
+    changed = False
     if not row["data"].get("chat_id"):
         row["data"]["chat_id"] = "chat_" + secrets.token_hex(8)
+        changed = True
+    if "mode_epoch" not in row["data"]:
+        row["data"]["mode_epoch"] = row["data"].get("version", 0)
+        changed = True
+    if changed:
         row = tx.put(row["id"], "conversation", owner, row["data"])
     return row
 
