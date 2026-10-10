@@ -239,7 +239,10 @@ def test_inquiry_to_versioned_quote_to_acceptance_and_pdf():
     ticket_id = r.json()["ticket_id"]
     assert c.get(API + "/workspace").json()["conversation"]["mode"] == "bot"  # inquiry does not pause the assistant
     manager = client(); promote(manager)
-    assert manager.post(API + f"/staff/tickets/{ticket_id}/state", json={"state": "staff"}).status_code == 200
+    waiting = manager.get(API + f"/staff/tickets/{ticket_id}").json()
+    assert manager.post(API + f"/staff/tickets/{ticket_id}/state", json={
+        "state": "staff", "expected_version": waiting["conversation"]["version"],
+        "assignment_epoch": waiting["ticket"]["data"]["assignment_epoch"]}).status_code == 200
     quote_body = {"ticket_id": ticket_id, "package_id": "P17", "people": 40, "date": slot(), "time": "09:00",
                   "branch_id": "BKK01", "venue": "Synthetic office, Bangkok", "travel_fee_thb": 1500}
     v1 = manager.post(API + "/staff/quotes", json=quote_body).json()
@@ -380,8 +383,14 @@ def test_first_response_time_and_audit_log():
     c = client(); c.post(API + "/handoffs", json={"summary": "Need help"})
     m = client(); promote(m)
     tid = m.get(API + "/staff/inbox").json()["tickets"][0]["id"]
-    m.post(API + f"/staff/tickets/{tid}/state", json={"state": "staff"})
-    m.post(API + f"/staff/tickets/{tid}/messages", json={"message": "Hello"})
+    waiting = m.get(API + f"/staff/tickets/{tid}").json()
+    assert m.post(API + f"/staff/tickets/{tid}/state", json={
+        "state": "staff", "expected_version": waiting["conversation"]["version"],
+        "assignment_epoch": waiting["ticket"]["data"]["assignment_epoch"]}).status_code == 200
+    active = m.get(API + f"/staff/tickets/{tid}").json()
+    assert m.post(API + f"/staff/tickets/{tid}/messages", json={
+        "message": "Hello", "expected_version": active["conversation"]["version"],
+        "assignment_epoch": active["ticket"]["data"]["assignment_epoch"]}).status_code == 200
     assert m.get(API + "/staff/dashboard").json()["tickets"]["median_first_response_minutes"] is not None
     events = m.get(API + "/staff/audit").json()["events"]
     assert {"handoff.requested", "handoff.staff", "staff.message"} <= {e["action"] for e in events}

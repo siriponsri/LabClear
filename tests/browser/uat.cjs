@@ -65,7 +65,7 @@ async function signUp(page, email) {
     });
     await check('UI-02b', 'Catalog: network error shows recoverable error state', async () => {
       await c.route('**/api/business/catalog/search**', r => r.abort()); await c.getByLabel('Individuals and families').check();
-      await c.locator('[data-error]').waitFor({ state: 'visible' }); await c.unroute('**/api/business/catalog/search**');
+      await c.locator('[data-error]').waitFor({ state: 'visible' }); await shot(c, 'catalog-network-error-1440'); await c.unroute('**/api/business/catalog/search**');
       await c.locator('[data-retry]').click(); await c.locator('[data-count]').filter({ hasText: /^15$/ }).waitFor(); assert(await c.locator('[data-error]').isHidden(), 'error still visible');
     });
     await check('UI-03', 'Compare: tray limit, compare table, assistant hand-off link, clear', async () => {
@@ -91,7 +91,7 @@ async function signUp(page, email) {
     await check('UI-05', 'Account: create account, label updates, survives reload', async () => {
       await c.goto(base + '/app', { waitUntil: 'networkidle' }); await signUp(c, 'customer@example.invalid');
       assert((await c.locator('#account-label').innerText()).includes('customer@'), 'label'); await c.reload({ waitUntil: 'networkidle' });
-      assert((await c.locator('#account-label').innerText()).includes('customer@'), 'session lost');
+      assert((await c.locator('#account-label').innerText()).includes('customer@'), 'session lost'); await shot(c, 'account-persisted-1440');
     });
     let bookingRef = '';
     await check('UI-06', 'Booking form: center, date, live slots, request created as awaiting confirmation', async () => {
@@ -111,11 +111,12 @@ async function signUp(page, email) {
     });
     await check('UI-08', 'Chat: failed reply is marked, retry answers without duplicating the message; sources render', async () => {
       await c.locator('#message').fill('UI_TEST_FAIL_ONCE'); await c.getByRole('button', { name: 'Send message' }).click();
-      await c.getByRole('button', { name: 'Retry', exact: true }).waitFor(); await c.getByRole('button', { name: 'Retry', exact: true }).click();
+      await c.getByRole('button', { name: 'Retry', exact: true }).waitFor(); await shot(c, 'chat-retry-error-1440'); await c.getByRole('button', { name: 'Retry', exact: true }).click();
       await c.getByText('Offline UI test double: your question was received.').last().waitFor();
       const w = await (await c.request.get(base + '/api/business/workspace')).json(); assert(w.conversation.messages.filter(m => m.content === 'UI_TEST_FAIL_ONCE').length === 1, 'duplicated');
       await c.locator('#message').fill('UI_TEST_SOURCES'); await c.getByRole('button', { name: 'Send message' }).click();
       await c.locator('#messages .act', { hasText: 'View source' }).last().click(); await c.getByRole('link', { name: /How to understand your lab results/ }).last().waitFor(); await c.getByRole('button', { name: 'What does a reference range mean?' }).waitFor();
+      await shot(c, 'chat-source-1440');
     });
     await check('UI-09', 'Reports: upload (OCR double), source image, edit, explicit confirmation, context chip, reload', async () => {
       await c.locator('#report-file').setInputFiles(path.join(root, 'examples/thai_lab_reference_v3/png/04_B_Glucose_Urine.png'));
@@ -181,21 +182,140 @@ async function signUp(page, email) {
       const other = await (await browser.newContext()).newPage(); await other.goto(base + '/pay/sim/paysim_unknown', { waitUntil: 'networkidle' });
       await other.getByText('This test payment cannot be shown').waitFor();
     });
-    await check('UI-16', 'Website handoff: customer asks for team, staff takes over, reply reaches customer, assistant paused', async () => {
-      await c.goto(base + '/app', { waitUntil: 'networkidle' }); await c.locator('#staff-request').click(); await c.getByLabel('How can our team help?').fill('UI UAT live help request');
-      await c.getByRole('button', { name: 'Send to our team' }).click(); await c.locator('#handoff-state').filter({ hasText: /queued|replying/ }).waitFor(); // a case taken over in UI-12 already pauses the assistant
-      await s.locator('[data-view=staff]').click(); await s.getByRole('button', { name: /UI UAT live help request|Organization inquiry/ }).first().click();
-      await s.getByRole('heading', { name: /Organization inquiry|UI UAT live help request/ }).waitFor();
-      const btnTake = s.getByRole('button', { name: 'Take over' }); if (await btnTake.count()) await Promise.all([s.waitForResponse(r => r.url().endsWith('/state')), btnTake.click()]);
-      // The ticket view re-renders after Take over; fill once the reply box has settled.
-      const reply = s.getByLabel('Staff reply'); for (let i = 0; i < 6; i++) { await reply.fill('A staff member is reviewing your request.'); await wait(400); if (await reply.inputValue() === 'A staff member is reviewing your request.') break; }
-      await Promise.all([s.waitForResponse(r => r.url().endsWith('/messages') && r.request().method() === 'POST'), s.getByRole('button', { name: 'Send reply' }).click()]);
-      await c.getByText('A staff member is reviewing your request.').waitFor({ timeout: 12000 }); await c.locator('#handoff-state').filter({ hasText: 'paused' }).waitFor();
-      await shot(s, 'staff-inbox-1440');
+    await check('UI-16', 'Website handoff: customer asks for team, staff takes over, reply reaches customer, and customer confirms assistant resume', async () => {
+      const isolatedContext=await browser.newContext({ viewport: { width: 1440, height: 1000 } });
+      const customer=await isolatedContext.newPage(); watch(customer, 'handoff customer');
+      try {
+        await customer.goto(base + '/app', { waitUntil: 'networkidle' });
+        await signUp(customer, 'handoff-ui16@example.invalid');
+        await customer.locator('#staff-request').waitFor({ state: 'visible' });
+        const session=(await (await customer.request.get(base + '/api/business/session')).json());
+        const rejectHandoff=async (summary, code) => {
+          const before=await (await customer.request.get(base + '/api/business/workspace')).json();
+          const response=await customer.request.post(base + '/api/business/handoffs', { data: { summary }, headers: { 'X-Business-CSRF': session.csrf, Origin: base } });
+          assert(response.status()===409 && (await response.json()).code===code, 'handoff rejection mismatch: expected '+code+', got '+response.status());
+          const after=await (await customer.request.get(base + '/api/business/workspace')).json();
+          assert(JSON.stringify(after.conversation)===JSON.stringify(before.conversation) && JSON.stringify(after.tickets)===JSON.stringify(before.tickets), 'rejected handoff mutated customer state');
+        };
+
+        await customer.locator('#message').fill('UI_TEST_HANDOFF_START');
+        await customer.getByRole('button', { name: 'Send message' }).click();
+        await customer.getByText('Offline UI test double: your question was received.').waitFor();
+        let workspace=(await (await customer.request.get(base + '/api/business/workspace')).json());
+        const botChatId=workspace.conversation.chat_id;
+        assert(workspace.conversation.mode==='bot' && workspace.conversation.messages.some(m=>m.role==='assistant' && m.content==='Offline UI test double: your question was received.'), 'offline bot did not answer before handoff');
+        await shot(customer, 'handoff-bot-chat-1440');
+
+        await customer.locator('#staff-request').click(); await customer.getByLabel('How can our team help?').fill('UI UAT live help request');
+        const handoffResponsePromise=customer.waitForResponse(r=>r.url().endsWith('/handoffs') && r.request().method()==='POST');
+        await customer.getByRole('button', { name: 'Send to our team' }).click();
+        const handoffTicket=await (await handoffResponsePromise).json();
+        await customer.locator('#handoff-state').filter({ hasText: /queued/ }).waitFor();
+        workspace=(await (await customer.request.get(base + '/api/business/workspace')).json());
+        const binding={ticket_id:handoffTicket.id||null,ticket_state:handoffTicket.state||null,ticket_chat_id:handoffTicket.data?.chat_id||null,active_chat_id:workspace.conversation.chat_id||null,mode:workspace.conversation.mode||null};
+        assert(binding.ticket_chat_id===binding.active_chat_id, 'ticket chat binding mismatch: '+JSON.stringify(binding));
+        assert(binding.active_chat_id===botChatId, 'handoff switched away from the bot conversation: '+JSON.stringify(binding));
+        assert(binding.ticket_state==='waiting' && binding.mode==='waiting', 'new handoff ticket should be waiting: '+JSON.stringify(binding));
+        assert(await customer.locator('#staff-request').isHidden(), 'team handoff action remained visible while the request was queued');
+        await rejectHandoff('Duplicate while waiting', 'handoff_in_progress');
+        await customer.locator('#notice').waitFor({ state: 'hidden' });
+        await shot(customer, 'handoff-queued-1440');
+
+        await s.locator('[data-view=staff]').click(); await s.locator('[data-ticket="' + handoffTicket.id + '"]').click();
+        await s.getByRole('heading', { name: 'UI UAT live help request' }).waitFor();
+        const btnTake = s.getByRole('button', { name: 'Take over' }); if (await btnTake.count()) await Promise.all([s.waitForResponse(r => r.url().endsWith('/state')), btnTake.click()]);
+        const reply = s.getByLabel('Staff reply'); for (let i = 0; i < 6; i++) { await reply.fill('A staff member is reviewing your request.'); await wait(400); if (await reply.inputValue() === 'A staff member is reviewing your request.') break; }
+        await Promise.all([s.waitForResponse(r => r.url().endsWith('/messages') && r.request().method() === 'POST'), s.getByRole('button', { name: 'Send reply' }).click()]);
+        await customer.getByText('A staff member is reviewing your request.').waitFor({ timeout: 12000 }); await customer.locator('#handoff-state').filter({ hasText: 'paused' }).waitFor();
+        let staffSnapshot=(await (await s.request.get(base + '/api/business/staff/tickets/' + handoffTicket.id)).json());
+        const firstResponseAt=staffSnapshot.ticket.data.first_response_at;
+        assert(firstResponseAt && staffSnapshot.ticket.data.conversation_version===staffSnapshot.conversation.version, 'first staff reply did not persist the ticket version');
+        assert(staffSnapshot.ticket.data.mode_epoch===staffSnapshot.conversation.mode_epoch, 'first staff reply changed the mode epoch unexpectedly');
+        const secondReply='The team is checking the details you selected.';
+        await s.getByLabel('Staff reply').fill(secondReply);
+        await Promise.all([s.waitForResponse(r => r.url().endsWith('/messages') && r.request().method() === 'POST'), s.getByRole('button', { name: 'Send reply' }).click()]);
+        await customer.getByText(secondReply, { exact: true }).waitFor({ timeout: 12000 });
+        staffSnapshot=(await (await s.request.get(base + '/api/business/staff/tickets/' + handoffTicket.id)).json());
+        assert(staffSnapshot.ticket.data.conversation_version===staffSnapshot.conversation.version, 'second staff reply left the ticket version stale');
+        assert(staffSnapshot.ticket.data.mode_epoch===staffSnapshot.conversation.mode_epoch, 'second staff reply left the ticket mode epoch stale');
+        assert(staffSnapshot.ticket.data.first_response_at===firstResponseAt, 'later staff reply overwrote first response time');
+        await shot(s, 'handoff-staff-second-reply-1440');
+        await shot(customer, 'handoff-staff-second-reply-customer-1440');
+        assert(await customer.locator('#staff-request').isHidden(), 'team handoff action remained visible while staff was replying');
+        await rejectHandoff('Duplicate while staff is replying', 'handoff_in_progress');
+        await Promise.all([s.waitForResponse(r => r.url().endsWith('/state') && r.request().method() === 'POST'), s.getByRole('button', { name: 'Ask customer to resume assistant' }).click()]);
+        const beforeChoice=(await (await customer.request.get(base + '/api/business/workspace')).json());
+        await rejectHandoff('Bypass customer resume choice', 'resume_choice_required');
+        const rejected=(await customer.request.post(base + '/api/business/chat', { data: { message: 'UI_TEST_RESUME_WITHOUT_CHOICE' }, headers: { 'X-Business-CSRF': session.csrf, Origin: base } }));
+        assert(rejected.status()===409 && (await rejected.json()).code==='resume_choice_required', 'server accepted a message before resume choice');
+        const afterChoice=(await (await customer.request.get(base + '/api/business/workspace')).json());
+        assert(JSON.stringify(afterChoice)===JSON.stringify(beforeChoice), 'message or handoff state changed before resume choice');
+        await customer.waitForFunction(() => document.querySelector('#message')?.disabled === true, null, { timeout: 6000 });
+        assert(await customer.locator('#message').isDisabled(), 'composer stayed enabled while waiting for resume choice');
+        assert(await customer.locator('#staff-request').isHidden(), 'team handoff action remained visible while awaiting resume choice');
+        await customer.getByRole('button', { name: 'Resume with assistant' }).waitFor();
+        await shot(customer, 'handoff-resume-prompt-1440');
+        await Promise.all([customer.waitForResponse(r => r.url().endsWith('/resume') && r.request().method() === 'POST'), customer.getByRole('button', { name: 'Resume with assistant' }).click()]);
+        workspace=(await (await customer.request.get(base + '/api/business/workspace')).json());
+        assert(workspace.conversation.mode === 'bot', 'customer confirmation did not resume assistant');
+        const resumedTicket=workspace.tickets.find(t=>t.id===handoffTicket.id); assert(resumedTicket?.state==='bot' && resumedTicket.data.chat_id===workspace.conversation.chat_id, 'ticket did not record confirmed bot resume on the same chat');
+        await customer.locator('#staff-request').waitFor({ state: 'visible', timeout: 12000 });
+        const assistantRepliesBeforeResume=workspace.conversation.messages.filter(m=>m.role==='assistant').length;
+        const visibleRepliesBeforeResume=await customer.getByText('Offline UI test double: your question was received.', { exact: true }).count();
+        await customer.locator('#message').fill('UI_TEST_AFTER_RESUME');
+        await Promise.all([
+          customer.waitForResponse(r=>r.url().endsWith('/chat') && r.request().method()==='POST'),
+          customer.getByRole('button', { name: 'Send message' }).click()
+        ]);
+        const observedReplyHandle=await customer.waitForFunction(async ({ previousCount, expectedChatId }) => {
+          const response=await fetch('/api/business/workspace', { cache: 'no-store' });
+          const state=await response.json();
+          const replies=state.conversation.messages.filter(message=>message.role==='assistant');
+          if (state.conversation.chat_id===expectedChatId && replies.length>previousCount && replies.at(-1)?.content==='Offline UI test double: your question was received.') {
+            return { chat_id: state.conversation.chat_id, mode: state.conversation.mode, assistant_reply_count: replies.length, latest_reply: replies.at(-1).content };
+          }
+          return false;
+        }, { previousCount: assistantRepliesBeforeResume, expectedChatId: botChatId }, { timeout: 12000 });
+        const pageReplyObservation=await observedReplyHandle.jsonValue();
+        await customer.getByText('Offline UI test double: your question was received.', { exact: true }).nth(visibleRepliesBeforeResume).waitFor({ state: 'visible', timeout: 12000 });
+        await customer.getByText('Thinking', { exact: true }).waitFor({ state: 'hidden', timeout: 12000 });
+        await customer.locator('#notice').waitFor({ state: 'hidden' });
+        await shot(customer, 'handoff-resumed-1440');
+        let persistedWorkspace, assistantRepliesAfterResume, persistedReply=false;
+        for (let attempt=0; attempt<20; attempt++) {
+          const response=await customer.request.get(base + '/api/business/workspace', { headers: { 'Cache-Control': 'no-cache' } });
+          persistedWorkspace=await response.json();
+          assistantRepliesAfterResume=persistedWorkspace.conversation.messages.filter(m=>m.role==='assistant');
+          if (persistedWorkspace.conversation.chat_id===botChatId && persistedWorkspace.conversation.mode==='bot' && assistantRepliesAfterResume.length>assistantRepliesBeforeResume && assistantRepliesAfterResume.at(-1)?.content==='Offline UI test double: your question was received.') {
+            persistedReply=true;
+            break;
+          }
+          await wait(250);
+        }
+        workspace=persistedWorkspace;
+        assert(workspace.conversation.mode==='bot' && workspace.conversation.messages.some(m=>m.content==='UI_TEST_AFTER_RESUME'), 'bot did not accept a message after confirmed resume');
+        assert(persistedReply, 'new bot reply after resume was not stable in workspace reads: '+JSON.stringify({page:pageReplyObservation,api:{chat_id:workspace.conversation.chat_id,mode:workspace.conversation.mode,assistant_reply_count:assistantRepliesAfterResume.length,latest_reply:assistantRepliesAfterResume.at(-1)?.content}}));
+        await customer.locator('#staff-request').click(); await customer.getByLabel('How can our team help?').fill('UI UAT second handoff');
+        const secondHandoffPromise=customer.waitForResponse(r=>r.url().endsWith('/handoffs') && r.request().method()==='POST');
+        await customer.getByRole('button', { name: 'Send to our team' }).click();
+        const secondTicket=await (await secondHandoffPromise).json();
+        await customer.locator('#handoff-state').filter({ hasText: /queued/ }).waitFor();
+        workspace=(await (await customer.request.get(base + '/api/business/workspace')).json());
+        const requeued=workspace.tickets.find(t=>t.id===handoffTicket.id); assert(requeued?.state==='waiting' && !requeued.data.assigned_to && requeued.data.chat_id===workspace.conversation.chat_id, 'second customer handoff did not return the ticket to the unassigned queue');
+        assert(secondTicket.id===handoffTicket.id && secondTicket.state==='waiting', 'requeue created or returned a different ticket');
+        assert(workspace.conversation.mode==='waiting', 'assistant was not paused on requeue');
+        await customer.locator('#notice').waitFor({ state: 'hidden' });
+        await shot(customer, 'handoff-requeued-1440');
+        await shot(s, 'staff-inbox-1440');
+      } catch (error) {
+        await shot(customer, 'handoff-failed-1440').catch(() => {});
+        throw error;
+      } finally { await isolatedContext.close(); }
     });
     await check('UI-17', 'Manager: price edit persists and reaches the public catalog; branch staff cannot see manager tools', async () => {
       await s.locator('[data-view=catalog-admin]').click(); await s.getByLabel('Essential Check price in THB').fill('1250');
       await s.getByRole('row', { name: /Essential Check/ }).getByRole('button', { name: 'Save package' }).click(); await s.getByText(/Saved · now ฿1,250/).waitFor();
+      await shot(s, 'manager-price-simulator-1440');
       await c.goto(base + '/packages/P01', { waitUntil: 'networkidle' }); assert((await c.locator('.buy-box .pkg-price strong').innerText()).includes('1,250'), 'price not propagated');
       const x = await (await browser.newContext()).newPage(); await x.goto(base + '/staff', { waitUntil: 'networkidle' });
       await x.getByLabel('Email or username').fill('cnx-staff@example.invalid'); await x.getByLabel('Password', { exact: true }).fill('ui-test-only-password');
@@ -255,13 +375,20 @@ async function signUp(page, email) {
     });
     await check('UI-19', 'Permission: customer cannot use staff APIs; staff views ask to sign in', async () => {
       const r = await c.request.get(base + '/api/business/staff/inbox'); assert(r.status() === 403, 'customer read staff inbox');
-      await c.goto(base + '/staff?view=staff', { waitUntil: 'networkidle' }); await c.getByText('Staff sign-in required').waitFor();
+      await c.goto(base + '/staff?view=staff', { waitUntil: 'networkidle' }); await c.getByText('Staff sign-in required').waitFor(); await shot(c, 'customer-staff-denied-1440');
     });
     await check('UI-20', 'Keyboard and dialogs: visible focus, Escape closes dialog', async () => {
-      await c.goto(base + '/app', { waitUntil: 'networkidle' }); await c.keyboard.press('Tab'); assert(await c.evaluate(() => document.activeElement && document.activeElement !== document.body), 'no focus');
-      await c.locator('#account-open').click(); await c.locator('#account-menu [role=menuitem]').first().waitFor(); await c.keyboard.press('Escape'); await c.locator('#account-menu').waitFor({ state: 'hidden' });
-      await c.locator('#staff-request').click(); await c.locator('#modal').waitFor(); await c.keyboard.press('Escape'); await c.locator('#modal').waitFor({ state: 'hidden' });
-      assert(await noOverflow(c), 'desktop overflow');
+      const dialogContext=await browser.newContext({ viewport: { width: 1440, height: 1000 } });
+      try {
+        const dialogPage=await dialogContext.newPage(); watch(dialogPage, 'dialog');
+        await dialogPage.goto(base + '/app', { waitUntil: 'networkidle' }); await signUp(dialogPage, 'ui20-dialog@example.invalid');
+        await dialogPage.keyboard.press('Tab'); assert(await dialogPage.evaluate(() => document.activeElement && document.activeElement !== document.body), 'no focus');
+        await dialogPage.locator('#account-open').click(); await dialogPage.locator('#account-menu [role=menuitem]').first().waitFor(); await dialogPage.keyboard.press('Escape'); await dialogPage.locator('#account-menu').waitFor({ state: 'hidden' });
+        await dialogPage.locator('#staff-request').click(); await dialogPage.locator('#modal').waitFor();
+        await dialogPage.locator('#notice').waitFor({ state: 'hidden' }); await shot(dialogPage, 'keyboard-dialog-1440');
+        await dialogPage.keyboard.press('Escape'); await dialogPage.locator('#modal').waitFor({ state: 'hidden' });
+        assert(await noOverflow(dialogPage), 'desktop overflow');
+      } finally { await dialogContext.close(); }
     });
     await check('UI-26', 'AI Lab Report: free reading, upgrade prompt, Plus via signed test payment, multi-image reading, lab dashboard over time, printable Lab Report', async () => {
       const lctx = await browser.newContext({ viewport: { width: 1440, height: 1000 } }); const l = await lctx.newPage(); watch(l, 'labs');
@@ -431,7 +558,7 @@ async function signUp(page, email) {
       assert(await p.getByLabel('Date', { exact: true }).inputValue() === day1, 'date lost at sign-in');
       assert(await p.getByRole('button', { name: /^11:00/ }).getAttribute('aria-pressed') === 'true', 'slot lost at sign-in');
       await p.goto(base + '/app?view=staff', { waitUntil: 'networkidle' });
-      assert(await p.locator('#chat-view').isVisible(), 'customer routed to staff inbox'); await ctx.close();
+      assert(await p.locator('#chat-view').isVisible(), 'customer routed to staff inbox'); await shot(p, 'customer-staff-url-private-1440'); await ctx.close();
     });
     for (const [w, h, label] of [[768, 1024, 'tablet'], [390, 844, 'mobile']]) {
       await check('UI-21-' + label, label + ': pages without horizontal overflow, navigation drawer, filters toggle, reduced motion', async () => {

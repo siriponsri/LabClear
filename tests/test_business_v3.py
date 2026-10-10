@@ -140,11 +140,56 @@ def test_staff_requires_role_and_takeover():
     s=client();uid=s.get('/api/business/workspace').json()['user']['id']
     with db.transaction() as tx:
         u=tx.get(uid);u['data'].update(role='staff',branch='BKK01');tx.put(uid,'user',uid,u['data'])
-    assert s.post('/api/business/staff/tickets/'+t['id']+'/messages',json={'message':'Hello'}).status_code==409
-    assert s.post('/api/business/staff/tickets/'+t['id']+'/state',json={'state':'staff'}).status_code==200
-    assert s.post('/api/business/staff/tickets/'+t['id']+'/messages',json={'message':'A staff response'}).status_code==200
+    waiting=s.get('/api/business/staff/tickets/'+t['id']).json()
+    claim={'expected_version':waiting['conversation']['version'],'assignment_epoch':waiting['ticket']['data']['assignment_epoch']}
+    assert s.post('/api/business/staff/tickets/'+t['id']+'/messages',json={'message':'Hello',**claim}).status_code==409
+    assert s.post('/api/business/staff/tickets/'+t['id']+'/state',json={'state':'staff',**claim}).status_code==200
+    active=s.get('/api/business/staff/tickets/'+t['id']).json()
+    reply={'expected_version':active['conversation']['version'],'assignment_epoch':active['ticket']['data']['assignment_epoch']}
+    assert s.post('/api/business/staff/tickets/'+t['id']+'/messages',json={'message':'A staff response',**reply}).status_code==200
     work=c.get('/api/business/workspace').json();assert work['conversation']['messages'][-1]['role']=='staff'
     assert work['conversation']['mode']=='staff'
+
+def test_staff_reply_keeps_ticket_version_in_sync_after_first_response():
+    customer=client();ticket=customer.post('/api/business/handoffs',json={'summary':'Versioned staff replies'}).json()
+    agent=client();promote(agent,'staff')
+    waiting=agent.get('/api/business/staff/tickets/'+ticket['id']).json()
+    claim={'expected_version':waiting['conversation']['version'],
+           'assignment_epoch':waiting['ticket']['data']['assignment_epoch']}
+    assert agent.post('/api/business/staff/tickets/'+ticket['id']+'/state',
+                      json={'state':'staff',**claim}).status_code==200
+
+    active=agent.get('/api/business/staff/tickets/'+ticket['id']).json()
+    epoch=active['ticket']['data']['assignment_epoch']
+    assert agent.post('/api/business/staff/tickets/'+ticket['id']+'/messages',json={
+        'message':'First staff reply','expected_version':active['conversation']['version'],
+        'assignment_epoch':epoch}).status_code==200
+    first=agent.get('/api/business/staff/tickets/'+ticket['id']).json()
+    first_response_at=first['ticket']['data']['first_response_at']
+    assert first_response_at is not None
+    assert first['ticket']['data']['conversation_version']==first['conversation']['version']
+    assert first['ticket']['data']['mode_epoch']==first['conversation']['mode_epoch']
+
+    unchanged=first['conversation']['messages']
+    assert agent.post('/api/business/staff/tickets/'+ticket['id']+'/messages',json={
+        'message':'Stale version','expected_version':first['conversation']['version']-1,
+        'assignment_epoch':epoch}).status_code==409
+    assert agent.post('/api/business/staff/tickets/'+ticket['id']+'/messages',json={
+        'message':'Stale assignment','expected_version':first['conversation']['version'],
+        'assignment_epoch':epoch-1}).status_code==409
+    after_conflicts=agent.get('/api/business/staff/tickets/'+ticket['id']).json()
+    assert after_conflicts['conversation']['messages']==unchanged
+    assert after_conflicts['ticket']['data']['first_response_at']==first_response_at
+
+    assert agent.post('/api/business/staff/tickets/'+ticket['id']+'/messages',json={
+        'message':'Second staff reply','expected_version':first['conversation']['version'],
+        'assignment_epoch':epoch}).status_code==200
+    later=agent.get('/api/business/staff/tickets/'+ticket['id']).json()
+    assert later['ticket']['data']['conversation_version']==later['conversation']['version']
+    assert later['ticket']['data']['mode_epoch']==later['conversation']['mode_epoch']
+    assert later['ticket']['data']['first_response_at']==first_response_at
+    assert [m['content'] for m in later['conversation']['messages'] if m['role']=='staff'][-2:]==[
+        'First staff reply','Second staff reply']
 
 def test_handoff_binds_exact_chat_and_stale_staff_mutations_fail_closed():
     c=client();c.post('/api/business/chat',json={'message':'Chat one'})
@@ -159,18 +204,157 @@ def test_handoff_binds_exact_chat_and_stale_staff_mutations_fail_closed():
     archived_view=s.get('/api/business/staff/tickets/'+ticket['id']).json()
     assert archived_view['conversation']['chat_id']==ticket['data']['chat_id']
     assert any(m['content']=='Chat one' for m in archived_view['conversation']['messages'])
-    assert s.post('/api/business/staff/tickets/'+ticket['id']+'/state',json={'state':'staff'}).status_code==409
+    assert s.post('/api/business/staff/tickets/'+ticket['id']+'/state',json={
+        'state':'staff','expected_version':ticket['data']['conversation_version'],
+        'assignment_epoch':ticket['data']['assignment_epoch']}).status_code==409
     c2=client();c2.post('/api/business/chat',json={'message':'Chat two'})
     ticket2=c2.post('/api/business/handoffs',json={'summary':'Use chat two'}).json()
-    assert s.post('/api/business/staff/tickets/'+ticket2['id']+'/state',json={'state':'staff','expected_version':999}).status_code==409
-    assert s.post('/api/business/staff/tickets/'+ticket2['id']+'/state',json={'state':'staff'}).status_code==200
+    waiting=s.get('/api/business/staff/tickets/'+ticket2['id']).json()
+    assert s.post('/api/business/staff/tickets/'+ticket2['id']+'/state',json={'state':'staff'}).status_code==422
+    assert s.post('/api/business/staff/tickets/'+ticket2['id']+'/state',json={
+        'state':'staff','expected_version':999,
+        'assignment_epoch':waiting['ticket']['data']['assignment_epoch']}).status_code==409
+    assert s.post('/api/business/staff/tickets/'+ticket2['id']+'/state',json={
+        'state':'staff','expected_version':waiting['conversation']['version'],
+        'assignment_epoch':waiting['ticket']['data']['assignment_epoch']}).status_code==200
     current=s.get('/api/business/staff/tickets/'+ticket2['id']).json();epoch=current['ticket']['data']['assignment_epoch'];version=current['conversation']['version']
     assert s.post('/api/business/staff/tickets/'+ticket2['id']+'/messages',json={'message':'stale','expected_version':version-1,'assignment_epoch':epoch}).status_code==409
     assert s.post('/api/business/staff/tickets/'+ticket2['id']+'/messages',json={'message':'fresh','expected_version':version,'assignment_epoch':epoch}).status_code==200
+    sent=s.get('/api/business/staff/tickets/'+ticket2['id']).json()
+    assert sent['ticket']['data']['conversation_version']==sent['conversation']['version']
+    assert sent['ticket']['data']['mode_epoch']==sent['conversation']['mode_epoch']
     with db.transaction() as tx:
         row=tx.get(ticket2['id']);row['data']['chat_id']='chat_missing';tx.put(row['id'],'ticket',row['owner'],row['data'],row['state'],row['branch'])
     assert s.get('/api/business/staff/tickets/'+ticket2['id']).status_code==404
-    assert s.post('/api/business/staff/tickets/'+ticket2['id']+'/state',json={'state':'bot'}).status_code==404
+    assert s.post('/api/business/staff/tickets/'+ticket2['id']+'/state',json={
+        'state':'resume_pending','expected_version':current['conversation']['version'],
+        'assignment_epoch':current['ticket']['data']['assignment_epoch']}).status_code==404
+
+def test_customer_can_requeue_ticket_after_staff_returns_chat_to_bot():
+    customer=client();ticket=customer.post('/api/business/handoffs',json={'summary':'First request'}).json()
+    before=customer.get('/api/business/workspace').json()
+    duplicate=customer.post('/api/business/handoffs',json={'summary':'Duplicate while waiting'})
+    assert duplicate.status_code==409 and duplicate.json()['code']=='handoff_in_progress'
+    unchanged=customer.get('/api/business/workspace').json()
+    assert unchanged['conversation']==before['conversation'] and unchanged['tickets']==before['tickets']
+
+    first_staff=client();first_staff_id=promote(first_staff,'staff')
+    initial=first_staff.get('/api/business/staff/tickets/'+ticket['id']).json()
+    claim={'expected_version':initial['conversation']['version'],'assignment_epoch':ticket['data']['assignment_epoch']}
+    assert first_staff.post('/api/business/staff/tickets/'+ticket['id']+'/state',json={'state':'staff',**claim}).status_code==200
+    before=customer.get('/api/business/workspace').json()
+    duplicate=customer.post('/api/business/handoffs',json={'summary':'Duplicate while staff is replying'})
+    assert duplicate.status_code==409 and duplicate.json()['code']=='handoff_in_progress'
+    unchanged=customer.get('/api/business/workspace').json()
+    assert unchanged['conversation']==before['conversation'] and unchanged['tickets']==before['tickets']
+
+    active=first_staff.get('/api/business/staff/tickets/'+ticket['id']).json()
+    returned=first_staff.post('/api/business/staff/tickets/'+ticket['id']+'/state',json={
+        'state':'resume_pending','expected_version':active['conversation']['version'],
+        'assignment_epoch':active['ticket']['data']['assignment_epoch']})
+    assert returned.status_code==200
+    pending=customer.get('/api/business/workspace').json()
+    assert pending['conversation']['mode']=='resume_pending'
+    pending_ticket=next(x for x in pending['tickets'] if x['id']==ticket['id'])
+    old_epoch=pending_ticket['data']['assignment_epoch']
+    assert pending_ticket['state']=='resume_pending'
+    assert pending_ticket['data']['conversation_version']==pending['conversation']['version']
+    assert pending_ticket['data']['mode_epoch']==pending['conversation']['mode_epoch']
+    bypass=customer.post('/api/business/handoffs',json={'summary':'Bypass resume choice'})
+    assert bypass.status_code==409 and bypass.json()['code']=='resume_choice_required'
+    unchanged=customer.get('/api/business/workspace').json()
+    assert unchanged['conversation']==pending['conversation'] and unchanged['tickets']==pending['tickets']
+    assert customer.post('/api/business/handoffs/'+ticket['id']+'/resume',json={
+        'choice':'confirm','expected_version':pending['conversation']['version']-1,
+        'assignment_epoch':old_epoch}).status_code==409
+    assert client().post('/api/business/handoffs/'+ticket['id']+'/resume',json={
+        'choice':'confirm','expected_version':pending['conversation']['version'],
+        'assignment_epoch':old_epoch}).status_code==404
+    resumed=customer.post('/api/business/handoffs/'+ticket['id']+'/resume',json={
+        'choice':'confirm','expected_version':pending['conversation']['version'],
+        'assignment_epoch':old_epoch})
+    assert resumed.status_code==200 and resumed.json()['mode']=='bot'
+
+    queued=customer.post('/api/business/handoffs',json={'summary':'Please connect me again'})
+    assert queued.status_code==200
+    assert queued.json()['id']==ticket['id']
+    assert queued.json()['state']=='waiting'
+    assert queued.json()['data']['assigned_to']==''
+    assert queued.json()['data']['assignment_epoch']>old_epoch
+    assert customer.get('/api/business/workspace').json()['conversation']['mode']=='waiting'
+
+    second_staff=client();promote(second_staff,'staff')
+    waiting=second_staff.get('/api/business/staff/tickets/'+ticket['id']).json()
+    assert second_staff.post('/api/business/staff/tickets/'+ticket['id']+'/state',json={
+        'state':'staff','expected_version':waiting['conversation']['version'],
+        'assignment_epoch':waiting['ticket']['data']['assignment_epoch']}).status_code==200
+    assert first_staff_id!=waiting['ticket']['data']['assigned_to']
+
+def test_customer_may_keep_assigned_staff_after_resume_prompt():
+    customer=client();ticket=customer.post('/api/business/handoffs',json={'summary':'Keep assigned staff'}).json()
+    s=client();staff_id=promote(s,'staff');waiting=s.get('/api/business/staff/tickets/'+ticket['id']).json()
+    assert s.post('/api/business/staff/tickets/'+ticket['id']+'/state',json={
+        'state':'staff','expected_version':waiting['conversation']['version'],
+        'assignment_epoch':waiting['ticket']['data']['assignment_epoch']}).status_code==200
+    active=s.get('/api/business/staff/tickets/'+ticket['id']).json()
+    assert s.post('/api/business/staff/tickets/'+ticket['id']+'/state',json={
+        'state':'resume_pending','expected_version':active['conversation']['version'],
+        'assignment_epoch':active['ticket']['data']['assignment_epoch']}).status_code==200
+    pending=customer.get('/api/business/workspace').json();t=next(x for x in pending['tickets'] if x['id']==ticket['id'])
+    kept=customer.post('/api/business/handoffs/'+ticket['id']+'/resume',json={
+        'choice':'keep_staff','expected_version':pending['conversation']['version'],
+        'assignment_epoch':t['data']['assignment_epoch']})
+    assert kept.status_code==200 and kept.json()['state']=='staff'
+    after=s.get('/api/business/staff/tickets/'+ticket['id']).json()
+    assert after['ticket']['data']['assigned_to']==staff_id
+    assert after['conversation']['mode']=='staff'
+
+def test_resume_pending_rejects_chat_messages_without_saving_or_running_agent(monkeypatch):
+    async def fail(*args,**kwargs):raise AssertionError('Assistant must not run before customer chooses')
+    monkeypatch.setattr(business.business_agent,'run',fail)
+    customer=client();ticket=customer.post('/api/business/handoffs',json={'summary':'Explicit resume choice'}).json()
+    s=client();promote(s,'staff');waiting=s.get('/api/business/staff/tickets/'+ticket['id']).json()
+    assert s.post('/api/business/staff/tickets/'+ticket['id']+'/state',json={
+        'state':'staff','expected_version':waiting['conversation']['version'],
+        'assignment_epoch':waiting['ticket']['data']['assignment_epoch']}).status_code==200
+    active=s.get('/api/business/staff/tickets/'+ticket['id']).json()
+    assert s.post('/api/business/staff/tickets/'+ticket['id']+'/state',json={
+        'state':'resume_pending','expected_version':active['conversation']['version'],
+        'assignment_epoch':active['ticket']['data']['assignment_epoch']}).status_code==200
+    before=customer.get('/api/business/workspace').json()['conversation']['messages']
+    rejected=customer.post('/api/business/chat',json={'message':'Resume without choosing'})
+    assert rejected.status_code==409 and rejected.json()['code']=='resume_choice_required'
+    after=customer.get('/api/business/workspace').json()
+    assert after['conversation']['messages']==before and after['conversation']['mode']=='resume_pending'
+
+def test_staff_cannot_skip_resume_confirmation_or_take_closed_ticket():
+    customer=client();ticket=customer.post('/api/business/handoffs',json={'summary':'No silent resume'}).json()
+    s=client();promote(s,'staff');waiting=s.get('/api/business/staff/tickets/'+ticket['id']).json()
+    assert s.post('/api/business/staff/tickets/'+ticket['id']+'/state',json={
+        'state':'staff','expected_version':waiting['conversation']['version'],
+        'assignment_epoch':waiting['ticket']['data']['assignment_epoch']}).status_code==200
+    active=s.get('/api/business/staff/tickets/'+ticket['id']).json()
+    assert s.post('/api/business/staff/tickets/'+ticket['id']+'/state',json={
+        'state':'closed','expected_version':active['conversation']['version'],
+        'assignment_epoch':active['ticket']['data']['assignment_epoch']}).status_code==200
+    closed=s.get('/api/business/staff/inbox').json()['tickets'][0]
+    assert s.post('/api/business/staff/tickets/'+ticket['id']+'/state',json={
+        'state':'staff','expected_version':closed['data']['conversation_version'],
+        'assignment_epoch':closed['data']['assignment_epoch']}).status_code==409
+
+def test_only_one_staff_claims_ticket_from_same_version():
+    customer=client();ticket=customer.post('/api/business/handoffs',json={'summary':'Concurrent claim'}).json()
+    staff_clients=[client(),client()]
+    for c in staff_clients:promote(c,'staff')
+    snapshot=staff_clients[0].get('/api/business/staff/tickets/'+ticket['id']).json()
+    payload={'state':'staff','expected_version':snapshot['conversation']['version'],
+             'assignment_epoch':snapshot['ticket']['data']['assignment_epoch']}
+    with ThreadPoolExecutor(2) as pool:
+        results=list(pool.map(lambda c:c.post('/api/business/staff/tickets/'+ticket['id']+'/state',json=payload),staff_clients))
+    assert sorted(r.status_code for r in results)==[200,409]
+    with db.transaction() as tx:stored=tx.get(ticket['id'])
+    assert stored['state']=='staff' and stored['data']['assigned_to'] in {
+        c.get('/api/business/workspace').json()['user']['id'] for c in staff_clients}
 
 def test_staff_queue_does_not_call_llm(monkeypatch):
     async def fail(*args,**kw):raise AssertionError('Model must not run during staff mode')
@@ -259,7 +443,10 @@ def test_inactive_package_cannot_be_quoted():
 
 def test_organization_quote_acceptance_and_owner():
     c=client();t=c.post('/api/business/handoffs',json={'summary':'35 people onsite'}).json();s=client();promote(s)
-    s.post('/api/business/staff/tickets/'+t['id']+'/state',json={'state':'staff'})
+    waiting=s.get('/api/business/staff/tickets/'+t['id']).json()
+    assert s.post('/api/business/staff/tickets/'+t['id']+'/state',json={
+        'state':'staff','expected_version':waiting['conversation']['version'],
+        'assignment_epoch':waiting['ticket']['data']['assignment_epoch']}).status_code==200
     r=s.post('/api/business/staff/quotes',json={'ticket_id':t['id'],'package_id':'P17','people':35,'date':slot(),'time':'09:00','venue':'Synthetic office','travel_fee_thb':500,'branch_id':'BKK01'})
     assert r.status_code==200,r.text;q=r.json();assert q['data']['total_thb']==1490*35+500
     other=client();assert other.post('/api/business/quotes/accept',json={'quote_id':q['id']}).status_code==404

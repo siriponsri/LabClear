@@ -60,12 +60,16 @@ class GuestClose(Strict):
     csrf:str=Field(min_length=20,max_length=100)
 class StaffMessage(Strict):
     message:str=Field(min_length=1,max_length=4000)
-    expected_version:int|None=Field(default=None,ge=0)
-    assignment_epoch:int|None=Field(default=None,ge=0)
+    expected_version:int=Field(ge=0)
+    assignment_epoch:int=Field(ge=0)
 class TicketChange(Strict):
-    state:str=Field(pattern='^(staff|bot|closed)$')
-    expected_version:int|None=Field(default=None,ge=0)
-    assignment_epoch:int|None=Field(default=None,ge=0)
+    state:str=Field(pattern='^(waiting|staff|resume_pending|closed)$')
+    expected_version:int=Field(ge=0)
+    assignment_epoch:int=Field(ge=0)
+class ResumeChoice(Strict):
+    choice:str=Field(pattern='^(confirm|keep_staff)$')
+    expected_version:int=Field(ge=0)
+    assignment_epoch:int=Field(ge=0)
 class LinkInput(Strict):token:str=Field(min_length=20,max_length=100);consent:bool
 class BookingChange(Strict):operation:str=Field(pattern='^(cancel|refund_request|reschedule)$');date:str='';time:str=''
 
@@ -137,6 +141,10 @@ def bump_mode(c,mode):
     d=c['data'];d['mode']=mode;d['version']=d.get('version',0)+1;d['mode_epoch']=d.get('mode_epoch',d['version']-1)+1
     d['busy_until']=0
 
+def sync_ticket_epoch(t,c):
+    t['data']['mode_epoch']=c['data'].get('mode_epoch',c['data'].get('version',0))
+    t['data']['conversation_version']=c['data'].get('version',0)
+
 def msg(role,text,**kw):return {'id':secrets.token_hex(12),'role':role,'content':text,'at':time.time(),**kw}
 
 def _in_tx(fn):
@@ -192,16 +200,35 @@ def ticket_create(tx,owner,summary,pause_bot=True,extra=None):
     branch=(extra or {}).get('branch_id') or (latest[-1]['branch'] if latest else '')
     if existing and (existing['data'].get('chat_id') != chat_id):
         raise ConversationError('ticket_conflict','Finish the existing team request before starting another chat.',409)
-    if pause_bot and c['data']['mode']=='bot':
+    requeued=False
+    if pause_bot:
+        mode=c['data'].get('mode')
+        if mode=='resume_pending' or (existing and existing['state']=='resume_pending'):
+            raise ConversationError('resume_choice_required','Choose whether to continue with the assistant before requesting the team again.',409)
+        if existing and existing['state'] in ('waiting','staff'):
+            raise ConversationError('handoff_in_progress','This team request is already active.',409)
+        if existing and (existing['state']!='bot' or mode!='bot'):
+            raise ConversationError('ticket_state_conflict','This request changed. Refresh before asking the team again.',409)
+        if not existing and mode!='bot':
+            raise ConversationError('handoff_in_progress','This conversation is already with the team.',409)
+        requeued=bool(existing)
         bump_mode(c,'waiting');tx.put(c['id'],'conversation',owner,c['data'])
     ticket_data={**(extra or {}),'summary':summary,'assigned_to':'','chat_id':chat_id,
                  'mode_epoch':c['data'].get('mode_epoch',c['data'].get('version',0)),
                  'conversation_version':c['data'].get('version',0),'assignment_epoch':0}
-    row=existing or tx.put('ticket_'+secrets.token_hex(12),'ticket',owner,ticket_data,'waiting',branch)
+    if requeued:
+        ticket_data={**existing['data'],**(extra or {}),'summary':summary,'assigned_to':'',
+                     'chat_id':chat_id,'mode_epoch':c['data'].get('mode_epoch',c['data'].get('version',0)),
+                     'conversation_version':c['data'].get('version',0),
+                     'assignment_epoch':existing['data'].get('assignment_epoch',0)+1}
+        row=tx.put(existing['id'],'ticket',owner,ticket_data,'waiting',existing['branch'] or branch)
+    else:
+        row=existing or tx.put('ticket_'+secrets.token_hex(12),'ticket',owner,ticket_data,'waiting',branch)
     if existing and extra:
-        existing['data'].update(extra);existing['data']['summary']=summary;row=tx.put(existing['id'],'ticket',owner,existing['data'],existing['state'],existing['branch'] or branch)
+        if not requeued:
+            existing['data'].update(extra);existing['data']['summary']=summary;row=tx.put(existing['id'],'ticket',owner,existing['data'],existing['state'],existing['branch'] or branch)
     tx.audit(owner,'handoff.requested',row['id'])
-    if not existing:ops.notify_staff(tx,row['branch'],'New customer request',summary[:200],row['id'],'/staff')
+    if not existing or requeued:ops.notify_staff(tx,row['branch'],'New customer request','A customer requested help.',row['id'],'/staff')
     return row
 
 @router.get('/catalog')
@@ -353,6 +380,8 @@ async def turn(owner,message,retry_id='',page=None,emit=None,reply_to=''):
     def prepare(tx):
         nonlocal message
         c=conversation(tx,owner);d=c['data']
+        if d.get('mode')=='resume_pending':
+            raise ConversationError('resume_choice_required','Choose whether to continue with the assistant or keep talking with the team.',409)
         if d.get('busy_until',0)>time.time():raise ConversationError('busy','Please wait for the previous message.',409)
         last=d['messages'][-1] if d['messages'] else None
         if reply_to:
@@ -561,6 +590,32 @@ def change_booking(id:str,body:BookingChange,request:Request):
 @router.post('/handoffs')
 def handoff(body:TicketInput,request:Request):
     with db.transaction() as tx:u,_=session_row(tx,request);return ticket_create(tx,u['id'],body.summary)
+
+@router.post('/handoffs/{id}/resume')
+def handoff_resume(id:str,body:ResumeChoice,request:Request):
+    with db.transaction() as tx:
+        u,_=session_row(tx,request)
+        t=tx.own(id,u['id'],'ticket')
+        if t['state']!='resume_pending':raise ConversationError('invalid_state','This request is no longer waiting for your choice.',409)
+        c=ticket_conversation(tx,t,active=True);d=c['data']
+        if d.get('mode')!='resume_pending':raise ConversationError('stale_ticket','This request changed. Refresh before choosing.',409)
+        if d.get('version',0)!=body.expected_version:raise ConversationError('stale_ticket','This request changed. Refresh before choosing.',409)
+        if t['data'].get('assignment_epoch',0)!=body.assignment_epoch:raise ConversationError('stale_ticket','This request changed. Refresh before choosing.',409)
+        if body.choice=='confirm':
+            t['state']='bot';t['data']['assigned_to']='';mode='bot';action='handoff.resume_confirmed'
+            text=('The assistant is back','You chose to continue with the assistant.')
+        else:
+            if not t['data'].get('assigned_to'):raise ConversationError('staff_unavailable','This request no longer has an assigned team member.',409)
+            t['state']='staff';mode='staff';action='handoff.resume_declined'
+            text=('Your request is with our team','You chose to keep talking with the assigned team member.')
+        t['data']['assignment_epoch']=t['data'].get('assignment_epoch',0)+1
+        bump_mode(c,mode)
+        sync_ticket_epoch(t,c)
+        tx.put(t['id'],'ticket',u['id'],t['data'],t['state'],t['branch'])
+        tx.put(c['id'],'conversation',u['id'],d)
+        tx.audit(u['id'],action,t['id'])
+        if mode=='staff':ops.notify(tx,t['owner'],text[0],text[1],t['id'],'/app')
+    return {'ok':True,'state':t['state'],'mode':mode}
 
 # ------------------------------------------------------------ plans, Lab Report and lab dashboard
 class PlanCheckout(Strict):method:str=Field(pattern='^(card|promptpay)$')
@@ -820,13 +875,24 @@ def ticket_state(id:str,body:TicketChange,request:Request):
     with db.transaction() as tx:
         u,t=staff_ticket(tx,request,id)
         if t['data'].get('assigned_to') not in ['',u['id']] and u['data']['role']!='manager':raise ConversationError('assigned','Another staff member owns this case.',409)
+        allowed={'waiting':{'staff'},'staff':{'waiting','resume_pending','closed'}}
+        if body.state not in allowed.get(t['state'],set()):raise ConversationError('invalid_transition','This request changed. Refresh before trying again.',409)
         c=ticket_conversation(tx,t,active=True);d=c['data']
-        if body.expected_version is not None and d.get('version',0)!=body.expected_version:raise ConversationError('stale_ticket','This case changed. Refresh before trying again.',409)
-        if body.assignment_epoch is not None and t['data'].get('assignment_epoch',0)!=body.assignment_epoch:raise ConversationError('stale_ticket','This case changed. Refresh before trying again.',409)
-        t['data']['assigned_to']=u['id'];t['data']['assignment_epoch']=t['data'].get('assignment_epoch',0)+1
-        bump_mode(c,'staff' if body.state=='staff' else 'bot')
+        if d.get('version',0)!=body.expected_version:raise ConversationError('stale_ticket','This case changed. Refresh before trying again.',409)
+        if t['data'].get('assignment_epoch',0)!=body.assignment_epoch:raise ConversationError('stale_ticket','This case changed. Refresh before trying again.',409)
+        if body.state=='staff':t['data']['assigned_to']=u['id']
+        elif body.state in ('waiting','closed'):t['data']['assigned_to']=''
+        t['data']['assignment_epoch']=t['data'].get('assignment_epoch',0)+1
+        mode={'staff':'staff','waiting':'waiting','resume_pending':'resume_pending','closed':'bot'}[body.state]
+        bump_mode(c,mode)
+        sync_ticket_epoch(t,c)
         tx.put(id,'ticket',t['owner'],t['data'],body.state,t['branch']);tx.put(c['id'],'conversation',t['owner'],c['data']);tx.audit(u['id'],'handoff.'+body.state,id)
-        text={'staff':('A team member joined your conversation','The assistant is paused while our team replies.'),'bot':('The assistant is back','Our team handed the conversation back to the assistant.'),'closed':('Your request was resolved','Our team closed this request. Start a new message any time.')}[body.state]
+        text={
+            'staff':('A team member joined your conversation','The assistant is paused while our team replies.'),
+            'waiting':('Your case is back in the team queue','A team member will continue with your request.'),
+            'resume_pending':('Choose whether to continue with the assistant','The customer can choose whether to continue with the assistant.'),
+            'closed':('Your request was resolved','Our team closed this request. Start a new message any time.')
+        }[body.state]
         ops.notify(tx,t['owner'],text[0],text[1],id,'/app')
     return {'ok':True}
 
@@ -836,10 +902,14 @@ def staff_send(id:str,body:StaffMessage,request:Request):
         u,t=staff_ticket(tx,request,id)
         if t['state']!='staff' or t['data'].get('assigned_to')!=u['id']:raise ConversationError('takeover_required','Take over this case before replying.',409)
         c=ticket_conversation(tx,t,active=True);d=c['data']
-        if body.expected_version is not None and d.get('version',0)!=body.expected_version:raise ConversationError('stale_ticket','This case changed. Refresh before trying again.',409)
-        if body.assignment_epoch is not None and t['data'].get('assignment_epoch',0)!=body.assignment_epoch:raise ConversationError('stale_ticket','This case changed. Refresh before trying again.',409)
-        d['messages']=(d['messages']+[msg('staff',body.message)])[-100:];tx.put(c['id'],'conversation',t['owner'],d);tx.audit(u['id'],'staff.message',id)
-        if not t['data'].get('first_response_at'):t['data']['first_response_at']=time.time();tx.put(id,'ticket',t['owner'],t['data'],t['state'],t['branch'])
+        if d.get('version',0)!=body.expected_version:raise ConversationError('stale_ticket','This case changed. Refresh before trying again.',409)
+        if t['data'].get('assignment_epoch',0)!=body.assignment_epoch:raise ConversationError('stale_ticket','This case changed. Refresh before trying again.',409)
+        d['messages']=(d['messages']+[msg('staff',body.message)])[-100:]
+        d['version']=d.get('version',0)+1;d['updated']=time.time()
+        sync_ticket_epoch(t,{'data':d})
+        tx.put(c['id'],'conversation',t['owner'],d);tx.audit(u['id'],'staff.message',id)
+        if not t['data'].get('first_response_at'):t['data']['first_response_at']=time.time()
+        tx.put(id,'ticket',t['owner'],t['data'],t['state'],t['branch'])
         ops.notify(tx,t['owner'],'New reply from our team',body.message[:160],id,'/app')
         for link in tx.find('line_identity',t['owner']):
             tx.put('outbox_'+secrets.token_hex(12),'line_outbox',t['owner'],{'line_user_id':link['data']['line_user_id'],'reply':body.message,'retry_key':str(__import__('uuid').uuid4()),'attempts':0},'pending')

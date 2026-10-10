@@ -297,7 +297,26 @@
   function renderContext() {
     if (STAFF_MODE || !state) return;
     const mode = state.conversation.mode;
-    $('handoff-state').textContent = mode === 'waiting' ? 'Your request is queued for our team; the assistant is paused.' : mode === 'staff' ? 'A team member is replying; the assistant is paused.' : '';
+    $('staff-request').hidden = mode !== 'bot';
+    $('staff-request').disabled = mode !== 'bot';
+    const handoff = $('handoff-state'); handoff.replaceChildren();
+    $('message').disabled = mode === 'resume_pending';
+    $('send').disabled = mode === 'resume_pending';
+    $('message').placeholder = mode === 'resume_pending' ? 'Choose an option above to continue this chat.' : 'Ask about lab results, packages or booking';
+    if (mode === 'waiting') handoff.append(document.createTextNode('Your request is queued for our team; the assistant is paused.'));
+    else if (mode === 'staff') handoff.append(document.createTextNode('A team member is replying; the assistant is paused.'));
+    else if (mode === 'resume_pending') {
+      handoff.append(document.createTextNode('Our team asked whether you want to continue with the assistant.'));
+      const ticket = state.tickets.find(t => t.data.chat_id === state.conversation.chat_id && t.state === 'resume_pending');
+      if (ticket) {
+        const choose = async choice => {
+          await post('/handoffs/' + ticket.id + '/resume', { choice, expected_version: state.conversation.version, assignment_epoch: ticket.data.assignment_epoch || 0 });
+          await refresh();
+        };
+        handoff.append(document.createTextNode(' '), button('Resume with assistant', () => choose('confirm'), 'btn sm primary'));
+        if (ticket.data.assigned_to) handoff.append(document.createTextNode(' '), button('Keep with team', () => choose('keep_staff'), 'btn sm ghost'));
+      }
+    }
     const r = state.reports.find(x => x.id === state.conversation.report_id);
     $('context-report').textContent = r ? 'Report in use: ' + r.label + (r.date ? ' · ' + r.date : '') : 'No report selected';
     const next = $('context-next'); next.replaceChildren();
@@ -442,6 +461,7 @@
     const files = draft.files.slice(), sample = draft.sample, withReport = files.length > 0 || !!sample;
     if (busy || toneSaving || (!text && !withReport)) return;
     if (view !== 'chat') await navigate('chat');
+    if (state?.conversation.mode === 'resume_pending') { notice('Choose whether to continue with the assistant or keep talking with the team.', 'bad'); return; }
     const human = state && state.conversation.mode !== 'bot';
     if (withReport && human) { notice('Our team has this conversation. Add the report on My reports instead.', 'bad'); return; }
     startTurn(); $('message').value = ''; window.rsGrow?.();
@@ -655,6 +675,10 @@
   }
   document.addEventListener('click', e => { const b = e.target.closest('[data-prompt]'); if (b) send(b.dataset.prompt); });
   function requestStaff(prefill = '') {
+    if (state && state.conversation.mode !== 'bot') {
+      notice('Your existing request is still active. Choose whether to continue before sending another.', 'bad');
+      return;
+    }
     if (!user?.registered) return requireAccount('Sign in to send a request to our team. This temporary chat will be discarded.');
     const form = el('form', null, 'form-grid'), f = field('How can our team help?', 'textarea', typeof prefill === 'string' ? prefill : '');
     f.input.required = true; f.input.maxLength = 1000;
@@ -1142,8 +1166,8 @@
   function ticketButton(t) {
     const b = el('button', null, 'ticket-btn'); b.type = 'button'; b.dataset.ticket = t.id; b.setAttribute('aria-current', String(t.id === activeTicket));
     const top = el('span', null, 'row'); top.append(el('strong', t.data.summary.slice(0, 90)));
-    const tone = { waiting: 'warn', staff: '', bot: 'neutral', closed: 'neutral' }[t.state];
-    b.append(top, el('small', ({ waiting: 'Waiting', staff: 'With staff', bot: 'Back with assistant', closed: 'Case closed' }[t.state] || t.state) + ' · ' + (t.branch || 'any center') + ' · ' + when(t.created)));
+    const tone = { waiting: 'warn', staff: '', resume_pending: 'warn', bot: 'neutral', closed: 'neutral' }[t.state];
+    b.append(top, el('small', ({ waiting: 'Waiting', staff: 'With staff', resume_pending: 'Awaiting customer choice', bot: 'With assistant', closed: 'Case closed' }[t.state] || t.state) + ' · ' + (t.branch || 'any center') + ' · ' + when(t.created)));
     if (t.data.topic === 'organization') b.append(badge('Organization', 'neutral'));
     b.onclick = () => openTicket(t.id); b.classList.toggle('closed', t.state === 'closed'); void tone; return b;
   }
@@ -1176,13 +1200,16 @@
     try { [d, inq] = await Promise.all([api('/staff/tickets/' + id), api('/staff/tickets/' + id + '/inquiry')]); }
     catch (e) { thread.replaceChildren(empty('This case cannot be opened', e.message)); return; }
     const t = d.ticket, mine = t.data.assigned_to === user.id;
-    const head = el('div', null, 'record-head'); head.append(el('h3', t.data.summary), badge({ waiting: 'Waiting', staff: mine ? 'You are replying' : 'With another staff member', bot: 'With assistant', closed: 'Case closed' }[t.state] || t.state, t.state === 'waiting' ? 'warn' : 'neutral'));
+    const head = el('div', null, 'record-head'); head.append(el('h3', t.data.summary), badge({ waiting: 'Waiting', staff: mine ? 'You are replying' : 'With another staff member', resume_pending: 'Awaiting customer choice', bot: 'With assistant', closed: 'Case closed' }[t.state] || t.state, ['waiting', 'resume_pending'].includes(t.state) ? 'warn' : 'neutral'));
     thread.replaceChildren(head);
     const controls = el('div', null, 'record-actions');
-    const setState = (label, s, cls) => button(label, async () => { await post('/staff/tickets/' + id + '/state', { state: s }); notice(s === 'staff' ? 'You took over. The assistant is paused for this customer.' : s === 'bot' ? 'Returned to the assistant.' : 'Case closed.'); await openTicket(id); pollList(); }, cls);
-    if (!(t.state === 'staff' && mine)) controls.append(setState('Take over', 'staff', 'btn sm primary'));
-    if (t.state !== 'bot') controls.append(setState('Return to assistant', 'bot'));
-    if (t.state !== 'closed') controls.append(setState('Close case', 'closed', 'btn sm ghost'));
+    const setState = (label, s, cls) => button(label, async () => { await post('/staff/tickets/' + id + '/state', { state: s, expected_version: d.conversation.version, assignment_epoch: t.data.assignment_epoch || 0 }); notice(s === 'staff' ? 'You took over. The assistant is paused for this customer.' : s === 'waiting' ? 'The case returned to the team queue.' : s === 'resume_pending' ? 'The customer can choose whether to continue with the assistant.' : 'Case closed.'); await openTicket(id); pollList(); }, cls);
+    if (t.state === 'waiting') controls.append(setState('Take over', 'staff', 'btn sm primary'));
+    if (t.state === 'staff') {
+      controls.append(setState('Return to queue', 'waiting'));
+      controls.append(setState('Ask customer to resume assistant', 'resume_pending'));
+      controls.append(setState('Close case', 'closed', 'btn sm ghost'));
+    }
     thread.append(controls);
     if (inq.inquiry) {
       const i = inq.inquiry.data, box = el('section', null, 'card stack-sm'); box.append(el('h4', 'Organization request'));
@@ -1208,7 +1235,7 @@
     text.setAttribute('aria-label', 'Staff reply'); text.required = true; text.maxLength = 4000; text.rows = 3;
     const canReply = t.state === 'staff' && mine; text.disabled = !canReply;
     text.placeholder = canReply ? 'Write to the customer…' : 'Take over the case to reply.';
-    form.append(text, button('Send reply', async () => { if (!form.reportValidity()) return; await post('/staff/tickets/' + id + '/messages', { message: text.value }); text.value = ''; await openTicket(id); }, 'btn primary sm'));
+    form.append(text, button('Send reply', async () => { if (!form.reportValidity()) return; await post('/staff/tickets/' + id + '/messages', { message: text.value, expected_version: d.conversation.version, assignment_epoch: t.data.assignment_epoch || 0 }); text.value = ''; await openTicket(id); }, 'btn primary sm'));
     form.onsubmit = e => e.preventDefault();
     thread.append(form);
     if (d.bookings.length) {
@@ -1395,7 +1422,7 @@
     box.append(el('p', c.channel + ' · reference ' + c.id.slice(-8), 'small muted'));
     const block = (title, rows, emptyText) => { const b = el('section', null, 'history-block'); b.append(el('h4', title)); if (!rows.length) b.append(el('p', emptyText, 'small muted')); rows.forEach(r => b.append(r)); box.append(b); };
     block('Appointments', d.bookings.slice().reverse().map(b => { const r = el('div', null, 'history-row'); r.append(el('strong', (b.items || []).map(i => i.name).join(' + ')), el('span', longDate(b.date) + ', ' + b.time), el('span', branchName(b.branch)), el('span', money(b.total_thb)), ...bookingBadges({ state: b.state, data: { payment_status: b.payment_status } })); return r; }), 'No appointments.');
-    block('Cases', d.tickets.slice().reverse().map(t => { const r = el('div', null, 'history-row'); r.append(el('span', t.summary.slice(0, 80)), badge({ waiting: 'Waiting', staff: 'With staff', bot: 'With assistant', closed: 'Case closed' }[t.state] || t.state, t.state === 'waiting' ? 'warn' : 'neutral'), button('Open case', async () => { closeModal(); activeTicket = t.id; ticketFilter = 'all'; await navigate('staff'); }, 'btn ghost sm')); return r; }), 'No cases.');
+    block('Cases', d.tickets.slice().reverse().map(t => { const r = el('div', null, 'history-row'); r.append(el('span', t.summary.slice(0, 80)), badge({ waiting: 'Waiting', staff: 'With staff', resume_pending: 'Awaiting customer choice', bot: 'With assistant', closed: 'Case closed' }[t.state] || t.state, ['waiting', 'resume_pending'].includes(t.state) ? 'warn' : 'neutral'), button('Open case', async () => { closeModal(); activeTicket = t.id; ticketFilter = 'all'; await navigate('staff'); }, 'btn ghost sm')); return r; }), 'No cases.');
     block('Quotations', d.quotes.map(q => { const r = el('div', null, 'history-row'); r.append(el('strong', 'Version ' + q.version), el('span', q.people + ' people, ' + q.date), el('span', money(q.total_thb)), badge(q.state, q.state === 'accepted' ? 'ok' : q.state === 'offered' ? 'warn' : 'neutral'), link('PDF', '/api/business/quotes/' + encodeURIComponent(q.id) + '/document.pdf', 'btn ghost sm')); return r; }), 'No quotations.');
     block('Test payments', d.payments.slice().reverse().map(p => { const r = el('div', null, 'history-row'); r.append(el('span', p.reference), el('span', money(p.amount_thb)), el('span', { promptpay: 'Test PromptPay', card: 'Test card' }[p.method] || p.method), payBadge(p.state)); return r; }), 'No test payments.');
     box.append(el('p', d.reports.count ? d.reports.count + (d.reports.count === 1 ? ' report uploaded' : ' reports uploaded') + ', ' + d.reports.confirmed + ' confirmed. Values stay private to the customer.' : 'No reports uploaded.', 'small muted'));
