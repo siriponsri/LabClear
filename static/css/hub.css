@@ -1,0 +1,52 @@
+/* Isolated Hub surface: uses the existing LabClear type, themes and controls. */
+.hub-intro{max-width:68ch}
+.hub-links{gap:var(--space-4);margin-block:var(--space-5)}
+.hub-notice{padding:var(--space-4) var(--space-5);background:var(--color-warn-bg);color:var(--color-warn);border:1px solid var(--color-border);border-radius:var(--radius-md);margin-top:var(--space-5)}
+.hub-notice p{margin:var(--space-2) 0 0;max-width:80ch;font-size:var(--text-sm)}
+.hub-layout{display:grid;grid-template-columns:250px minmax(0,1fr);gap:var(--space-6);padding-bottom:var(--space-8);align-items:start}
+.hub-filters{display:grid;gap:var(--space-4);padding:var(--space-5);border:1px solid var(--color-border);border-radius:var(--radius-md);background:var(--color-surface)}
+.hub-filters .field,.hub-inquiry .field{display:grid;gap:var(--space-2)}
+.hub-result-heading{display:flex;justify-content:space-between;align-items:baseline;gap:var(--space-4);margin-bottom:var(--space-4);flex-wrap:wrap}
+.hub-result-heading p{margin:0}
+.hub-offer{display:grid;grid-template-columns:minmax(0,1fr) 175px;gap:var(--space-5);padding-block:var(--space-5);border-top:1px solid var(--color-border)}
+.hub-offer h2{margin-block:var(--space-2)}
+.hub-provider{margin:0;font-size:var(--text-sm);color:var(--color-fg-muted)}
+.hub-meta{display:flex;flex-wrap:wrap;gap:var(--space-3);font-size:var(--text-sm);margin-block:var(--space-3)}
+.hub-meta span+span{border-inline-start:1px solid var(--color-border-strong);padding-inline-start:var(--space-3)}
+.hub-tests{display:flex;flex-wrap:wrap;gap:var(--space-2) var(--space-5);padding-inline-start:var(--space-4);font-size:var(--text-sm)}
+.hub-demo-label{font-size:var(--text-xs);color:var(--color-warn);font-weight:600;margin-block:var(--space-3) 0}
+.hub-offer-action{display:flex;flex-direction:column;align-items:flex-start;gap:var(--space-2)}
+.hub-price{font-size:var(--text-2xl);font-variant-numeric:tabular-nums;line-height:1.3}
+.hub-select{padding-block:var(--space-2);min-height:44px}
+.hub-compare-tray{padding:var(--space-4);border:1px solid var(--color-accent-border);background:var(--color-accent-subtle);border-radius:var(--radius-md);margin-block:var(--space-5)}
+.hub-compare-tray p{margin:0 0 var(--space-3)}
+.hub-feedback{color:var(--color-warn)}
+.hub-footnote{max-width:72ch;margin-block:var(--space-5)}
+.hub-detail{display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,370px);gap:var(--space-8);padding-bottom:var(--space-8);align-items:start}
+.hub-detail h2:not(:first-child){margin-top:var(--space-6)}
+.hub-description{max-width:65ch}
+.hub-detail-tests{display:grid;gap:var(--space-3);padding-inline-start:var(--space-5)}
+.hub-inquiry{padding:var(--space-5);border:1px solid var(--color-border);border-radius:var(--radius-md);background:var(--color-surface)}
+.hub-inquiry form{display:grid;gap:var(--space-4);margin-top:var(--space-5)}
+.hub-confirmation{border-top:1px solid var(--color-border);padding-top:var(--space-5);margin-top:var(--space-5)}
+.hub-confirmation h3{font-size:var(--text-lg)}
+.hub-confirmation dd{overflow-wrap:anywhere}
+.hub-comparison{max-width:100%;overflow-x:auto}
+.hub-comparison table{min-width:620px}
+.hub-comparison th,.hub-comparison td{vertical-align:top}
+.hub-comparison thead th{min-width:180px}
+.hub-comparison .hub-demo-label{margin-bottom:var(--space-3)}
+.hub-results,.hub-offer-main{min-width:0}
+.hub-layout input,.hub-layout select,.hub-detail select{max-width:100%;min-width:0}
+@media(max-width:760px){
+ .hub-layout,.hub-detail{grid-template-columns:minmax(0,1fr);gap:var(--space-5)}
+ .hub-filters{grid-template-columns:repeat(2,minmax(0,1fr));padding:var(--space-4)}
+ .hub-filters .filters-head,.hub-filters .field:first-of-type,.hub-filters button{grid-column:1/-1}
+ .hub-offer{grid-template-columns:minmax(0,1fr)}
+ .hub-offer-action{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center}
+ .hub-offer-action .small{grid-column:1}
+ .hub-offer-action a{grid-column:2;grid-row:1/3}
+ .hub-select{grid-column:1/-1}
+ .hub-notice{padding:var(--space-4)}
+}
+@media(max-width:380px){.hub-filters{grid-template-columns:minmax(0,1fr)}.hub-offer-action{display:flex;align-items:flex-start}}

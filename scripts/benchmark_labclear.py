@@ -347,6 +347,7 @@ class Client:
         PACER.wait(2)
         t0 = time.perf_counter()
         events, result, error, status = [], None, None, 0
+        receipt, request_id = {}, ""
         headers = {**self.headers(), "Accept": "application/x-ndjson"}
         try:
             with self.c.stream("POST", self.base + "/api/business" + path, headers=headers, **kw) as r:
@@ -363,6 +364,8 @@ class Client:
                             continue
                         item = json.loads(line)
                         item["_ms"] = round((time.perf_counter() - t0) * 1000)
+                        request_id = item.get("request_id") or request_id
+                        receipt = item.get("receipt") or receipt
                         if item.get("type") == "step":
                             events.append(item)
                         elif item.get("type") == "done":
@@ -374,7 +377,7 @@ class Client:
         except httpx.HTTPError as exc:
             error = {"code": "transport_error", "message": type(exc).__name__, "status": 0}
         total = round((time.perf_counter() - t0) * 1000)
-        return {"status": status, "result": result, "error": error, "events": events, "total_ms": total, "step_ms": step_durations(events)}
+        return {"status": status, "result": result, "error": error, "events": events, "total_ms": total, "step_ms": step_durations(events), "receipt": receipt, "request_id": request_id}
 
     def close(self) -> None:
         if self.guest:
@@ -705,8 +708,13 @@ def score_image_case(row: dict, outcomes: list[dict], gold: dict) -> dict:
                 "automated_checks": checks, "verdict_reason": "; ".join(reasons)}
     result = explain.get("result") or {}
     observations = result.get("observations") or []
+    withheld = (result.get("checks") or {}).get("independent_review") == "withheld"
+    checks["independent_review_withheld"] = withheld
     checks["observations_returned"] = len(observations)
-    if row.get("confirmation_mode") == "RAW_AS_READ" and raw.get("raw_verdict") != "PASS":
+    if withheld:
+        verdict = "FAIL"
+        reasons.append("independent review withheld the explanation; recovery is not a completed explanation")
+    elif row.get("confirmation_mode") == "RAW_AS_READ" and raw.get("raw_verdict") != "PASS":
         verdict = "FAIL"
         reasons.append("explanation used values confirmed as read although the scorer found raw errors")
     else:
@@ -776,7 +784,7 @@ def cmd_run(args) -> int:
         from tests.benchmark import doubles
         run["doubles"] = {"version": doubles.DOUBLES_VERSION, "ocr_engine": doubles.OCR_ENGINE,
                           "ocr_engine_version": (subprocess.run(["tesseract", "--version"], capture_output=True, text=True).stdout.splitlines() or [""])[0]
-                          if doubles.OCR_ENGINE == "tesseract" else None,
+                          if doubles.OCR_ENGINE == "tesseract" else (__import__("tesserocr").tesseract_version() if doubles.OCR_ENGINE == "tesserocr" else None),
                           "file_sha256": sha256_file(ROOT / "tests/benchmark/doubles.py")}
         run.update(canary_key="offline-canary-" + secrets.token_hex(8), provider_label="OFFLINE_DOUBLES",
                    model_label="none (test doubles; see verdict_scope)", price_status="NOT_APPLICABLE_OFFLINE",

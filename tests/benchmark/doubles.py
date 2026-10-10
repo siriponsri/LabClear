@@ -27,6 +27,9 @@ received, so the scorer can measure retrieval/tool coverage and skill selection.
 from __future__ import annotations
 
 import base64
+import importlib.util
+import io
+import sys
 import json
 import math
 import re
@@ -39,8 +42,8 @@ from urllib.parse import urlsplit
 
 import httpx
 
-DOUBLES_VERSION = "1.1.0"
-OCR_ENGINE = "tesseract" if shutil.which("tesseract") else "unavailable"
+DOUBLES_VERSION = "1.3.0"
+OCR_ENGINE = "tesseract" if shutil.which("tesseract") else ("tesserocr" if importlib.util.find_spec("tesserocr") and (Path(sys.prefix) / "share/tessdata/eng.traineddata").exists() else "unavailable")
 SKILL_HEADERS = {}  # "# Heading" line -> module file name, filled from the runtime-skill folder
 _lock = threading.Lock()
 
@@ -94,9 +97,17 @@ def _stage(system: str, messages) -> str:
 # ------------------------------------------------------------------ OCR stand-in and row parser
 
 def tesseract(image: bytes) -> str:
+    if OCR_ENGINE == "tesserocr":
+        from PIL import Image
+        from tesserocr import PyTessBaseAPI, PSM
+        with PyTessBaseAPI(path=str(Path(sys.prefix) / "share/tessdata"), lang="eng", psm=PSM.SINGLE_BLOCK) as api:
+            api.SetVariable("preserve_interword_spaces", "1")
+            source = Image.open(io.BytesIO(image))
+            api.SetImage(source.resize((source.width * 2, source.height * 2), Image.Resampling.LANCZOS))
+            return api.GetUTF8Text()
     if OCR_ENGINE != "tesseract":
-        return ""
-    done = subprocess.run(["tesseract", "-", "-", "--psm", "6", "-l", "eng"], input=image,
+        raise RuntimeError("Offline OCR dependency unavailable; install Tesseract or the documented tesserocr wheel/model")
+    done = subprocess.run(["tesseract", "-", "-", "--psm", "6", "-l", "eng", "-c", "preserve_interword_spaces=1"], input=image,
                           capture_output=True, timeout=120, check=False)
     return done.stdout.decode("utf-8", "replace")
 
@@ -110,8 +121,59 @@ _RANGE = re.compile(r"(?:[<>]=?|≤|≥)\s*\d+(?:\.\d+)?|\d+(?:\.\d+)?\s*-\s*\d+
 _FLAGS = {"H", "L", "HH", "LL", "N", "*", "-", "—"}
 
 
+def _layout_rows(text: str) -> list[dict] | None:
+    """Preserve complete printed columns when OCR retains inter-column spacing.
+
+    Never consult a name/value dictionary, gold file or clinical interval. Ambiguous
+    recognition is left as read; scoring still rejects every incorrect cell.
+    """
+    rows, started = [], False
+    for raw in text.splitlines():
+        line = raw.strip().lstrip("+-•*·").strip()
+        if not started:
+            if re.search(r"\bResults?\b", line) and re.search(r"\bUnits?\b", line) and len(re.split(r"\s{2,}", line)) >= 3:
+                started = True
+            continue
+        if re.match(r"(?:REPORTED BY|APPROVED BY|PRINTED|Page \d)", line, re.I):
+            break
+        cells = [c.strip() for c in re.split(r"\s{2,}", line) if c.strip()]
+        if len(cells) < 4:
+            continue
+        # A visible result sometimes touches a long label while the next
+        # column is a flag. Split only the printed numeric suffix.
+        merged = re.fullmatch(r"(.+?[A-Za-z)])\s+((?:[<>]=?\s*)?\d+(?:[.,]\d+)?\+?)", cells[0])
+        if merged and cells[1] in _FLAGS:
+            cells = [merged[1], merged[2], *cells[1:]]
+        name, value, *tail = cells
+        # A long test label may touch its result; split only the visible numeric
+        # boundary, retaining all units/references from the remaining columns.
+        if not re.fullmatch(r"(?:[-+<>]=?\s*)?\d+(?:[.,]\d+)?\+?|[A-Za-z][A-Za-z +/-]*", value):
+            continue
+        if not re.match(r"[A-Za-z]", name):
+            continue
+        flag = ""
+        if tail and tail[0] in _FLAGS and len(tail) >= 3:
+            flag = tail.pop(0)
+        elif tail and re.match(r"^(?:HH|LL|H|L|N)\s+", tail[0]):
+            flag, tail[0] = tail[0].split(None, 1)
+        if not tail:
+            continue
+        unit = tail.pop(0)
+        if tail and tail[0] in _FLAGS and len(tail) >= 2:
+            flag = tail.pop(0)
+        if not tail:
+            continue
+        reference = tail[0]  # Includes sex labels, units and qualitative wording.
+        rows.append(dict(name=name, value=value, unit=unit, reference=reference,
+                         printed_flag="" if flag in {"-", "—"} else flag))
+    return rows[:60] if started else None
+
+
 def parse_rows(text: str) -> list[dict]:
     """Generic whitespace-table parser for the stand-in OCR text. Rows only after a 'Result' header."""
+    layout = _layout_rows(text)
+    if layout is not None:
+        return layout
     rows, started = [], False
     for raw in text.splitlines():
         line = raw.strip().lstrip("+-•*·").strip()

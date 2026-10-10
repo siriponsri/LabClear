@@ -302,6 +302,10 @@ async def run(message,context,emit=None):
         payload['VALIDATED_ANALYSIS']=analysis.model_dump()
         payload['ORIGINAL_EVIDENCE_PACKET']=packet.model_dump()
         writer='agent_thai_composer'
+    ctx = execution.current()
+    if ctx is not None:
+        from services.workflow_receipt import source_manifest
+        ctx.receipt_sources = source_manifest(payload.get('EVIDENCE') or [])
     await step('draft','running','Writing the answer',_label(writer))
     draft=[{'role':'system','content':instructions},*history,{'role':'user','content':json.dumps(payload,ensure_ascii=False)}]
     answer=await complete_json(draft,Answer,step='answer',max_tokens=runtime_config['writer_max_tokens'],slot=writer)

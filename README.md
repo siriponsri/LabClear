@@ -11,6 +11,7 @@ request after an idle period is slow).
 
 - **Compare packages.** Customers browse and compare 18 simulated health-check packages at three
   demo centers, in Thai or English.
+- **Explore the demonstration Hub.** `/hub` separately compares synthetic hospital/clinic programs by location, category and demo price. Its inquiry preview never sends a request or creates a booking. [Scope and data](docs/checkup-hub.md).
 - **Request appointments.** The assistant prepares a preview; the customer confirms it; staff then
   confirm or decline the request. Nothing is booked or paid without these confirmations.
 - **Read a lab report.** A customer attaches an image or PDF in the chat. The AI reads the rows,

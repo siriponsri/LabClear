@@ -171,3 +171,9 @@ def test_frozen_files_keep_their_bytes_on_every_os():
     frozen = json.loads((root / "eval/coursework/MANIFEST.json").read_text(encoding="utf-8"))["files"]
     assert frozen and not [f for f in frozen if not exempt(f)]
 
+
+
+def test_withheld_recovery_is_not_a_successful_image_explanation():
+    row={'raw_score':{'raw_verdict':'PASS','values_exact':1,'expected_rows':1,'missing_rows':0,'extra_rows':0},'confirmation_mode':'RAW_AS_READ'}
+    outcomes=[{'result':{'report_id':'synthetic'}},{'result':{'reply':'Could not verify draft','checks':{'independent_review':'withheld'}}}]
+    assert bench.score_image_case(row,outcomes,{})['automated_verdict']=='FAIL'

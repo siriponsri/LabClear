@@ -32,7 +32,7 @@ def _asset_version() -> str:
     import hashlib
     digest = hashlib.sha256()
     for name in ("static/i18n/th.js", "static/js/i18n.js", "static/css/i18n.css", "static/css/base.css", "static/css/site.css", "static/css/workspace.css", "static/js/turns.js",
-                 "static/js/stream.js", "static/js/api.js", "static/js/dock.js", "static/js/workspace.js"):
+                 "static/css/hub.css", "static/js/hub.js", "static/js/stream.js", "static/js/api.js", "static/js/dock.js", "static/js/workspace.js"):
         path = ROOT / name
         digest.update(path.read_bytes() if path.exists() else b"")
     return digest.hexdigest()[:12]

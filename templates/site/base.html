@@ -28,12 +28,13 @@
     <a class="brand" href="/" aria-label="LabClear home">LabClear</a>
     <nav class="main-nav" id="main-nav" aria-label="Main">
       <div class="nav-drop">
-        <button class="nav-drop-btn" type="button" aria-expanded="false" aria-controls="menu-checks" {% if path.startswith('/packages') or path == '/compare' %}aria-current="page"{% endif %}>Health checks<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg></button>
+        <button class="nav-drop-btn" type="button" aria-expanded="false" aria-controls="menu-checks" {% if path.startswith('/packages') or path == '/compare' or path.startswith('/hub') %}aria-current="page"{% endif %}>Health checks<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg></button>
         <div class="nav-menu" id="menu-checks" hidden>
           <a href="/packages?segment=individual&amp;review=excluded"><strong>Core health checks</strong><span>Annual-style packages you can book directly</span></a>
           <a href="/packages?segment=individual&amp;review=only"><strong>Follow-up tests</strong><span>Targeted tests reviewed with our team first</span></a>
           <a href="/packages?segment=organization"><strong>For organizations</strong><span>Per-person pricing for 20 or more people</span></a>
           <a href="/compare"><strong>Compare packages</strong><span>Up to three, test by test, side by side</span></a>
+          <a href="/hub"><strong>Health-check Hub</strong><span>Explore simulated hospital and clinic programs</span></a>
           <a href="/packages"><strong>All health checks</strong><span>Search by test name, price or center</span></a>
           {% if feature('HOSPITAL_LINKS_ENABLED') %}<a href="/hospital-links"><strong>Packages on hospital websites</strong><span>Official pages of real hospitals, checked by date</span></a>{% endif %}
         </div>
@@ -64,7 +65,7 @@
       <a class="brand" href="/">LabClear</a>
       <p class="small muted">Health checks you can compare, reports explained with their sources, and a team that confirms every appointment.</p>
     </div>
-    <nav class="footer-col" aria-label="Health checks"><h2>Health checks</h2><a href="/packages">All health checks</a><a href="/packages?segment=individual&amp;review=excluded">Core checks</a><a href="/packages?segment=individual&amp;review=only">Follow-up tests</a><a href="/packages?segment=organization">For organizations</a><a href="/compare">Compare</a>{% if feature('HOSPITAL_LINKS_ENABLED') %}<a href="/hospital-links">Hospital websites</a>{% endif %}</nav>
+    <nav class="footer-col" aria-label="Health checks"><h2>Health checks</h2><a href="/packages">All health checks</a><a href="/packages?segment=individual&amp;review=excluded">Core checks</a><a href="/packages?segment=individual&amp;review=only">Follow-up tests</a><a href="/packages?segment=organization">For organizations</a><a href="/compare">Compare</a><a href="/hub">Health-check Hub</a>{% if feature('HOSPITAL_LINKS_ENABLED') %}<a href="/hospital-links">Hospital websites</a>{% endif %}</nav>
     <nav class="footer-col" aria-label="AI Lab Report"><h2>AI Lab Report</h2><a href="/lab-reports">How it works</a><a href="/app?view=labs">Lab dashboard</a><a href="/app?view=reports">My reports</a><a href="/app?view=plan">Plans and Plus</a></nav>
     <nav class="footer-col" aria-label="Your account"><h2>Your account</h2><a href="/app">Conversation</a><a href="/app?view=book">Request a time</a><a href="/app?view=bookings">My appointments</a></nav>
     <nav class="footer-col" aria-label="Help"><h2>Help</h2><a href="/help">Help and policies</a><a href="/help#simulation">What is simulated</a><a href="/privacy">Privacy</a><a href="/sources">Medical sources</a><a href="/centers">Centers</a></nav>

@@ -1,0 +1,42 @@
+{% extends "site/base.html" %}
+{% from "site/_hub_macros.html" import notice %}
+{% block content %}
+<link rel="stylesheet" href="/static/css/hub.css?v={{ asset_version }}">
+<div class="wrap page-head">
+  <nav class="crumbs small" aria-label="Breadcrumb"><a href="/hub">Checkup Hub</a> / <span aria-current="page">Demo package details</span></nav>
+  <h1>{{ p.name }}</h1>
+  <p class="muted hub-provider-detail"><span>{{ p.provider }}</span> · <span>{{ provider_types[p.provider_type] }}</span> · <span>{{ locations[p.location] }}</span></p>
+  {{ notice() }}
+</div>
+<div class="wrap hub-detail">
+  <section aria-labelledby="hub-included">
+    <p class="hub-description">{{ p.description }}</p>
+    <h2 id="hub-included">Example included tests</h2>
+    <ul class="hub-detail-tests">{% for test in p.included_tests %}<li>{{ test }}</li>{% endfor %}</ul>
+    <h2>Not part of this demo package</h2>
+    <ul>{% for item in p.excluded_items %}<li>{{ item }}</li>{% endfor %}</ul>
+    <h2>Before choosing a real check</h2>
+    <p class="muted">Ask a qualified professional which checks suit your needs. Confirm preparation, fees and availability directly with the real provider. Do not use this fictional list as medical advice.</p>
+    <a class="btn" href="/hub">Back to the Hub</a>
+  </section>
+  <section class="hub-inquiry" aria-labelledby="hub-inquiry-title">
+    <div><strong class="hub-price">฿{{ "{:,}".format(p.demo_price_thb) }}</strong><p class="small muted">Fictional price and test list</p></div>
+    <h2 class="h3" id="hub-inquiry-title">Try a booking inquiry</h2>
+    <p class="small">This is an on-screen demonstration. Do not enter personal or health information.</p>
+    <p class="hub-demo-label">Demo only. No partnership agreements.</p>
+    <form data-hub-inquiry>
+      <label class="field">Example time preference<select class="input" name="time" required><option value="">Choose an example time</option><option value="morning">Morning</option><option value="afternoon">Afternoon</option></select></label>
+      <label class="field">Example inquiry<select class="input" name="topic" required><option value="">Choose an example inquiry</option><option value="availability">Ask about availability</option><option value="included">Ask what is included</option><option value="preparation">Ask about preparation</option></select></label>
+      <button class="btn primary" type="submit" disabled data-hub-simulate>Simulate inquiry</button>
+    </form>
+    <div class="hub-confirmation" data-hub-confirmation hidden role="status" tabindex="-1">
+      <h3>Demo complete — nothing was sent</h3>
+      <p>No appointment was created, no payment was taken, and no provider was contacted.</p>
+      <dl class="facts small"><div><dt>Example time preference</dt><dd data-hub-confirm-time></dd></div><div><dt>Example inquiry</dt><dd data-hub-confirm-topic></dd></div></dl>
+      <button class="btn sm" type="button" data-hub-inquiry-reset>Try another example</button>
+    </div>
+    <noscript><p>Enable JavaScript to try this on-screen simulation. No real booking is available here.</p></noscript>
+  </section>
+</div>
+{% endblock %}
+{% block scripts %}<script src="/static/js/hub.js?v={{ asset_version }}" defer></script>{% endblock %}

@@ -2,6 +2,11 @@
 
 Dates are in 2026. Test counts are software evidence with test doubles, not live model results.
 
+## Local follow-up (2026-10-10)
+
+- Added a separate synthetic health-check Hub: discovery, filters, details, up-to-three comparison and a local inquiry preview. No provider partnership, real prices, real booking or external transmission is implied. The existing three-center catalog and landing remain intact.
+- Conversation tone and reviewer recovery now preserve useful clarification, expose withheld-review status honestly, and keep rejected drafts private. Follow-up grounding/language regressions and emergency refusal guidance were added after live failures. See the [measured evidence](docs/evidence/current/reviewer-tone-20261010/README.md); live acceptance remains open.
+
 ## 4.0.0-rc3 (2026-10-09)
 
 This release.
@@ -114,3 +119,6 @@ release candidates above.
 - **2026-10-08.** Disabled-by-default upgrade candidate on 3.0.2: medical analyzer and Thai composer
   roles, runtime skills, organization documents, hospital links and a landing preview, all behind
   flags that default to off.
+
+### Canonical benchmark evidence continuation
+Added privacy-preserving per-request ledger/source receipts and a complete deployed coursework20 adapter, with strict quota stops and explicit coverage limits. Fixed withheld-explanation false positives and the offline Windows OCR dependency/parser. Frozen dataset and rubric unchanged; see docs/evidence/current/canonical-coursework-20261010/README.md for provenance and known failures.

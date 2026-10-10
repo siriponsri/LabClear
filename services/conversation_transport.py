@@ -129,7 +129,11 @@ def _settle_gate(gate, usage, outcome: str) -> None:
 
 def _settle(cost, gate, usage, outcome: str) -> None:
     from services import cost_ledger
-    cost_ledger.settle(cost, usage, outcome)
+    amount = cost_ledger.settle(cost, usage, outcome)
+    from services import execution
+    ctx = execution.current()
+    if ctx is not None and amount is not None:
+        ctx.receipt_settled_thb += amount
     _settle_gate(gate, usage, outcome)
 
 
@@ -159,6 +163,8 @@ async def post_json(url: str, headers: dict[str, str], body: dict, slot: str, ti
     cost = await execution.offload(cost_ledger.reserve, model or str(body.get("model") or slot + "-service"), body, price)
     if ctx is not None:
         ctx.attempts += 1
+        if cost is not None:
+            ctx.receipt_reserved_thb += cost.estimate_thb
     try:
         async with asyncio.timeout(call_timeout):
             # httpx's own timeouts bound each connect/read; the asyncio timeout bounds the whole call,

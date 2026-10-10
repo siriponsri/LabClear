@@ -1,0 +1,38 @@
+{% extends "site/base.html" %}
+{% from "site/_hub_macros.html" import notice, card %}
+{% block content %}
+<link rel="stylesheet" href="/static/css/hub.css?v={{ asset_version }}">
+<div class="wrap page-head">
+  <nav class="crumbs small" aria-label="Breadcrumb"><a href="/">Home</a> / <span aria-current="page">Checkup Hub</span></nav>
+  <h1>Find a check that fits your day</h1>
+  <p class="muted hub-intro">Explore hospital and clinic examples by location, budget and tests. Compare the details before deciding what to ask a health professional.</p>
+  <div class="row hub-links"><a href="/packages">LabClear's three-center catalog</a>{% if feature("HOSPITAL_LINKS_ENABLED") %}<a href="/hospital-links">Official hospital reference pages</a>{% endif %}</div>
+  {{ notice() }}
+</div>
+{% set a = result.applied %}
+<div class="wrap hub-layout" data-hub>
+  <form class="hub-filters" method="get" action="/hub" aria-label="Hub filters">
+    <div class="filters-head"><h2 class="h3">Find your example</h2><a href="/hub" class="small">Reset all</a></div>
+    <label class="field">Search the Hub<input class="input" name="q" type="search" maxlength="80" value="{{ a.q }}" placeholder="Provider, test or package"></label>
+    <label class="field">Location<select class="input" name="location"><option value="">All locations</option>{% for key, label in locations.items() %}<option value="{{ key }}" {% if a.location == key %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></label>
+    <label class="field">Provider type<select class="input" name="provider_type"><option value="">Hospitals and clinics</option>{% for key, label in provider_types.items() %}<option value="{{ key }}" {% if a.provider_type == key %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></label>
+    <label class="field">Test category<select class="input" name="category"><option value="">All test categories</option>{% for key, label in categories.items() %}<option value="{{ key }}" {% if a.category == key %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></label>
+    <label class="field">Maximum demo price (THB)<select class="input" name="max_price"><option value="">No limit</option>{% for value in [1000, 2000, 3000, 5000] %}<option value="{{ value }}" {% if a.max_price == value %}selected{% endif %}>{{ "{:,}".format(value) }}</option>{% endfor %}{% if a.max_price is not none and a.max_price not in [1000,2000,3000,5000] %}<option value="{{ a.max_price }}" selected>{{ a.max_price }}</option>{% endif %}</select></label>
+    <label class="field">Sort<select class="input" name="sort">{% for key, label in sorts.items() %}<option value="{{ key }}" {% if a.sort == key %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></label>
+    <button class="btn primary" type="submit">Apply filters</button>
+  </form>
+  <section class="hub-results" aria-labelledby="hub-results-title">
+    <div class="hub-result-heading"><h2 class="h3" id="hub-results-title"><span>{{ result.total }}</span> <span>demo packages</span></h2><p class="tiny muted">All providers shown here are fictional.</p></div>
+    <div class="hub-offers">{% for p in result.packages %}{{ card(p, locations, categories, provider_types) }}{% endfor %}</div>
+    {% if not result.total %}<div class="state-box" data-hub-empty><h3>No demo packages match</h3><p class="muted">Try another location, a higher budget or fewer filters.</p><a class="btn" href="/hub">Clear filters</a></div>{% endif %}
+    <aside class="hub-compare-tray" aria-label="Hub comparison" hidden data-hub-tray>
+      <p aria-live="polite" data-hub-selection-count></p>
+      <div class="row"><a class="btn primary sm" data-hub-compare-link href="/hub/compare">Compare selected examples</a><button class="btn sm" type="button" data-hub-clear>Clear selection</button></div>
+    </aside>
+    <p class="small hub-feedback" role="status" aria-live="polite" data-hub-feedback></p>
+    <p class="small muted hub-footnote">A larger package is not necessarily a better fit. These examples are not personal screening recommendations.</p>
+    <noscript><p>Filters and details work without JavaScript. Enable JavaScript to select packages for comparison and try the inquiry simulation.</p></noscript>
+  </section>
+</div>
+{% endblock %}
+{% block scripts %}<script src="/static/js/hub.js?v={{ asset_version }}" defer></script>{% endblock %}

@@ -162,7 +162,7 @@ def reserve(model: str, body: dict, price: dict | None = None) -> CostReservatio
     return CostReservation(rid, model, cost, price)
 
 
-def settle(reservation: CostReservation | None, usage: dict | None, outcome: str) -> None:
+def settle(reservation: CostReservation | None, usage: dict | None, outcome: str) -> float | None:
     if reservation is None:
         return
     from services import business_store as db
@@ -188,3 +188,4 @@ def settle(reservation: CostReservation | None, usage: dict | None, outcome: str
         if entry:
             entry["data"].update(actual_thb=actual, outcome=outcome, settled_at=time.time())
             tx.put(reservation.id, "cost_entry", "system", entry["data"], "settled")
+    return actual

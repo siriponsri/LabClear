@@ -41,3 +41,8 @@ node scripts/build_docs_pdf.mjs all                                 # business, 
 
 The PDF builder lays TH Sarabun New out with a 1.5 em line box (`ascent-override` in the page CSS) so
 stacked Thai marks do not spill onto the previous page.
+
+
+## Engineering evidence addendum — 2026-10-10
+
+The existing DOCX/PDF/slides are frozen coursework artifacts and have not been rebuilt for the subsequent chat and Hub work. Current evidence is recorded separately in [reviewer/tone validation](../evidence/current/reviewer-tone-20261010/README.md). Eight bounded synthetic UI attempts were measured on the deployed chat follow-ups; results were **not all pass** and are not the coursework LIVE_FREE 10/5/5 evaluation. The latest grounding/language patch is deployed at ebcdc06, but its two planned live checks remain pending approval. The original coursework offline score remains 15/20 for each profile; fresh OCR, owner/contribution data, video and coursework live results remain open. Do not replace missing values with these partial tests.

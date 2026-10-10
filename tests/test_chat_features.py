@@ -175,7 +175,11 @@ def test_streamed_errors_arrive_as_an_event_and_mark_the_message(monkeypatch):
     r = c.post(API + "/chat", json={"message": "Hi"}, headers=NDJSON)
     events = lines(r)
     assert events[-1] == {"type": "error", "code": "service_unavailable", "message": "Temporary failure.", "status": 502,
-                          "origin": "app", "request_id": r.headers["x-request-id"], "step": None}
+                          "origin": "app", "request_id": r.headers["x-request-id"], "step": None,
+                          "receipt": {"schema": "workflow-receipt-1", "provider_attempts": 0,
+                                      "reserved_estimate_thb": 0.0, "settled_estimate_thb": 0.0,
+                                      "cost_basis": "existing_ledger_estimate_not_provider_invoice",
+                                      "ledger_enabled": False, "public_writer_sources": []}}
     assert [e["type"] for e in events].count("error") == 1
     m = conv(c)["conversation"]["messages"][-1]
     assert m["failed"] and m["retryable"] and m["error_message"] == "Temporary failure."

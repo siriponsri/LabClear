@@ -1,0 +1,31 @@
+{% extends "site/base.html" %}
+{% from "site/_hub_macros.html" import notice %}
+{% block content %}
+<link rel="stylesheet" href="/static/css/hub.css?v={{ asset_version }}">
+<div class="wrap page-head">
+  <nav class="crumbs small" aria-label="Breadcrumb"><a href="/hub">Checkup Hub</a> / <span aria-current="page">Compare Hub packages</span></nav>
+  <h1>Compare Hub packages</h1>
+  {{ notice() }}
+</div>
+<div class="wrap section-tight">
+  {% if packages|length >= 2 %}
+  <div class="table-wrap hub-comparison" tabindex="0" role="region" aria-label="Scrollable Hub comparison">
+    <table class="data compare-table">
+      <caption class="sr-only">Comparison of fictional providers, prices and test lists</caption>
+      <thead><tr><th scope="col">Demo package</th>{% for p in packages %}<th scope="col"><a href="/hub/{{ p.id }}">{{ p.name }}</a><p class="hub-demo-label">Demo only. No partnership agreements.</p><a class="small" href="/hub/compare?ids={{ packages|rejectattr('id','equalto',p.id)|map(attribute='id')|join(',') }}">Remove from comparison</a></th>{% endfor %}</tr></thead>
+      <tbody>
+        <tr><th scope="row">Fictional provider</th>{% for p in packages %}<td>{{ p.provider }}</td>{% endfor %}</tr>
+        <tr><th scope="row">Location</th>{% for p in packages %}<td>{{ locations[p.location] }}</td>{% endfor %}</tr>
+        <tr><th scope="row">Fictional price and test list</th>{% for p in packages %}<td><strong>฿{{ "{:,}".format(p.demo_price_thb) }}</strong></td>{% endfor %}</tr>
+        {% for test in tests %}<tr><th scope="row">{{ test }}</th>{% for p in packages %}<td>{{ 'Included' if test in p.included_tests else 'Not included' }}</td>{% endfor %}</tr>{% endfor %}
+        <tr><th scope="row">Booking</th>{% for p in packages %}<td>On-screen simulation only</td>{% endfor %}</tr>
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="state-box" data-hub-compare-empty><h2 class="h3">Choose two or three Hub packages</h2><p>{{ error or 'Select Compare beside a package in the Hub.' }}</p></div>
+  {% endif %}
+  <div class="row hub-links"><a class="btn primary" href="/hub">Change Hub selection</a><a class="btn" href="/hub/compare">Clear Hub comparison</a></div>
+  <p class="small muted hub-footnote">A larger package is not necessarily a better fit. These examples are not personal screening recommendations.</p>
+</div>
+{% endblock %}

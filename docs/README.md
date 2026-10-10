@@ -38,3 +38,11 @@ Documentation for LabClear 4.0.0-rc3. Start with the [project README](../README.
 - [report/](report/README.md): the Final Project submission report (Thai, Word), the business report and the architecture, tech stack and agent flow report (Thai, PDF), and the slides as PDF.
 - [../presentation/index.html](../presentation/index.html): presentation deck (open in a browser; English).
 - [assets/](assets/): architecture and message-flow diagrams (built by `scripts/build_diagrams.py`).
+
+
+## Subsequent engineering additions (2026-10-10)
+
+- [checkup-hub.md](checkup-hub.md): separate simulated hospital/clinic program discovery, comparisons and local inquiry preview; no real partnership or booking.
+- [Reviewer/tone evidence](evidence/current/reviewer-tone-20261010/README.md): actual offline and live results, including failures and remaining model-quality gate.
+
+- [Canonical coursework20 continuation and evidence limits](evidence/current/canonical-coursework-20261010/README.md)

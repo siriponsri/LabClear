@@ -1,0 +1,24 @@
+{% macro notice() %}
+<div class="hub-notice" role="note">
+  <strong>Demo only. No partnership agreements.</strong>
+  <p>Provider names, prices and test lists are fictional examples, not current offers. No real booking, payment or contact takes place.</p>
+</div>
+{% endmacro %}
+{% macro card(p, locations, categories, provider_types) %}
+<article class="hub-offer" data-hub-card="{{ p.id }}">
+  <div class="hub-offer-main">
+    <p class="hub-provider"><span>{{ p.provider }}</span> · <span>{{ provider_types[p.provider_type] }}</span></p>
+    <h2 class="h3"><a href="/hub/{{ p.id }}">{{ p.name }}</a></h2>
+    <p class="muted small">{{ p.description }}</p>
+    <div class="hub-meta"><span>{{ locations[p.location] }}</span><span>{{ categories[p.category] }}</span></div>
+    <ul class="hub-tests" aria-label="Example included tests">{% for item in p.included_tests %}<li>{{ item }}</li>{% endfor %}</ul>
+    <p class="hub-demo-label">Demo only. No partnership agreements.</p>
+  </div>
+  <div class="hub-offer-action">
+    <strong class="hub-price">฿{{ "{:,}".format(p.demo_price_thb) }}</strong>
+    <span class="small muted">Fictional price and test list</span>
+    <a class="btn sm" href="/hub/{{ p.id }}">View demo details</a>
+    <label class="check hub-select"><input type="checkbox" data-hub-select="{{ p.id }}" aria-label="Compare {{ p.name }}"> <span>Compare</span></label>
+  </div>
+</article>
+{% endmacro %}

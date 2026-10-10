@@ -1,0 +1,148 @@
+{
+  "version": "hub-demo-2026-10-10",
+  "mode": "SYNTHETIC_DEMO",
+  "packages": [
+    {
+      "id": "HUB-001",
+      "name": "Everyday check example",
+      "provider": "Demo Riverside Clinic",
+      "location": "bangkok",
+      "provider_type": "clinic",
+      "category": "general",
+      "demo_price_thb": 890,
+      "description": "A compact fictional example for learning how package contents compare.",
+      "search_terms": "กรุงเทพ คลินิก ริมน้ำ ทั่วไป ตรวจสุขภาพ เลือด ปัสสาวะ",
+      "included_tests": [
+        "Complete blood count",
+        "Urinalysis"
+      ],
+      "excluded_items": [
+        "Medical consultation",
+        "Treatment and prescriptions",
+        "Any real clinical service"
+      ],
+      "synthetic": true,
+      "partnership_verified": false,
+      "bookable": false
+    },
+    {
+      "id": "HUB-002",
+      "name": "Metabolic check example",
+      "provider": "Demo North Garden Hospital",
+      "location": "chiang-mai",
+      "provider_type": "hospital",
+      "category": "metabolic",
+      "demo_price_thb": 1790,
+      "description": "A fictional grouping of blood sugar and lipid tests for comparison.",
+      "search_terms": "เชียงใหม่ โรงพยาบาล สวนเหนือ น้ำตาล ไขมัน เมตาบอลิก",
+      "included_tests": [
+        "Fasting blood glucose",
+        "Lipid profile"
+      ],
+      "excluded_items": [
+        "Medical consultation",
+        "Treatment and prescriptions",
+        "Any real clinical service"
+      ],
+      "synthetic": true,
+      "partnership_verified": false,
+      "bookable": false
+    },
+    {
+      "id": "HUB-003",
+      "name": "Blood count example",
+      "provider": "Demo City Square Clinic",
+      "location": "khon-kaen",
+      "provider_type": "clinic",
+      "category": "blood",
+      "demo_price_thb": 690,
+      "description": "A single-test fictional example with a clearly limited scope.",
+      "search_terms": "ขอนแก่น คลินิก กลางเมือง เลือด ความสมบูรณ์ของเม็ดเลือด",
+      "included_tests": [
+        "Complete blood count"
+      ],
+      "excluded_items": [
+        "Medical consultation",
+        "Treatment and prescriptions",
+        "Any real clinical service"
+      ],
+      "synthetic": true,
+      "partnership_verified": false,
+      "bookable": false
+    },
+    {
+      "id": "HUB-004",
+      "name": "General check example",
+      "provider": "Demo East Park Hospital",
+      "location": "bangkok",
+      "provider_type": "hospital",
+      "category": "general",
+      "demo_price_thb": 2590,
+      "description": "A broader fictional list to practice comparing included and excluded items.",
+      "search_terms": "กรุงเทพ โรงพยาบาล สวนตะวันออก ทั่วไป เลือด น้ำตาล ไขมัน ไต",
+      "included_tests": [
+        "Complete blood count",
+        "Fasting blood glucose",
+        "Lipid profile",
+        "Creatinine"
+      ],
+      "excluded_items": [
+        "Medical consultation",
+        "Treatment and prescriptions",
+        "Any real clinical service"
+      ],
+      "synthetic": true,
+      "partnership_verified": false,
+      "bookable": false
+    },
+    {
+      "id": "HUB-005",
+      "name": "Glucose and kidney example",
+      "provider": "Demo Hillview Clinic",
+      "location": "chiang-mai",
+      "provider_type": "clinic",
+      "category": "metabolic",
+      "demo_price_thb": 1290,
+      "description": "A fictional two-test package; it does not diagnose or rule out disease.",
+      "search_terms": "เชียงใหม่ คลินิก วิวเขา น้ำตาล ไต เมตาบอลิก",
+      "included_tests": [
+        "Fasting blood glucose",
+        "Creatinine"
+      ],
+      "excluded_items": [
+        "Medical consultation",
+        "Treatment and prescriptions",
+        "Any real clinical service"
+      ],
+      "synthetic": true,
+      "partnership_verified": false,
+      "bookable": false
+    },
+    {
+      "id": "HUB-006",
+      "name": "Extended check example",
+      "provider": "Demo Central Meadow Hospital",
+      "location": "khon-kaen",
+      "provider_type": "hospital",
+      "category": "general",
+      "demo_price_thb": 3490,
+      "description": "An extended fictional list. More tests do not necessarily mean a better fit.",
+      "search_terms": "ขอนแก่น โรงพยาบาล ทุ่งกลาง ทั่วไป เลือด น้ำตาล ไขมัน ไต ปัสสาวะ",
+      "included_tests": [
+        "Complete blood count",
+        "Fasting blood glucose",
+        "Lipid profile",
+        "Creatinine",
+        "Urinalysis"
+      ],
+      "excluded_items": [
+        "Medical consultation",
+        "Treatment and prescriptions",
+        "Any real clinical service"
+      ],
+      "synthetic": true,
+      "partnership_verified": false,
+      "bookable": false
+    }
+  ]
+}

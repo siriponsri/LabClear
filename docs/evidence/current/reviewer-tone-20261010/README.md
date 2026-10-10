@@ -61,3 +61,10 @@ P01-R1 returned an uncited general medical explanation (FAIL grounding, 18.361 s
 Live model-quality acceptance remains open until the corrected paths are checked; earlier model-review passed flags are not treated as independent proof of correctness.
 
 Final offline follow-up: 403 pytest passed; tone browser 9/9 including an assertion that the selected UI language reaches the chat request. Two focused synthetic live questions are planned after deployment to recheck citations and English/supplied-range behavior, bringing the total cap to ten rather than repeating the whole earlier suite.
+
+
+## Deployment verification and live follow-up gate
+
+The grounding/language follow-up is deployed as ebcdc06bf5112e70637b3b564c140de4f3ac1829, Render dep-db4qkrjbc2fs7384vsq0 (live at 2026-10-10 03:02:11 UTC). Public /health and /ready returned that exact SHA; storage was ready at 03:06 UTC. This is deployment evidence, not model-quality evidence.
+
+The two planned follow-up live questions were NOT_RUN: automatic approval review rejected the execution because it could not find explicit live-call approval in the context available to it. The command did not execute. An explicit bounded approval request is pending. No alternate execution path was used. The eight earlier attempts remain the complete measured live record, and the corrected model behavior remains unverified. Local Hub work and offline tests continue independently.

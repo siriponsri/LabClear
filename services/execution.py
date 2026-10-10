@@ -180,6 +180,10 @@ class Execution:
         self.running: dict[str, tuple[str, float]] = {}
         self.last_step = ""
         self.attempts = 0          # provider calls attempted (each JSON repair counts)
+        self.receipt_reserved_thb = 0.0
+        self.receipt_settled_thb = 0.0
+        self.receipt_ledger_enabled = bool(settings.COST_LEDGER_ENABLED)
+        self.receipt_sources = []
         self.dropped_events = 0
         self.outcome = self.code = self.origin = ""
         self.status = 200
@@ -246,8 +250,9 @@ class Execution:
         return ConversationError("cancelled", "Stopped. A late answer will not be added.", 409, origin="client")
 
     def error_event(self, exc: ConversationError) -> dict:
+        from services.workflow_receipt import receipt
         return {"type": "error", "code": exc.code, "message": exc.message, "status": exc.status, "origin": exc.origin,
-                "request_id": self.request_id, "step": self.last_step or None}
+                "request_id": self.request_id, "step": self.last_step or None, "receipt": receipt(self)}
 
     def accepted_event(self) -> dict:
         return {"type": "accepted", "request_id": self.request_id, "deadline_ms": round(self.budget * 1000),
@@ -398,7 +403,8 @@ async def respond(request, ctx: Execution, run: Callable[[Callable], Awaitable[A
             ctx.finish("done")
             if channel is not None:
                 ctx.dropped_events = channel.dropped
-                channel.finish([], {"type": "done", "result": result, "request_id": ctx.request_id,
+                from services.workflow_receipt import receipt
+                channel.finish([], {"type": "done", "result": result, "request_id": ctx.request_id, "receipt": receipt(ctx),
                                     **({"dropped_events": channel.dropped} if channel.dropped else {})})
             return result
         except ConversationError as exc:
