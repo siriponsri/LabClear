@@ -171,8 +171,9 @@ def parse_model(raw: str, model, step: str = "response"):
         return model.model_validate(data)
     except ValidationError as exc:
         fields = sorted({str(e["loc"][0]) if e["loc"] else "object" for e in exc.errors()})
-        # Field names only: model output can contain the customer's health data.
-        log.warning("model_output_invalid step=%s fields=%s", step, ",".join(fields))
+        # Schema field names and validation categories only, never values or exception prose.
+        categories = sorted({e["type"] for e in exc.errors()})
+        log.warning("model_output_invalid step=%s fields=%s categories=%s", step, ",".join(fields), ",".join(categories))
         raise ConversationError("answer_invalid",
             f"The model's {step} could not be verified ({', '.join(fields)[:80]}). Please try again.", 502) from None
 

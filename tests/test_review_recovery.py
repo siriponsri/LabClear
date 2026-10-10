@@ -120,3 +120,23 @@ def test_skill_integrity_and_role_boundaries_remain(monkeypatch):
 def test_offline_provider_recognizes_current_reviewer_prompt():
     from tests.benchmark.doubles import _stage
     assert _stage(review_policy.REVIEW, []) == 'reviewer'
+
+
+def test_invalid_review_schema_never_logs_values(caplog):
+    from services.conversation_agent import parse_model
+    with caplog.at_level(logging.WARNING), pytest.raises(ConversationError):
+        parse_model(json.dumps({'supported':{'PRIVATE_SCHEMA_CANARY':'hidden'},'values_preserved':True,'within_scope':True}),EvidenceReview,'review')
+    assert 'bool_type' in caplog.text and 'supported' in caplog.text
+    assert 'PRIVATE_SCHEMA_CANARY' not in caplog.text and 'hidden' not in caplog.text
+
+
+def test_invalid_review_does_not_trigger_another_writer(monkeypatch):
+    seen,_=scripted(monkeypatch,[OK])
+    original=business_agent.complete_json
+    async def invalid_review(messages,model,**kw):
+        if kw['step']=='review':raise ConversationError('answer_invalid','Review format invalid',502)
+        return await original(messages,model,**kw)
+    monkeypatch.setattr(business_agent,'complete_json',invalid_review)
+    with pytest.raises(ConversationError,match='Review format invalid'):
+        asyncio.run(business_agent.run('Explain glucose generally',{}))
+    assert [step for step,_ in seen].count('answer')==1

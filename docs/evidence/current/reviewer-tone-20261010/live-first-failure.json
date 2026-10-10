@@ -1,0 +1,29 @@
+{
+  "date": "2026-10-10T02:43:04.140Z",
+  "mode": "LIVE_UI_SYNTHETIC_ONLY",
+  "base": "https://labclear.onrender.com",
+  "maximumQuestions": 8,
+  "existingChatsAccessed": false,
+  "credentialsRead": false,
+  "records": [
+    {
+      "chat": "positive",
+      "chatId": "chat_cce5ac2bdf9313fa",
+      "id": "P01",
+      "tone": "normal",
+      "lang": "th",
+      "question": "แชตทดสอบเชิงบวก ใช้ข้อมูลสมมติเท่านั้น: ช่วงอ้างอิงในใบผลตรวจหมายถึงอะไร ช่วยอธิบายให้คนไม่มีพื้นฐานแพทย์เข้าใจ พร้อมตัวอย่างง่าย ๆ และข้อจำกัด โดยไม่ขอข้อมูลส่วนตัว",
+      "status": "TECHNICAL_FAILURE",
+      "httpStatus": 200,
+      "requestId": "req_7314adff6e5207bc",
+      "error": "response.text: Protocol error (Network.getResponseBody): No data found for resource with given identifier",
+      "backendOutcome": "error",
+      "backendCode": "answer_invalid",
+      "backendStep": "review",
+      "backendDurationMs": 22493,
+      "backendAttempts": 9,
+      "backendEvidence": "Render request log 2026-10-10T02:43:03.69404584Z; req_7314adff6e5207bc"
+    }
+  ],
+  "stopped": true
+}

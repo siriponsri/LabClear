@@ -32,3 +32,14 @@ The first full pytest run had 389 passes and one stale version assertion expecti
 ## Live and release status
 
 Pending at this pre-release checkpoint: commit/push/deploy and bounded synthetic positive/negative UI conversations. Local scripted tests do not establish actual model quality or reduction in over-rejection. No live calls, credential changes, budget resets or paid-plan changes occurred during offline validation. Previously confirmed coursework OCR remains 15/20 on all profiles (all five images failed); these checks do not close that gap. Owner/video/coursework live-result placeholders are not invented.
+
+
+## Live-found reviewer format issue and follow-up
+
+Commit 1dfe89cf22d5db29e4c3a1c3efb8926a6603fa6a deployed live as dep-db4qbcnavr4c73efkr8g at 2026-10-10 02:41:50 UTC. /health and /ready returned 200 and the exact SHA. The first positive synthetic UI question (general reference-interval education) failed: req_7314adff6e5207bc, answer_invalid at review, 22,493 ms, nine provider attempts. Sanitized logs identified invalid supported fields; raw model/health content was not logged. The browser collector also could not read the NDJSON body through Chrome's response-body API. This run is a failure, not a completed answer.
+
+The review prompt now supplies the exact three-boolean JSON shape and disallows omitted keys, null, objects and lists. Strict validation is unchanged. Validation logs add Pydantic error categories without values. A malformed review, after complete_json's existing single format retry, no longer triggers a new clinical writer pass; it fails closed. No additional retries or model calls were added.
+
+The live collector is changed to observe the post-turn workspace data already consumed by the UI and the rendered conversation; it captures only these synthetic messages, public chat/request IDs and checks. It does not extract browser profiles, cookies, authorization headers or keys. A fresh positive/negative guest chat pair will retain their transcript evidence in local files, respecting guest deletion after browser close. Total submitted test questions across the initial failed run and the remaining run are capped at eight; no old real report is retried.
+
+Follow-up validation: 393 pytest passed; R01–R12 12/12 with zero outbound attempts. The UI was unchanged by this format-only follow-up; the completed 43-case language and other browser results above still apply.

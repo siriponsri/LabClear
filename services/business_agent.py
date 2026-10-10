@@ -309,6 +309,7 @@ async def run(message,context,emit=None):
     answer_mode='answer'
     for attempt in range(2):
         repair=''
+        review_started=False
         try:
             validate_answer(answer,evidence,role_report)
             bad=answer_checks.unknown_amounts(answer.reply+'\n'+'\n'.join(answer.followups),biz['catalog'],message,plan_prices)
@@ -328,6 +329,7 @@ async def run(message,context,emit=None):
             cited=len(answer.evidence_ids)
             await step('draft','done','Draft written and checked',f'{cited} cited sources; {len(answer.observations)} report values matched exactly')
             await step('review','running','Second review of the draft',_label(_agent('review')))
+            review_started=True
             review=await complete_json([{'role':'system','content':review_policy.REVIEW},{'role':'user','content':json.dumps({'context':payload,'conversation':history,'draft':answer.model_dump()},ensure_ascii=False)}],EvidenceReview,step='review',max_tokens=300,slot=_agent('review'))
             if not all([review.supported,review.values_preserved,review.within_scope]):
                 review_reasons=review_policy.failed_checks(review)
@@ -336,6 +338,9 @@ async def run(message,context,emit=None):
                 raise transport.ConversationError('review_failed','The answer could not be verified. Please clarify or ask a staff member.',502)
             break
         except transport.ConversationError as exc:
+            # complete_json already made its one format repair. A malformed review cannot be
+            # repaired by rewriting the clinical draft; fail closed without more writer calls.
+            if review_started and exc.code=='answer_invalid':raise
             if attempt and exc.code=='review_failed':
                 # The rejected clinical draft stays private. This fixed response admits a verification
                 # failure; it never pretends missing customer information caused it or passed review.
