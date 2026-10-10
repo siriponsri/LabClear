@@ -15,7 +15,8 @@ from services.chat_sessions import conversation
 from services.conversation_transport import ConversationError
 from services.request_limits import request_rate_limiter
 from services import trusted_origins
-from services.lab_fields_v2 import ReportField,normalize
+from services.lab_fields_v2 import ReportField
+from services.report_binding import normalize_confirmed as normalize
 from services.report_reader_v2 import read_report,document_images
 from services import execution,document_worker
 from services.document_render import signature as file_signature

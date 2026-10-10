@@ -1,0 +1,9 @@
+{
+  "mode": "OFFLINE_RENDER_ONLY",
+  "scope": "Server-rendered synthetic replies injected into workspace response; real UI renderer; no model/OCR quality claim",
+  "checks": [
+    "en: exact bilingual names, decimals, superscripts and comparator glyphs remain visible; no page overflow",
+    "th: exact bilingual names, decimals, superscripts and comparator glyphs remain visible; no page overflow"
+  ],
+  "errors": []
+}

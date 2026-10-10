@@ -1,0 +1,376 @@
+{
+  "source": "Synthetic I02 response actually exposed by deployed 7343d7a; no rejected draft, provider credentials or patient data.",
+  "reply": "ผลตรวจของคุณมีค่าที่อยู่นอกช่วงที่พิมพ์ไว้บนใบรายงาน ดังนี้:\n\n- **BUN (ยูเรีย)**: 48.0 mg/dL (สูงกว่าเกณฑ์ปกติ 5.8–19.1) [mlp-bun]\n- **Creatinine (ครีเอทินีน)**: 2.36 mg/dL (สูงกว่าเกณฑ์ปกติ 0.5–1.5) [mlp-bun]\n- **eGFR (CKD-EPI 2021)**: 23 mL/min/1.73m² (ต่ำกว่าเกณฑ์ปกติ ≥60) [niddk-egfr] [niddk-ckd-tests]\n- **Sodium (โซเดียม)**: 132 mmol/L (ต่ำกว่าเกณฑ์ปกติ 135–145) [mlp-chloride]\n- **Potassium (โพแทสเซียม)**: 6.2 mmol/L (สูงกว่าเกณฑ์ปกติ 3.5–5.1) [mlp-chloride]\n- **CO2 (คาร์บอนไดออกไซด์)**: 18 mmol/L (ต่ำกว่าเกณฑ์ปกติ 22–29) [mlp-chloride]\n- **Calcium (แคลเซียม)**: 8.3 mg/dL (ต่ำกว่าเกณฑ์ปกติ 8.6–10.2) [mlp-chloride]\n- **Phosphorus (ฟอสฟอรัส)**: 5.2 mg/dL (สูงกว่าเกณฑ์ปกติ 2.5–4.5) [mlp-chloride]\n\nค่าเหล่านี้อาจบ่งชี้ถึงภาวะการทำงานของไตที่ลดลง และความสมดุลของสารอาหารในร่างกายที่ผิดปกติ ซึ่งควรได้รับการประเมินเพิ่มเติมจากแพทย์ โดยเฉพาะค่า eGFR ที่ต่ำมาก ซึ่งอาจหมายถึงภาวะไตเรื้อรังระยะที่ 4 ตามเกณฑ์ KDIGO [kdigo-ckd-staging] การตรวจซ้ำในอีก 3 เดือนจะช่วยยืนยันผลได้ดียิ่งขึ้น หากคุณมีอาการหรือกังวล ควรพบแพทย์โดยเร็ว\n\nค่าที่อยู่ในเกณฑ์ปกติ เช่น คอเลสเตอรอล, โปรตีนรวม, อัลบูมิน, กลูบูลิน, ALT, AST และ Alkaline Phos ไม่มีความผิดปกติ\n\nใบรายงานนี้มีค่าที่ถูกทำเครื่องหมายเป็นค่าวิกฤต กรุณาติดต่อแพทย์หรือสถานพยาบาลโดยเร็ว",
+  "fields": [
+    {
+      "id": "r1",
+      "name": "BUN",
+      "value": "48.0",
+      "unit": "mg/dL",
+      "reference": "H 5.8 - 19.1",
+      "printed_flag": "H",
+      "status": "high"
+    },
+    {
+      "id": "r2",
+      "name": "CREATININE",
+      "value": "2.36",
+      "unit": "mg/dL",
+      "reference": "H 0.5 - 1.5",
+      "printed_flag": "H",
+      "status": "high"
+    },
+    {
+      "id": "r3",
+      "name": "CHOLESTEROL",
+      "value": "187",
+      "unit": "mg/dl",
+      "reference": "- 127 - 262",
+      "printed_flag": "",
+      "status": "within"
+    },
+    {
+      "id": "r4",
+      "name": "TOTAL PROTEIN",
+      "value": "6.6",
+      "unit": "g/dL",
+      "reference": "- 6.5 - 8.8",
+      "printed_flag": "",
+      "status": "within"
+    },
+    {
+      "id": "r5",
+      "name": "ALBUMIN",
+      "value": "3.9",
+      "unit": "g/dL",
+      "reference": "- 3.8 - 5.4",
+      "printed_flag": "",
+      "status": "within"
+    },
+    {
+      "id": "r6",
+      "name": "Globulin",
+      "value": "2.7",
+      "unit": "g/dL",
+      "reference": "- 2.6 - 3.4",
+      "printed_flag": "",
+      "status": "within"
+    },
+    {
+      "id": "r7",
+      "name": "eGFR (CKD-EPI 2021)",
+      "value": "23",
+      "unit": "mL/min/1.73m²",
+      "reference": "L >= 60",
+      "printed_flag": "L",
+      "status": "low"
+    },
+    {
+      "id": "r8",
+      "name": "SODIUM",
+      "value": "132",
+      "unit": "mmol/L",
+      "reference": "L 135 - 145",
+      "printed_flag": "L",
+      "status": "low"
+    },
+    {
+      "id": "r9",
+      "name": "POTASSIUM",
+      "value": "6.2",
+      "unit": "mmol/L",
+      "reference": "HH 3.5 - 5.1",
+      "printed_flag": "HH",
+      "status": "high"
+    },
+    {
+      "id": "r10",
+      "name": "CHLORIDE",
+      "value": "102",
+      "unit": "mmol/L",
+      "reference": "- 98 - 107",
+      "printed_flag": "",
+      "status": "within"
+    },
+    {
+      "id": "r11",
+      "name": "CO2",
+      "value": "18",
+      "unit": "mmol/L",
+      "reference": "L 22 - 29",
+      "printed_flag": "L",
+      "status": "low"
+    },
+    {
+      "id": "r12",
+      "name": "CALCIUM",
+      "value": "8.3",
+      "unit": "mg/dL",
+      "reference": "L 8.6 - 10.2",
+      "printed_flag": "L",
+      "status": "low"
+    },
+    {
+      "id": "r13",
+      "name": "PHOSPHORUS",
+      "value": "5.2",
+      "unit": "mg/dL",
+      "reference": "HH 2.5 - 4.5",
+      "printed_flag": "HH",
+      "status": "high"
+    },
+    {
+      "id": "r14",
+      "name": "MAGNESIUM",
+      "value": "2.4",
+      "unit": "mg/dL",
+      "reference": "- 1.6 - 2.6",
+      "printed_flag": "",
+      "status": "within"
+    },
+    {
+      "id": "r15",
+      "name": "ALT",
+      "value": "18",
+      "unit": "U/L",
+      "reference": "- 4 - 36",
+      "printed_flag": "",
+      "status": "within"
+    },
+    {
+      "id": "r16",
+      "name": "AST",
+      "value": "21",
+      "unit": "U/L",
+      "reference": "- 12 - 32",
+      "printed_flag": "",
+      "status": "within"
+    },
+    {
+      "id": "r17",
+      "name": "Alkaline Phos",
+      "value": "67",
+      "unit": "U/L",
+      "reference": "- 42 - 121",
+      "printed_flag": "",
+      "status": "within"
+    }
+  ],
+  "evidence": [
+    {
+      "id": "mlp-bun",
+      "title": "BUN (blood urea nitrogen) test",
+      "url": "https://medlineplus.gov/lab-tests/bun-blood-urea-nitrogen/",
+      "publisher": "MedlinePlus · U.S. National Library of Medicine",
+      "publisher_type": "international_reference",
+      "language": "en",
+      "aliases": [
+        "BUN",
+        "blood urea nitrogen",
+        "urea",
+        "urea nitrogen",
+        "BUN/creatinine ratio",
+        "ยูเรีย",
+        "บียูเอ็น",
+        "ค่าไต",
+        "การทำงานของไต"
+      ],
+      "topics": [
+        "kidney"
+      ],
+      "content": "A BUN test measures urea nitrogen, a waste product made when the liver breaks down protein and removed from the blood by the kidneys. It is often ordered with creatinine, for example in a basic metabolic panel, to check kidney function. A high BUN can occur with kidney disease, dehydration, a high-protein diet, heart failure, bleeding in the digestive tract or some medicines; a low BUN is less common and may be seen with liver disease or malnutrition. A BUN-to-creatinine ratio is sometimes reported to help interpretation.",
+      "data_class": "public_education",
+      "reviewed_at": null,
+      "page": null,
+      "content_sha256": "3a9628cf496fb3ef6e316de3bfca0fb81e498720eeac084acd7f19952f847607",
+      "rights": "Original brief paraphrase with attribution; linked page retains its own terms.",
+      "verification": {
+        "url_checked": false,
+        "authored": "2026-10-08",
+        "method": "Offline paraphrase from the publisher's public guidance; run scripts/verify_sources.py before relying on links."
+      },
+      "candidate_origin": "claude-4.0.0-catalog",
+      "verification_status": "OFFLINE_AUTHORED_NOT_FETCHED",
+      "rights_status": "REVIEW_REQUIRED",
+      "rag_approval": "OWNER_APPROVED",
+      "ingested": true,
+      "current_review_status": "OWNER_APPROVED_SOURCE_CHECK_PENDING",
+      "owner_approved_at": "2026-10-09",
+      "owner_approval_basis": "Explicit owner instruction in the 2026-10-09 implementation request"
+    },
+    {
+      "id": "mlp-chloride",
+      "title": "Chloride blood test",
+      "url": "https://medlineplus.gov/lab-tests/chloride-blood-test/",
+      "publisher": "MedlinePlus · U.S. National Library of Medicine",
+      "publisher_type": "international_reference",
+      "language": "en",
+      "aliases": [
+        "chloride",
+        "Cl",
+        "serum chloride",
+        "คลอไรด์",
+        "เกลือแร่",
+        "อิเล็กโทรไลต์"
+      ],
+      "topics": [
+        "electrolytes",
+        "acid-base"
+      ],
+      "content": "Chloride is an electrolyte that works with sodium, potassium and bicarbonate to help control the body's fluid balance and acid-base balance. It is usually measured in an electrolyte panel or metabolic panel, and its level often changes in the same direction as sodium. Abnormal chloride levels can be linked to dehydration, prolonged vomiting or diarrhea, kidney problems, acid-base disturbances or some medicines. Chloride is interpreted with the other electrolytes rather than on its own.",
+      "data_class": "public_education",
+      "reviewed_at": null,
+      "page": null,
+      "content_sha256": "4e1e8cf6c5c393178c56dd99688e41b752ef00996d9c00449ab0c362fe220b47",
+      "rights": "Original brief paraphrase with attribution; linked page retains its own terms.",
+      "verification": {
+        "url_checked": false,
+        "authored": "2026-10-08",
+        "method": "Offline paraphrase from the publisher's public guidance; run scripts/verify_sources.py before relying on links."
+      },
+      "candidate_origin": "claude-4.0.0-catalog",
+      "verification_status": "OFFLINE_AUTHORED_NOT_FETCHED",
+      "rights_status": "REVIEW_REQUIRED",
+      "rag_approval": "OWNER_APPROVED",
+      "ingested": true,
+      "current_review_status": "OWNER_APPROVED_SOURCE_CHECK_PENDING",
+      "owner_approved_at": "2026-10-09",
+      "owner_approval_basis": "Explicit owner instruction in the 2026-10-09 implementation request"
+    },
+    {
+      "id": "niddk-ckd-tests",
+      "title": "Chronic kidney disease tests & diagnosis",
+      "url": "https://www.niddk.nih.gov/health-information/kidney-disease/chronic-kidney-disease-ckd/tests-diagnosis",
+      "publisher": "NIDDK · U.S. National Institutes of Health",
+      "publisher_type": "international_agency",
+      "language": "en",
+      "aliases": [
+        "CKD",
+        "chronic kidney disease",
+        "eGFR",
+        "GFR",
+        "UACR",
+        "ACR",
+        "urine albumin",
+        "albuminuria",
+        "โรคไตเรื้อรัง",
+        "ค่าไต",
+        "การทำงานของไต",
+        "ไตเสื่อม",
+        "อัลบูมินในปัสสาวะ",
+        "ไข่ขาวในปัสสาวะ"
+      ],
+      "topics": [
+        "kidney",
+        "ckd",
+        "thresholds"
+      ],
+      "content": "NIDDK explains that early kidney disease usually has no symptoms, so blood and urine tests are the only way to know how the kidneys are working. A creatinine blood test is used to estimate the glomerular filtration rate (eGFR): an eGFR of 60 or more is in the normal range, below 60 may mean kidney disease, and 15 or less may mean kidney failure. A urine albumin-to-creatinine ratio (UACR) below 30 mg/g is normal, while 30 mg/g or more may be a sign of kidney disease. Because results can change for temporary reasons, abnormal tests are repeated over about 3 months to confirm kidney disease.",
+      "data_class": "public_reference",
+      "reviewed_at": null,
+      "page": null,
+      "content_sha256": "1979d960059d6bd3c5107fb313bc7dee2428b306500c59139541218a9f9209f2",
+      "rights": "Original brief paraphrase with attribution; linked page retains its own terms.",
+      "verification": {
+        "url_checked": false,
+        "authored": "2026-10-08",
+        "method": "Offline paraphrase from the publisher's public guidance; run scripts/verify_sources.py before relying on links."
+      },
+      "candidate_origin": "claude-4.0.0-catalog",
+      "verification_status": "OFFLINE_AUTHORED_NOT_FETCHED",
+      "rights_status": "REVIEW_REQUIRED",
+      "rag_approval": "OWNER_APPROVED",
+      "ingested": true,
+      "current_review_status": "OWNER_APPROVED_SOURCE_CHECK_PENDING",
+      "owner_approved_at": "2026-10-09",
+      "owner_approval_basis": "Explicit owner instruction in the 2026-10-09 implementation request"
+    },
+    {
+      "id": "niddk-egfr",
+      "title": "Estimating glomerular filtration rate (eGFR)",
+      "url": "https://www.niddk.nih.gov/health-information/professionals/clinical-tools-patient-management/kidney-disease/laboratory-evaluation/glomerular-filtration-rate/estimating",
+      "publisher": "NIDDK · U.S. National Institutes of Health",
+      "publisher_type": "international_agency",
+      "language": "en",
+      "aliases": [
+        "eGFR",
+        "GFR",
+        "estimated glomerular filtration rate",
+        "CKD-EPI",
+        "creatinine",
+        "cystatin C",
+        "อัตราการกรองของไต",
+        "ค่าไต",
+        "การทำงานของไต",
+        "อีจีเอฟอาร์"
+      ],
+      "topics": [
+        "kidney",
+        "egfr"
+      ],
+      "content": "Glomerular filtration rate (GFR) is the best overall measure of kidney function, but it is rarely measured directly; instead it is estimated (eGFR) from serum creatinine using an equation that also uses age and sex. NIDDK recommends the 2021 CKD-EPI creatinine equation, which does not include a race term. eGFR is reported in mL/min/1.73 m² and is less accurate when creatinine is not stable or in people with very high or very low muscle mass, where adding cystatin C can improve the estimate. eGFR is read together with urine albumin and over time.",
+      "data_class": "public_education",
+      "reviewed_at": null,
+      "page": null,
+      "content_sha256": "5ea5983d7579fb944a65d4e3c6f861dcd504282fc6f3e19a439afa8dffe638ae",
+      "rights": "Original brief paraphrase with attribution; linked page retains its own terms.",
+      "verification": {
+        "url_checked": false,
+        "authored": "2026-10-08",
+        "method": "Offline paraphrase from the publisher's public guidance; run scripts/verify_sources.py before relying on links."
+      },
+      "candidate_origin": "claude-4.0.0-catalog",
+      "verification_status": "OFFLINE_AUTHORED_NOT_FETCHED",
+      "rights_status": "REVIEW_REQUIRED",
+      "rag_approval": "OWNER_APPROVED",
+      "ingested": true,
+      "current_review_status": "OWNER_APPROVED_SOURCE_CHECK_PENDING",
+      "owner_approved_at": "2026-10-09",
+      "owner_approval_basis": "Explicit owner instruction in the 2026-10-09 implementation request"
+    },
+    {
+      "id": "kdigo-ckd-staging",
+      "title": "KDIGO 2024 CKD guideline: GFR and albuminuria categories",
+      "url": "https://kdigo.org/guidelines/ckd-evaluation-and-management/",
+      "publisher": "KDIGO · Kidney Disease: Improving Global Outcomes",
+      "publisher_type": "international_reference",
+      "language": "en",
+      "aliases": [
+        "CKD stage",
+        "CKD staging",
+        "GFR category",
+        "albuminuria category",
+        "G3a",
+        "G3b",
+        "eGFR",
+        "ระยะโรคไต",
+        "ระยะโรคไตเรื้อรัง",
+        "อัลบูมินในปัสสาวะ"
+      ],
+      "topics": [
+        "kidney",
+        "ckd",
+        "staging"
+      ],
+      "content": "KDIGO classifies CKD by cause, GFR category and albuminuria category. GFR categories in mL/min/1.73 m² are G1 90 or above, G2 60 to 89, G3a 45 to 59, G3b 30 to 44, G4 15 to 29 and G5 below 15 (kidney failure). Albuminuria categories by urine albumin-to-creatinine ratio are A1 below 30 mg/g, A2 30 to 300 mg/g and A3 above 300 mg/g. G1 and G2 count as CKD only when markers of kidney damage are present, and a category is assigned only after abnormalities have lasted more than 3 months.",
+      "data_class": "public_reference",
+      "reviewed_at": null,
+      "page": null,
+      "content_sha256": "b2c8ddc1e350d27c8cebaa3f2a103be16c6580c57c6dae8b4c8fff74bcbfd35b",
+      "rights": "Original brief paraphrase with attribution; linked page retains its own terms.",
+      "verification": {
+        "url_checked": false,
+        "authored": "2026-10-08",
+        "method": "Offline paraphrase from the publisher's public guidance; run scripts/verify_sources.py before relying on links."
+      },
+      "candidate_origin": "claude-4.0.0-catalog",
+      "verification_status": "OFFLINE_AUTHORED_NOT_FETCHED",
+      "rights_status": "REVIEW_REQUIRED",
+      "rag_approval": "OWNER_APPROVED",
+      "ingested": true,
+      "current_review_status": "OWNER_APPROVED_SOURCE_CHECK_PENDING",
+      "owner_approved_at": "2026-10-09",
+      "owner_approval_basis": "Explicit owner instruction in the 2026-10-09 implementation request"
+    }
+  ]
+}

@@ -1,0 +1,119 @@
+{
+ "run_id": "windows-bound-output-final-20261010",
+ "mode": "OFFLINE",
+ "profile": "C",
+ "suite": "coursework",
+ "candidate": {
+  "candidate_sha": "e6b41da6c03a21d30f321494cf6594e11431f429",
+  "branch": "main",
+  "working_tree_dirty": true,
+  "dirty_files": [
+   "M docs/architecture.md",
+   " M routers/business.py",
+   " M services/answer_checks.py",
+   " M services/business_agent.py",
+   " M services/report_reader_v2.py",
+   "?? docs/evidence/current/bound-output-20261010/",
+   "?? services/ocr_binding.py",
+   "?? services/policy_binding.py",
+   "?? services/report_binding.py",
+   "?? tests/fixtures/",
+   "?? tests/test_bound_output.py"
+  ],
+  "app_version": "4.0.0-rc3"
+ },
+ "dataset": {
+  "dataset_id": "labclear-coursework",
+  "dataset_version": "1.0.0",
+  "dataset_digest": "63e5c85e93b93b67c69c6b5f20ae208260585f2b23b5aff066306fc1f3542511"
+ },
+ "provenance": {
+  "prompt_version": "services/business_agent.py sha256 02d1770e6a80cacc",
+  "skill_package": "labclear-thai-health-communication 0.4.1",
+  "skill_hashes": {
+   "SOURCES.md": "51c4d7b080181d881599add7133c730d85d713a43a44cc588e9c567b15112fa5",
+   "core.md": "b098db355cbb49b0361a41580b9ac5d20a8d175899436a80be7966a26a64f2bd",
+   "evidence-citation.md": "e6a818eb514755d4c89cc5c7ae936059186e7293d678c36882cac1f8e31322ed",
+   "lay-explanation.md": "1c46d0963b4b113c879e07fd28bce028971919befd2ecf7dfcc72970fb112e66",
+   "package-advice.md": "140953c844ff2207d6f10b75f37536bdf47c2e6d629353a3b73e36597105ee80",
+   "package-compare.md": "3aabd716f90740301a5934282a06c348eab3ff34ba2bd95dc4cb944e89f703f9",
+   "patient-explanation.md": "4c6e53ba6cb4bbb988ac28f8d344ea489f107b7a45607ac571c9ab0627101a60",
+   "scope-uncertainty.md": "b937b46b08c996e965818e037dbdd908785c62975ddf3fdd32a40a723230e5bc",
+   "thai-style.md": "d9003fe53a7a378c28cc6fd8732e078c24eda9bfd01631b3e0346167ab724449"
+  },
+  "tool_schema_version": "labclear-tools-1.1.0",
+  "source_digest": "01b36f1420a67b38af71bcd378e29cb22b2a07dfd6d98efd6b4d814f69334c62",
+  "business_knowledge_digest": "01b36f1420a67b38af71bcd378e29cb22b2a07dfd6d98efd6b4d814f69334c62"
+ },
+ "verdict_scope": "PIPELINE ONLY: provider test doubles (planner stand-in, extractive writer, approve-all reviewer, allow-all guard, Tesseract OCR stand-in). Checks retrieval/tool evidence, validators, guards that do not need a model, side effects and accounting. Not answer quality, not Typhoon OCR, not clinical.",
+ "finished_at": "2026-10-10T06:47:05+00:00",
+ "cases": {
+  "planned": 20,
+  "attempted": 20,
+  "not_run": 0,
+  "completed": 20,
+  "error": 0,
+  "invalid_result": 0,
+  "blocked_quota": 0,
+  "blocked_policy": 0,
+  "automated_pass": 16,
+  "automated_fail": 4,
+  "pending_human_review": 20
+ },
+ "attempts": 21,
+ "retries": 1,
+ "by_kind": {
+  "question": {
+   "planned": 10,
+   "completed": 10,
+   "pass": 10,
+   "fail": 0,
+   "not_applicable": 0,
+   "latency_ms": {
+    "n": 10,
+    "median": 483.5,
+    "min": 321,
+    "max": 1436,
+    "note": "complete cases only; N is small, no percentile claims"
+   }
+  },
+  "image": {
+   "planned": 5,
+   "completed": 5,
+   "pass": 1,
+   "fail": 4,
+   "not_applicable": 0,
+   "latency_ms": {
+    "n": 5,
+    "median": 22339,
+    "min": 18861,
+    "max": 36793,
+    "note": "complete cases only; N is small, no percentile claims"
+   }
+  },
+  "safety": {
+   "planned": 5,
+   "completed": 5,
+   "pass": 5,
+   "fail": 0,
+   "not_applicable": 0,
+   "latency_ms": {
+    "n": 5,
+    "median": 368,
+    "min": 35,
+    "max": 979,
+    "note": "complete cases only; N is small, no percentile claims"
+   }
+  }
+ },
+ "metrics": {
+  "non_allowlisted_calls": 0,
+  "provider_requests": 115,
+  "guard_decisions_conservative": 210,
+  "writer_system_chars_mean": 12840.2,
+  "estimated_cost_thb": 5.3979,
+  "images_explained": 5,
+  "images_raw_values_exact": 85,
+  "images_raw_rows_expected": 93
+ }
+}

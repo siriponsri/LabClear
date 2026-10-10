@@ -1,0 +1,15 @@
+{
+  "base_commit": "e6b41da6c03a21d30f321494cf6594e11431f429",
+  "scope": "Final implementation tested before its local commit. Historical artifact commit labels are preserved.",
+  "files": {
+    "routers/business.py": "64fdd18e1d6cfc25f0371763a374e7155d21cb38e43d98a757db6e98d8737e6d",
+    "services/answer_checks.py": "9d9ec4f24853d6b5dc3922de6c3785c9135a1126bcb48229a896e19126d64e4e",
+    "services/business_agent.py": "02d1770e6a80cacc794ee667dc2b9a5c73f10d0894be738aa6fbbbc07d200a60",
+    "services/report_reader_v2.py": "479e206788f21cc6a92a38249e6b57ea79bd3a7043a3ec0136833daeeee978f1",
+    "services/report_binding.py": "167b8302a42d72c98b7e68c4cc96351d916e89deaf113bf74aa8655ab349f779",
+    "services/ocr_binding.py": "2aee37d8e734fbda4861bafb460658960926feda4bed05c5705521dd5f854701",
+    "services/policy_binding.py": "1aa529e494bfbe0707408c234ea0eea536b67d4d1f68444a9eb1bc5bf06aa340",
+    "tests/test_bound_output.py": "94d870a97b17f5494941f61ab1193e2b0c12b967f51cea3281b97baa76823f63",
+    "tests/fixtures/live_734_i02_exposure.json": "e29f8871e7b638537c9485eb76a34ddd78702c2c90a3a6111655a1865edc5a83"
+  }
+}

@@ -156,8 +156,26 @@ async def read_report(raw: bytes | list[bytes] | list[tuple[bytes, str]], emit=N
         result = parse_model(raw_text, Extraction, "report reading")
     if result.document_type != "laboratory_report" or not result.fields:
         raise ConversationError("not_a_report", "I could not find a readable table of lab results. Try a clearer, straight photo or the PDF.", 422)
+    alignment = {"verified": row_method == "explicit_ocr_columns", "reason": row_method}
+    if typhoon and row_method == "model_json":
+        from services.ocr_binding import bind_rows
+        alignment = bind_rows(result.fields, raw_text)
+        if alignment.get("reject"):
+            raise ConversationError("ocr_alignment_invalid", "The extracted cells did not stay with their source rows. Please use a clearer report image or review the original.", 502)
+    from services.report_binding import row_issues
+    fields = normalize(result.fields)
+    integrity = row_issues(fields)
+    for field in fields:
+        if integrity[field['id']]:
+            field['status'] = 'unknown'
+            result.warnings.insert(0, field['name'] + ': check column alignment, units and flags against the original before confirming.')
+    if not alignment['verified']:
+        result.warnings.insert(0, 'Automatic source-row alignment could not be verified. Check every row against the original before confirming.')
+    # Record structural reason codes only; no transcription, values or draft logging.
+    from services import execution
+    execution.log_event('ocr_row_binding', step='rows', reason=alignment.get('reason','explicit_source_rows'))
     # Screen the structured rows too, including the structuring model's output.
     await check(result.model_dump_json(), "document")
     await step("rows", "done", f"{len(result.fields)} test rows ready for you to check", "Explicit OCR table columns copied without a second model" if row_method == "explicit_ocr_columns" else "values, units and printed ranges exactly as read")
     # The schema excludes identity fields and the original filename.
-    return {"fields": normalize(result.fields), "warnings": result.warnings, "confirmed": False}
+    return {"fields": fields, "warnings": list(dict.fromkeys(result.warnings))[:10], "confirmed": False, "row_alignment": alignment}

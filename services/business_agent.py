@@ -104,7 +104,7 @@ This shows the JSON keys only. Fill reply with your actual helpful answer to USE
 reply, a format label, the word Markdown, a schema or copied instruction text. When declining an invented
 policy, state the supported policy plainly without repeating the requested refund percentage or inventing
 payment examples. When declining diagnosis or dosing, do not repeat the requested disease conclusion or dose.
-observation_ids: only when REPORT has fields, list the exact row IDs you discuss. The server supplies their authoritative values; keep observations empty rather than retyping them. Otherwise both lists are empty. Values mentioned in prose must still match REPORT exactly. Use short paragraphs and bullet lists,
+observation_ids: only when REPORT has fields, list the exact row IDs you discuss. The server supplies their authoritative values; keep observations empty rather than retyping them. Otherwise both lists are empty. For a confirmed REPORT, select row IDs and use only a brief neutral acknowledgement in reply. The server renders their exact cells and comparison limits; free clinical prose is not displayed. Values mentioned in legacy prose must still match REPORT exactly. Use short paragraphs and bullet lists,
 no tables. For a report, explain at most three salient noncritical rows first; preserve every critical notice.
 The full confirmed table is already visible, so do not repeat every row. Include observations only for rows
 you discuss and keep the whole JSON concise enough for the existing output limit. Describe printed comparisons,
@@ -329,6 +329,8 @@ async def run(message,context,emit=None):
     plan_prices=[p['price_thb'] for p in plan_catalog()['plans']]+[p['advertised_price_thb'] for p in hospital_records if p.get('advertised_price_thb') is not None]
     # At most ONE rewrite across price, citation, role, prose and reviewer checks.
     # The corrected answer repeats every check. Guard failures are never bypassed.
+    report_binding=None
+    policy_binding=None
     review_status='passed'
     review_reasons=[]
     answer_mode='answer'
@@ -349,6 +351,19 @@ async def run(message,context,emit=None):
             if plan.query and evidence and plan.action=='answer' and not any(not i.startswith('rs-') for i in answer.evidence_ids):
                 if answer_checks.medical_terms(message) and not re.search(r'ราคา|บาท|แพ็กเกจ|จอง|บริการ|price|package|book|service',message,re.I):
                     raise transport.ConversationError('evidence_missing','The medical explanation did not cite a medical source.',502)
+            # Preserve draft role enforcement before replacing generated text.
+            if 'quote' not in dot['actions']:dots_mod.assert_no_sales(answer.reply+' '+' '.join(answer.followups),biz['catalog'])
+            if not role_report:
+                from services.policy_binding import render as render_bound_policy
+                policy_binding=render_bound_policy(answer,evidence,message,preferred_language)
+                if policy_binding:validate_answer(answer,evidence,None)
+            if role_report:
+                from services.report_binding import render as render_bound_report
+                report_binding=render_bound_report(answer,role_report,evidence,preferred_language,message)
+                validate_answer(answer,evidence,role_report)
+                for observation in answer.observations:
+                    if observation.field_id in report_binding['integrity_issues']:
+                        observation.status='unknown'
             note=answer_checks.critical_note(role_report,answer.reply,message)
             if note:answer.reply=answer.reply.rstrip()+'\n\n'+note
             if 'quote' not in dot['actions']:dots_mod.assert_no_sales(answer.reply+' '+' '.join(answer.followups),biz['catalog'])
@@ -373,9 +388,17 @@ async def run(message,context,emit=None):
                 answer=review_policy.recovery(message,preferred_language or plan.language,bool(role_report))
                 note=answer_checks.critical_note(role_report,answer.reply,message)
                 if note:answer.reply+='\n\n'+note
-                validate_answer(answer,[],None)
+                if policy_binding:
+                    from services.policy_binding import render as render_bound_policy
+                    render_bound_policy(answer,evidence,message,preferred_language)
+                    from services.report_binding import is_thai
+                    prefix='คำตอบร่างไม่ผ่านการตรวจยืนยัน จึงแสดงเฉพาะข้อความนโยบายต้นฉบับ:' if is_thai(preferred_language,message) else 'The draft was not verified. Only the original published policy is shown:'
+                    answer.reply=prefix+'\n\n'+answer.reply
+                    validate_answer(answer,evidence,None)
+                else:
+                    validate_answer(answer,[],None)
                 action=None;ui=[];cited=0
-                review_status='withheld';answer_mode='verification_recovery'
+                review_status='withheld';answer_mode='verification_recovery';report_binding=None
                 await step('review','done','Explanation withheld; safe next step shown','The draft was not approved. No unverified explanation is displayed.')
                 break
             if attempt or exc.code not in {'price_invalid','citation_invalid','answer_invalid','observation_invalid','evidence_review_failed','evidence_missing','role_violation','review_failed'}:raise
@@ -396,4 +419,4 @@ async def run(message,context,emit=None):
     # Generic package questions: official hospital pages are attached after every check (VERIFIED only).
     # Questions that name a hospital already received its records as cited evidence above.
     external_offers=[] if hospital_records or answer_mode!='answer' else await _hospital_offers(tools,plan,message,reads,step)
-    return {'reply':answer.reply,'sources':sources,'observations':[o.model_dump() for o in answer.observations],'followups':answer.followups,'action':action,'retrieval':retrieval,'dot':{'id':dot['id'],'name':dot['name']},'rerouted_from':rerouted,'ui':ui,'external_offers':external_offers,'checks':{'rewrite_count':attempt,'input_safety':'passed','citations_validated':len(sources),'independent_review':review_status,'answer_mode':answer_mode,'tone':response_style.selected(context.get('tone'))['tone'],'reason_codes':review_reasons if review_status=='withheld' else [],'output_safety':'passed','observations':len(answer.observations),'tools':tools.audit,'skills':skills,'harness':{'revision':runtime_config['revision'],'sha256':harness_config.digest(runtime_config),'elapsed_ms':round((time.perf_counter()-turn_start)*1000)}},'trace':trace}
+    return {'reply':answer.reply,'sources':sources,'observations':[o.model_dump() for o in answer.observations],'followups':answer.followups,'action':action,'retrieval':retrieval,'dot':{'id':dot['id'],'name':dot['name']},'rerouted_from':rerouted,'ui':ui,'external_offers':external_offers,'checks':{'rewrite_count':attempt,'input_safety':'passed','citations_validated':len(sources),'independent_review':review_status,'answer_mode':answer_mode,'tone':response_style.selected(context.get('tone'))['tone'],'reason_codes':review_reasons if review_status=='withheld' else [],'output_safety':'passed','observations':len(answer.observations),'report_binding':report_binding,'policy_binding':policy_binding,'tools':tools.audit,'skills':skills,'harness':{'revision':runtime_config['revision'],'sha256':harness_config.digest(runtime_config),'elapsed_ms':round((time.perf_counter()-turn_start)*1000)}},'trace':trace}

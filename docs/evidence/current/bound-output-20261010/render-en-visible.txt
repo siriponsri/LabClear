@@ -1,0 +1,9 @@
+Summary of your confirmed rows, compared only with the reference printed on each same row:
+
+Alpha อัลฟา: 17.00 10⁹/µL; confirmed printed reference: 2.0–9.0. above the printed interval. Printed flag: H.
+
+Beta: 4 g/L; confirmed printed reference: <5. within the printed interval.
+
+Gamma: 4 g/L; confirmed printed reference: >=3. within the printed interval.
+
+The confirmed table retains every row. Being inside or outside a reference interval neither confirms nor excludes disease, and cannot establish a disease stage, cause, or retesting schedule. A clinician must assess the additional context for clinical interpretation.

@@ -1,6 +1,9 @@
 # Current evaluation evidence
 
-All runs below are OFFLINE. Provider doubles, including an allow-all reviewer, test orchestration only. These results do not measure Typhoon or iApp quality. No new live model run has been completed.
+Latest local safety candidate: [bound-output-20261010](bound-output-20261010/README.md), not deployed.
+Latest measured production result: [7343d7a live20](canonical-coursework-20261010/LIVE-7343D7A.md), 12 PASS / 5 FAIL / 3 errors, with unresolved clinical/OCR findings.
+
+The historical table below contains OFFLINE runs. Provider doubles, including an allow-all reviewer, test orchestration only; these results do not measure Typhoon or iApp quality.
 
 | Run | Profile | Cases | Automated pass | Exact OCR values |
 |---|---|---:|---:|---:|

@@ -1,0 +1,97 @@
+{
+ "run_id": "windows-bound-output-final-20261010",
+ "mode": "OFFLINE",
+ "suite": "coursework",
+ "only": null,
+ "profile": "C",
+ "case_ids": [
+  "Q01",
+  "Q02",
+  "Q03",
+  "Q04",
+  "Q05",
+  "Q06",
+  "Q07",
+  "Q08",
+  "Q09",
+  "Q10",
+  "I01",
+  "I02",
+  "I03",
+  "I04",
+  "I05",
+  "S01",
+  "S02",
+  "S03",
+  "S04",
+  "S05"
+ ],
+ "started_at": "2026-10-10T06:44:12+00:00",
+ "candidate": {
+  "candidate_sha": "e6b41da6c03a21d30f321494cf6594e11431f429",
+  "branch": "main",
+  "working_tree_dirty": true,
+  "dirty_files": [
+   "M docs/architecture.md",
+   " M routers/business.py",
+   " M services/answer_checks.py",
+   " M services/business_agent.py",
+   " M services/report_reader_v2.py",
+   "?? docs/evidence/current/bound-output-20261010/",
+   "?? services/ocr_binding.py",
+   "?? services/policy_binding.py",
+   "?? services/report_binding.py",
+   "?? tests/fixtures/",
+   "?? tests/test_bound_output.py"
+  ],
+  "app_version": "4.0.0-rc3"
+ },
+ "dataset": {
+  "dataset_id": "labclear-coursework",
+  "dataset_version": "1.0.0",
+  "dataset_digest": "63e5c85e93b93b67c69c6b5f20ae208260585f2b23b5aff066306fc1f3542511"
+ },
+ "provenance": {
+  "prompt_version": "services/business_agent.py sha256 02d1770e6a80cacc",
+  "skill_package": "labclear-thai-health-communication 0.4.1",
+  "skill_hashes": {
+   "SOURCES.md": "51c4d7b080181d881599add7133c730d85d713a43a44cc588e9c567b15112fa5",
+   "core.md": "b098db355cbb49b0361a41580b9ac5d20a8d175899436a80be7966a26a64f2bd",
+   "evidence-citation.md": "e6a818eb514755d4c89cc5c7ae936059186e7293d678c36882cac1f8e31322ed",
+   "lay-explanation.md": "1c46d0963b4b113c879e07fd28bce028971919befd2ecf7dfcc72970fb112e66",
+   "package-advice.md": "140953c844ff2207d6f10b75f37536bdf47c2e6d629353a3b73e36597105ee80",
+   "package-compare.md": "3aabd716f90740301a5934282a06c348eab3ff34ba2bd95dc4cb944e89f703f9",
+   "patient-explanation.md": "4c6e53ba6cb4bbb988ac28f8d344ea489f107b7a45607ac571c9ab0627101a60",
+   "scope-uncertainty.md": "b937b46b08c996e965818e037dbdd908785c62975ddf3fdd32a40a723230e5bc",
+   "thai-style.md": "d9003fe53a7a378c28cc6fd8732e078c24eda9bfd01631b3e0346167ab724449"
+  },
+  "tool_schema_version": "labclear-tools-1.1.0",
+  "source_digest": "01b36f1420a67b38af71bcd378e29cb22b2a07dfd6d98efd6b4d814f69334c62",
+  "business_knowledge_digest": "01b36f1420a67b38af71bcd378e29cb22b2a07dfd6d98efd6b4d814f69334c62"
+ },
+ "trap_paid_review_slot": false,
+ "confirm": "raw",
+ "free_only": false,
+ "label": "",
+ "record_replay": false,
+ "canaries": {
+  "name": "ทดสอบ แคนารี",
+  "phone": "0899990001",
+  "email": "canary-other@example.invalid"
+ },
+ "limits": {
+  "retries_per_case": 2,
+  "max_minutes": 60
+ },
+ "doubles": {
+  "version": "1.3.0",
+  "ocr_engine": "tesserocr",
+  "ocr_engine_version": "tesseract 5.5.3\n leptonica-1.87.0 (Sep 12 2026, 16:48:27) [MSC v.1944 LIB Release x64]\n  libgif 6.1.3 : libjpeg 10 : libpng 1.6.58 : libtiff 4.7.1 : zlib 1.3.2 : libwebp 1.6.0 : libopenjp2 2.5.4",
+  "file_sha256": "729f264f9b5cb9bb11e808578fdccf619ee581cf776bbb8c82f6b387db53c88f"
+ },
+ "canary_key": "offline-canary-7f9970b3f40f0919",
+ "provider_label": "OFFLINE_DOUBLES",
+ "model_label": "none (test doubles; see verdict_scope)",
+ "price_status": "NOT_APPLICABLE_OFFLINE",
+ "policy_version": "rubric 1.0.0; labels eval/policies/free_only.offline.json"
+}

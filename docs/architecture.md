@@ -316,3 +316,26 @@ unit ambiguity prevent the packet. It remains unverified user text, never a conf
 The existing writer, independent reviewer and guards still run. Refund percentages must appear
 in the actual policy even when a draft repeats them inside a denial. Rejection logs contain
 reason codes, not rejected drafts. See the [candidate evidence](evidence/current/next-candidate-20261010/README.md).
+
+
+### Local containment after deployed 7343d7a (2026-10-10)
+
+The deployed I02 explanation exposed an unsupported disease-stage inference despite passing
+model checks; [exposure evidence](evidence/current/bound-output-20261010/I02-EXPOSURE.md)
+distinguishes delivered output from withheld/error cases. The new confirmed-report path keeps
+legacy draft validation, then renders selected immutable row IDs using server-owned text.
+Only exact confirmed cells, conservative printed-range comparisons, interpretation limits and
+general source links are emitted. Critical notices, independent review and output Safety Guard
+still run; no extra retries or provider calls are introduced. This limits personalized clinical
+prose, not the full original table or general educational conversations without a report.
+
+The OCR fallback checks recognized HTML cells against one distinct source row before publishing
+structured fields. Provable cross-row changes or reused rows fail; unsupported layouts remain
+unverified, require confirmation and are not claimed accurate. Original values are not repaired.
+Conflicting flags and suspicious row structure produce warnings and uncertain comparisons.
+
+Refund and home-service questions can render whole published policy fields with citations.
+If model review withholds a draft, exact policy text may still be displayed with the withheld
+verdict retained; the output guard still applies. Source language is preserved rather than
+inventing a translation. Other package/preparation claims remain a known grounding limitation.
+No database schema, service, provider, credentials, ledger settings or approved landing changed.

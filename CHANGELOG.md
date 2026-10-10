@@ -2,6 +2,13 @@
 
 Dates are in 2026. Test counts are software evidence with test doubles, not live model results.
 
+## Local safety candidate after 7343d7a (2026-10-10, not deployed)
+
+- Recorded I02 API exposure of unsupported personal disease staging and retesting advice, with explicit limits on what browser evidence exists.
+- Bind confirmed-report explanations to exact row IDs; preserve role validation, uncertainty and critical notices. Reject provable cross-row OCR fallback changes and retain human confirmation.
+- Render published refund/home-service policy fields; preserve withheld-review status and output Safety Guard. No additional provider requests, retries, credentials or budget changes.
+- Final local validation: 531 pytest, R01–R12 12/12, business UAT 36/36, TH/EN renderer 2/2. Frozen offline20 remains incomplete; [evidence and remaining limitations](docs/evidence/current/bound-output-20261010/README.md). No push or deployment in this phase.
+
 ## Deployed 7343d7a (2026-10-10)
 
 - Owner-approved push and Render auto-deploy verified at the exact SHA. One unchanged live20 completed: 12 PASS, 5 FAIL, 3 errors; separate UX chats both rendered with content caveats. No case retries or provider/key/budget changes.

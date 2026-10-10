@@ -1,0 +1,1128 @@
+{
+  "benchmark": "LabClear resilience fault suite R01–R12",
+  "mode": "OFFLINE",
+  "seed": 20261013,
+  "commit": "e6b41da6c03a21d30f321494cf6594e11431f429",
+  "score": 100.0,
+  "required": 12,
+  "passed": 12,
+  "failed": 0,
+  "skipped": 0,
+  "external_provider_calls": 0,
+  "outbound_connection_attempts": 0,
+  "accepted": true,
+  "score_sha256": "d80c1670d1856fc1",
+  "environment": {
+    "python": "3.12.10",
+    "node": "node v24.19.0",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "clock": "virtual for server cases, fake for client cases, real seconds for R09 and regression"
+  },
+  "real_seconds": {
+    "server": 15.78,
+    "client": 0.14,
+    "sigterm": 5.84,
+    "regression": 80.19,
+    "total": 102.69
+  },
+  "server_case_order": [
+    "R08",
+    "R02",
+    "R01",
+    "R11",
+    "R04",
+    "R07",
+    "R06",
+    "R05",
+    "R10",
+    "R12"
+  ],
+  "regression_files": [
+    "tests/test_resilience.py",
+    "tests/test_business_v3.py",
+    "tests/test_business_full.py",
+    "tests/test_guest_privacy_302.py",
+    "tests/test_guard_repairs_302.py",
+    "tests/test_upgrade_safety.py",
+    "tests/test_chat_features.py",
+    "tests/test_cost_ledger.py"
+  ],
+  "note": "Pass rate of a deterministic fault suite with provider doubles and synthetic files. Not an uptime SLA, not latency on Render, not model accuracy.",
+  "cases": [
+    {
+      "id": "R01",
+      "title": "Provider hangs or sends data slowly without end",
+      "parts": [
+        "server"
+      ],
+      "passed": true,
+      "skipped": false,
+      "assertions_passed": 23,
+      "assertions": 23,
+      "checks": [
+        {
+          "part": "server",
+          "name": "slow chain: terminal error request_timeout (504, origin app)",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "ends at the workflow deadline CHAT_DEADLINE_SECONDS = 220 s (virtual clock, +1.5 s)",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "exactly one terminal event",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "heartbeats every 10 s while waiting (>= 15 in 220 s)",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "the rewrite (second writer call) was cut by the deadline and shown as timeout",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "no step started after the deadline (no output guard)",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "the message is kept as failed and retryable, with the request ID",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "the conversation is not left busy",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "admission slot and registry released",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "the cut call keeps its cost reservation (charged, not refunded)",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "hung planner: terminal upstream_timeout (504, origin upstream) after its call budget",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "hung planner: shown as timeout, no later agent step",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "hung planner: writer, reviewer and output guard never called",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "hung planner: the call was cancelled (HTTP client closed)",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "hung planner: slot released",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "plain JSON request: HTTP 504 with code, origin and X-Request-ID in header and body",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "plain JSON request released its slot",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "trickling provider: terminal upstream_timeout (504, origin upstream)",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "ended by the provider call budget (LLM timeout 60 s, never more than 75 s)",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "no reviewer or output guard after the timed-out writer",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "trickling call cancelled",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "slot released after the trickle",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "nothing left running after the case (slots, workflows, worker processes)",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "id": "R02",
+      "title": "Provider 502/503/429 and malformed output",
+      "parts": [
+        "server"
+      ],
+      "passed": true,
+      "skipped": false,
+      "assertions_passed": 37,
+      "assertions": 37,
+      "checks": [
+        {
+          "part": "server",
+          "name": "input guard HTTP 502: classified as upstream_unavailable (502, origin upstream)",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "input guard HTTP 502: no automatic retry (guard called 1x in total)",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "input guard HTTP 502: safety_in shown as ended, not passed",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "input guard HTTP 502: the provider's echoed key never reaches the client",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "input guard HTTP 502: no answer was shown or stored (fail closed)",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "input guard HTTP 502: slot released",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "planner HTTP 429: classified as upstream_rate_limited (503, origin upstream)",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "planner HTTP 429: no automatic retry (planner called 1x in total)",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "planner HTTP 429: plan shown as ended, not passed",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "planner HTTP 429: the provider's echoed key never reaches the client",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "planner HTTP 429: no answer was shown or stored (fail closed)",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "planner HTTP 429: slot released",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "writer HTTP 503: classified as upstream_unavailable (502, origin upstream)",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "writer HTTP 503: no automatic retry (writer called 1x in total)",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "writer HTTP 503: draft shown as ended, not passed",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "writer HTTP 503: the provider's echoed key never reaches the client",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "writer HTTP 503: no answer was shown or stored (fail closed)",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "writer HTTP 503: slot released",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "reviewer returns an HTML page: classified as provider_response_invalid (502, origin upstream)",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "reviewer returns an HTML page: no automatic retry (reviewer called 1x in total)",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "reviewer returns an HTML page: review shown as ended, not passed",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "reviewer returns an HTML page: the provider's echoed key never reaches the client",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "reviewer returns an HTML page: no answer was shown or stored (fail closed)",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "reviewer returns an HTML page: slot released",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "output guard HTTP 503: classified as upstream_unavailable (502, origin upstream)",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "output guard HTTP 503: no automatic retry (guard called 2x in total)",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "output guard HTTP 503: safety_out shown as ended, not passed",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "output guard HTTP 503: the provider's echoed key never reaches the client",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "output guard HTTP 503: no answer was shown or stored (fail closed)",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "output guard HTTP 503: slot released",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "output guard returns no verdict: classified as guard_invalid (502, origin app)",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "output guard returns no verdict: no automatic retry (guard called 2x in total)",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "output guard returns no verdict: safety_out shown as ended, not passed",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "output guard returns no verdict: the provider's echoed key never reaches the client",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "output guard returns no verdict: no answer was shown or stored (fail closed)",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "output guard returns no verdict: slot released",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "nothing left running after the case (slots, workflows, worker processes)",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "id": "R03",
+      "title": "A proxy answers with an HTML 502/503/504 page",
+      "parts": [
+        "client"
+      ],
+      "passed": true,
+      "skipped": false,
+      "assertions_passed": 14,
+      "assertions": 14,
+      "checks": [
+        {
+          "part": "client",
+          "name": "HTML 502 from a proxy: classified 'gateway', never parsed as JSON",
+          "passed": true
+        },
+        {
+          "part": "client",
+          "name": "HTML 502: the spinner can end (the promise settled) and the text shown has no HTML",
+          "passed": true
+        },
+        {
+          "part": "client",
+          "name": "HTML 502: no LabClear request ID is claimed for a platform page",
+          "passed": true
+        },
+        {
+          "part": "client",
+          "name": "HTML 502: the POST was sent once (no automatic resend)",
+          "passed": true
+        },
+        {
+          "part": "client",
+          "name": "HTML 503 from a proxy: classified 'gateway', never parsed as JSON",
+          "passed": true
+        },
+        {
+          "part": "client",
+          "name": "HTML 503: the spinner can end (the promise settled) and the text shown has no HTML",
+          "passed": true
+        },
+        {
+          "part": "client",
+          "name": "HTML 503: no LabClear request ID is claimed for a platform page",
+          "passed": true
+        },
+        {
+          "part": "client",
+          "name": "HTML 503: the POST was sent once (no automatic resend)",
+          "passed": true
+        },
+        {
+          "part": "client",
+          "name": "HTML 504 from a proxy: classified 'gateway', never parsed as JSON",
+          "passed": true
+        },
+        {
+          "part": "client",
+          "name": "HTML 504: the spinner can end (the promise settled) and the text shown has no HTML",
+          "passed": true
+        },
+        {
+          "part": "client",
+          "name": "HTML 504: no LabClear request ID is claimed for a platform page",
+          "passed": true
+        },
+        {
+          "part": "client",
+          "name": "HTML 504: the POST was sent once (no automatic resend)",
+          "passed": true
+        },
+        {
+          "part": "client",
+          "name": "LabClear's own 503 JSON (server_busy) stays an app error with Retry-After and request ID",
+          "passed": true
+        },
+        {
+          "part": "client",
+          "name": "network failure before any response: classified 'network'",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "id": "R04",
+      "title": "Idle stream, a stream cut before done, an invalid line",
+      "parts": [
+        "server",
+        "client"
+      ],
+      "passed": true,
+      "skipped": false,
+      "assertions_passed": 14,
+      "assertions": 14,
+      "checks": [
+        {
+          "part": "server",
+          "name": "a heartbeat is sent after each 10 s without output (>= 2 during a 25 s wait)",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "heartbeats are 10 s apart (virtual clock)",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "the stream still ends with exactly one done",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "accepted comes first, with the request ID, deadline and heartbeat interval",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "bounded queue: overflow counted, interrupted step and terminal still delivered, nothing after it",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "nothing left running after the case (slots, workflows, worker processes)",
+          "passed": true
+        },
+        {
+          "part": "client",
+          "name": "idle watchdog: nothing for 35 s ends the request as 'idle' (not before)",
+          "passed": true
+        },
+        {
+          "part": "client",
+          "name": "idle: the request ID from 'accepted' is kept for support",
+          "passed": true
+        },
+        {
+          "part": "client",
+          "name": "heartbeats every 10 s keep a 60 s wait alive; done arrives",
+          "passed": true
+        },
+        {
+          "part": "client",
+          "name": "stream cut before its terminal event: 'eof', never success, even after steps",
+          "passed": true
+        },
+        {
+          "part": "client",
+          "name": "an invalid line: 'malformed', the stream is abandoned",
+          "passed": true
+        },
+        {
+          "part": "client",
+          "name": "overall watchdog: server budget (from 'accepted') + 10 s, not earlier",
+          "passed": true
+        },
+        {
+          "part": "client",
+          "name": "a terminal error event keeps code, origin, step and request ID",
+          "passed": true
+        },
+        {
+          "part": "client",
+          "name": "Stop (user abort) is 'aborted', not an error to show",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "id": "R05",
+      "title": "Stop or a closed connection while waiting for AI",
+      "parts": [
+        "server"
+      ],
+      "passed": true,
+      "skipped": false,
+      "assertions_passed": 13,
+      "assertions": 13,
+      "checks": [
+        {
+          "part": "server",
+          "name": "Stop answers 200",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "the stream ends with a terminal cancelled event, promptly",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "the planner call was cancelled (HTTP client closed)",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "no late answer is added",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "busy state, slot and registry are free after Stop",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "the same chat accepts the next message",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "disconnect cancels the provider call",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "after a disconnect the message stays retryable (cancelled), no answer added",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "slot and busy state released after a disconnect",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "Stop during report preparation ends the stream as cancelled",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "the stuck worker process was killed and reaped",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "the OCR slot was released",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "nothing left running after the case (slots, workflows, worker processes)",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "id": "R06",
+      "title": "More users than the concurrency limit",
+      "parts": [
+        "server"
+      ],
+      "passed": true,
+      "skipped": false,
+      "assertions_passed": 14,
+      "assertions": 14,
+      "checks": [
+        {
+          "part": "server",
+          "name": "request 3 gets 503 server_busy with Retry-After: 5",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "refused before any provider call (no guard call for it)",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "refused at once, not queued (virtual clock)",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "the refusal carries a request ID (JSON and header)",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "/health answers while the limit is full",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "/ready reports the load without failing",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "admitted requests still finish normally",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "admitted requests still finish normally",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "all slots free afterwards",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "a second report read gets server_busy (OCR_MAX_IN_FLIGHT=1)",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "a chat is still admitted while one report is read (OCR counts toward AI)",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "the report read finishes",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "all slots free at the end",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "nothing left running after the case (slots, workflows, worker processes)",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "id": "R07",
+      "title": "Broken PDF, too many pages, too many pixels, a stuck worker",
+      "parts": [
+        "server"
+      ],
+      "passed": true,
+      "skipped": false,
+      "assertions_passed": 13,
+      "assertions": 13,
+      "checks": [
+        {
+          "part": "server",
+          "name": "a broken PDF is refused with 422 pdf_invalid",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "a 4-page PDF is refused with 422 pdf_page_limit before rendering",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "a 25-megapixel image is refused with 413 image_dimensions_too_large",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "a file over 3 MB is refused with 413 before admission and without a worker",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "a file that is not PDF/PNG/JPEG is refused with 415 without a worker",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "a stuck worker ends as 422 document_timeout",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "the stuck worker was stopped at its time limit (2 s real time, < 6 s)",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "every worker process was reaped",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "no slot left behind",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "the next valid upload is read normally",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "refused uploads used no free reading (only the valid one counted)",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "no temporary file left behind",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "nothing left running after the case (slots, workflows, worker processes)",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "id": "R08",
+      "title": "Slow storage: connection, query or lock",
+      "parts": [
+        "server"
+      ],
+      "passed": true,
+      "skipped": false,
+      "assertions_passed": 13,
+      "assertions": 13,
+      "checks": [
+        {
+          "part": "server",
+          "name": "a request that cannot get the database lock ends as 503 storage_unavailable",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "the storage wait is bounded (0.5 s limit, < 3 s real)",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "/health answers while a request waits for storage (< 0.3 s)",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "no slot taken by the storage failure",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "a slow storage probe makes /ready answer 503 (storage: timeout)",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "/ready answers within its 1 s budget (< 1.5 s real)",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "liveness (/health) is not blocked by the probe",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "the readiness body has safe details only (no URL, no error text)",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "storage down: /ready 503 (storage: unavailable) without the error text",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "/ready returns to 200 when storage answers again",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "PostgreSQL: a failed or slow connection becomes storage_unavailable",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "PostgreSQL: connect_timeout=10 and statement/lock timeouts are set on every connection",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "nothing left running after the case (slots, workflows, worker processes)",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "id": "R09",
+      "title": "SIGTERM during a chat and a report read",
+      "parts": [
+        "sigterm"
+      ],
+      "passed": true,
+      "skipped": false,
+      "assertions_passed": 10,
+      "assertions": 10,
+      "checks": [
+        {
+          "part": "sigterm",
+          "name": "before the signal /ready is 200",
+          "passed": true
+        },
+        {
+          "part": "sigterm",
+          "name": "a chat (waiting for the planner) and a report read (worker running) are in flight",
+          "passed": true
+        },
+        {
+          "part": "sigterm",
+          "name": "right after the signal /ready answers 503 (draining)",
+          "passed": true
+        },
+        {
+          "part": "sigterm",
+          "name": "new AI work is refused with 503 server_draining and Retry-After: 5",
+          "passed": true
+        },
+        {
+          "part": "sigterm",
+          "name": "liveness still answers while draining",
+          "passed": true
+        },
+        {
+          "part": "sigterm",
+          "name": "the in-flight chat ends with a terminal server_draining event after the drain budget (3 s)",
+          "passed": true
+        },
+        {
+          "part": "sigterm",
+          "name": "the in-flight report read ends with a terminal server_draining event after the drain budget (3 s)",
+          "passed": true
+        },
+        {
+          "part": "sigterm",
+          "name": "the process exits by itself within drain + 10 s, exit status 0",
+          "passed": true
+        },
+        {
+          "part": "sigterm",
+          "name": "the report's worker process was killed and reaped; none left running",
+          "passed": true
+        },
+        {
+          "part": "sigterm",
+          "name": "the entry point binds 0.0.0.0:$PORT with one worker process",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "id": "R10",
+      "title": "Retry clicked twice, or while the original request is active",
+      "parts": [
+        "server",
+        "client"
+      ],
+      "passed": true,
+      "skipped": false,
+      "assertions_passed": 11,
+      "assertions": 11,
+      "checks": [
+        {
+          "part": "server",
+          "name": "setup: the message failed and is retryable",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "the second retry is refused (busy) while the first runs",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "the second retry started no provider chain (0 provider calls for that request)",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "the first retry finishes with one answer",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "one user message and one answer (nothing duplicated)",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "slots free after the retries",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "two simultaneous confirmations: both answered, one booking",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "two simultaneous payment starts: one simulated payment",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "nothing left running after the case (slots, workflows, worker processes)",
+          "passed": true
+        },
+        {
+          "part": "client",
+          "name": "Retry while a workflow is active does nothing (no second POST)",
+          "passed": true
+        },
+        {
+          "part": "client",
+          "name": "after the first finishes, the gate opens again",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "id": "R11",
+      "title": "Cold start and pages that are not JSON",
+      "parts": [
+        "server",
+        "client"
+      ],
+      "passed": true,
+      "skipped": false,
+      "assertions_passed": 11,
+      "assertions": 11,
+      "checks": [
+        {
+          "part": "server",
+          "name": "before startup completes, /ready is 503 JSON (startup pending), never an HTML page",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "after startup, /ready is 200",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "an unknown API path answers JSON 404 with the request ID, not a page",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "/health stays a JSON liveness answer",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "nothing left running after the case (slots, workflows, worker processes)",
+          "passed": true
+        },
+        {
+          "part": "client",
+          "name": "200 with an HTML page is not success: 'unexpected'",
+          "passed": true
+        },
+        {
+          "part": "client",
+          "name": "200 HTML: no automatic resend of the POST",
+          "passed": true
+        },
+        {
+          "part": "client",
+          "name": "cold start: GET /ready is polled until ready, the user sees one waiting status",
+          "passed": true
+        },
+        {
+          "part": "client",
+          "name": "cold start: the message is POSTed exactly once, after ready",
+          "passed": true
+        },
+        {
+          "part": "client",
+          "name": "a service that never wakes: give up after 90 s without any POST",
+          "passed": true
+        },
+        {
+          "part": "client",
+          "name": "after more than 60 s without contact the next send checks /ready first",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "id": "R12",
+      "title": "Request IDs, logs without secrets, existing regressions",
+      "parts": [
+        "server",
+        "regression"
+      ],
+      "passed": true,
+      "skipped": false,
+      "assertions_passed": 10,
+      "assertions": 10,
+      "checks": [
+        {
+          "part": "server",
+          "name": "success: X-Request-ID equals the accepted and done events' request ID",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "failure: the error event carries the same request ID",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "one structured workflow line per request, linked by request ID (and the turn ID)",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "the line records route, status, outcome, code, origin, step, duration and attempts",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "no API key in any log line",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "no message text in any log line",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "no bearer token or report image data in any log line",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "every labclear.request line is JSON with only the documented keys",
+          "passed": true
+        },
+        {
+          "part": "server",
+          "name": "nothing left running after the case (slots, workflows, worker processes)",
+          "passed": true
+        },
+        {
+          "part": "regression",
+          "name": "existing business, Guest privacy, Guard, cost-ledger and resilience tests pass (160 passed)",
+          "passed": true
+        }
+      ]
+    }
+  ]
+}
