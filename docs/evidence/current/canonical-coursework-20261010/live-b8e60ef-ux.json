@@ -1,0 +1,225 @@
+{
+  "candidate": "b8e60ef183c107b512332a010d007620961cf807",
+  "mode": "LIVE_UI_SYNTHETIC_ONLY",
+  "canonical_score_included": false,
+  "expected_questions": 2,
+  "submitted_questions": 2,
+  "provider_attempts": 13,
+  "ledger_estimate_thb": 0,
+  "cases": [
+    {
+      "id": "P01-R2",
+      "request_id": "req_82797d95bcb0e9f9",
+      "content_verdict": "PASS_WITH_LIMITS",
+      "ui_verdict": "NOT_VERIFIED",
+      "reason": "Thai relevant general explanation, matching cited source intervals, explicit limitations, no personal details requested. Original screenshot was captured before workspace refresh displayed the assistant; no repeat AI request was made. This is not clinical accuracy certification.",
+      "reply": "ช่วงอ้างอิงในใบผลตรวจคือช่วงค่าที่ถือว่า 'ปกติ' สำหรับกลุ่มคนทั่วไปในห้องปฏิบัติการนั้นๆ โดยอิงจากข้อมูลทางวิทยาศาสตร์ เช่น ค่า HCT (ระดับเม็ดเลือดแดง) ของผู้หญิงอายุมากกว่า 18 ปี ตามข้อมูลจากโรงพยาบาลศิริราช อยู่ที่ 37.0–45.7% [dr-001-hct-f] หรือค่า MCV (ขนาดเม็ดเลือดแดงเฉลี่ย) ของผู้ชายอยู่ที่ 80.6–98.8 fL [dr-001-mcv-m]\n\nตัวอย่าง: หากผลตรวจ HCT ของผู้หญิงคนหนึ่งได้ 46.0% ค่าจะอยู่เหนือช่วงอ้างอิง ซึ่งอาจต้องพิจารณาเพิ่มเติม แต่ไม่ได้หมายความว่ามีโรคใดๆ เอง\n\nข้อจำกัด: ช่วงอ้างอิงเหล่านี้อาจแตกต่างกันไปตามห้องแล็บ วิธีการตรวจ หรือกลุ่มประชากร เช่น เพศ อายุ หรือสุขภาพพื้นฐาน ดังนั้น ค่าที่แท้จริงที่ใช้ประเมินผลควรเป็นค่าที่ระบุไว้ในใบผลตรวจของตนเอง ไม่ใช่ค่าจากแหล่งอื่น นอกจากนี้ ช่วงอ้างอิงไม่ใช่เกณฑ์วินิจฉัยโรค แพทย์ต้องพิจารณาผลร่วมกับอาการ ประวัติสุขภาพ และการตรวจอื่นๆ ด้วย",
+      "receipt": {
+        "schema": "workflow-receipt-1",
+        "provider_attempts": 6,
+        "reserved_estimate_thb": 0,
+        "settled_estimate_thb": 0,
+        "cost_basis": "existing_ledger_estimate_not_provider_invoice",
+        "ledger_enabled": true,
+        "public_writer_sources": [
+          {
+            "id": "rs-policy",
+            "data_class": "synthetic_business",
+            "content_sha256": "1e6dad4e986fc6c95fc5b6d8222b6eb398785d335cb5b6da2d615dd9c3020f59"
+          },
+          {
+            "id": "dr-001-hct-f",
+            "data_class": "public_reference",
+            "content_sha256": "60d632a0686a87c95fe8a9e6910ec3bc90ea6c1c24090ddca6df97c8d4bc3e53"
+          },
+          {
+            "id": "dr-001-hct-m",
+            "data_class": "public_reference",
+            "content_sha256": "c978011c9d6bb4a280dbf081c55b83d0b36538e26b4451fcd55f98cb3c0512e0"
+          },
+          {
+            "id": "dr-001-mch-f",
+            "data_class": "public_reference",
+            "content_sha256": "d2056949734ce9712ee5abbe1df7121a25d6d47b4f3dccb8b5d666e14c50751a"
+          },
+          {
+            "id": "dr-001-mch-m",
+            "data_class": "public_reference",
+            "content_sha256": "be1d91b1439c0b06e4e6f370e8156c1e1b7f42110ea43608777515bd6a74fcce"
+          },
+          {
+            "id": "dr-001-mcv-f",
+            "data_class": "public_reference",
+            "content_sha256": "25e00c98c8896811d419e3c3ad15b805b9900f4ac7ec6ee1d2e95804d835ffe7"
+          },
+          {
+            "id": "dr-001-mcv-m",
+            "data_class": "public_reference",
+            "content_sha256": "dd5e2a9bedc17b5e37cda487866a0412dd7a2782b99ae4942dd9c0f6d4d731bb"
+          }
+        ]
+      },
+      "guest_cleanup": {
+        "requested": true,
+        "responseObserved": false
+      }
+    },
+    {
+      "id": "P05",
+      "request_id": "req_4354c6a9e05fab69",
+      "content_verdict": "FAIL",
+      "ui_verdict": "PASS_RENDERED_RECOVERY",
+      "reason": "English/professional response visibly rendered, but independent review withheld the explanation; supplied-number comparison was not delivered. Initial harness attempt timed out before message fill/send because workspace had not initialized. Completing the still-unsent question made one AI submission, not a retry of an AI result.",
+      "reply": "I could not verify the draft explanation, so I have not shown it. This does not mean you left information out. Would you like to start with what the test measures or how to read a printed reference range? You can choose a general explanation without sharing personal details, or ask our team to help.",
+      "receipt": {
+        "schema": "workflow-receipt-1",
+        "provider_attempts": 7,
+        "reserved_estimate_thb": 0,
+        "settled_estimate_thb": 0,
+        "cost_basis": "existing_ledger_estimate_not_provider_invoice",
+        "ledger_enabled": true,
+        "public_writer_sources": [
+          {
+            "id": "rs-p01",
+            "data_class": "synthetic_business",
+            "content_sha256": "0806c5cfb1c862c8c8c2a184bffdf5b3b8db58729863465cd350a5ef684d5120"
+          },
+          {
+            "id": "rs-p02",
+            "data_class": "synthetic_business",
+            "content_sha256": "60b5b26474d44d9ae5d29652a72d7540f2e84178d04ce4a417d17c229dff3fca"
+          },
+          {
+            "id": "rs-p03",
+            "data_class": "synthetic_business",
+            "content_sha256": "07a9be7b0329c78fbb9bddcd27c3d0d3df28f1d9e8bee9944d97582c81241bbf"
+          },
+          {
+            "id": "rs-p04",
+            "data_class": "synthetic_business",
+            "content_sha256": "bdcecc8938e00306388619a141b332d0685d49dcdf1fc6aec18e1b012a2e0e59"
+          },
+          {
+            "id": "rs-p05",
+            "data_class": "synthetic_business",
+            "content_sha256": "9f8528488d8aed57eb39ad9d1efa7ded0cadf192b1041bcc30c56cfb544604b8"
+          },
+          {
+            "id": "rs-p06",
+            "data_class": "synthetic_business",
+            "content_sha256": "1965d71787073f3263e3867bd82a3e6f01d0c530664a93e066dd7afddc1f171c"
+          },
+          {
+            "id": "rs-p07",
+            "data_class": "synthetic_business",
+            "content_sha256": "a366c63f488f63e6722f5fa5012e1628017c3b2ce1ae56ec2e6ae545acb69c4c"
+          },
+          {
+            "id": "rs-p08",
+            "data_class": "synthetic_business",
+            "content_sha256": "b4853234481fbcdb42ccff35a234d485c3ebbd7e254102eb47cd59f8d2a793f4"
+          },
+          {
+            "id": "rs-p09",
+            "data_class": "synthetic_business",
+            "content_sha256": "8b81b87393c2b67700b8cc4b76759daed60dddfa1cc15a25bcf67b297aef254c"
+          },
+          {
+            "id": "rs-p10",
+            "data_class": "synthetic_business",
+            "content_sha256": "e83d2959eb361ed6063d4ab787b41e0ee91d5ea49773bcd3c87f72705c94a4b0"
+          },
+          {
+            "id": "rs-p11",
+            "data_class": "synthetic_business",
+            "content_sha256": "2e09e25115d0c188094f8b6a8ddc63de2461d3bddabf3016153e73209f166c22"
+          },
+          {
+            "id": "rs-p12",
+            "data_class": "synthetic_business",
+            "content_sha256": "fabf440df3deb4380f99a469b9779620a6b89cf7e554e9f080ea6ebcecc6c813"
+          },
+          {
+            "id": "rs-p13",
+            "data_class": "synthetic_business",
+            "content_sha256": "6ca02d206544e141b30539135b287ffdcd9f120223e26a49d7d07c263d930691"
+          },
+          {
+            "id": "rs-p14",
+            "data_class": "synthetic_business",
+            "content_sha256": "2999b44cd656a6e90e6b875e62571b339c4633beca4e110e7ee9bda8ecd4787f"
+          },
+          {
+            "id": "rs-p15",
+            "data_class": "synthetic_business",
+            "content_sha256": "ca81429b991eb7377a3432aefdd2681ac0c6f68df9165ddb8ebcd1df2b714880"
+          },
+          {
+            "id": "rs-p16",
+            "data_class": "synthetic_business",
+            "content_sha256": "384e10eee66d086d60d9ccf5e92c66d23217e12ec3de812f8e3531ae57cf3744"
+          },
+          {
+            "id": "rs-p17",
+            "data_class": "synthetic_business",
+            "content_sha256": "050444324996769f2a479cd24352a6a417f3ef8cba7a86685d2156839031ef4e"
+          },
+          {
+            "id": "rs-p18",
+            "data_class": "synthetic_business",
+            "content_sha256": "0747e22f23d156716607c20ddbfe99b017e34acd66ba6573f98be3ff6e009eea"
+          },
+          {
+            "id": "rs-branches",
+            "data_class": "synthetic_business",
+            "content_sha256": "382c5ccbfe2bc51ea6609c4e727fe51bd6100361880bb2cdd4bad55930944684"
+          },
+          {
+            "id": "rs-policy",
+            "data_class": "synthetic_business",
+            "content_sha256": "1e6dad4e986fc6c95fc5b6d8222b6eb398785d335cb5b6da2d615dd9c3020f59"
+          },
+          {
+            "id": "siriraj-electrolytes-chloride-17",
+            "data_class": "public_reference",
+            "content_sha256": "76d7c9a0cb79b3bea800235f8fae86d75187a33f033cb3a67550d44ff7a9345a"
+          },
+          {
+            "id": "siriraj-electrolytes-sodium-15",
+            "data_class": "public_reference",
+            "content_sha256": "f62659e411ca62a5a87841105bf9f972d6080868fadf7d50ac58f5357363d31f"
+          },
+          {
+            "id": "siriraj-electrolytes-potassium-16",
+            "data_class": "public_reference",
+            "content_sha256": "0a96db7a3146ee26fdd3e23449cb51e2757f5911115c9be62d6e2e94d79ac423"
+          },
+          {
+            "id": "niddk-diabetes-tests",
+            "data_class": "public_reference",
+            "content_sha256": "0b0e0fee6282c1a8341c960325408a8584ce864d15e7a8c07c75c6cf28a1ce48"
+          },
+          {
+            "id": "mlp-blood-glucose",
+            "data_class": "public_reference",
+            "content_sha256": "9136cd1b538d5ee39819f1c9b3c818f469677d1473ba5c6ccadd23cd34a738d5"
+          },
+          {
+            "id": "siriraj-glucose-glucose-07",
+            "data_class": "public_reference",
+            "content_sha256": "ed3bd5c9c605f273314209d946cff994c2211249395826accae1b27e6bd28f00"
+          }
+        ]
+      },
+      "guest_cleanup": {
+        "requested": true,
+        "responseObserved": false
+      }
+    }
+  ],
+  "limits": [
+    "Separate two-question UX run; do not add to canonical20 score.",
+    "Guest cleanup beacon requested; erasure and cleanup response not verified.",
+    "Cost is existing ledger estimate, not provider invoice."
+  ]
+}

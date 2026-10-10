@@ -1,0 +1,48 @@
+{
+  "run_id": "live-coursework-b8e60ef-20261010",
+  "mode": "LIVE_DEPLOYED",
+  "candidate": "b8e60ef183c107b512332a010d007620961cf807",
+  "dataset": {
+    "dataset_id": "labclear-coursework",
+    "dataset_version": "1.0.0",
+    "dataset_digest": "63e5c85e93b93b67c69c6b5f20ae208260585f2b23b5aff066306fc1f3542511"
+  },
+  "expected_cases": 20,
+  "executed_cases": 20,
+  "automated_pass": 13,
+  "automated_fail": 4,
+  "execution_errors": 3,
+  "not_run": [],
+  "case_verdicts": {
+    "Q01": "PASS",
+    "Q02": "PASS",
+    "Q03": "PASS",
+    "Q04": "PASS",
+    "Q05": "PASS",
+    "Q06": "PASS",
+    "Q07": "NOT_APPLICABLE",
+    "Q08": "PASS",
+    "Q09": "PASS",
+    "Q10": "PASS",
+    "I01": "FAIL",
+    "I02": "NOT_APPLICABLE",
+    "I03": "FAIL",
+    "I04": "NOT_APPLICABLE",
+    "I05": "FAIL",
+    "S01": "PASS",
+    "S02": "PASS",
+    "S03": "PASS",
+    "S04": "FAIL",
+    "S05": "PASS"
+  },
+  "settled_estimate_thb": 0.0,
+  "provider_attempts": 105,
+  "stop_reason": null,
+  "coverage_limitations": [
+    "No seeded private customer/provider canaries on shared deployment",
+    "Provider invoices and global remaining balance are not accessible to this guest",
+    "Keyword and row checks require human review; not proof of clinical accuracy",
+    "Current deployed configuration, not isolated LIVE_FREE or A/B/C certification"
+  ],
+  "full_frozen_rubric_certified": false
+}

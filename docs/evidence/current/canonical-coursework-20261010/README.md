@@ -53,3 +53,8 @@ The next candidate rejects copied answer-schema placeholders using the existing 
 For Typhoon OCR, a generic parser accepts only complete Markdown tables with all five explicit columns. It copies cells without a second language model rearranging them; unsupported or ambiguous tables retain the existing model path. Both document safety checks and human confirmation remain mandatory. Only the no-flag marker is normalized to an empty flag; negative values, unit dashes, full references and unknown cells remain as read. No clinical vocabulary, frozen images, expected values or benchmark case IDs enter production extraction. Prompt changes request separate flag/reference columns; they are not evidence that live OCR is fixed.
 
 These changes require a new candidate SHA and a fresh complete final live run. Do not combine their focused test results with passes from21b137b or label the existing run20/20. The original bundle/source package labelled21b137b remains an immutable record of that candidate.
+
+
+## Final deployed verification on b8e60ef
+
+The previously pending deployment and full run are now complete. See [LIVE-B8E60EF.md](LIVE-B8E60EF.md) for 13 automated PASS, 4 FAIL, 3 execution errors across all20 cases, the two separate UX outcomes, manual content findings, costs, and remaining blockers. Earlier pending/approval statements above are historical, not the current status. No score or case definition was relaxed.

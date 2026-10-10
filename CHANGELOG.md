@@ -126,3 +126,8 @@ Added privacy-preserving per-request ledger/source receipts and a complete deplo
 ### Fixes from the complete live coursework baseline
 
 The deployed21b137b canonical run completed11/20 automated passes, with eight failures and one execution error. Added bounded rejection of answer-schema echoes, generic OCR table column preservation, concise report-output instructions and narrow checks for observed privacy/diagnostic regressions. No frozen benchmark criteria, provider settings, token budget, spending history or quotas changed. Detailed baseline evidence and remaining validation limits are in docs/evidence/current/canonical-coursework-20261010.
+
+
+## 2026-10-10 — Deployed b8e60ef evidence
+
+Recorded exact-SHA readiness, complete live20 (13 PASS / 4 FAIL / 3 errors), two separate UX questions, receipt totals, and manual grounding findings. Documentation only; no new production revision, provider calls, key/budget changes or acceptance claims. See docs/evidence/current/canonical-coursework-20261010/LIVE-B8E60EF.md.
