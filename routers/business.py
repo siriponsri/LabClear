@@ -54,7 +54,10 @@ class ConfirmReport(Strict):
     collected_date:str=Field(default='',max_length=10)
     same_person_confirmed:bool=False
 class ReportSelection(Strict):report_id:str
-class TicketInput(Strict):summary:str=Field(min_length=1,max_length=1000)
+class TicketInput(Strict):
+    summary:str=Field(min_length=1,max_length=1000)
+    selected_message_ids:list[str]=Field(default_factory=list,max_length=100)
+    selected_booking_ids:list[str]=Field(default_factory=list,max_length=10)
 class GuestClose(Strict):
     guest_token:str=Field(min_length=20,max_length=100)
     csrf:str=Field(min_length=20,max_length=100)
@@ -141,6 +144,10 @@ def bump_mode(c,mode):
     d=c['data'];d['mode']=mode;d['version']=d.get('version',0)+1;d['mode_epoch']=d.get('mode_epoch',d['version']-1)+1
     d['busy_until']=0
 
+def ensure_chat_not_closed(data):
+    if data.get('mode')=='closed':
+        raise ConversationError('conversation_closed','This conversation is closed. Start a new chat to continue.',409)
+
 def sync_ticket_epoch(t,c):
     t['data']['mode_epoch']=c['data'].get('mode_epoch',c['data'].get('version',0))
     t['data']['conversation_version']=c['data'].get('version',0)
@@ -191,11 +198,27 @@ def booking_create(tx,owner,payload):
     ops.notify_staff(tx,payload.branch_id,'New appointment request',f'{names} · {payload.date} {payload.time}',id,'/staff?view=operations')
     return row
 
-def ticket_create(tx,owner,summary,pause_bot=True,extra=None):
+def validate_handoff_selection(tx,owner,c,message_ids,booking_ids):
+    if len(message_ids)!=len(set(message_ids)) or len(booking_ids)!=len(set(booking_ids)):
+        raise ConversationError('handoff_selection_invalid','Refresh and choose each item only once.',422)
+    requested=set(message_ids)
+    available={m.get('id'):m for m in c['data'].get('messages',[]) if m.get('id') and m.get('role') in {'user','assistant'}}
+    if not requested.issubset(available):
+        raise ConversationError('handoff_selection_invalid','One or more selected messages are no longer available in this chat.',422)
+    if any((row:=tx.get(booking_id)) is None or row['owner']!=owner or row['kind']!='booking' for booking_id in booking_ids):
+        raise ConversationError('handoff_selection_invalid','One or more selected appointments are unavailable.',422)
+    selected=[m['id'] for m in c['data'].get('messages',[]) if m.get('id') in requested]
+    return selected,list(booking_ids)
+
+def ticket_create(tx,owner,summary,pause_bot=True,extra=None,selected_message_ids=None,selected_booking_ids=None):
     if owner.startswith('guest_'):raise ConversationError('account_required','Sign in before sending a request to our team.',409)
-    c=conversation(tx,owner);existing=next((x for x in tx.find('ticket',owner) if x['state']!='closed'),None)
+    c=conversation(tx,owner)
+    selected_message_ids,selected_booking_ids=validate_handoff_selection(tx,owner,c,selected_message_ids or [],selected_booking_ids or [])
     chat_id=c['data'].get('chat_id')
     if not chat_id:raise ConversationError('chat_binding_missing','This request cannot be created.',409)
+    active_states={'waiting','staff','resume_pending'}
+    existing=next((x for x in tx.find('ticket',owner) if x['state']!='closed' and
+                   (x['data'].get('chat_id')==chat_id or x['state'] in active_states)),None)
     latest=tx.find('booking',owner)
     branch=(extra or {}).get('branch_id') or (latest[-1]['branch'] if latest else '')
     if existing and (existing['data'].get('chat_id') != chat_id):
@@ -214,6 +237,9 @@ def ticket_create(tx,owner,summary,pause_bot=True,extra=None):
         requeued=bool(existing)
         bump_mode(c,'waiting');tx.put(c['id'],'conversation',owner,c['data'])
     ticket_data={**(extra or {}),'summary':summary,'assigned_to':'','chat_id':chat_id,
+                 'shared_message_ids':selected_message_ids,'shared_booking_ids':selected_booking_ids,
+                 'sharing_notice_version':'handoff-selection-v1',
+                 'sharing_selected_at':time.time() if selected_message_ids or selected_booking_ids else 0,
                  'mode_epoch':c['data'].get('mode_epoch',c['data'].get('version',0)),
                  'conversation_version':c['data'].get('version',0),'assignment_epoch':0}
     if requeued:
@@ -221,12 +247,22 @@ def ticket_create(tx,owner,summary,pause_bot=True,extra=None):
                      'chat_id':chat_id,'mode_epoch':c['data'].get('mode_epoch',c['data'].get('version',0)),
                      'conversation_version':c['data'].get('version',0),
                      'assignment_epoch':existing['data'].get('assignment_epoch',0)+1}
+        ticket_data['shared_message_ids']=list(dict.fromkeys([*existing['data'].get('shared_message_ids',[]),*selected_message_ids]))
+        ticket_data['shared_booking_ids']=list(dict.fromkeys([*existing['data'].get('shared_booking_ids',[]),*selected_booking_ids]))
+        if selected_message_ids or selected_booking_ids:
+            ticket_data['sharing_notice_version']='handoff-selection-v1';ticket_data['sharing_selected_at']=time.time()
         row=tx.put(existing['id'],'ticket',owner,ticket_data,'waiting',existing['branch'] or branch)
     else:
         row=existing or tx.put('ticket_'+secrets.token_hex(12),'ticket',owner,ticket_data,'waiting',branch)
     if existing and extra:
         if not requeued:
             existing['data'].update(extra);existing['data']['summary']=summary;row=tx.put(existing['id'],'ticket',owner,existing['data'],existing['state'],existing['branch'] or branch)
+    if existing and not requeued and (selected_message_ids or selected_booking_ids):
+        data=row['data']
+        data['shared_message_ids']=list(dict.fromkeys([*data.get('shared_message_ids',[]),*selected_message_ids]))
+        data['shared_booking_ids']=list(dict.fromkeys([*data.get('shared_booking_ids',[]),*selected_booking_ids]))
+        data['sharing_notice_version']='handoff-selection-v1';data['sharing_selected_at']=time.time()
+        row=tx.put(row['id'],'ticket',owner,data,row['state'],row['branch'] or branch)
     tx.audit(owner,'handoff.requested',row['id'])
     if not existing or requeued:ops.notify_staff(tx,row['branch'],'New customer request','A customer requested help.',row['id'],'/staff')
     return row
@@ -380,6 +416,7 @@ async def turn(owner,message,retry_id='',page=None,emit=None,reply_to=''):
     def prepare(tx):
         nonlocal message
         c=conversation(tx,owner);d=c['data']
+        ensure_chat_not_closed(d)
         if d.get('mode')=='resume_pending':
             raise ConversationError('resume_choice_required','Choose whether to continue with the assistant or keep talking with the team.',409)
         if d.get('busy_until',0)>time.time():raise ConversationError('busy','Please wait for the previous message.',409)
@@ -574,7 +611,7 @@ def change_booking(id:str,body:BookingChange,request:Request):
             result=tx.put(id,'booking',u['id'],d,'cancelled',b['branch']);tx.audit(u['id'],'booking.cancel',id)
             ops.notify_staff(tx,b['branch'],'Appointment request withdrawn',f"{d['date']} {d['time']}",id);return result
         if d.get('organization') or body.operation=='refund_request' or dt-datetime.now(TZ)<timedelta(hours=24):
-            return ticket_create(tx,u['id'],f'{body.operation} request for {id}; staff review required.',pause_bot=False)
+            return ticket_create(tx,u['id'],f'{body.operation} request for {id}; staff review required.',selected_booking_ids=[id])
         if body.operation=='reschedule':
             replacement=booking_create(tx,u['id'],Book(package_ids=d['package_ids'],branch_id=b['branch'],date=body.date,time=body.time,idempotency_key='reschedule-'+id+'-'+body.date+'-'+body.time))
             # Move the existing appointment only; keep its payment/order identity.
@@ -589,7 +626,7 @@ def change_booking(id:str,body:BookingChange,request:Request):
 
 @router.post('/handoffs')
 def handoff(body:TicketInput,request:Request):
-    with db.transaction() as tx:u,_=session_row(tx,request);return ticket_create(tx,u['id'],body.summary)
+    with db.transaction() as tx:u,_=session_row(tx,request);return ticket_create(tx,u['id'],body.summary,selected_message_ids=body.selected_message_ids,selected_booking_ids=body.selected_booking_ids)
 
 @router.post('/handoffs/{id}/resume')
 def handoff_resume(id:str,body:ResumeChoice,request:Request):
@@ -718,6 +755,7 @@ async def read_into_chat(owner,raws,names,question,sample,emit):
     if execution.current():execution.current().turn_id=reading
     def begin(tx):
         c=conversation(tx,owner);d=c['data']
+        ensure_chat_not_closed(d)
         if d['mode']!='bot':raise ConversationError('staff_active','Our team has this conversation. Add the report on My reports instead.',409)
         if d.get('busy_until',0)>time.time():raise ConversationError('busy','Please wait for the previous message.',409)
         version=d['version'];d.update(busy_until=time.time()+_hold(),turn_id=reading);tx.put(c['id'],'conversation',owner,d)
@@ -778,7 +816,9 @@ async def chat_report_confirm(body:ReportCardConfirm,request:Request):
     """One click: the values are right and the report belongs to this customer. Then answer."""
     provider_authorize(request)
     def confirm(tx):
-        u,_=session_row(tx,request);c=conversation(tx,u['id']);d=c['data'];card=_card(d,body.message_id)
+        u,_=session_row(tx,request);c=conversation(tx,u['id']);d=c['data'];ensure_chat_not_closed(d)
+        if d.get('mode')=='resume_pending':raise ConversationError('resume_choice_required','Choose whether to continue with the assistant or keep talking with the team.',409)
+        card=_card(d,body.message_id)
         if card.get('state')!='draft':raise ConversationError('already_confirmed','This report was already confirmed.',409)
         if d.get('busy_until',0)>time.time():raise ConversationError('busy','Please wait for the previous message.',409)
         r=tx.own(card['report_id'],u['id'],'report')
@@ -868,7 +908,22 @@ def ticket_view(id:str,request:Request):
     with db.transaction() as tx:
         u,t=staff_ticket(tx,request,id)
         if t['data'].get('assigned_to') not in ['',u['id']] and u['data']['role']!='manager':raise ConversationError('assigned','This case belongs to another staff member.',403)
-        return {'ticket':t,'conversation':ticket_conversation(tx,t)['data'],'bookings':tx.find('booking',t['owner'])}
+        source=ticket_conversation(tx,t)['data']
+        can_read=t['state']=='staff' and (t['data'].get('assigned_to')==u['id'] or u['data']['role']=='manager')
+        allowed=set(t['data'].get('shared_message_ids',[]))
+        messages=[]
+        if can_read:
+            for message in source.get('messages',[]):
+                if message.get('role')!='staff' and message.get('id') not in allowed:continue
+                safe={key:message[key] for key in ('id','role','content','at','kind','question') if key in message}
+                if message.get('attachments'):
+                    safe['attachments']=[{'kind':str(a.get('kind','file'))[:20]} for a in message.get('attachments',[]) if isinstance(a,dict)]
+                messages.append(safe)
+        conversation_view={key:source[key] for key in ('chat_id','version','mode_epoch','mode','updated') if key in source}
+        conversation_view['messages']=messages
+        booking_ids=set(t['data'].get('shared_booking_ids',[])) if can_read else set()
+        bookings=[b for b in tx.find('booking',t['owner']) if b['id'] in booking_ids]
+        return {'ticket':t,'conversation':conversation_view,'bookings':bookings}
 
 @router.post('/staff/tickets/{id}/state')
 def ticket_state(id:str,body:TicketChange,request:Request):
@@ -883,7 +938,7 @@ def ticket_state(id:str,body:TicketChange,request:Request):
         if body.state=='staff':t['data']['assigned_to']=u['id']
         elif body.state in ('waiting','closed'):t['data']['assigned_to']=''
         t['data']['assignment_epoch']=t['data'].get('assignment_epoch',0)+1
-        mode={'staff':'staff','waiting':'waiting','resume_pending':'resume_pending','closed':'bot'}[body.state]
+        mode={'staff':'staff','waiting':'waiting','resume_pending':'resume_pending','closed':'closed'}[body.state]
         bump_mode(c,mode)
         sync_ticket_epoch(t,c)
         tx.put(id,'ticket',t['owner'],t['data'],body.state,t['branch']);tx.put(c['id'],'conversation',t['owner'],c['data']);tx.audit(u['id'],'handoff.'+body.state,id)
@@ -918,7 +973,9 @@ def staff_send(id:str,body:StaffMessage,request:Request):
 @router.post('/staff/bookings/{id}/settle')
 def settle(id:str,request:Request):
     with db.transaction() as tx:
-        u=staff(tx,request);b=tx.get(id)
+        u=staff(tx,request)
+        if u['data']['role']!='manager':raise ConversationError('forbidden','Manager access required.',403)
+        b=tx.get(id)
         if not b or b['kind']!='booking' or (u['data']['role']!='manager' and b['branch']!=u['data'].get('branch')):raise ConversationError('not_found','Booking unavailable.',404)
         if b['data']['payment_method']!='center' or b['state']!='confirmed':raise ConversationError('invalid_state','This order cannot be settled at the center.',409)
         if b['data']['payment_status']=='paid':return {'ok':True,'receipt_id':b['data'].get('receipt_id','')}

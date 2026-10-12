@@ -45,7 +45,8 @@ Node.js at runtime. Business data is stored in one encrypted table: SQLite local
 hosted. AI providers are called over HTTPS from inside the same service.
 
 Details, a component table and a walkthrough of one chat message are in
-[docs/architecture.md](docs/architecture.md).
+[docs/architecture.md](docs/architecture.md). The synthetic booking, support handoff and
+manager-only simulated center-payment path is shown in the [business workflow diagram](docs/assets/business-flow.svg).
 
 ## Quick start
 
@@ -117,6 +118,38 @@ roles, typed tools, runtime skills, checks, reviewer) with offline provider doub
 transport, so answers are stand-ins, not model output. `UAT_FLAGS=off` turns the optional feature
 flags off. Never deploy this script.
 
+## Presentation
+
+The final presentation is the Thai-first 16:9 Reveal.js deck at
+[`presentation/index.html`](presentation/index.html). It contains 10 timed core slides (8:30 planned
+speaking time), a 0:30 transition/demo reserve, and five appendix slides. The deck is an HTML
+deliverable; there is no PPTX authoring backend. Its print output is a static fallback, not the primary
+presentation format.
+
+Serve the repository root so the deck can load its local fonts, screenshots, and pinned Reveal.js
+files:
+
+```bash
+python -m http.server 8000
+```
+
+Open <http://127.0.0.1:8000/presentation/>. The workflow diagram and AntV infographic are linked
+from the handoff slide. The infographic uses the locally bundled AntV Infographic 0.2.20 library and
+can export SVG; the files and test results are documented in [`presentation/DELIVERY_REPORT.md`](presentation/DELIVERY_REPORT.md).
+
+To reproduce the browser QA run on Windows PowerShell:
+
+```powershell
+  $env:PRESENTATION_EVIDENCE_OUT = "docs/evidence/current/presentation-html-final-20261012-release"
+node scripts/verify_html_deck.mjs
+```
+
+The run uses synthetic/local data only and makes no API, LLM, OCR, payment, or deployment requests.
+The HTML contains editable source text and diagrams; the static PDF is only a fallback export.
+See the [`theme audit`](presentation/THEME_AUDIT.md),
+[`storyboard`](presentation/STORYBOARD_TH.md), [`source map`](presentation/SOURCE_MAP.md), and
+[`QA report`](presentation/QA_REPORT.md).
+
 ## Deployment
 
 The repository deploys as a single Render web service named `labclear` from the
@@ -134,8 +167,10 @@ pip install -r requirements-dev.txt
 python scripts/offline_check.py pytest -q
 ```
 
-The Python suite (371 tests at 4.0.0-rc3) runs with isolated storage, no `.env` and outbound
-sockets denied. Browser suites use Playwright (`npm install`, then `npx playwright install chromium`):
+The offline Python suite runs with isolated storage, no `.env` and outbound sockets denied. The
+latest recorded run on candidate `73d24b9` plus its dirty worktree passed 547 tests with one
+deprecation warning; counts can change between revisions. Browser suites use Playwright
+(`npm install`, then `npx playwright install chromium`):
 
 | Suite | Command |
 |---|---|
@@ -144,7 +179,84 @@ sockets denied. Browser suites use Playwright (`npm install`, then `npx playwrig
 | TH/EN language audit | start `scripts/dev_mock_api.py`, then `node tests/browser/i18n_audit.mjs` |
 | Chat recovery (gateway pages, cut streams) | `TEST_PYTHON=.venv/bin/python node tests/browser/resilience.cjs` |
 
+On Windows PowerShell, set the Python path with PowerShell environment syntax before running a
+browser suite:
+
+```powershell
+$env:TEST_PYTHON = ".venv\Scripts\python.exe"
+npm run uat
+```
+
 More detail: [docs/testing.md](docs/testing.md).
+
+## Evidence classes and operating boundaries
+
+LabClear uses separate evidence classes. Do not combine their results into a production or
+clinical claim:
+
+| Class | What it proves | What it does not prove |
+|---|---|---|
+| Offline / mock | Real local UI, API, storage, permissions and state transitions with provider doubles | Live model or OCR quality, clinical accuracy, uptime, demand or production retention |
+| Authorized live smoke | Connectivity and response handling for the explicitly recorded synthetic requests | A benchmark score, free entitlement, absence of provider cost, or clinical validation |
+| Production / hosted | Only the exact deployed revision and checks recorded for that revision | Behavior of an unrecorded dirty worktree or a different deployment |
+
+The current GL-05 checkpoint is tracked in
+[`docs/evidence/current/gl05-settlement-role-fence-20261011/`](docs/evidence/current/gl05-settlement-role-fence-20261011/).
+Each browser run contains case IDs, expected/actual status, fresh screenshot hashes, candidate
+identity and environment notes. A suite with any `FAIL`, `BLOCKED` or missing evidence is not a
+passing release gate.
+
+### Booking, handoff and simulated payment
+
+- A customer request starts as awaiting confirmation. Staff may confirm or decline it; this is
+  not a booking or payment authorization by itself.
+- The center-payment action is a simulator-only event. The server permits it to `manager` only
+  after the appointment is confirmed. `staff` and `clinical` receive `403` before payment,
+  receipt, audit or customer-notification mutation.
+- Support handoff requires explicit customer selection of messages or bookings. Unassigned staff
+  views do not receive unselected history; a staff member takes over before replying. The customer
+  can resume the assistant or leave the thread closed.
+- Prices, packages, centers, hospital offers, payment flows and receipts are synthetic demo data.
+  No bank transfer, card charge or real settlement is performed by the simulator.
+
+### Maintainer verification
+
+Run the offline suite before changing providers, credentials or deployment settings:
+
+```bash
+python scripts/offline_check.py pytest -q
+```
+
+For a fresh browser evidence bundle, use an isolated output directory and an unused loopback
+port. The browser fixture disables outbound provider networking and uses temporary SQLite storage.
+On macOS/Linux:
+
+```bash
+UAT_OUT=docs/evidence/current/browser-uat-new-run UI_TEST_PORT=8176 \
+  TEST_PYTHON=.venv/bin/python node tests/browser/uat.cjs
+```
+
+On Windows PowerShell:
+
+```powershell
+$env:UAT_OUT = "docs/evidence/current/browser-uat-new-run"
+$env:UI_TEST_PORT = "8176"
+$env:TEST_PYTHON = ".venv\Scripts\python.exe"
+node tests/browser/uat.cjs
+```
+
+Record the exact command, commit, dirty-worktree fingerprint, screenshot hashes and any failure
+screenshots. Do not reuse a screenshot from an earlier run as evidence for a new candidate.
+
+The diagram source is [`scripts/build_diagrams.py`](scripts/build_diagrams.py). Regenerate the
+SVG and PNG assets with:
+
+```bash
+python scripts/build_diagrams.py
+```
+
+The generator runs its PNG export through the repository's local Playwright installation with
+network access disabled. Inspect the generated image before describing it as verified.
 
 ## Evaluation and benchmark
 
@@ -190,7 +302,7 @@ deterministic fault cases, not uptime or latency on Render.
 | `scripts/` | Start, staff setup, i18n build, benchmark, scoring and maintenance scripts |
 | `tests/` | Python tests, benchmark doubles, browser suites |
 | `docs/` | Documentation, diagrams, evidence, and the [reports](docs/report/README.md) (Final Project report in Word; business and architecture reports in PDF) |
-| `presentation/` | reveal.js slides |
+| `presentation/` | Final Thai-first HTML slide deck, storyboard, theme/source audits, speaker guide, and interactive workflow companions; [delivery report](presentation/DELIVERY_REPORT.md) and [Playwright QA](presentation/QA_REPORT.md). |
 | `data/` | Local SQLite database and key (git-ignored) |
 
 ## Documentation

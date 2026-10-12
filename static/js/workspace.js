@@ -274,7 +274,11 @@
   }
   // The first-visit guide (the lab-report-first journey) comes back for every new chat.
   const WELCOME = document.querySelector('#messages .welcome')?.cloneNode(true) || el('div', null, 'welcome');
-  function attachReport() { if (!planOf().can_read) return upgradeDialog('Your free AI report reading has been used. Synthetic samples stay free.'); fileTarget = 'chat'; $('report-file').click(); }
+  function attachReport() {
+    if (state?.conversation.mode === 'closed') return;
+    if (!planOf().can_read) return upgradeDialog('Your free AI report reading has been used. Synthetic samples stay free.');
+    fileTarget = 'chat'; $('report-file').click();
+  }
   document.addEventListener('click', e => {
     if (e.target.closest('[data-attach-report]')) attachReport();
     else if (e.target.closest('[data-try-sample]')) demoPicker({ chat: true }).catch(x => notice(x.message, 'bad'));
@@ -300,11 +304,14 @@
     $('staff-request').hidden = mode !== 'bot';
     $('staff-request').disabled = mode !== 'bot';
     const handoff = $('handoff-state'); handoff.replaceChildren();
-    $('message').disabled = mode === 'resume_pending';
-    $('send').disabled = mode === 'resume_pending';
-    $('message').placeholder = mode === 'resume_pending' ? 'Choose an option above to continue this chat.' : 'Ask about lab results, packages or booking';
+    const closed = mode === 'closed', locked = closed || mode === 'resume_pending';
+    $('message').disabled = locked;
+    $('send').disabled = locked;
+    for (const id of ['attach', 'add-report', 'demo-open']) if ($(id)) $(id).disabled = closed;
+    $('message').placeholder = closed ? 'Your request was resolved' : mode === 'resume_pending' ? 'Choose an option above to continue this chat.' : 'Ask about lab results, packages or booking';
     if (mode === 'waiting') handoff.append(document.createTextNode('Your request is queued for our team; the assistant is paused.'));
     else if (mode === 'staff') handoff.append(document.createTextNode('A team member is replying; the assistant is paused.'));
+    else if (closed) handoff.append(document.createTextNode('Your request was resolved'), document.createTextNode(' '), button('New chat', () => newChat()));
     else if (mode === 'resume_pending') {
       handoff.append(document.createTextNode('Our team asked whether you want to continue with the assistant.'));
       const ticket = state.tickets.find(t => t.data.chat_id === state.conversation.chat_id && t.state === 'resume_pending');
@@ -461,6 +468,7 @@
     const files = draft.files.slice(), sample = draft.sample, withReport = files.length > 0 || !!sample;
     if (busy || toneSaving || (!text && !withReport)) return;
     if (view !== 'chat') await navigate('chat');
+    if (state?.conversation.mode === 'closed') { notice('Your request was resolved', 'bad'); return; }
     if (state?.conversation.mode === 'resume_pending') { notice('Choose whether to continue with the assistant or keep talking with the team.', 'bad'); return; }
     const human = state && state.conversation.mode !== 'bot';
     if (withReport && human) { notice('Our team has this conversation. Add the report on My reports instead.', 'bad'); return; }
@@ -512,6 +520,7 @@
   /* The values read from a report sent in the chat. One click confirms them; nothing is
      explained or added to the dashboard before that. */
   function reportCard(m, last, interactive = true) {
+    if (['closed', 'resume_pending'].includes(state?.conversation?.mode)) interactive = false;
     const c = el('div', null, 'report-card ' + (m.state || 'draft')), head = el('div', null, 'rc-head');
     head.append(el('strong', m.state === 'discarded' ? 'Report discarded' : 'Values read from your report'),
       m.state === 'confirmed' ? badge('Confirmed by you', 'ok') : m.state === 'discarded' ? badge('Not used', 'neutral') : badge('Please check', 'warn'));
@@ -682,8 +691,38 @@
     if (!user?.registered) return requireAccount('Sign in to send a request to our team. This temporary chat will be discarded.');
     const form = el('form', null, 'form-grid'), f = field('How can our team help?', 'textarea', typeof prefill === 'string' ? prefill : '');
     f.input.required = true; f.input.maxLength = 1000;
-    form.append(f.wrap, el('p', 'Your conversation is shared with the service team and the assistant pauses until they reply or hand it back. Urgent health concerns should not wait in this queue.', 'small muted'),
-      button('Send to our team', async () => { if (!form.reportValidity()) return; await post('/handoffs', { summary: f.input.value }); closeModal(); await refresh(); notice('Your request is queued for our team.'); }, 'btn primary'));
+    const messageChoices = el('fieldset', null, 'form-grid'), messageList = el('div', null, 'stack-sm');
+    messageChoices.append(el('legend', 'Chat messages to share (optional)'), el('p', 'Only the messages you select will be shown to the team. Other chat history stays private.', 'small muted'));
+    const shareable = (state?.conversation?.messages || []).filter(m => m.id && ['user', 'assistant'].includes(m.role)).slice(-20);
+    shareable.forEach(m => {
+      const label = el('label', null, 'check'), checkbox = el('input');
+      checkbox.type = 'checkbox'; checkbox.dataset.shareMessageId = m.id;
+      label.append(checkbox, el('span', `${m.role === 'user' ? 'You' : 'Assistant'}: ${String(m.content || '').replace(/\s+/g, ' ').slice(0, 140)}`));
+      messageList.append(label);
+    });
+    if (!shareable.length) messageList.append(el('p', 'No earlier chat messages will be shared.', 'small muted'));
+    messageChoices.append(messageList);
+    const bookingChoices = el('fieldset', null, 'form-grid'), bookingList = el('div', null, 'stack-sm');
+    bookingChoices.append(el('legend', 'Appointments to share (optional)'), el('p', 'Unselected appointment details stay private.', 'small muted'));
+    const bookings = (state?.bookings || []).slice(-10);
+    bookings.forEach(b => {
+      const label = el('label', null, 'check'), checkbox = el('input'), d = b.data || {};
+      checkbox.type = 'checkbox'; checkbox.dataset.shareBookingId = b.id;
+      const packageNames = (d.items || []).map(item => item.name).join(' + ');
+      label.append(checkbox, el('span', `${packageNames || 'Appointment'} · ${d.date || ''} ${d.time || ''}`));
+      bookingList.append(label);
+    });
+    if (!bookings.length) bookingList.append(el('p', 'No appointments to share.', 'small muted'));
+    bookingChoices.append(bookingList);
+    const noticeText = el('p', 'The request note is sent as written. The assistant pauses while the team replies. Urgent health concerns should not wait in this queue.', 'small muted');
+    form.append(f.wrap, messageChoices, bookingChoices, noticeText,
+      button('Send to our team', async () => {
+        if (!form.reportValidity()) return;
+        const selected_message_ids = [...form.querySelectorAll('[data-share-message-id]:checked')].map(x => x.dataset.shareMessageId);
+        const selected_booking_ids = [...form.querySelectorAll('[data-share-booking-id]:checked')].map(x => x.dataset.shareBookingId);
+        await post('/handoffs', { summary: f.input.value, selected_message_ids, selected_booking_ids });
+        closeModal(); await refresh(); notice('Your request is queued for our team.');
+      }, 'btn primary'));
     form.onsubmit = e => e.preventDefault();
     modal('Talk to our team', form);
   }
@@ -986,7 +1025,10 @@
   }
   if (!STAFF_MODE) {
     $('add-report').onclick = attachReport;
-    $('demo-open').onclick = () => demoPicker({ chat: true }).catch(e => notice(e.message, 'bad'));
+    $('demo-open').onclick = () => {
+      if (state?.conversation.mode === 'closed') return;
+      demoPicker({ chat: true }).catch(e => notice(e.message, 'bad'));
+    };
   }
   $('report-file').onchange = async () => {
     const files = [...$('report-file').files], target = fileTarget; fileTarget = 'reports'; if (!files.length) return;
@@ -1291,11 +1333,11 @@
           n.onsubmit = e => e.preventDefault(); modal('Decline appointment request', n);
         }, 'btn sm danger'));
     }
-    if (b.state === 'confirmed' && d.payment_status === 'pending' && d.payment_method === 'center' && !d.active_txn)
-      act.append(button('Record payment at center', () => {
-        const n = el('div', null, 'stack'); n.append(el('p', `Confirm you received ${money(d.total_thb)} for this simulated appointment. This creates an auditable demo receipt.`),
-          button('Confirm receipt', async () => { await post('/staff/bookings/' + b.id + '/settle'); closeModal(); notice('Payment recorded.'); await after(); }, 'btn primary'));
-        modal('Record center payment', n);
+    if (isManager() && b.state === 'confirmed' && d.payment_status === 'pending' && d.payment_method === 'center' && !d.active_txn)
+      act.append(button('Record simulated receipt', () => {
+        const n = el('div', null, 'stack'); n.append(el('p', `Confirm the simulated ${money(d.total_thb)} receipt for this appointment. No real money moves.`),
+          button('Confirm simulated receipt', async () => { await post('/staff/bookings/' + b.id + '/settle'); closeModal(); notice('Simulated receipt recorded.'); await after(); }, 'btn primary'));
+        modal('Record center receipt (simulation)', n);
       }));
     if (isManager() && d.payment_status === 'paid')
       act.append(button('Approve full refund', () => {

@@ -131,7 +131,14 @@ async function slides(browser) {
   await page.waitForFunction(() => window.Reveal && window.Reveal.isReady());
   await page.evaluate(() => document.fonts.ready);
   await page.waitForTimeout(800);
-  await page.pdf({ path: out, width: "1280px", height: "720px", printBackground: true, preferCSSPageSize: true });
+  await page.pdf({
+    path: out,
+    width: "1280px",
+    height: "720px",
+    margin: { top: "0", right: "0", bottom: "0", left: "0" },
+    printBackground: true,
+    preferCSSPageSize: true
+  });
   await page.close();
   console.log("Wrote", path.relative(root, out));
 }

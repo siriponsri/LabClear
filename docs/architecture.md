@@ -4,7 +4,8 @@ LabClear 4.0.0-rc3 is one Python web service. It serves the public website, the 
 at `/app`, the service desk at `/staff` and a JSON API under `/api/business`. All AI work runs inside
 the same service and calls external model providers over HTTPS.
 
-Diagrams: [system architecture](assets/architecture.svg) and [one chat message](assets/message-flow.svg).
+Diagrams: [system architecture](assets/architecture.svg), [one chat message](assets/message-flow.svg),
+and the [business workflow](assets/business-flow.svg).
 
 ## Runtime
 

@@ -1,0 +1,459 @@
+{
+  "started_at_utc": "2026-10-12T05:02:21.518875+00:00",
+  "candidate_head": "73d24b9cc4281b74829b63603786427d14cbe5c7",
+  "worktree": {
+    "dirty_path_count": 64,
+    "status_sha256": "822d6398fd895e089e838c5e302df23c2517c9d95b0b5173a276ce599d6f4ecb"
+  },
+  "environment": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "python": "3.12.10",
+    "pypdfium2": "5.14.0",
+    "pillow": "12.3.0"
+  },
+  "renderer": "pypdfium2",
+  "reports": {
+    "business": {
+      "source": "docs/report/LabClear_Business_Report_TH.pdf",
+      "bytes": 403289,
+      "sha256": "0b5d4ff49628c5c0348f259f35d9b9a617b8a5ba09d3abe8b95941234a0039b7",
+      "signature": "%PDF-",
+      "page_count": 13,
+      "pages": [
+        {
+          "page": 1,
+          "text_characters": 2458,
+          "has_thai_text": true,
+          "replacement_glyphs": 0,
+          "image_objects": 0
+        },
+        {
+          "page": 2,
+          "text_characters": 2671,
+          "has_thai_text": true,
+          "replacement_glyphs": 0,
+          "image_objects": 0
+        },
+        {
+          "page": 3,
+          "text_characters": 2537,
+          "has_thai_text": true,
+          "replacement_glyphs": 0,
+          "image_objects": 0
+        },
+        {
+          "page": 4,
+          "text_characters": 2353,
+          "has_thai_text": true,
+          "replacement_glyphs": 0,
+          "image_objects": 0
+        },
+        {
+          "page": 5,
+          "text_characters": 1850,
+          "has_thai_text": true,
+          "replacement_glyphs": 0,
+          "image_objects": 0
+        },
+        {
+          "page": 6,
+          "text_characters": 2458,
+          "has_thai_text": true,
+          "replacement_glyphs": 0,
+          "image_objects": 0
+        },
+        {
+          "page": 7,
+          "text_characters": 2062,
+          "has_thai_text": true,
+          "replacement_glyphs": 0,
+          "image_objects": 0
+        },
+        {
+          "page": 8,
+          "text_characters": 2674,
+          "has_thai_text": true,
+          "replacement_glyphs": 0,
+          "image_objects": 0
+        },
+        {
+          "page": 9,
+          "text_characters": 2716,
+          "has_thai_text": true,
+          "replacement_glyphs": 0,
+          "image_objects": 0
+        },
+        {
+          "page": 10,
+          "text_characters": 2918,
+          "has_thai_text": true,
+          "replacement_glyphs": 0,
+          "image_objects": 0
+        },
+        {
+          "page": 11,
+          "text_characters": 2133,
+          "has_thai_text": true,
+          "replacement_glyphs": 0,
+          "image_objects": 0
+        },
+        {
+          "page": 12,
+          "text_characters": 2171,
+          "has_thai_text": true,
+          "replacement_glyphs": 0,
+          "image_objects": 0
+        },
+        {
+          "page": 13,
+          "text_characters": 1962,
+          "has_thai_text": true,
+          "replacement_glyphs": 0,
+          "image_objects": 0
+        }
+      ]
+    },
+    "architecture": {
+      "source": "docs/report/LabClear_Architecture_Report_TH.pdf",
+      "bytes": 1096936,
+      "sha256": "bd627390e3e2f2d730635da48c22fbd57eb97cd9dcd67082ca3be119f05f60e9",
+      "signature": "%PDF-",
+      "page_count": 30,
+      "pages": [
+        {
+          "page": 1,
+          "text_characters": 1467,
+          "has_thai_text": true,
+          "replacement_glyphs": 0,
+          "image_objects": 0
+        },
+        {
+          "page": 2,
+          "text_characters": 847,
+          "has_thai_text": true,
+          "replacement_glyphs": 0,
+          "image_objects": 0
+        },
+        {
+          "page": 3,
+          "text_characters": 501,
+          "has_thai_text": true,
+          "replacement_glyphs": 0,
+          "image_objects": 1
+        },
+        {
+          "page": 4,
+          "text_characters": 1308,
+          "has_thai_text": true,
+          "replacement_glyphs": 0,
+          "image_objects": 0
+        },
+        {
+          "page": 5,
+          "text_characters": 1407,
+          "has_thai_text": true,
+          "replacement_glyphs": 0,
+          "image_objects": 0
+        },
+        {
+          "page": 6,
+          "text_characters": 963,
+          "has_thai_text": true,
+          "replacement_glyphs": 0,
+          "image_objects": 0
+        },
+        {
+          "page": 7,
+          "text_characters": 1428,
+          "has_thai_text": true,
+          "replacement_glyphs": 0,
+          "image_objects": 0
+        },
+        {
+          "page": 8,
+          "text_characters": 1513,
+          "has_thai_text": true,
+          "replacement_glyphs": 0,
+          "image_objects": 0
+        },
+        {
+          "page": 9,
+          "text_characters": 1467,
+          "has_thai_text": true,
+          "replacement_glyphs": 0,
+          "image_objects": 0
+        },
+        {
+          "page": 10,
+          "text_characters": 1430,
+          "has_thai_text": true,
+          "replacement_glyphs": 0,
+          "image_objects": 0
+        },
+        {
+          "page": 11,
+          "text_characters": 894,
+          "has_thai_text": true,
+          "replacement_glyphs": 0,
+          "image_objects": 0
+        },
+        {
+          "page": 12,
+          "text_characters": 394,
+          "has_thai_text": true,
+          "replacement_glyphs": 0,
+          "image_objects": 1
+        },
+        {
+          "page": 13,
+          "text_characters": 1055,
+          "has_thai_text": true,
+          "replacement_glyphs": 0,
+          "image_objects": 0
+        },
+        {
+          "page": 14,
+          "text_characters": 1380,
+          "has_thai_text": true,
+          "replacement_glyphs": 0,
+          "image_objects": 0
+        },
+        {
+          "page": 15,
+          "text_characters": 1611,
+          "has_thai_text": true,
+          "replacement_glyphs": 0,
+          "image_objects": 0
+        },
+        {
+          "page": 16,
+          "text_characters": 1202,
+          "has_thai_text": true,
+          "replacement_glyphs": 0,
+          "image_objects": 0
+        },
+        {
+          "page": 17,
+          "text_characters": 1406,
+          "has_thai_text": true,
+          "replacement_glyphs": 0,
+          "image_objects": 0
+        },
+        {
+          "page": 18,
+          "text_characters": 1283,
+          "has_thai_text": true,
+          "replacement_glyphs": 0,
+          "image_objects": 0
+        },
+        {
+          "page": 19,
+          "text_characters": 1593,
+          "has_thai_text": true,
+          "replacement_glyphs": 0,
+          "image_objects": 0
+        },
+        {
+          "page": 20,
+          "text_characters": 1556,
+          "has_thai_text": true,
+          "replacement_glyphs": 0,
+          "image_objects": 0
+        },
+        {
+          "page": 21,
+          "text_characters": 1523,
+          "has_thai_text": true,
+          "replacement_glyphs": 0,
+          "image_objects": 0
+        },
+        {
+          "page": 22,
+          "text_characters": 1239,
+          "has_thai_text": true,
+          "replacement_glyphs": 0,
+          "image_objects": 0
+        },
+        {
+          "page": 23,
+          "text_characters": 1239,
+          "has_thai_text": true,
+          "replacement_glyphs": 0,
+          "image_objects": 0
+        },
+        {
+          "page": 24,
+          "text_characters": 1448,
+          "has_thai_text": true,
+          "replacement_glyphs": 0,
+          "image_objects": 0
+        },
+        {
+          "page": 25,
+          "text_characters": 1393,
+          "has_thai_text": true,
+          "replacement_glyphs": 0,
+          "image_objects": 0
+        },
+        {
+          "page": 26,
+          "text_characters": 1404,
+          "has_thai_text": true,
+          "replacement_glyphs": 0,
+          "image_objects": 0
+        },
+        {
+          "page": 27,
+          "text_characters": 1440,
+          "has_thai_text": true,
+          "replacement_glyphs": 0,
+          "image_objects": 0
+        },
+        {
+          "page": 28,
+          "text_characters": 1665,
+          "has_thai_text": true,
+          "replacement_glyphs": 0,
+          "image_objects": 0
+        },
+        {
+          "page": 29,
+          "text_characters": 1374,
+          "has_thai_text": true,
+          "replacement_glyphs": 0,
+          "image_objects": 0
+        },
+        {
+          "page": 30,
+          "text_characters": 199,
+          "has_thai_text": true,
+          "replacement_glyphs": 0,
+          "image_objects": 0
+        }
+      ]
+    },
+    "slides": {
+      "source": "docs/report/LabClear_Slides.pdf",
+      "bytes": 379092,
+      "sha256": "3e002078b1966b8694a5ff8d504e87538aa69349394645c886b715a03849080f",
+      "signature": "%PDF-",
+      "page_count": 15,
+      "pages": [
+        {
+          "page": 1,
+          "text_characters": 351,
+          "has_thai_text": true,
+          "replacement_glyphs": 0,
+          "image_objects": 0
+        },
+        {
+          "page": 2,
+          "text_characters": 581,
+          "has_thai_text": true,
+          "replacement_glyphs": 0,
+          "image_objects": 0
+        },
+        {
+          "page": 3,
+          "text_characters": 526,
+          "has_thai_text": true,
+          "replacement_glyphs": 0,
+          "image_objects": 0
+        },
+        {
+          "page": 4,
+          "text_characters": 563,
+          "has_thai_text": true,
+          "replacement_glyphs": 0,
+          "image_objects": 0
+        },
+        {
+          "page": 5,
+          "text_characters": 517,
+          "has_thai_text": true,
+          "replacement_glyphs": 0,
+          "image_objects": 0
+        },
+        {
+          "page": 6,
+          "text_characters": 564,
+          "has_thai_text": true,
+          "replacement_glyphs": 0,
+          "image_objects": 0
+        },
+        {
+          "page": 7,
+          "text_characters": 612,
+          "has_thai_text": true,
+          "replacement_glyphs": 0,
+          "image_objects": 0
+        },
+        {
+          "page": 8,
+          "text_characters": 435,
+          "has_thai_text": true,
+          "replacement_glyphs": 0,
+          "image_objects": 0
+        },
+        {
+          "page": 9,
+          "text_characters": 636,
+          "has_thai_text": true,
+          "replacement_glyphs": 0,
+          "image_objects": 0
+        },
+        {
+          "page": 10,
+          "text_characters": 403,
+          "has_thai_text": true,
+          "replacement_glyphs": 0,
+          "image_objects": 0
+        },
+        {
+          "page": 11,
+          "text_characters": 727,
+          "has_thai_text": true,
+          "replacement_glyphs": 0,
+          "image_objects": 0
+        },
+        {
+          "page": 12,
+          "text_characters": 617,
+          "has_thai_text": true,
+          "replacement_glyphs": 0,
+          "image_objects": 0
+        },
+        {
+          "page": 13,
+          "text_characters": 703,
+          "has_thai_text": true,
+          "replacement_glyphs": 0,
+          "image_objects": 0
+        },
+        {
+          "page": 14,
+          "text_characters": 674,
+          "has_thai_text": true,
+          "replacement_glyphs": 0,
+          "image_objects": 0
+        },
+        {
+          "page": 15,
+          "text_characters": 593,
+          "has_thai_text": true,
+          "replacement_glyphs": 0,
+          "image_objects": 0
+        }
+      ]
+    }
+  },
+  "summary": {
+    "reports": 3,
+    "pages": 58,
+    "empty_pages": 0,
+    "pages_without_thai": 0,
+    "replacement_glyphs": 0,
+    "image_objects": 2
+  },
+  "status": "PASS"
+}

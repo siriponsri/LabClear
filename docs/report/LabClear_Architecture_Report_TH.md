@@ -4,9 +4,9 @@
 
 **ผู้พัฒนา** นายวัชรินทร์ บัวสอน (68076055) · นายศิริพล ศรีเฮงไพบูลย์ (68076060)
 
-**รุ่น** 4.0.0-rc3 · branch `main` · commit ที่ทดสอบ `101e5e21968cc5ea8204f953ef60ceb9097bb677` · **วันที่** 10 ตุลาคม 2569
+**รุ่น** 4.0.0-rc3 · branch `main` · source/test-evidence checkpoint `73d24b9cc4281b74829b63603786427d14cbe5c7` + dirty worktree · **วันที่** 11 ตุลาคม 2569
 
-> รายงานนี้อธิบายระบบตามโค้ดจริงของรุ่น 4.0.0-rc3 ทุกตัวเลขอ่านจากไฟล์ใน repository (ระบุไฟล์ไว้ในวงเล็บ) ไม่ใช่ค่าที่ออกแบบไว้ล่วงหน้า ส่วนที่ปิดอยู่หรือยังไม่ได้ทำระบุไว้ตรง ๆ ผลทดสอบทั้งหมดใช้ข้อมูลสังเคราะห์และตัวแทนโมเดล รุ่นนี้ยังไม่ได้ deploy และยังไม่ได้รันกับ Typhoon และ iApp จริง
+> รายงานนี้อธิบายระบบตามโค้ดจริงของรุ่น 4.0.0-rc3 ทุกตัวเลขอ่านจากไฟล์ใน repository (ระบุไฟล์ไว้ในวงเล็บ) ไม่ใช่ค่าที่ออกแบบไว้ล่วงหน้า ส่วนที่ปิดอยู่หรือยังไม่ได้ทำระบุไว้ตรง ๆ regression/UAT ใช้ข้อมูลสังเคราะห์และ mock/offline; live smoke แยกไว้ใน §17.2 อย่างละหนึ่งคำขอเพื่อยืนยัน connectivity/format เท่านั้น candidate นี้ยังไม่ได้ deploy
 
 ## 1. สรุป
 
@@ -369,8 +369,8 @@ route `turn()` ครอบไปป์ไลน์นี้: ตั้งสถ
 
 | ชุด | ที่อยู่ | ผลบนรุ่นนี้ |
 |---|---|---|
-| Unit และ API | `tests/test_*.py` (27 ไฟล์) ผ่าน `scripts/offline_check.py` ที่ปิดการเชื่อมต่อออก | 371 ผ่าน |
-| Browser UAT | `tests/browser/uat.cjs` | 36/36 |
+| Unit และ API | `tests/test_*.py` (27 ไฟล์) ผ่าน `scripts/offline_check.py` ที่ปิดการเชื่อมต่อออก | 547 ผ่าน, 1 warning |
+| Browser UAT | `tests/browser/uat.cjs` | GL-03 historical run retained for context; fresh `final03` is 37 PASS / 0 FAIL / 0 browser errors, exit code 0 in local mocked scope |
 | Browser upgrade | `tests/browser/upgrade.cjs` | 10/10 |
 | ไทย/อังกฤษ | `tests/browser/i18n_audit.mjs` (390, 768, 1440 px) | 43/43 |
 | ความทนทาน | `tests/resilience/` และ `tests/browser/resilience.cjs` | 12/12 และ 10/10 |
@@ -396,7 +396,7 @@ route `turn()` ครอบไปป์ไลน์นี้: ตั้งสถ
 
 ## 17. Checkpoint GL-03: bot/Admin Chat handoff
 
-รอบนี้แก้เฉพาะเส้นทางส่งต่อจากบอทไปเจ้าหน้าที่ โดยผูก ticket กับ `chat_id` ของบทสนทนาที่ร้องขอจริง ไม่ใช้ active conversation ของเจ้าของเป็นค่าเดาเมื่อผู้ใช้สลับแชตแล้ว
+เส้นทาง handoff ผูก ticket กับ `chat_id` ของบทสนทนาที่ร้องขอจริง ไม่ใช้ active conversation ของเจ้าของเป็นค่าเดาเมื่อผู้ใช้สลับแชตแล้ว application fix หลักอยู่ใน `101e5e21968cc5ea8204f953ef60ceb9097bb677`; browser evidence hardening เดิมอยู่ใน `302c14e0b2f9abbdd88b4bb5dc57e31a8e282204`. รอบปัจจุบันบน commit `73d24b9cc4281b74829b63603786427d14cbe5c7` + dirty worktree เพิ่มการปิด transcript หลัง staff ปิด ticket และอนุญาตเริ่มแชตใหม่โดยไม่เปิด ticket เก่ากลับ
 
 | จุดตรวจ | ก่อนแก้ | หลังแก้ใน `101e5e2` | หลักฐาน |
 |---|---|---|---|
@@ -404,42 +404,58 @@ route `turn()` ครอบไปป์ไลน์นี้: ตั้งสถ
 | Staff GET | อาจคืน transcript ของ active chat ที่ไม่ใช่เคส | lookup ตาม binding; missing binding/chat เป็น 404 และ archive ที่ตรงเท่านั้นถูกอ่านได้ | `test_handoff_binds_exact_chat_and_stale_staff_mutations_fail_closed` |
 | Staff state/reply | ไม่มี precondition สำหรับ request เก่า | รับ `expected_version` และ `assignment_epoch` แบบ optional; ค่าค้างคืน 409 ก่อนเขียนข้อมูล | focused pytest, UI-16 |
 | Takeover/return | เพิ่ม `version` แต่ไม่มีชื่อ epoch แยก | `mode_epoch` และ `version` เพิ่มพร้อมกัน ทำให้ finalization ของ bot ที่กำลังทำงานถูกทิ้ง | `test_staff_takeover_discards_inflight_model` |
-| Client compatibility | payload เดิมมีเพียง state/message | optional fields ไม่ทำให้ client เดิมเสีย | 91 focused tests, UAT 36/36 |
+| Client compatibility | payload เดิมมีเพียง state/message | optional fields ไม่ทำให้ client เดิมเสีย | focused tests และ UAT รอบล่าสุด |
+| Closed chat | ปิด ticket แล้ว conversation กลับเป็น bot; chat/report actions เดิมยังทำงานได้ และ history อาจเปิดกลับเป็น bot | server ปฏิเสธ chat/upload/report-confirm โดยไม่ mutate; history คง closed; แชตใหม่ใช้ `chat_id` ใหม่ | 3 regression tests, full offline pytest; UI-16 screenshots ของ closed/history/new chat |
 
 การเปลี่ยนนี้ไม่เพิ่ม provider call ไม่เปิดเงินจริง และไม่เปลี่ยน package/payment simulator contract
 
 ### 17.1 ผล Playwright รอบใหม่
 
-รันบน Windows PowerShell ด้วย `node tests/browser/uat.cjs` ใน `OFFLINE/MOCKED_TEST_ONLY` ใช้ข้อมูลสมมติและ isolated SQLite: **36 PASS, 0 FAIL, 0 browser errors** ครอบคลุม customer, staff/manager, bot↔admin handoff, history/privacy, package/payment simulator, negative cases และ 768/390 px mobile
+รอบ `final03` ใช้ local `OFFLINE/MOCKED_TEST_ONLY` บน Windows 11.0.26200 ด้วย Playwright 1.56.1, Chromium 141.0.7390.37, Node.js 24.19.0 และ Python 3.12.10; ใช้ข้อมูลสังเคราะห์, isolated temporary SQLite, ปิด provider networking และใช้ LLM/OCR doubles. Raw JSON ระบุ `37 PASS / 0 FAIL / 0 browser errors`, 63 screenshots และ exit code 0; checkpoint local UAT เป็น `PASS` โดยไม่ขยายผลไปยัง live provider หรือ production. Candidate commit คือ `73d24b9cc4281b74829b63603786427d14cbe5c7`.
 
 | Requirement | Test | ผลรอบนี้ | Evidence |
 |---|---|---|---|
-| Customer/admin | UI-01, UI-05–UI-13, UI-17, UI-23, UI-25, UI-28–UI-32 | PASS | [`evidence-matrix.md`](../evidence/current/browser-uat-gl03-20261010/evidence-matrix.md) |
-| Bot↔admin handoff | UI-16, UI-18, UI-34 และ GL-03 pytest | PASS | [`browser-uat.json`](../evidence/current/browser-uat-gl03-20261010/browser-uat.json) |
-| History/privacy | UI-14, UI-19, UI-31, UI-33 และ privacy tests | PASS ในขอบเขตที่มีจริง | [`guest-temporary-1440.png`](../evidence/current/browser-uat-gl03-20261010/guest-temporary-1440.png) |
-| Retention purge/expiry/restore | ยังไม่มี controlled-clock และ restore run ในรอบนี้ | NOT_RUN | [`playwright-test-plan.md`](../evidence/current/browser-uat-gl03-20261010/playwright-test-plan.md) |
-| Package/payment แบบจำลอง | UI-02–UI-04, UI-06–UI-07, UI-15, UI-26–UI-27 | PASS แบบ simulator | [`payment-simulator-1440.png`](../evidence/current/browser-uat-gl03-20261010/payment-simulator-1440.png) |
-| Mobile | UI-21-tablet, UI-21-mobile, UI-31 | PASS, no overflow | [`app-390.png`](../evidence/current/browser-uat-gl03-20261010/app-390.png) |
-| Negative cases | UI-02b, UI-04, UI-08, UI-19–UI-20, UI-22, UI-33–UI-34 | PASS ตาม assertions; ภาพเฉพาะบาง state เป็น NOT_RUN | [`evidence-matrix.md`](../evidence/current/browser-uat-gl03-20261010/evidence-matrix.md) |
+| Customer/admin | UI-01–UI-13, UI-17, UI-23–UI-25, UI-28–UI-32 | ทุก case ที่อยู่ใน raw PASS; ราคา live ไม่ได้เปลี่ยน | [expected/actual ราย case](../evidence/current/browser-uat-final-20261012-03/browser-uat.json) |
+| Bot↔admin handoff, close and resume | UI-16, UI-18, UI-34 และ GL-03 pytest | PASS ใน local fixture: privacy, reply, resume/requeue, close, history และ new-chat assertions ครบ | [closed chat](../evidence/current/browser-uat-final-20261012-03/UI-16_handoff-closed-390.png), [raw JSON](../evidence/current/browser-uat-final-20261012-03/browser-uat.json) |
+| History/privacy | UI-05, UI-14, UI-16, UI-19, UI-25, UI-31, UI-33 และ guest privacy tests | PASS สำหรับ local behavior ที่ทดสอบ; durable retention/restore NOT_RUN | [guest screenshot](../evidence/current/browser-uat-final-20261012-03/UI-33_guest-temporary-1440.png), [pytest XML](../evidence/current/browser-uat-resume-20261012-01/offline-pytest.xml), [case results](../evidence/current/browser-uat-final-20261012-03/browser-uat.json) |
+| Guest expiry/legacy purge | `PY-GUEST-EXPIRY-01`, `PY-GUEST-PURGE-01` | PASS ใน pytest; ไม่ใช่ Playwright | [pytest XML](../evidence/current/browser-uat-resume-20261012-01/offline-pytest.xml) |
+| Durable retention backup/restore | ไม่มี production backup/restore target | NOT_RUN | [UAT scope and limitations](../evidence/current/browser-uat-final-20261012-03/README.md) |
+| Package/payment แบบจำลอง | UI-02–UI-07, UI-15, UI-17, UI-26–UI-27 และ simulator expiry pytest | PASS แบบ simulator เท่านั้น; real settlement NOT_RUN | [payment screenshot](../evidence/current/browser-uat-final-20261012-03/UI-15_payment-simulator-1440.png) |
+| Mobile/tablet | UI-21-tablet, UI-21-mobile, UI-31 | PASS ตาม no-overflow/navigation assertions | [mobile](../evidence/current/browser-uat-final-20261012-03/UI-21-mobile_app-390.png), [tablet](../evidence/current/browser-uat-final-20261012-03/UI-21-tablet_app-768.png) |
+| Negative/permission | UI-02b, UI-04, UI-08, UI-16, UI-19–UI-20, UI-22, UI-33–UI-34 | PASS ทุก case; raw มี 0 failed screenshots และ 0 browser errors | [network error](../evidence/current/browser-uat-final-20261012-03/UI-02b_catalog-network-error-1440.png), [permission gate](../evidence/current/browser-uat-final-20261012-03/UI-19_customer-staff-denied-1440.png) |
 
-รายละเอียดขั้นตอน, expected/actual, case ID และรายการภาพอยู่ใน [`playwright-test-plan.md`](../evidence/current/browser-uat-gl03-20261010/playwright-test-plan.md) และ [`evidence-matrix.md`](../evidence/current/browser-uat-gl03-20261010/evidence-matrix.md) Raw JSON มี candidate SHA เดียวกับรายงานนี้
+ขั้นตอน, expected/actual, status และ screenshot ต่อ case อยู่ใน [UAT README](../evidence/current/browser-uat-final-20261012-03/README.md) และ [raw JSON](../evidence/current/browser-uat-final-20261012-03/browser-uat.json). Full offline pytest: **547 passed, 1 warning**, exit code 0; raw outputอยู่ที่ [pytest XML](../evidence/current/browser-uat-resume-20261012-01/offline-pytest.xml).
 
-### 17.2 ข้อจำกัดและ remaining risks
+PDF render รอบ `final03` และ HTML deck release วิธีสร้างและตรวจภาพทุกหน้า, Thai text, pagination, theme/font fallback และ hash ระบุใน [report render QA](../evidence/current/report-render-final-20261012-03/report-render-qa.json) และ [HTML deck QA](../evidence/current/presentation-html-final-20261012-release/html-deck-qa.json).
 
-- ผลรอบนี้เป็น software/UI evidence ใน mock/offline เท่านั้น ไม่ใช่ผล live LLM/OCR, clinical accuracy, Render, uptime หรือเงินจริง
-- retention purge ตามเวลาจริง, backup restore, durable message sequencing และ cross-process race ยังไม่ได้รับรองจากรอบนี้ จึงคงเป็น `NOT_RUN`/remaining risk ตามแผน GL-01/GL-04
-- screenshot เฉพาะ error/permission/aggregate บาง case ไม่ได้ถูก capture โดย runner รอบนี้ และถูกระบุ `NOT_RUN` ใน matrix ไม่ใช้ภาพ state อื่นแทน
-- independent review โดย REVIEW/O1 ไม่ได้รันใน account แยกในรอบนี้ จึงมี reduced account independence; ผลนี้เป็น owner-run evidence ไม่ใช่ independent sign-off
-- ยังไม่ push, merge ไป remote, deploy, เรียก quota จริง หรือเปลี่ยน budget/plan/key
+### 17.2 Live provider smoke, ข้อจำกัดและ remaining risks
+
+- `OFFLINE/MOCK` ยืนยันเฉพาะ UI/API/storage/permission; ไม่ยืนยัน live model/OCR quality, clinical accuracy, production uptime หรือ settlement
+- Live smoke (แยกจาก OFFLINE/MOCK): Typhoon `LIVE-PROV-TYPHOON-01` (`2026-10-10T15:02:44Z`) และ iApp `LIVE-PROV-OPENTHAI-01` (`2026-10-10T15:18:57Z`) อย่างละ 1 request/HTTP 200; JSON ผ่านและแอปจัดคำถามสังเคราะห์หนึ่งข้อว่า safe ยืนยัน connectivity/format เท่านั้น; iApp entitlement/debit ไม่ทราบ และไม่ได้เรียก OCR
+- `NOT_RUN`/unknown: durable backup/restore, production retention, sequencing/race ภายใต้ production load, deploy/settlement, clinical/model/OCR quality, demand และ unit economics. Guest expiry/legacy purge เป็น PASS ใน offline pytest เท่านั้น ไม่ใช่ production-retention evidence
+- UI-16 ผ่านใน final03 หลัง test รอ POST `/api/business/chats` และรอ composer กลับมาใช้งานก่อนอ่าน workspace; เป็นการแก้ test synchronization ไม่ใช่การลด assertion
+- UI-28 ผ่านใน final03 บน isolated fixture; historical socket-hang ยังไม่มี root cause เชิง production จึงไม่ใช้ผลนี้อ้าง live reliability
+- Review รอบนี้ให้ยึด exact dirty candidate ที่ระบุใน final03 raw JSON; ผล fresh review ต้องแยกจาก MAIN และระบุ reduced account independence หากใช้ Windows account/worktree เดียวกัน. การ push ทำหลัง hygiene และ review gate เท่านั้น
+
+### 17.3 Checkpoint GL-05: manager-only simulated settlement
+
+GL-05 เป็น authorization fence ของ endpoint simulator เดิม ไม่ใช่ระบบ bank settlement. `routers/business.py` ตรวจบทบาท manager ก่อน mutation ของ booking; `static/js/workspace.js` ใช้ capability เดียวกันเพื่อไม่แสดง action แก่ staff/clinical. `tests/browser/fixture_server.py` เพิ่มบัญชี staff สังเคราะห์สาขา BKK01 เพื่อไม่สับสนกับบัญชี manager ที่ใช้ในรอบก่อน.
+
+| Boundary | ก่อนแก้ | หลังแก้และผลตรวจ | Status |
+|---|---|---|---|
+| API `/staff/bookings/{id}/settle` | non-manager mutation path ยังเป็น regression | `staff` และ `clinical` ได้ 403 ก่อนอ่าน/เขียน receipt; payment state, audit และ notification ไม่เปลี่ยน | PASS |
+| Manager simulator | ต้องคง behavior เดิม | manager เห็นและใช้ action ที่ระบุ simulation; idempotent receipt เดิมยังทำงาน | PASS |
+| Browser role/UI | fixture เดิมใช้ชื่อ staff แต่ role manager | UI-13 ยืนยัน session role จริง, staff ไม่เห็นปุ่ม, manager เห็นหลัง filter confirmed | PASS |
+| Full offline browser | ต้องครอบคลุม customer/admin, handoff, privacy, package/payment, mobile และ negative cases | final03 raw: 37 PASS, 0 FAIL, 0 browser errors, exit code 0 | PASS (local mocked UAT) |
+
+หลักฐานรอบ `final03` ใช้ candidate `73d24b9cc4281b74829b63603786427d14cbe5c7` + dirty worktree; source fingerprint, raw start-time diff SHA, status porcelain, environment, case results, screenshot hashes และผล focused/full pytest อยู่ใน [UAT README/raw](../evidence/current/browser-uat-final-20261012-03/), [pytest XML](../evidence/current/browser-uat-resume-20261012-01/offline-pytest.xml)
+
+`UI-16` และ `UI-28` ผ่านใน final03 local fixture; real settlement, retention/backup/restore, production finance RBAC, live model/OCR quality, production load และ deployment ยัง NOT_RUN. ไม่ได้ใช้ `.env`/live provider ในรอบ offline นี้ และไม่มีเงินเคลื่อนย้ายจริง. Fresh report render ตรวจแล้วตาม [render QA](../evidence/current/report-render-final-20261012-03/report-render-qa.json)
 
 ## ภาคผนวก ก. เอกสารอ้างอิงใน repository
 
 | เรื่อง | ไฟล์ |
 |---|---|
-| API ทั้งหมด | `docs/api.md` |
-| สถาปัตยกรรม (ภาษาอังกฤษ) | `docs/architecture.md` |
-| ผู้ให้บริการ AI | `docs/ai-providers.md` |
-| ความทนทานและ runbook | `docs/operations/resilience.md` |
-| Deploy และ Render CLI | `docs/deploy/render.md` |
-| การทดสอบ | `docs/testing.md` |
-| หลักฐาน | `docs/evidence/current/`, `docs/evidence/history/` |
+| API และสถาปัตยกรรม | `docs/api.md`; `docs/architecture.md` |
+| AI provider และ resilience/runbook | `docs/ai-providers.md`; `docs/operations/resilience.md` |
+| Deploy, การทดสอบ และหลักฐาน | `docs/deploy/render.md`; `docs/testing.md`; `docs/evidence/current/`; `docs/evidence/history/` |

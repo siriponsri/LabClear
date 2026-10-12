@@ -1,0 +1,61 @@
+infographic sequence-interaction-default-compact-card
+data
+  title เส้นทางจากการเลือกสู่การช่วยเหลือ
+  desc ลูกค้าเลือกข้อความที่จะส่งต่อและยืนยันความยินยอมก่อนส่งเฉพาะข้อความที่เลือก เจ้าหน้าที่รับช่วงตอบกลับ และลูกค้าเริ่มการสนทนาใหม่ได้
+  sequences
+    - label ลูกค้า
+      icon ref:svg:<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8M4 21a8 8 0 0 1 16 0" fill="none" stroke="#6539A9" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      children
+        - label เลือกแพ็กเกจ
+          id customer-choose-package
+          step 0
+          icon ref:svg:<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 7l8-4 8 4-8 4zm0 0v10l8 4 8-4V7M12 11v10" fill="none" stroke="#6539A9" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        - label ขอวันนัดหมาย
+          id customer-request-time
+          step 1
+          icon ref:svg:<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 5h16v16H4zM8 3v4m8-4v4M4 10h16" fill="none" stroke="#6539A9" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        - label เลือกข้อความที่ยินยอม
+          id customer-consent
+          step 2
+          icon ref:svg:<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 12l5 5L20 6" fill="none" stroke="#6539A9" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        - label อ่านคำตอบ
+          id customer-read-reply
+          step 4
+          icon ref:svg:<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z" fill="none" stroke="#6539A9" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    - label ผู้ช่วย
+      icon ref:svg:<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z" fill="none" stroke="#6539A9" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      children
+        - label ขออนุญาตส่งต่อ
+          id assistant-asks-consent
+          step 2
+          icon ref:svg:<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 3l8 4v5c0 5-3 8-8 10-5-2-8-5-8-10V7zM8 12l3 3 5-6" fill="none" stroke="#6539A9" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        - label แจ้งผลการรับเรื่อง
+          id assistant-confirm-ticket
+          step 3
+          icon ref:svg:<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9m-8 12h4" fill="none" stroke="#6539A9" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        - label เริ่มห้องใหม่
+          id assistant-new-chat
+          step 4
+          icon ref:svg:<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" fill="none" stroke="#6539A9" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    - label เจ้าหน้าที่
+      icon ref:svg:<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6m7-1a2.5 2.5 0 1 0 0-5M3 20a6 6 0 0 1 12 0m1-4a4 4 0 0 1 5 4" fill="none" stroke="#6539A9" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      children
+        - label รับเรื่องที่เลือกไว้
+          id staff-receive-selected
+          step 3
+          icon ref:svg:<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 4h16v16H4zm0 10h5l3 3 3-3h5" fill="none" stroke="#6539A9" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        - label ตอบกลับลูกค้า
+          id staff-reply
+          step 4
+          icon ref:svg:<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M22 2L11 13m11-11-7 20-4-9-9-4z" fill="none" stroke="#6539A9" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  relations
+    customer-choose-package - เลือกรายการ -> customer-request-time
+    customer-request-time - ส่งคำขอ -> assistant-asks-consent
+    customer-consent -> staff-receive-selected
+    staff-receive-selected - เจ้าหน้าที่ตอบกลับ -> staff-reply
+    staff-reply - ส่งคำตอบ -> customer-read-reply
+theme
+  palette #6539A9 #17161C #5E5C65
+  base
+    text
+      font-family IBM Plex Sans Thai

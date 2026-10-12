@@ -107,6 +107,7 @@ Endpoints of LabClear 4.0.0-rc3, grouped by router. Paths are complete. The inte
 | GET | `/api/business/history` | Session | Earlier chats (older clients) |
 | POST | `/api/business/confirm` | Session | Confirm a preview: booking request, quote, payment or hand-off |
 | POST | `/api/business/handoffs` | Account | Ask for a person |
+| POST | `/api/business/handoffs/{id}/resume` | Account | Choose whether to return to the assistant or keep the assigned team member |
 
 ### Reports
 
@@ -156,7 +157,7 @@ Endpoints of LabClear 4.0.0-rc3, grouped by router. Paths are complete. The inte
 |---|---|---|---|
 | GET | `/api/business/staff/inbox` | Staff | Cases and counts |
 | GET | `/api/business/staff/tickets/{id}` | Staff | A case with its conversation and bookings |
-| POST | `/api/business/staff/tickets/{id}/state` | Staff | Take over, hand back to the assistant, or close |
+| POST | `/api/business/staff/tickets/{id}/state` | Staff | Take over, ask the customer whether to resume the assistant, or close |
 | POST | `/api/business/staff/tickets/{id}/messages` | Staff | Reply to the customer (after take-over) |
 | POST | `/api/business/staff/bookings/{id}/settle` | Staff | Record a payment at the center |
 | GET | `/api/business/staff/operations` | Staff | Bookings, catalog and LINE jobs |
@@ -164,6 +165,28 @@ Endpoints of LabClear 4.0.0-rc3, grouped by router. Paths are complete. The inte
 | PUT | `/api/business/staff/catalog/{id}` | Manager | Change a package price or availability |
 | POST | `/api/business/staff/bookings/{id}/refund` | Manager | Refund a settled payment (simulated) |
 | POST | `/api/business/staff/subscriptions/{id}/refund` | Manager | Refund a Plus period (simulated) |
+
+Staff ticket mutations require `expected_version` and `assignment_epoch`. These fields are mandatory to reject stale replies and state changes; older clients that omit either field receive HTTP 422 and must be updated. A stale value receives HTTP 409 and must be refreshed from the ticket detail endpoint.
+
+Use these request bodies:
+
+```json
+{
+  "state": "staff",
+  "expected_version": 12,
+  "assignment_epoch": 3
+}
+```
+
+```json
+{
+  "message": "A team member is reviewing your request.",
+  "expected_version": 13,
+  "assignment_epoch": 4
+}
+```
+
+After staff request a return to the assistant, the ticket enters `resume_pending`. The assistant remains paused until the customer chooses. The customer then posts to `/api/business/handoffs/{id}/resume` with `choice` set to `confirm` or `keep_staff`, plus the current `expected_version` and `assignment_epoch`.
 
 ## routers/business_ops.py (`/api/business`)
 

@@ -63,7 +63,7 @@ async function scenario(name, fn) { try { await fn(); records.push({ name, statu
       await context.addCookies([{ name: 'labclear_language', value: 'en', url: base }]);
       await page.goto(base + '/staff', { waitUntil: 'networkidle' });
       if (!(await page.locator('#modal').isVisible())) await page.locator('#account-open').click();
-      await page.getByLabel('Email or username').fill('staff@example.invalid');
+      await page.getByLabel('Email or username').fill('manager@example.invalid');
       await page.getByLabel('Password', { exact: true }).fill('ui-test-only-password');
       await page.locator('#modal').getByRole('button', { name: 'Sign in', exact: true }).click();
       await page.locator('#modal').waitFor({ state: 'hidden' });

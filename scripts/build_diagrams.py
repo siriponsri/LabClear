@@ -241,6 +241,41 @@ def message_flow() -> Svg:
     return s
 
 
+def business_flow() -> Svg:
+    """The synthetic booking, support handoff and center-payment workflow."""
+    s = Svg(1000, 760, f"LabClear {VERSION}: business workflow",
+            "Synthetic customer booking and support handoff. Staff and clinical roles may confirm or decline an appointment, "
+            "but only a manager may record the existing center-payment simulator event. A denied settlement request is 403 "
+            "with payment, receipt, audit and customer notification state unchanged.")
+    s.text(40, 30, f"BUSINESS WORKFLOW · LABCLEAR {VERSION.upper()}", 10.5, 500, MUTED, "start", MONO, "0.16em")
+
+    s.zone(40, 56, 920, 294, "BOOKING · SIMULATED CENTER PAYMENT")
+    s.box(60, 92, 260, 108, "user", "CUSTOMER", "Browse and request", ["choose a package and center", "booking state: requested", "waiting for team confirmation"], 14)
+    s.box(370, 92, 260, 108, "module", "STAFF / CLINICAL", "Confirm or decline", ["authorized team member acts", "customer receives the decision", "does not settle payment"], 14)
+    s.box(680, 92, 260, 108, "gate", "MANAGER", "Record simulated receipt", ["only after confirmation", "record simulated payment", "save activity + customer notice"], 14)
+    s.arrow([(320, 146), (368, 146)], "REQUEST", (329, 135), LINK)
+    s.arrow([(630, 146), (678, 146)], "CONFIRMED", (640, 135), ACCENT)
+    s.arrow([(500, 200), (500, 226)], "NOT AUTHORIZED", (512, 214), MUTED, dashed=True)
+    s.arrow([(810, 200), (810, 224)], "NOTICE", (820, 214), ACCENT)
+    s.box(370, 228, 260, 96, "gate", "DENIED PATH", "Request rejected", ["payment record and activity unchanged", "no customer notification"], 13)
+    s.box(680, 228, 260, 96, "store", "CUSTOMER STATE", "Customer notification", ["Payment recorded (simulation)", "No bank transfer or real settlement"], 14)
+
+    s.zone(40, 382, 920, 198, "SUPPORT HANDOFF · EXPLICIT SHARING")
+    s.box(60, 418, 200, 112, "user", "CUSTOMER", "Request team help", ["choose what to share", "nothing is shared automatically"], 14)
+    s.box(280, 418, 200, 112, "server", "SERVER", "Open support request", ["history stays hidden before takeover", "only chosen items are shared"], 14)
+    s.box(500, 418, 200, 112, "module", "STAFF", "Take over and reply", ["team member owns the request", "reply reaches customer"], 14)
+    s.box(720, 418, 200, 112, "user", "CUSTOMER", "Resume or close", ["choose whether to return to bot", "closed chat stays closed"], 14)
+    s.arrow([(260, 474), (278, 474)], colour=LINK)
+    s.arrow([(480, 474), (498, 474)], colour=MUTED)
+    s.arrow([(700, 474), (718, 474)], colour=ACCENT)
+
+    s.legend(620, [("user", "Customer"), ("module", "Team action"), ("gate", "Manager / denied"),
+                   ("store", "Saved data"), ("arrow:link", "Request"), ("arrow:accent", "Allowed"),
+                   ("arrow:muted", "Denied")])
+    s.text(40, 710, "All package, price, booking, payment and center data in this diagram are synthetic demonstration data.", 11, 400, MUTED, "start")
+    return s
+
+
 FONT_CSS = """
 @font-face{font-family:'Geist';src:url('GEIST') format('woff2');font-weight:100 900}
 @font-face{font-family:'Geist Mono';src:url('MONO') format('woff2');font-weight:100 900}
@@ -278,7 +313,7 @@ def main():
     p.add_argument("--svg-only", action="store_true")
     a = p.parse_args()
     OUT.mkdir(parents=True, exist_ok=True)
-    svgs = {"architecture": architecture().render(), "message-flow": message_flow().render()}
+    svgs = {"architecture": architecture().render(), "message-flow": message_flow().render(), "business-flow": business_flow().render()}
     for name, svg in svgs.items():
         (OUT / f"{name}.svg").write_text(svg, encoding="utf-8")
     if not a.svg_only:

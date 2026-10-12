@@ -11,6 +11,7 @@ Documentation for LabClear 4.0.0-rc3. Start with the [project README](../README.
 ## System
 
 - [architecture.md](architecture.md): components, storage, the agent pipeline, report reading, security and one message end to end.
+- [business workflow diagram](assets/business-flow.svg): synthetic booking, explicit support handoff, manager-only simulated center receipt and denied role path.
 - [api.md](api.md): every endpoint, grouped by router, with who may call it.
 - [ai-providers.md](ai-providers.md): provider slots, keys, call cap, THB budget, free-only policy and test receipts.
 - [safety.md](safety.md): safety layers and the file that implements each one.
@@ -24,6 +25,12 @@ Documentation for LabClear 4.0.0-rc3. Start with the [project README](../README.
 - [testing.md](testing.md): Python and browser suites, benchmark modes and recorded evidence.
 - [evidence/current/README.md](evidence/current/README.md): recorded OFFLINE benchmark results and the resilience fault suite.
 
+## Presentation
+
+- [Final HTML slide deck](../presentation/index.html): 10 timed core slides, five appendix slides, and local interactive workflow companions.
+- [Delivery and evidence report](../presentation/DELIVERY_REPORT.md): final format, source limits, cleanup and release receipt.
+- [Playwright QA](../presentation/QA_REPORT.md): requirement-to-case matrix, actual-run screenshots, outcomes and remaining risks.
+
 ## Data and notices
 
 - [../knowledge/README.md](../knowledge/README.md): the 148-record knowledge library and how retrieval works.
@@ -36,8 +43,8 @@ Documentation for LabClear 4.0.0-rc3. Start with the [project README](../README.
 - [../CHANGELOG.md](../CHANGELOG.md): release history.
 - [integration/CLAUDE_INTEGRATION_REPORT.md](integration/CLAUDE_INTEGRATION_REPORT.md): 4.0.0-rc3 integration report and acceptance matrix.
 - [report/](report/README.md): the Final Project submission report (Thai, Word), the business report and the architecture, tech stack and agent flow report (Thai, PDF), and the slides as PDF.
-- [../presentation/index.html](../presentation/index.html): presentation deck (open in a browser; English).
-- [assets/](assets/): architecture and message-flow diagrams (built by `scripts/build_diagrams.py`).
+- [../presentation/index.html](../presentation/index.html): final Thai-first HTML presentation; the primary delivery format.
+- [assets/](assets/): architecture, message-flow and business-workflow diagrams (built by `scripts/build_diagrams.py`).
 
 
 ## Subsequent engineering additions (2026-10-10)

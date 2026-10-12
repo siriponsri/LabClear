@@ -77,7 +77,7 @@ def listing(tx, owner: str) -> dict:
 
 
 def _idle(current: dict) -> None:
-    if current["data"]["mode"] != "bot":
+    if current["data"]["mode"] not in {"bot", "closed"}:
         raise ConversationError("staff_active", "Finish the conversation with our team before switching chats.", 409)
     if current["data"].get("busy_until", 0) > time.time():
         raise ConversationError("busy", "Wait for the current reply before switching chats.", 409)
@@ -128,7 +128,9 @@ def open_chat(tx, owner: str, chat_id: str) -> dict:
         rep = tx.get(rid) if rid else None
         if rid and (not rep or rep["owner"] != owner or not rep["data"].get("confirmed")):
             data[key] = ""
-    data.update(mode="bot", busy_until=0, version=current["data"]["version"] + 1, updated=time.time())
+    closed_ticket = any(t["state"] == "closed" and t["data"].get("chat_id") == chat_id for t in tx.find("ticket", owner))
+    data.update(mode="closed" if closed_ticket else "bot", busy_until=0,
+                version=current["data"]["version"] + 1, updated=time.time())
     data.pop("turn_id", None)
     return tx.put(current["id"], "conversation", owner, data)
 

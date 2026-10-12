@@ -4,17 +4,27 @@
    so these results are UI/flow evidence, never model or OCR quality evidence.
    Usage: TEST_PYTHON=/path/to/python node tests/browser/uat.cjs   (UAT_OUT to change output folder) */
 const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
-const { spawn, execSync } = require('child_process'), fs = require('fs'), path = require('path'), os = require('os');
+const crypto = require('crypto');
+const { spawn, spawnSync, execSync } = require('child_process'), fs = require('fs'), path = require('path'), os = require('os');
 const root = path.resolve(__dirname, '../..');
 const out = path.resolve(root, process.env.UAT_OUT || 'test-results/uat'); fs.mkdirSync(out, { recursive: true });
 const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'labclear-uat-')); const port = Number(process.env.UI_TEST_PORT || 8098), base = 'http://127.0.0.1:' + port;
+const startedAt = new Date().toISOString();
 const py = process.env.TEST_PYTHON || path.join(root, '.venv', process.platform === 'win32' ? 'Scripts/python.exe' : 'bin/python');
-let sha = 'unknown', dirty = null; try { sha = execSync('git rev-parse HEAD', { cwd: root }).toString().trim(); dirty = execSync('git status --porcelain', { cwd: root }).toString().trim().length > 0; } catch { /* no git */ }
+let sha = 'unknown', dirty = null, diffSha = null, statusPorcelain = []; try {
+  sha = execSync('git rev-parse HEAD', { cwd: root }).toString().trim();
+  const statusText = execSync('git status --porcelain', { cwd: root }).toString();
+  statusPorcelain = statusText.trim() ? statusText.trim().split(/\r?\n/) : [];
+  dirty = statusPorcelain.length > 0;
+  const diffResult = spawnSync('git', ['diff', '--binary'], { cwd: root, maxBuffer: 64 * 1024 * 1024 });
+  if (diffResult.error || diffResult.status !== 0) throw diffResult.error || Error('git diff failed');
+  diffSha = crypto.createHash('sha256').update(diffResult.stdout).digest('hex');
+} catch { /* no git */ }
 const server = (() => { try { require('child_process').execSync(`node -e "fetch('${'http://127.0.0.1:' + (process.env.UI_TEST_PORT || 8098)}/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"`, { stdio: 'ignore' }); console.error('Port in use: another server answers on the UAT port. Stop it first; results would come from its database.'); process.exit(2); } catch { /* port free */ } return null; })() || spawn(py, ['scripts/offline_check.py', 'browser', String(port)], { cwd: root, env: { ...process.env, UI_TEST_PORT: String(port), PROVIDER_NETWORK_ENABLED: 'false', BUSINESS_DB_PATH: path.join(tmp, 'db.sqlite'), BUSINESS_KEY_PATH: path.join(tmp, 'key'), BUSINESS_DATA_KEY: '', DATABASE_URL: '', VERCEL: '', RENDER: '', APP_ENV: 'test', BUSINESS_EXTERNAL_ENABLED: '', STRIPE_SECRET_KEY: '', LINE_CHANNEL_SECRET: '', LINE_CHANNEL_ACCESS_TOKEN: '' }, stdio: ['ignore', 'ignore', 'pipe'] });
 let log = ''; server.on('error', e => { log += 'Fixture process failed: ' + e.message; }); server.stderr.on('data', x => { log += x; });
 let browser, activeCaseId = null; const records = [], errors = [], shots = [], screenshotEvidence = []; const wait = ms => new Promise(r => setTimeout(r, ms));
 const assert = (c, m) => { if (!c) throw Error(m); };
-async function check(id, name, fn) { const start = Date.now(); activeCaseId = id; try { await fn(); records.push({ id, name, status: 'PASS', ms: Date.now() - start }); } catch (e) { records.push({ id, name, status: 'FAIL', ms: Date.now() - start, error: e.message.split('\n')[0] }); if (process.env.UAT_DEBUG && browser) { let n = 0; for (const ctx of browser.contexts()) for (const pg of ctx.pages()) await pg.screenshot({ path: path.join(out, 'fail-' + id + '-' + (n++) + '.png') }).catch(() => {}); } } finally { activeCaseId = null; } }
+async function check(id, name, fn) { const start = Date.now(); activeCaseId = id; try { await fn(); records.push({ id, name, expected: 'All scenario assertions and required UI steps complete.', actual: 'All scenario assertions passed.', status: 'PASS', ms: Date.now() - start }); } catch (e) { const actual = e.message.split('\n')[0]; records.push({ id, name, expected: 'All scenario assertions and required UI steps complete.', actual, status: 'FAIL', ms: Date.now() - start, error: actual }); if (process.env.UAT_DEBUG && browser) { let n = 0; for (const ctx of browser.contexts()) for (const pg of ctx.pages()) await pg.screenshot({ path: path.join(out, 'fail-' + id + '-' + (n++) + '.png') }).catch(() => {}); } } finally { activeCaseId = null; } }
 async function shot(page, name, full = false) { const caseId = activeCaseId || 'UNASSIGNED'; const file = caseId + '_' + name + '.png'; await page.screenshot({ path: path.join(out, file), fullPage: full }); shots.push(file); screenshotEvidence.push({ case_id: caseId, file, viewport: await page.evaluate(() => ({ width: innerWidth, height: innerHeight })) }); }
 const noOverflow = page => page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1);
 function nextOpenDay(days) { const d = new Date(Date.now() + 7 * 3600e3 + days * 86400e3); while (d.getUTCDay() === 0) d.setUTCDate(d.getUTCDate() + 1); return d.toISOString().slice(0, 10); }
@@ -143,8 +153,8 @@ async function signUp(page, email) {
     });
 
     const sctx = await browser.newContext({ viewport: { width: 1440, height: 1000 }, acceptDownloads: true }); const s = await sctx.newPage(); watch(s, 'staff');
-    await check('UI-11', 'Staff: separate session sign-in, inbox shows organization request with details', async () => {
-      await s.goto(base + '/staff', { waitUntil: 'networkidle' }); await s.getByLabel('Email or username').fill('staff@example.invalid'); await s.getByLabel('Password', { exact: true }).fill('ui-test-only-password');
+    await check('UI-11', 'Manager: separate session sign-in, inbox shows organization request with details', async () => {
+      await s.goto(base + '/staff', { waitUntil: 'networkidle' }); await s.getByLabel('Email or username').fill('manager@example.invalid'); await s.getByLabel('Password', { exact: true }).fill('ui-test-only-password');
       await s.locator('#modal').getByRole('button', { name: 'Sign in', exact: true }).click(); await s.locator('#modal').waitFor({ state: 'hidden' });
       await s.locator('.kpi').first().waitFor(); await shot(s, 'staff-overview-1440');
       await s.locator('[data-view=staff]').click(); await s.getByRole('button', { name: /Organization inquiry: Example Logistics/ }).click(); await s.getByText('Organization request').waitFor(); await s.getByText('Onsite at their workplace').waitFor();
@@ -158,10 +168,39 @@ async function signUp(page, email) {
       await s.getByRole('button', { name: 'Issue quotation' }).click(); await s.locator('#modal').waitFor({ state: 'hidden' }); await s.getByText('v2', { exact: true }).waitFor(); await shot(s, 'staff-quote-1440');
     });
     await check('UI-13', 'Staff: confirm one request, decline another with a reason', async () => {
-      await s.locator('[data-view=operations]').click(); await s.getByRole('button', { name: /Awaiting confirmation \(2\)/ }).waitFor();
-      await s.getByRole('button', { name: 'Confirm appointment' }).first().click(); await s.locator('#notice').filter({ hasText: 'Confirmed' }).waitFor();
-      await s.getByRole('button', { name: 'Decline', exact: true }).first().click(); await s.getByLabel('Reason shown to the customer').fill('No technician available at that time (test).');
-      await s.getByRole('button', { name: 'Decline request' }).click(); await s.getByRole('button', { name: /Awaiting confirmation \(0\)/ }).waitFor(); await shot(s, 'staff-appointments-1440');
+      const appointmentStaffContext = await browser.newContext({ viewport: { width: 1440, height: 1000 } });
+      const appointmentStaff = await appointmentStaffContext.newPage(); watch(appointmentStaff, 'appointment staff');
+      try {
+        await appointmentStaff.goto(base + '/staff', { waitUntil: 'networkidle' });
+        await appointmentStaff.getByLabel('Email or username').fill('appointments-staff@example.invalid');
+        await appointmentStaff.getByLabel('Password', { exact: true }).fill('ui-test-only-password');
+        await appointmentStaff.locator('#modal').getByRole('button', { name: 'Sign in', exact: true }).click();
+        await appointmentStaff.locator('#modal').waitFor({ state: 'hidden' });
+        const staffSession = await (await appointmentStaff.request.get(base + '/api/business/session')).json();
+        assert(staffSession.user.role === 'staff', 'appointments account is not a support staff role');
+        await appointmentStaff.locator('[data-view=operations]').click();
+        await appointmentStaff.getByRole('button', { name: /Awaiting confirmation \(2\)/ }).waitFor();
+        await appointmentStaff.getByRole('button', { name: 'Confirm appointment' }).first().click();
+        await appointmentStaff.locator('#notice').filter({ hasText: 'Confirmed' }).waitFor();
+        assert(await appointmentStaff.getByRole('button', { name: 'Record simulated receipt' }).count() === 0,
+          'support staff can see the settlement control');
+        await appointmentStaff.getByRole('button', { name: 'Decline', exact: true }).first().click();
+        await appointmentStaff.getByLabel('Reason shown to the customer').fill('No technician available at that time (test).');
+        await appointmentStaff.getByRole('button', { name: 'Decline request' }).click();
+        await appointmentStaff.getByRole('button', { name: /Awaiting confirmation \(0\)/ }).waitFor();
+        await shot(appointmentStaff, 'staff-appointments-1440');
+      } finally { await appointmentStaffContext.close(); }
+      const managerContext = await browser.newContext(); const manager = await managerContext.newPage(); watch(manager, 'manager settlement');
+      try {
+        await manager.goto(base + '/staff', { waitUntil: 'networkidle' }); await manager.getByLabel('Email or username').fill('admin'); await manager.getByLabel('Password', { exact: true }).fill('1234');
+        await manager.locator('#modal').getByRole('button', { name: 'Sign in', exact: true }).click(); await manager.locator('#modal').waitFor({ state: 'hidden' });
+        const managerSession = await (await manager.request.get(base + '/api/business/session')).json();
+        assert(managerSession.user.role === 'manager', 'settlement account is not a manager role');
+        await manager.locator('[data-view=operations]').click();
+        await manager.getByRole('button', { name: /Confirmed \(1\)/ }).click();
+        await manager.getByRole('button', { name: 'Record simulated receipt' }).first().waitFor();
+        await shot(manager, 'manager-simulated-receipt-1440');
+      } finally { await managerContext.close(); }
     });
     await check('UI-14', 'Customer: notifications from events, calendar file, quotation versions and PDF, accept latest', async () => {
       await c.goto(base + '/app?view=bookings', { waitUntil: 'networkidle' }); assert(Number(await c.locator('#bell-count').innerText()) >= 3, 'bell count');
@@ -203,10 +242,14 @@ async function signUp(page, email) {
         await customer.getByText('Offline UI test double: your question was received.').waitFor();
         let workspace=(await (await customer.request.get(base + '/api/business/workspace')).json());
         const botChatId=workspace.conversation.chat_id;
+        const selectedHistoryMessage=workspace.conversation.messages.find(m=>m.role==='user' && m.content==='UI_TEST_HANDOFF_START');
+        assert(selectedHistoryMessage?.id, 'synthetic pre-handoff message has no stable ID');
         assert(workspace.conversation.mode==='bot' && workspace.conversation.messages.some(m=>m.role==='assistant' && m.content==='Offline UI test double: your question was received.'), 'offline bot did not answer before handoff');
         await shot(customer, 'handoff-bot-chat-1440');
 
         await customer.locator('#staff-request').click(); await customer.getByLabel('How can our team help?').fill('UI UAT live help request');
+        await customer.locator('[data-share-message-id="' + selectedHistoryMessage.id + '"]').check();
+        await shot(customer, 'handoff-consent-selected-1440');
         const handoffResponsePromise=customer.waitForResponse(r=>r.url().endsWith('/handoffs') && r.request().method()==='POST');
         await customer.getByRole('button', { name: 'Send to our team' }).click();
         const handoffTicket=await (await handoffResponsePromise).json();
@@ -221,6 +264,8 @@ async function signUp(page, email) {
         await customer.locator('#notice').waitFor({ state: 'hidden' });
         await shot(customer, 'handoff-queued-1440');
 
+        const queuedStaffView=(await (await s.request.get(base + '/api/business/staff/tickets/' + handoffTicket.id)).json());
+        assert(queuedStaffView.conversation.messages.length===0 && queuedStaffView.bookings.length===0, 'unassigned staff preview exposed customer history or bookings');
         await s.locator('[data-view=staff]').click(); await s.locator('[data-ticket="' + handoffTicket.id + '"]').click();
         await s.getByRole('heading', { name: 'UI UAT live help request' }).waitFor();
         const btnTake = s.getByRole('button', { name: 'Take over' }); if (await btnTake.count()) await Promise.all([s.waitForResponse(r => r.url().endsWith('/state')), btnTake.click()]);
@@ -236,6 +281,8 @@ async function signUp(page, email) {
         await Promise.all([s.waitForResponse(r => r.url().endsWith('/messages') && r.request().method() === 'POST'), s.getByRole('button', { name: 'Send reply' }).click()]);
         await customer.getByText(secondReply, { exact: true }).waitFor({ timeout: 12000 });
         staffSnapshot=(await (await s.request.get(base + '/api/business/staff/tickets/' + handoffTicket.id)).json());
+        assert(staffSnapshot.conversation.messages.some(m=>m.id===selectedHistoryMessage.id), 'the selected chat message was not shared after staff takeover');
+        assert(!staffSnapshot.conversation.messages.some(m=>m.content==='Offline UI test double: your question was received.'), 'an unselected assistant message leaked to staff');
         assert(staffSnapshot.ticket.data.conversation_version===staffSnapshot.conversation.version, 'second staff reply left the ticket version stale');
         assert(staffSnapshot.ticket.data.mode_epoch===staffSnapshot.conversation.mode_epoch, 'second staff reply left the ticket mode epoch stale');
         assert(staffSnapshot.ticket.data.first_response_at===firstResponseAt, 'later staff reply overwrote first response time');
@@ -307,9 +354,90 @@ async function signUp(page, email) {
         await customer.locator('#notice').waitFor({ state: 'hidden' });
         await shot(customer, 'handoff-requeued-1440');
         await shot(s, 'staff-inbox-1440');
+        await s.locator('[data-ticket="' + handoffTicket.id + '"]').click();
+        await s.getByRole('button', { name: 'Take over' }).waitFor();
+        await Promise.all([s.waitForResponse(r=>r.url().endsWith('/state') && r.request().method()==='POST'), s.getByRole('button', { name: 'Take over' }).click()]);
+        await Promise.all([s.waitForResponse(r=>r.url().endsWith('/state') && r.request().method()==='POST'), s.getByRole('button', { name: 'Close case' }).click()]);
+        await customer.waitForFunction(async (id) => {
+          const state=await (await fetch('/api/business/workspace',{cache:'no-store'})).json();
+          return state.conversation.mode==='closed' && state.tickets.find(t=>t.id===id)?.state==='closed';
+        }, handoffTicket.id, { timeout: 12000 });
+        const closedBefore=(await (await customer.request.get(base + '/api/business/workspace')).json());
+        const rejectedClosed=await customer.request.post(base + '/api/business/chat', { data: { message: 'UI_TEST_CLOSED_THREAD' }, headers: { 'X-Business-CSRF': session.csrf, Origin: base } });
+        assert(rejectedClosed.status()===409 && (await rejectedClosed.json()).code==='conversation_closed', 'closed thread accepted assistant chat');
+        const closedAfter=(await (await customer.request.get(base + '/api/business/workspace')).json());
+        assert(JSON.stringify(closedAfter.conversation)===JSON.stringify(closedBefore.conversation) && JSON.stringify(closedAfter.tickets)===JSON.stringify(closedBefore.tickets), 'closed chat rejection mutated state');
+        await customer.setViewportSize({ width: 390, height: 844 });
+        await customer.waitForFunction(() => {
+          const ids = ['message', 'send', 'attach', 'demo-open'];
+          return ids.every(id => document.getElementById(id)?.disabled === true) &&
+            document.querySelector('#handoff-state button')?.textContent.trim() === 'New chat';
+        }, null, { timeout: 10000 });
+        assert(await customer.locator('#message').isDisabled() && await customer.locator('#send').isDisabled(), 'closed composer remained active');
+        assert(await customer.locator('#attach').isDisabled() && await customer.locator('#demo-open').isDisabled(), 'closed chat still allowed report attachments');
+        assert(await noOverflow(customer), 'closed chat overflowed at mobile width');
+        await shot(customer, 'handoff-closed-390');
+        await customer.locator('#handoff-state').getByRole('button', { name: 'New chat', exact: true }).click();
+        let fresh=(await (await customer.request.get(base + '/api/business/workspace')).json());
+        assert(fresh.conversation.chat_id!==botChatId && fresh.conversation.mode==='bot', 'new chat did not start in bot mode');
+        await customer.locator('#message').fill('UI_TEST_AFTER_CLOSED_NEW_CHAT'); await customer.locator('#send').click();
+        const activeAssistantReply=customer.locator('#messages .turn.ai .message-body').last();
+        await activeAssistantReply.waitFor({ state: 'visible', timeout: 12000 });
+        assert((await activeAssistantReply.innerText()).trim()==='Offline UI test double: your question was received.', 'new chat did not render its latest assistant reply in the active transcript');
+        await shot(customer, 'handoff-new-chat-390');
+        await customer.locator('#chats-toggle').click();
+        await customer.locator('.cl-open', { hasText: 'UI_TEST_HANDOFF_START' }).click();
+        await customer.waitForFunction(async (id) => {
+          const state=await (await fetch('/api/business/workspace',{cache:'no-store'})).json();
+          return state.conversation.chat_id===id && state.conversation.mode==='closed';
+        }, botChatId, { timeout: 12000 });
+        await customer.waitForFunction(() => {
+          return document.querySelector('#message')?.disabled === true &&
+            document.querySelector('#handoff-state button')?.textContent.trim() === 'New chat';
+        }, null, { timeout: 12000 });
+        assert(await customer.locator('#message').isDisabled(), 'opening closed history re-enabled the composer');
+        await shot(customer, 'handoff-history-closed-390');
+        const closedHistoryNewChat = customer.waitForResponse(r =>
+          r.url().endsWith('/api/business/chats') && r.request().method() === 'POST'
+        );
+        await customer.locator('#handoff-state').getByRole('button', { name: 'New chat', exact: true }).click();
+        await closedHistoryNewChat;
+        await customer.waitForFunction(() => {
+          return document.querySelector('#handoff-state button')?.textContent.trim() !== 'New chat' &&
+            document.querySelector('#message')?.disabled === false;
+        }, null, { timeout: 12000 });
+        fresh=(await (await customer.request.get(base + '/api/business/workspace')).json());
+        assert(fresh.conversation.chat_id!==botChatId && fresh.conversation.mode==='bot', 'new chat from closed history failed');
       } catch (error) {
         await shot(customer, 'handoff-failed-1440').catch(() => {});
         throw error;
+      } finally { await isolatedContext.close(); }
+    });
+    await check('UI-16b', 'Handoff privacy: no history is preselected or visible in the unassigned staff queue', async () => {
+      const isolatedContext=await browser.newContext({ viewport: { width: 1440, height: 1000 } });
+      const customer=await isolatedContext.newPage(); watch(customer, 'handoff privacy');
+      try {
+        await customer.goto(base + '/app', { waitUntil: 'networkidle' });
+        await signUp(customer, 'handoff-privacy-ui16b@example.invalid');
+        await customer.locator('#message').fill('UI_TEST_UNSHARED_HANDOFF_MARKER');
+        await customer.getByRole('button', { name: 'Send message' }).click();
+        await customer.getByText('Offline UI test double: your question was received.').waitFor();
+        await customer.locator('#staff-request').click();
+        const choices=customer.locator('[data-share-message-id]');
+        assert(await choices.count()>=1, 'handoff did not offer explicit per-message sharing');
+        assert(!await choices.evaluateAll(xs=>xs.some(x=>x.checked)), 'chat history was preselected for sharing');
+        await shot(customer, 'handoff-consent-none-1440');
+        const responsePromise=customer.waitForResponse(r=>r.url().endsWith('/handoffs') && r.request().method()==='POST');
+        await customer.getByLabel('How can our team help?').fill('UI_TEST_NO_TRANSCRIPT');
+        await customer.getByRole('button', { name: 'Send to our team' }).click();
+        const ticket=await (await responsePromise).json();
+        const preview=(await (await s.request.get(base + '/api/business/staff/tickets/' + ticket.id)).json());
+        assert(preview.conversation.messages.length===0 && preview.bookings.length===0, 'unassigned staff queue exposed unselected history or bookings');
+        await s.locator('[data-view=staff]').click();
+        await s.locator('[data-ticket="' + ticket.id + '"]').click();
+        await s.getByRole('heading', { name: 'UI_TEST_NO_TRANSCRIPT' }).waitFor();
+        assert(await s.getByText('UI_TEST_UNSHARED_HANDOFF_MARKER', { exact: true }).count()===0, 'unselected chat content appeared in staff UI');
+        await shot(s, 'handoff-queue-no-history-1440');
       } finally { await isolatedContext.close(); }
     });
     await check('UI-17', 'Manager: price edit persists and reaches the public catalog; branch staff cannot see manager tools', async () => {
@@ -332,10 +460,14 @@ async function signUp(page, email) {
     await check('UI-28', 'Manager: AI providers page saves a provider, masks the key, never returns it', async () => {
       await s.locator('[data-view=ai]').click(); await s.getByRole('heading', { name: 'Language model' }).waitFor();
       assert(await s.locator('#content section.card:not(.agents-card)').count() === 3, 'three AI slots expected');
-      const card = s.locator('#content section.card').filter({ has: s.getByRole('heading', { name: 'Language model' }) });
-      await card.getByLabel('Provider').selectOption('anthropic'); await card.getByLabel('API key').fill('sk-ant-uat-0123456789wxyz');
+      const card = s.locator('#content section.card:not(.agents-card)').first();
+      await card.getByRole('heading', { name: 'Language model', exact: true }).waitFor();
+      const provider = card.getByLabel('Provider');
+      const providerIds = await provider.locator('option').evaluateAll(options => options.map(option => option.value));
+      assert(providerIds.includes('anthropic'), 'Anthropic missing from language-model provider options: ' + JSON.stringify(providerIds));
+      await provider.selectOption('anthropic'); await card.getByLabel('API key').fill('sk-ant-uat-0123456789wxyz');
       await card.getByRole('button', { name: 'Save' }).click(); await s.locator('#notice').filter({ hasText: 'saved' }).waitFor();
-      const again = s.locator('#content section.card').filter({ has: s.getByRole('heading', { name: 'Language model' }) });
+      const again = s.locator('#content section.card:not(.agents-card)').first();
       await again.getByText('Saved key: •••• wxyz').waitFor(); assert(await again.getByLabel('Provider').inputValue() === 'anthropic', 'provider not kept');
       const body = await (await s.request.get(base + '/api/business/staff/ai-providers')).text(); assert(!body.includes('0123456789wxyz'), 'key returned to browser');
       await shot(s, 'ai-providers-1440', true);
@@ -575,8 +707,29 @@ async function signUp(page, email) {
     }
     await check('UI-22', 'No uncaught browser JavaScript errors', async () => assert(!errors.length, JSON.stringify(errors.slice(0, 5))));
   } catch (e) { console.error(e.message); process.exitCode = 1; } finally {
-    const failed = records.filter(r => r.status !== 'PASS').length; if (failed) process.exitCode = 1;
-    fs.writeFileSync(path.join(out, 'browser-uat.json'), JSON.stringify({ date: new Date().toISOString(), candidate_sha: sha, working_tree_dirty: dirty, mode: 'MOCKED_TEST_ONLY for LLM and OCR; real UI/API/storage/permissions. Not model or OCR quality evidence.', passed: records.length - failed, failed, records, errors, screenshots: shots, screenshot_evidence: screenshotEvidence }, null, 2));
+    const failed = records.filter(r => r.status !== 'PASS').length;
+    const exitCode = process.exitCode || (failed || errors.length ? 1 : 0);
+    if (exitCode) process.exitCode = exitCode;
+    const python = spawnSync(py, ['--version'], { encoding: 'utf8' });
+    const screenshotRecords = screenshotEvidence.map(item => ({
+      ...item,
+      sha256: crypto.createHash('sha256').update(fs.readFileSync(path.join(out, item.file))).digest('hex')
+    }));
+    fs.writeFileSync(path.join(out, 'browser-uat.json'), JSON.stringify({
+      started_at: startedAt, finished_at: new Date().toISOString(), candidate_sha: sha,
+      working_tree_dirty: dirty, git_diff_binary_sha256: diffSha, status_porcelain_at_start: statusPorcelain,
+      environment: {
+        platform: process.platform, architecture: process.arch, node: process.version,
+        playwright: require('playwright/package.json').version, browser: 'Chromium',
+        browser_version: browser ? browser.version() : null,
+        python: (python.stdout || python.stderr || '').trim(),
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        fixture: 'isolated SQLite; PROVIDER_NETWORK_ENABLED=false; synthetic test data'
+      },
+      mode: 'MOCKED_TEST_ONLY for LLM and OCR; real UI/API/storage/permissions. Not model or OCR quality evidence.',
+      passed: records.length - failed, failed, exit_code: exitCode, records, errors, screenshots: shots,
+      screenshot_evidence: screenshotRecords
+    }, null, 2));
     console.log(records.map(r => `${r.status} ${r.id} ${r.name}${r.error ? ' — ' + r.error : ''}`).join('\n'));
     if (browser) await browser.close(); server.kill(); fs.rmSync(tmp, { recursive: true, force: true });
   }

@@ -1,6 +1,6 @@
 # Reports
 
-Three Thai reports and the English slide deck for LabClear 4.0.0-rc3. All facts come from the
+Three Thai reports and the HTML-first slide presentation for LabClear 4.0.0-rc3. All facts come from the
 repository (`business_data/`, `knowledge/`, the code, `docs/evidence/`). Live-model results are the
 3.0.x runs on Render; 4.0.0-rc3 has OFFLINE, regression and resilience results only, because its
 LIVE_FREE run is blocked at the preflight.
@@ -10,7 +10,7 @@ LIVE_FREE run is blocked at the preflight.
 | [`LabClear_Final_Project_Report_TH.docx`](LabClear_Final_Project_Report_TH.docx) | Coursework submission report, structured on the Final Project brief. Word only. Missing facts are yellow placeholders `[รอข้อมูล: …]` for the team to fill in Word | `python3 scripts/build_report.py` |
 | [`LabClear_Business_Report_TH.pdf`](LabClear_Business_Report_TH.pdf) ([source](LabClear_Business_Report_TH.md)) | Business report: problem, customers, products and prices, customer journey, operations, AI cost control, KPIs, risks, owner decisions | `node scripts/build_docs_pdf.mjs business` |
 | [`LabClear_Architecture_Report_TH.pdf`](LabClear_Architecture_Report_TH.pdf) ([source](LabClear_Architecture_Report_TH.md)) | Architecture, tech stack and agent flow in detail, with file references | `node scripts/build_docs_pdf.mjs architecture` |
-| [`LabClear_Slides.pdf`](LabClear_Slides.pdf) | The English deck ([`presentation/index.html`](../../presentation/index.html)) as PDF, 12 slides with speaker notes in the HTML | `node scripts/build_docs_pdf.mjs slides` |
+| [`LabClear_Slides.pdf`](LabClear_Slides.pdf) | Static PDF fallback rendered from the final Thai HTML deck ([`presentation/index.html`](../../presentation/index.html)); the HTML remains the primary presentation | `node scripts/build_docs_pdf.mjs slides` |
 
 ## Format
 
@@ -41,6 +41,17 @@ node scripts/build_docs_pdf.mjs all                                 # business, 
 
 The PDF builder lays TH Sarabun New out with a 1.5 em line box (`ascent-override` in the page CSS) so
 stacked Thai marks do not spill onto the previous page.
+
+## Current Render QA — 2026-10-12
+
+The business, architecture, and HTML slide PDFs were rebuilt from their current sources. All 58 pages
+were rendered and reviewed in [current report-render evidence](../evidence/current/report-render-final-20261012-03/).
+The PDFium manifest records page count, SHA-256, Thai text presence, replacement glyphs, image objects,
+and empty-page checks. Result: `PASS`, 0 empty pages, 0 pages without Thai text, 0 replacement glyphs;
+2 image objects are present in the report PDFs. Contact sheets cover every page and representative
+full-size pages show tables, figures, and page boundaries. This Windows environment does not have
+TH Sarabun New installed; the existing IBM Plex Sans Thai fallback from `static/fonts/` was used.
+This is a font fallback, not a change to the report theme.
 
 
 ## Engineering evidence addendum — 2026-10-10

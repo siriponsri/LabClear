@@ -1,5 +1,5 @@
 from __future__ import annotations
-import asyncio,base64,hashlib,hmac,json,secrets,time
+import asyncio,base64,copy,hashlib,hmac,json,secrets,time
 from datetime import datetime,timedelta
 from concurrent.futures import ThreadPoolExecutor
 import pytest
@@ -50,6 +50,10 @@ def confirmed(c,**kw):
 
 def book(c,key=None,**kw):
     return c.post('/api/business/bookings',json={'package_ids':['P02'],'branch_id':'BKK01','date':slot(),'time':'09:00','idempotency_key':key or secrets.token_hex(12),**kw})
+
+def notification_snapshot(owner):
+    with db.transaction() as tx:
+        return sorted((row['id'],row['state'],copy.deepcopy(row['data'])) for row in tx.find('notification',owner))
 
 def test_business_surface_and_catalog():
     c=TestClient(app)
@@ -193,11 +197,19 @@ def test_staff_reply_keeps_ticket_version_in_sync_after_first_response():
 
 def test_handoff_binds_exact_chat_and_stale_staff_mutations_fail_closed():
     c=client();c.post('/api/business/chat',json={'message':'Chat one'})
-    created=c.post('/api/business/handoffs',json={'summary':'Use chat one'});assert created.status_code==200
+    chat=c.get('/api/business/workspace').json()['conversation']
+    user_message=next(m for m in chat['messages'] if m['role']=='user')
+    created=c.post('/api/business/handoffs',json={'summary':'Use chat one','selected_message_ids':[user_message['id']]});assert created.status_code==200
     ticket=created.json();assert ticket['data']['chat_id']==c.get('/api/business/workspace').json()['conversation']['chat_id']
     assert ticket['data']['mode_epoch']==ticket['data']['conversation_version']
     s=client();promote(s)
-    assert s.get('/api/business/staff/tickets/'+ticket['id']).json()['conversation']['chat_id']==ticket['data']['chat_id']
+    waiting=s.get('/api/business/staff/tickets/'+ticket['id']).json()
+    assert waiting['conversation']['chat_id']==ticket['data']['chat_id'] and waiting['conversation']['messages']==[]
+    assert s.post('/api/business/staff/tickets/'+ticket['id']+'/state',json={
+        'state':'staff','expected_version':waiting['conversation']['version'],
+        'assignment_epoch':waiting['ticket']['data']['assignment_epoch']}).status_code==200
+    claimed=s.get('/api/business/staff/tickets/'+ticket['id']).json()
+    assert [m['id'] for m in claimed['conversation']['messages']]==[user_message['id']]
     with db.transaction() as tx:
         current=business.conversation(tx,ticket['owner']);current['data']['mode']='bot';tx.put(current['id'],'conversation',ticket['owner'],current['data'])
         business.chats.new_chat(tx,ticket['owner'])
@@ -218,6 +230,11 @@ def test_handoff_binds_exact_chat_and_stale_staff_mutations_fail_closed():
         'state':'staff','expected_version':waiting['conversation']['version'],
         'assignment_epoch':waiting['ticket']['data']['assignment_epoch']}).status_code==200
     current=s.get('/api/business/staff/tickets/'+ticket2['id']).json();epoch=current['ticket']['data']['assignment_epoch'];version=current['conversation']['version']
+    legacy_reply=s.post('/api/business/staff/tickets/'+ticket2['id']+'/messages',json={'message':'Legacy payload'})
+    assert legacy_reply.status_code==422
+    unchanged=s.get('/api/business/staff/tickets/'+ticket2['id']).json()
+    assert unchanged['conversation']['version']==version
+    assert unchanged['conversation']['messages']==current['conversation']['messages']
     assert s.post('/api/business/staff/tickets/'+ticket2['id']+'/messages',json={'message':'stale','expected_version':version-1,'assignment_epoch':epoch}).status_code==409
     assert s.post('/api/business/staff/tickets/'+ticket2['id']+'/messages',json={'message':'fresh','expected_version':version,'assignment_epoch':epoch}).status_code==200
     sent=s.get('/api/business/staff/tickets/'+ticket2['id']).json()
@@ -229,6 +246,45 @@ def test_handoff_binds_exact_chat_and_stale_staff_mutations_fail_closed():
     assert s.post('/api/business/staff/tickets/'+ticket2['id']+'/state',json={
         'state':'resume_pending','expected_version':current['conversation']['version'],
         'assignment_epoch':current['ticket']['data']['assignment_epoch']}).status_code==404
+
+def test_handoff_shares_only_selected_items_after_staff_claims_ticket():
+    c=client();owner=c.get('/api/business/workspace').json()['user']['id']
+    first=business.msg('user','SHARED_HANDOFF_MESSAGE')
+    first['private_source_ids']=['must-not-leak'];first['trace']=[{'prompt':'must-not-leak'}]
+    private=business.msg('assistant','UNSELECTED_PRIVATE_MESSAGE')
+    with db.transaction() as tx:
+        row=business.conversation(tx,owner);row['data']['messages']=[first,private]
+        tx.put(row['id'],'conversation',owner,row['data'])
+    selected_booking=book(c).json();private_booking=book(c).json()
+    ticket=c.post('/api/business/handoffs',json={
+        'summary':'A synthetic support request',
+        'selected_message_ids':[first['id']],
+        'selected_booking_ids':[selected_booking['id']],
+    }).json()
+
+    s=client();promote(s)
+    queued=s.get('/api/business/staff/tickets/'+ticket['id']).json()
+    assert queued['conversation']['messages']==[] and queued['bookings']==[]
+    claim={'state':'staff','expected_version':queued['conversation']['version'],
+           'assignment_epoch':queued['ticket']['data']['assignment_epoch']}
+    assert s.post('/api/business/staff/tickets/'+ticket['id']+'/state',json=claim).status_code==200
+
+    view=s.get('/api/business/staff/tickets/'+ticket['id']).json()
+    assert [m['content'] for m in view['conversation']['messages']]==['SHARED_HANDOFF_MESSAGE']
+    assert 'private_source_ids' not in view['conversation']['messages'][0]
+    assert 'trace' not in view['conversation']['messages'][0]
+    assert [b['id'] for b in view['bookings']]==[selected_booking['id']]
+    assert private_booking['id'] not in {b['id'] for b in view['bookings']}
+    customer_view=c.get('/api/business/workspace').json()['conversation']['messages']
+    assert any(m['content']=='UNSELECTED_PRIVATE_MESSAGE' for m in customer_view)
+
+def test_handoff_rejects_message_ids_from_outside_the_current_chat_without_mutation():
+    c=client();before=c.get('/api/business/workspace').json()
+    response=c.post('/api/business/handoffs',json={
+        'summary':'Synthetic request','selected_message_ids':['not-in-this-chat']})
+    assert response.status_code==422 and response.json()['code']=='handoff_selection_invalid'
+    after=c.get('/api/business/workspace').json()
+    assert after['conversation']==before['conversation'] and after['tickets']==before['tickets']
 
 def test_customer_can_requeue_ticket_after_staff_returns_chat_to_bot():
     customer=client();ticket=customer.post('/api/business/handoffs',json={'summary':'First request'}).json()
@@ -327,6 +383,101 @@ def test_resume_pending_rejects_chat_messages_without_saving_or_running_agent(mo
     after=customer.get('/api/business/workspace').json()
     assert after['conversation']['messages']==before and after['conversation']['mode']=='resume_pending'
 
+def test_resumed_ticket_does_not_block_handoff_from_a_new_chat():
+    customer=client();owner=customer.get('/api/business/workspace').json()['user']['id']
+    with db.transaction() as tx:
+        c=business.conversation(tx,owner);c['data']['messages']=[business.msg('user','Old chat context')]
+        tx.put(c['id'],'conversation',owner,c['data'])
+    old=customer.post('/api/business/handoffs',json={'summary':'Old chat request'}).json()
+    staff=client();promote(staff,'staff')
+    waiting=staff.get('/api/business/staff/tickets/'+old['id']).json()
+    assert staff.post('/api/business/staff/tickets/'+old['id']+'/state',json={
+        'state':'staff','expected_version':waiting['conversation']['version'],
+        'assignment_epoch':waiting['ticket']['data']['assignment_epoch']}).status_code==200
+    active=staff.get('/api/business/staff/tickets/'+old['id']).json()
+    assert staff.post('/api/business/staff/tickets/'+old['id']+'/state',json={
+        'state':'resume_pending','expected_version':active['conversation']['version'],
+        'assignment_epoch':active['ticket']['data']['assignment_epoch']}).status_code==200
+    pending=customer.get('/api/business/workspace').json();old_chat_id=old['data']['chat_id']
+    old_epoch=next(t for t in pending['tickets'] if t['id']==old['id'])['data']['assignment_epoch']
+    resumed=customer.post('/api/business/handoffs/'+old['id']+'/resume',json={
+        'choice':'confirm','expected_version':pending['conversation']['version'],
+        'assignment_epoch':old_epoch})
+    assert resumed.status_code==200
+    assert customer.post('/api/business/new-chat').status_code==200
+    fresh=customer.get('/api/business/workspace').json()
+    assert fresh['conversation']['chat_id']!=old_chat_id and fresh['conversation']['mode']=='bot'
+
+    created=customer.post('/api/business/handoffs',json={'summary':'New chat request'})
+    assert created.status_code==200,created.text
+    assert created.json()['id']!=old['id']
+    assert created.json()['data']['chat_id']==fresh['conversation']['chat_id']
+    assert created.json()['state']=='waiting'
+    after=customer.get('/api/business/workspace').json()
+    assert after['conversation']['mode']=='waiting'
+    assert next(t for t in after['tickets'] if t['id']==old['id'])['state']=='bot'
+
+def test_refund_request_after_resume_requeues_ticket_for_staff():
+    customer=client();booking=book(customer).json()
+    ticket=customer.post('/api/business/handoffs',json={'summary':'Booking support'}).json()
+    staff=client();promote(staff,'staff')
+    waiting=staff.get('/api/business/staff/tickets/'+ticket['id']).json()
+    assert staff.post('/api/business/staff/tickets/'+ticket['id']+'/state',json={
+        'state':'staff','expected_version':waiting['conversation']['version'],
+        'assignment_epoch':waiting['ticket']['data']['assignment_epoch']}).status_code==200
+    active=staff.get('/api/business/staff/tickets/'+ticket['id']).json()
+    assert staff.post('/api/business/staff/tickets/'+ticket['id']+'/state',json={
+        'state':'resume_pending','expected_version':active['conversation']['version'],
+        'assignment_epoch':active['ticket']['data']['assignment_epoch']}).status_code==200
+    pending=customer.get('/api/business/workspace').json()
+    ticket_view=next(t for t in pending['tickets'] if t['id']==ticket['id'])
+    assert customer.post('/api/business/handoffs/'+ticket['id']+'/resume',json={
+        'choice':'confirm','expected_version':pending['conversation']['version'],
+        'assignment_epoch':ticket_view['data']['assignment_epoch']}).status_code==200
+
+    response=customer.post('/api/business/bookings/'+booking['id']+'/change',json={'operation':'refund_request'})
+    assert response.status_code==200
+    assert response.json()['id']==ticket['id'] and response.json()['state']=='waiting'
+    assert booking['id'] in response.json()['data']['shared_booking_ids']
+    after=customer.get('/api/business/workspace').json()
+    assert after['conversation']['mode']=='waiting'
+    staff_inbox=staff.get('/api/business/staff/inbox').json()
+    assert next(t for t in staff_inbox['tickets'] if t['id']==ticket['id'])['state']=='waiting'
+
+def test_report_confirmation_during_resume_prompt_is_rejected_without_mutation(monkeypatch):
+    async def fail(*args,**kwargs):raise AssertionError('Assistant must not run before customer chooses')
+    monkeypatch.setattr(business.business_agent,'run',fail)
+    customer=client();ticket=customer.post('/api/business/handoffs',json={'summary':'Report review'}).json()
+    owner=ticket['owner'];fields=[{'name':'ALT','value':'35','unit':'U/L','reference':'0-40'}]
+    with db.transaction() as tx:
+        report=tx.put('report_resume_confirm','report',owner,
+                      {'fields':fields,'confirmed':False,'same_person_confirmed':False,'sample':False,'warnings':[]},'draft')
+        c=business.conversation(tx,owner)
+        card=business.msg('assistant','Report values are ready.',kind='report_read',report_id=report['id'],
+                          fields=fields,warnings=[],state='draft',question='Explain these values?',upload_id='upload_resume_confirm')
+        c['data']['messages'].append(card);tx.put(c['id'],'conversation',owner,c['data'])
+    staff=client();promote(staff,'staff')
+    waiting=staff.get('/api/business/staff/tickets/'+ticket['id']).json()
+    assert staff.post('/api/business/staff/tickets/'+ticket['id']+'/state',json={
+        'state':'staff','expected_version':waiting['conversation']['version'],
+        'assignment_epoch':waiting['ticket']['data']['assignment_epoch']}).status_code==200
+    active=staff.get('/api/business/staff/tickets/'+ticket['id']).json()
+    assert staff.post('/api/business/staff/tickets/'+ticket['id']+'/state',json={
+        'state':'resume_pending','expected_version':active['conversation']['version'],
+        'assignment_epoch':active['ticket']['data']['assignment_epoch']}).status_code==200
+
+    before=customer.get('/api/business/workspace').json()
+    before_report=customer.get('/api/business/reports/'+report['id']).json()
+    rejected=customer.post('/api/business/chat/report/confirm',json={'message_id':card['id']})
+    assert rejected.status_code==409 and rejected.json()['code']=='resume_choice_required'
+    after=customer.get('/api/business/workspace').json()
+    after_report=customer.get('/api/business/reports/'+report['id']).json()
+    assert after['conversation']==before['conversation']
+    assert after_report==before_report
+    with db.transaction() as tx:
+        stored_report=tx.get(report['id'])
+        assert stored_report['state']=='draft' and stored_report['data']['confirmed'] is False
+
 def test_staff_cannot_skip_resume_confirmation_or_take_closed_ticket():
     customer=client();ticket=customer.post('/api/business/handoffs',json={'summary':'No silent resume'}).json()
     s=client();promote(s,'staff');waiting=s.get('/api/business/staff/tickets/'+ticket['id']).json()
@@ -341,6 +492,89 @@ def test_staff_cannot_skip_resume_confirmation_or_take_closed_ticket():
     assert s.post('/api/business/staff/tickets/'+ticket['id']+'/state',json={
         'state':'staff','expected_version':closed['data']['conversation_version'],
         'assignment_epoch':closed['data']['assignment_epoch']}).status_code==409
+
+def _close_ticket(ticket):
+    staff=client();promote(staff,'staff')
+    waiting=staff.get('/api/business/staff/tickets/'+ticket['id']).json()
+    assert staff.post('/api/business/staff/tickets/'+ticket['id']+'/state',json={
+        'state':'staff','expected_version':waiting['conversation']['version'],
+        'assignment_epoch':waiting['ticket']['data']['assignment_epoch']}).status_code==200
+    active=staff.get('/api/business/staff/tickets/'+ticket['id']).json()
+    assert staff.post('/api/business/staff/tickets/'+ticket['id']+'/state',json={
+        'state':'closed','expected_version':active['conversation']['version'],
+        'assignment_epoch':active['ticket']['data']['assignment_epoch']}).status_code==200
+    return staff
+
+def test_closed_ticket_blocks_same_chat_and_history_reopen_but_allows_new_chat(monkeypatch):
+    calls=[]
+    async def answer(message,context,**kwargs):
+        calls.append(message)
+        return {'reply':'Offline closed-thread test answer','sources':[],'action':None}
+    monkeypatch.setattr(business.business_agent,'run',answer)
+    customer=client()
+    assert customer.post('/api/business/chat',json={'message':'Before ticket close'}).status_code==200
+    ticket=customer.post('/api/business/handoffs',json={'summary':'Closed-thread regression'}).json()
+    chat_id=ticket['data']['chat_id'];_close_ticket(ticket)
+    before=customer.get('/api/business/workspace').json()
+    rejected=customer.post('/api/business/chat',json={'message':'Closed thread must not run assistant'})
+    assert rejected.status_code==409 and rejected.json()['code']=='conversation_closed'
+    after=customer.get('/api/business/workspace').json()
+    assert after['conversation']==before['conversation'] and after['tickets']==before['tickets']
+    assert calls==['Before ticket close']
+
+    assert customer.post('/api/business/new-chat').status_code==200
+    fresh=customer.get('/api/business/workspace').json()
+    assert fresh['conversation']['chat_id']!=chat_id and fresh['conversation']['mode']=='bot'
+    assert customer.post('/api/business/chat',json={'message':'New chat can use assistant'}).status_code==200
+    assert calls==['Before ticket close','New chat can use assistant']
+    history=customer.get('/api/business/chats').json()
+    assert chat_id in {item['id'] for item in history['chats']}
+
+    assert customer.post('/api/business/chats/'+chat_id+'/open').status_code==200
+    before=customer.get('/api/business/workspace').json()
+    rejected=customer.post('/api/business/chat',json={'message':'History must stay closed'})
+    assert rejected.status_code==409 and rejected.json()['code']=='conversation_closed'
+    after=customer.get('/api/business/workspace').json()
+    assert after['conversation']==before['conversation'] and calls==['Before ticket close','New chat can use assistant']
+
+def test_closed_ticket_rejects_report_upload_before_ocr_or_persistence(monkeypatch):
+    customer=client();ticket=customer.post('/api/business/handoffs',json={'summary':'Closed upload regression'}).json()
+    _close_ticket(ticket);before=customer.get('/api/business/workspace').json();ocr_calls=[]
+    async def read_report(*args,**kwargs):
+        ocr_calls.append((args,kwargs))
+        return {'id':'report_closed_upload','data':{'fields':[],'warnings':[]},'entitlement':{}}
+    monkeypatch.setattr(business,'save_read_report',read_report)
+    image=(business.DEMO_ROOT/'png'/'01_A_Liver.png').read_bytes()
+    rejected=customer.post('/api/business/chat/report',data={'message':'Closed upload probe'},
+                           files=[('files',('synthetic.png',image,'image/png'))])
+    assert rejected.status_code==409 and rejected.json()['code']=='conversation_closed'
+    after=customer.get('/api/business/workspace').json()
+    assert after['conversation']==before['conversation'] and after['reports']==before['reports']
+    assert not ocr_calls
+
+def test_closed_ticket_rejects_report_confirmation_before_mutation_or_assistant(monkeypatch):
+    customer=client();ticket=customer.post('/api/business/handoffs',json={'summary':'Closed report regression'}).json()
+    owner=ticket['owner'];fields=[{'name':'ALT','value':'35','unit':'U/L','reference':'0-40'}]
+    with db.transaction() as tx:
+        report=tx.put('report_closed_confirm','report',owner,
+                      {'fields':fields,'confirmed':False,'same_person_confirmed':False,'sample':False,'warnings':[]},'draft')
+        conversation=business.conversation(tx,owner)
+        card=business.msg('assistant','Report values are ready.',kind='report_read',report_id=report['id'],
+                          fields=fields,warnings=[],state='draft',question='Explain these values?',upload_id='upload_closed_confirm')
+        conversation['data']['messages'].append(card)
+        tx.put(conversation['id'],'conversation',owner,conversation['data'])
+    _close_ticket(ticket);before=customer.get('/api/business/workspace').json()
+    before_report=customer.get('/api/business/reports/'+report['id']).json();calls=[]
+    async def answer(message,context,**kwargs):
+        calls.append(message)
+        return {'reply':'Offline confirmation test answer','sources':[],'action':None}
+    monkeypatch.setattr(business.business_agent,'run',answer)
+    rejected=customer.post('/api/business/chat/report/confirm',json={'message_id':card['id']})
+    assert rejected.status_code==409 and rejected.json()['code']=='conversation_closed'
+    after=customer.get('/api/business/workspace').json()
+    after_report=customer.get('/api/business/reports/'+report['id']).json()
+    assert after['conversation']==before['conversation'] and after_report==before_report
+    assert not calls
 
 def test_only_one_staff_claims_ticket_from_same_version():
     customer=client();ticket=customer.post('/api/business/handoffs',json={'summary':'Concurrent claim'}).json()
@@ -470,6 +704,21 @@ def test_center_settlement_and_refund_need_role():
     assert s.post('/api/business/staff/bookings/'+b['id']+'/settle').status_code==200
     r=s.post('/api/business/staff/bookings/'+b['id']+'/refund',json={'reason':'Synthetic cancellation'})
     assert r.status_code==200 and r.json()['status']=='refunded'
+
+def test_staff_and_clinical_cannot_settle_center_payment():
+    customer=client();booking=confirmed(customer);path='/api/business/staff/bookings/'+booking['id']+'/settle'
+    with db.transaction() as tx: owner=tx.get(booking['id'])['owner']
+    notifications_before=notification_snapshot(owner)
+    for role in ('staff','clinical'):
+        actor=client();promote(actor,role)
+        response=actor.post(path)
+        assert response.status_code==403
+        assert customer.get('/api/business/workspace').json()['bookings'][0]['data']['payment_status']=='pending'
+        with db.transaction() as tx:
+            row=tx.get(booking['id'])
+            assert row['data']['payment_status']=='pending' and not row['data'].get('receipt_id')
+            assert not any(a['data'].get('action')=='payment.center_settled' and a['data'].get('object_id')==booking['id'] for a in tx.find('audit'))
+        assert notification_snapshot(owner)==notifications_before
 
 def test_settlement_is_idempotent_and_refund_is_terminal():
     c=client();b=confirmed(c);s=client();promote(s)

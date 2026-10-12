@@ -80,7 +80,8 @@ async def read(raw, emit=None):
 
 b.read_report = read
 with db.transaction() as tx:
-    for uid, email, role, branch in [("ui_test_manager", "staff@example.invalid", "manager", "BKK01"),
+    for uid, email, role, branch in [("ui_test_manager", "manager@example.invalid", "manager", "BKK01"),
+                                     ("ui_test_staff_bkk", "appointments-staff@example.invalid", "staff", "BKK01"),
                                      ("ui_test_staff_cnx", "cnx-staff@example.invalid", "staff", "CNX01")]:
         tx.put(uid, "user", uid, {"email": email, "password": db.password_hash("ui-test-only-password"), "role": role, "branch": branch,
                                   "organization_id": "org_synthetic", "organization_role": "editor"})
