@@ -1,7 +1,7 @@
 # LabClear Theme Audit and Reference Selection Map
 
 Audit date: 12 October 2026 (Asia/Bangkok)  
-Brand source revision: `73d24b9cc4281b74829b63603786427d14cbe5c7`  
+Brand source revision: `38e39f03a8a21a294001cbb2bd146a4c7ea611eb`
 Primary source: `static/css/base.css`; page patterns from `static/css/site.css`, `static/css/workspace.css`, and `static/css/admin.css`.
 
 ## LabClear Brand Tokens

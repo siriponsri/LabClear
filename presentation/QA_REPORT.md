@@ -1,14 +1,14 @@
 # LabClear HTML Presentation QA Report
 
 Date: 12 October 2026 (Asia/Bangkok)  
-Candidate source HEAD: `73d24b9cc4281b74829b63603786427d14cbe5c7` (`main`, dirty worktree)  
-Run: `docs/evidence/current/presentation-html-final-20261012-release/`
+Candidate source HEAD: `38e39f03a8a21a294001cbb2bd146a4c7ea611eb` (`main`; worktree dirty; exact source hashes in JSON)
+Run: `docs/evidence/current/presentation-html-final-20261012-final/`
 Overall: `PASS` for HTML/deck QA; spoken rehearsal `NOT_RUN`
 
 ## Environment and Command
 
 ```powershell
-$env:PRESENTATION_EVIDENCE_OUT = "docs/evidence/current/presentation-html-final-20261012-release"
+$env:PRESENTATION_EVIDENCE_OUT = "docs/evidence/current/presentation-html-final-20261012-final"
 node scripts/verify_html_deck.mjs
 ```
 
@@ -29,30 +29,30 @@ Environment: Windows `win32`, Node `v24.19.0`, Playwright `1.56.1`, Chromium `14
 | HTML-09 | Workflow scroll reaches its final step and notice | Exact | PASS | Companion desktop/mobile screenshots |
 | HTML-10 | Reduced-motion preference disables repeated animation | Duration `0.001 ms`; one iteration | PASS | JSON |
 | HTML-11 | Static export has 15 pages, one slide per page, no animation | 15 pages; 15 slides; one per page; `0s` | PASS | `PRES-PRINT-01-static-opening.png`; JSON |
-| HTML-12 | PDF has valid signature, nonzero bytes, and 15 pages | `%PDF-`; 522,869 bytes; 15 pages | PASS | `LabClear-static-print.pdf`; SHA-256 in JSON |
+| HTML-12 | PDF has valid signature, nonzero bytes, and 15 pages | `%PDF-`; 486,715 bytes; 15 pages | PASS | `LabClear-static-print.pdf`; SHA-256 `527943468f9dd454368707bed2b2f5ece3d0f36520782b13e4073b543ffef5dd` |
 | HTML-13 | Thai document, named controls, local links | Exact | PASS | JSON |
 | HTML-14 | Workflow starts at step 0; step/replay/pause/complete/mobile/no-JS pass | Exact; 0 browser errors | PASS | Workflow desktop/mobile/no-JS screenshots |
-| HTML-15 | Local infographic renders, text edits, exports SVG, mobile/no-JS works, no network calls | All true; exported SVG 25,198 bytes; `externalRequests: []` | PASS | Infographic edited/mobile/no-JS screenshots; SVG |
+| HTML-15 | Local infographic renders, text edits, exports SVG, mobile/no-JS works, no network calls | All true; exported SVG 24,349 bytes; `externalRequests: []` | PASS | Infographic edited/mobile/no-JS screenshots; SVG |
 | HTML-16 | Browser errors | 0 | PASS | JSON |
 
 ## Before / After and Regression Diagnosis
 
 - Before: retained run `presentation-html-final-20261012-v7` recorded 14 PASS, 1 FAIL, 1 BLOCKED. HTML-14 expected a completed initial workflow frame although step mode starts at 0; HTML-15 relied on remote assets and did not finish reliably.
 - A fresh export assertion then caught 28 pages because the test PDF was generated from the normal HTML route. Reveal.js's actual static slide export is `?print-pdf`; the normal route reflows its print layout. The PDF builder already used `?print-pdf`, but the test did not.
-- After: the runner now uses the same `?print-pdf` route as the builder and checks its 15 per-slide page wrappers plus the generated PDF page count. The local AntV bundle and fallback remove companion network dependencies. The release run records 16 PASS, 0 FAIL, 0 BLOCKED and 39 fresh screenshots.
+- After: the runner now uses the same `?print-pdf` route as the builder and checks its 15 per-slide page wrappers plus the generated PDF page count. The local AntV bundle and fallback remove companion network dependencies. The current run records 16 PASS, 0 FAIL, 0 BLOCKED and 39 fresh screenshots for HTML SHA-256 `55bb0d3ea0e1d24c2c4ab8e799fae89e307507e866c469bf345c93c4ce289609`.
 - The JSON-only `presentation-html-final-20261012-final4/html-deck-qa.json` preserves the intermediate 28-page regression result; its screenshots and PDF are not used as final evidence. Other duplicate runs were removed during hygiene.
-- The release evidence folder contains only the successful run used for delivery; older runs remain historical until reference review and are not used as final evidence.
+- The superseded successful runs `presentation-html-final-20261012-release` and `presentation-html-final-20261012-v2` were removed after this later run passed. The current folder above is the only successful run cited for delivery. The v7 and final4 records remain solely to preserve the earlier failures and pagination regression.
 
 ## Visual and Artifact Review
 
-- Desktop and mobile contact sheets and the opening print-page capture were generated from the release run and visually inspected. The Thai text, image, diagrams, tables, and page composition are present; no clipping or overlapping content was observed in the tested frames.
+- Desktop and mobile contact sheets and the opening print-page capture were generated from the current final run and visually inspected. The Thai text, image, diagrams, tables, and page composition are present; no clipping or overlapping content was observed in the tested frames.
 - Machine checks verify 15/15 desktop and mobile slide bounds, Thai font availability, print animation `0s`, one slide per PDF page, and a valid PDF signature/page count.
-- Release screenshot inventory: 15 desktop slides, 15 mobile slides, 1 print opening, 2 contact sheets, and 6 workflow/infographic captures = 39 screenshots.
-- Exact tested HTML, PDF and companion hashes: `html-deck-qa.json` in the release evidence folder.
-- Rebuilt report PDFs were separately rendered and inspected in [`report-render-final-20261012-03`](../docs/evidence/current/report-render-final-20261012-03/): 58 pages, 0 empty pages, 0 pages without Thai text, 0 replacement glyphs, and 2 image objects. Contact sheets cover all pages; representative pages show tables, figures, and page boundaries. The existing IBM Plex Sans Thai fallback was used because TH Sarabun New is absent on this Windows machine.
+- Screenshot inventory: 15 desktop slides, 15 mobile slides, 1 print opening, 2 contact sheets, and 6 workflow/infographic captures = 39 screenshots.
+- Exact tested HTML, PDF and companion hashes: `html-deck-qa.json` in the current evidence folder.
+- Rebuilt report PDFs were separately rendered and inspected in [`report-render-final-20261012-05`](../docs/evidence/current/report-render-final-20261012-05/). Its manifest records page counts and hashes, 0 empty pages, 0 pages without Thai text, 0 replacement glyphs, and image-object totals. Contact sheets cover all pages; representative pages are visually reviewed after the closeout wording update. The existing IBM Plex Sans Thai fallback was used because TH Sarabun New is absent on this Windows machine.
 
 ## App UAT Context and Limits
 
-The presentation cites `docs/evidence/current/browser-uat-final-20261012-03/browser-uat.json`: candidate HEAD `73d24b9cc4281b74829b63603786427d14cbe5c7`, recorded worktree fingerprint `8c54565a7085bd57e8c463b0f9977690872b0ab98cad9c8394c58e8f2693b2dd`, 37 PASS, 0 FAIL, 63 screenshots, exit code 0. This is local UI/API/storage/permission workflow evidence with synthetic data and mocked LLM/OCR; it is not user research, live-provider quality, clinical validation, or proof of production privacy.
+The presentation cites `docs/evidence/current/browser-uat-final-20261012-04/browser-uat.json`: candidate HEAD `38e39f03a8a21a294001cbb2bd146a4c7ea611eb`, clean worktree at test start, 37 PASS, 0 FAIL, 63 screenshots, exit code 0. This is local UI/API/storage/permission workflow evidence with synthetic data and mocked LLM/OCR; it is not user research, live-provider quality, clinical validation, or proof of production privacy.
 
 The HTML deck is editable in its source (HTML/CSS/SVG/DSL). It does not claim click-and-drag editing in a separate slide editor or editable PPTX export because HTML is the approved final format. No spoken rehearsal was recorded; timing is estimated from speaker notes. Package, price, booking, payment, and settlement are simulated. Production retention/restore, privacy, reliability, market demand, unit economics, and clinical/model/OCR quality remain open.

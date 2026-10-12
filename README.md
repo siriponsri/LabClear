@@ -140,7 +140,7 @@ can export SVG; the files and test results are documented in [`presentation/DELI
 To reproduce the browser QA run on Windows PowerShell:
 
 ```powershell
-  $env:PRESENTATION_EVIDENCE_OUT = "docs/evidence/current/presentation-html-final-20261012-release"
+  $env:PRESENTATION_EVIDENCE_OUT = "docs/evidence/current/presentation-html-final-20261012-final"
 node scripts/verify_html_deck.mjs
 ```
 
@@ -168,7 +168,7 @@ python scripts/offline_check.py pytest -q
 ```
 
 The offline Python suite runs with isolated storage, no `.env` and outbound sockets denied. The
-latest recorded run on candidate `73d24b9` plus its dirty worktree passed 547 tests with one
+latest recorded run on candidate `38e39f0` passed 547 tests with one
 deprecation warning; counts can change between revisions. Browser suites use Playwright
 (`npm install`, then `npx playwright install chromium`):
 

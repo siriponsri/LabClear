@@ -8,7 +8,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import { chromium } from "playwright";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const output = path.resolve(root, process.env.PRESENTATION_EVIDENCE_OUT || "docs/evidence/current/presentation-html-final-20261012-v2");
+const output = path.resolve(root, process.env.PRESENTATION_EVIDENCE_OUT || "docs/evidence/current/presentation-html-final-20261012-final");
 const deckPath = path.join(root, "presentation/index.html");
 const deckUrl = pathToFileURL(deckPath).href;
 const sha256 = (value) => createHash("sha256").update(value).digest("hex");
@@ -496,7 +496,7 @@ try {
     "presentation/vendor/reveal.js-5.2.1/reveal.css",
     "presentation/vendor/reveal.js-5.2.1/plugin/notes/notes.js",
     "static/img/mark.svg",
-    "docs/evidence/current/browser-uat-final-20261012-03/UI-02_catalog-1440.png",
+    "docs/evidence/current/browser-uat-final-20261012-04/UI-02_catalog-1440.png",
     "static/fonts/geist-variable.woff2",
     "static/fonts/source-serif-4-opsz.woff2",
     "static/fonts/ibm-plex-sans-thai-thai-400-normal.woff2",

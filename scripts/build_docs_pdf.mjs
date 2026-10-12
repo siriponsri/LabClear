@@ -52,7 +52,7 @@ h2{font-family:"Geist","IBM Plex Sans Thai",sans-serif;font-weight:600;font-size
 h3{font-family:"Geist","IBM Plex Sans Thai",sans-serif;font-weight:600;font-size:13.5pt;line-height:1.45;margin:12pt 0 4pt;break-after:avoid}
 p{margin:0 0 6pt;text-align:left}
 ul,ol{margin:0 0 6pt;padding-left:18pt}
-li{margin:0 0 2pt}
+li{margin:0 0 2pt;break-inside:avoid}
 strong{font-weight:700}
 a{color:var(--accent);text-decoration:none}
 code{font-family:"Geist Mono","Sarabun Report",monospace;font-size:10.5pt;background:var(--tint);padding:0 2pt;border-radius:2pt;overflow-wrap:anywhere}

@@ -1,9 +1,10 @@
 # Reports
 
-Three Thai reports and the HTML-first slide presentation for LabClear 4.0.0-rc3. All facts come from the
-repository (`business_data/`, `knowledge/`, the code, `docs/evidence/`). Live-model results are the
-3.0.x runs on Render; 4.0.0-rc3 has OFFLINE, regression and resilience results only, because its
-LIVE_FREE run is blocked at the preflight.
+Thai reports and an HTML-first slide presentation for LabClear 4.0.0-rc3. Facts come from the repository
+(`business_data/`, `knowledge/`, code and `docs/evidence/`). The 4.0.0-rc3 Playwright/regression/resilience
+evidence is local and synthetic. Separate Typhoon and OpenThai connectivity smoke checks used one
+synthetic request each; they do not establish model, clinical or safety quality. The broader LIVE_FREE
+evaluation remains blocked at preflight.
 
 | File | What it is | Built by |
 |---|---|---|
@@ -44,8 +45,8 @@ stacked Thai marks do not spill onto the previous page.
 
 ## Current Render QA — 2026-10-12
 
-The business, architecture, and HTML slide PDFs were rebuilt from their current sources. All 58 pages
-were rendered and reviewed in [current report-render evidence](../evidence/current/report-render-final-20261012-03/).
+The business, architecture, and HTML slide PDFs were rebuilt from their current sources. All pages
+were rendered and reviewed in [current report-render evidence](../evidence/current/report-render-final-20261012-05/).
 The PDFium manifest records page count, SHA-256, Thai text presence, replacement glyphs, image objects,
 and empty-page checks. Result: `PASS`, 0 empty pages, 0 pages without Thai text, 0 replacement glyphs;
 2 image objects are present in the report PDFs. Contact sheets cover every page and representative

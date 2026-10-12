@@ -8,21 +8,21 @@
 
 ## Candidate and Playwright Run
 
-- Tested source HEAD: `73d24b9cc4281b74829b63603786427d14cbe5c7` on `main`, with a dirty worktree. Source hashes below identify the tested presentation files; the run is not represented as a clean-commit run.
-- Run: `docs/evidence/current/presentation-html-final-20261012-release/`.
-- UTC, exact hashes and screenshot inventory: `html-deck-qa.json` in the release evidence folder.
+- Tested source HEAD: `38e39f03a8a21a294001cbb2bd146a4c7ea611eb` on `main`; the worktree was dirty and exact source hashes are in the run JSON.
+- Run: `docs/evidence/current/presentation-html-final-20261012-final/`.
+- UTC, exact hashes and screenshot inventory: `html-deck-qa.json` in the current evidence folder.
 - Environment: Windows `win32`; Node `v24.19.0`; Playwright `1.56.1`; Chromium `141.0.7390.37`; desktop `1440×900`; mobile `390×844`.
-- Main deck, PDF and companion SHA-256 values: recorded in `html-deck-qa.json` in the release evidence folder.
+- Main deck, PDF and companion SHA-256 values: recorded in `html-deck-qa.json` in the current evidence folder.
 - Result: 16 PASS, 0 FAIL, 0 BLOCKED, exit code 0; 39 fresh screenshots; 15 desktop slides and 15 mobile slides checked.
-- Static PDF: `LabClear-static-print.pdf`, 522,869 bytes, 15 pages, SHA-256 `abe5b4d17b5a5f9d1157554051ff4cba8464cd27d3670999519a920af90d8d16`.
+- Static PDF: `LabClear-static-print.pdf`, 486,715 bytes, 15 pages, SHA-256 `527943468f9dd454368707bed2b2f5ece3d0f36520782b13e4073b543ffef5dd`.
 - Mode: local-only. No LLM/OCR/API, payment, or deployment calls. External requests were blocked for companion tests; AntV Infographic `0.2.20` is served from the local vendor bundle.
 - Machine-readable case results, asset hashes, and screenshot paths: `html-deck-qa.json` in the run folder.
 
 ## App UAT Used by the Deck
 
-- Evidence: `docs/evidence/current/browser-uat-final-20261012-03/browser-uat.json`.
-- Candidate source HEAD: `73d24b9cc4281b74829b63603786427d14cbe5c7`; recorded worktree fingerprint: `8c54565a7085bd57e8c463b0f9977690872b0ab98cad9c8394c58e8f2693b2dd`.
-- Started `2026-10-12T04:20:30.974Z`; 37 PASS, 0 FAIL, 63 screenshots, exit code 0.
+- Evidence: `docs/evidence/current/browser-uat-final-20261012-04/browser-uat.json`.
+- Candidate source HEAD: `38e39f03a8a21a294001cbb2bd146a4c7ea611eb`; the raw manifest records a clean worktree at test start and the empty-diff SHA-256 `e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855`.
+- Started `2026-10-12T05:46:45.127Z`; 37 PASS, 0 FAIL, 63 screenshots, exit code 0.
 - Synthetic local UI/API/storage/permission fixture; LLM and OCR are mocked. This is not real-user acceptance, provider quality, clinical validation, or production reliability evidence.
 
 ## Claim Map
@@ -43,13 +43,13 @@
 | A2 | Current application path and storage options. | `docs/architecture.md`. | Source structure only; no production-readiness claim. |
 | A3 | Tested workflow versus unverified AI and clinical quality. | UAT, report-reader, and retrieval sources above. | No live model/OCR or clinical-quality evaluation. |
 | A4 | Exact app-test candidate, run date, worktree fingerprint, mode, and screenshot count. | App UAT JSON above. | App UAT provenance, not HTML-deck QA provenance. |
-| A5 | Package pricing and business statements are hypotheses or simulator values. | Business report; simulator UAT; Marketing review. | No live price change, willingness-to-pay evidence, real transaction, or financial validation. |
+| A5 | Package prices are configured demo values; business recommendations remain hypotheses. | Business report; simulator UAT; current read-only business review. | No live price change, willingness-to-pay evidence, real transaction, or financial validation; reviewer is not a registered Marketing Agent. |
 
 ## Evidence Assets and Privacy
 
-- Catalog evidence: `docs/evidence/current/browser-uat-final-20261012-03/UI-02_catalog-1440.png`, a real local UI capture from a synthetic fixture with a simulation notice. It supports the simulated customer flow and is not a price offer.
+- Catalog evidence: `docs/evidence/current/browser-uat-final-20261012-04/UI-02_catalog-1440.png`, a real local UI capture from a synthetic fixture with a simulation notice. It supports the simulated customer flow and is not a price offer.
 - Sensitive-looking report details in UI-09 are excluded from presentation imagery. No secrets or personal data were intentionally placed in the deck screenshots.
-- Fresh HTML-deck screenshots are under `docs/evidence/current/presentation-html-final-20261012-release/`: `PRES-CORE-*`, `PRES-APPX-*`, companion cases, contact sheets, and `PRES-PRINT-01-static-opening.png`.
+- Fresh HTML-deck screenshots are under `docs/evidence/current/presentation-html-final-20261012-final/`: `PRES-CORE-*`, `PRES-APPX-*`, companion cases, contact sheets, and `PRES-PRINT-01-static-opening.png`.
 - The HTML static-PDF path uses Reveal.js `?print-pdf`; HTML-11 asserts one slide per page and HTML-12 checks the actual PDF signature and 15 page objects. The PDF is a static fallback, not the primary deck.
 
 ## Business and Evidence Limits
