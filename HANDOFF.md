@@ -31,11 +31,11 @@ Finish the HTML-first LabClear presentation and closeout. The HTML deck is the f
 
 - The tracked presentation inventory contains only the HTML deck, its required local assets/vendor licenses, planning/source/QA docs, and companion diagrams. No Presenton, PPTist, or Slides.com payload filename remains.
 - Retain historical evidence that documents regressions and the required HTML release screenshots. The final report and UAT evidence are project-related and remain in scope.
-- Payload commit `432967a2bbb4e749dbb3efa6495026220541adf3` was pushed to `origin/main`; the push completed successfully. The HANDOFF-only follow-up below records its verification and changes no app or presentation source.
+- Payload commit `432967a2bbb4e749dbb3efa6495026220541adf3` and subsequent documentation-only closeout updates were pushed to `origin/main`; those follow-ups do not change app or presentation source.
 - Preserve the linked worktree `C:\Users\User\orca\workspaces\LabClear\candlefish` at detached commit `2a98a27`. Its clean, fully merged local branch `siriponsri/candlefish` was removed; no worktree files were deleted.
 - No `.env`, secret, credential, private-key, or certificate path was present in the committed change set.
-- Project Brain was not updated: no LabClear Brain connector or resource was available in the current tool catalog. Do not treat this HANDOFF as a Brain sync.
+- Registered local Project Brain `labclear` was updated through `brain-handoff.ps1` and refreshed through `brain-refresh.ps1`; `brain-status.ps1` reported FRESH at the then-current `9c953d9` HEAD. It is refreshed again after this final documentation-only commit.
 
 ## Closeout State
 
-Presentation, repository hygiene, local branch cleanup, commit, push, and the post-push health check are complete. No code action remains. Known unverified areas remain listed above; the spoken timing is an estimate, not a timed rehearsal. Project Brain synchronization remains NOT_RUN until its connector is available.
+Presentation, repository hygiene, local branch cleanup, commit, push, post-push health check, and Project Brain synchronization are complete. No code action remains. Known unverified areas remain listed above; the spoken timing is an estimate, not a timed rehearsal.
