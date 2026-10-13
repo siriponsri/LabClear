@@ -1,0 +1,1773 @@
+{
+  "executions": 104,
+  "records": [
+    {
+      "case_id": "unit-literal-prompt-regression-captures-001",
+      "underlying_test": "tests.test_lab_unit_fidelity::test_equivalent_count_notation_keeps_correct_scale[10\\xb3/\\xb5L]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:15.698Z",
+      "status": "PASS",
+      "execution_ms": 2,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-001.png",
+      "sha256": "65ac96fed027ada7892ae0ec83a126b4b7ec105a5e0a6e2c3dc307efc52dcca3"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-002",
+      "underlying_test": "tests.test_lab_unit_fidelity::test_equivalent_count_notation_keeps_correct_scale[10^3/uL]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:15.798Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-002.png",
+      "sha256": "6caab736ba926da2fecf6255cff849d285feb3b9d458938d7f60d2ca73ff46e2"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-003",
+      "underlying_test": "tests.test_lab_unit_fidelity::test_equivalent_count_notation_keeps_correct_scale[10^3/\\u03bcl]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:15.904Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-003.png",
+      "sha256": "20e92a8ea462f69a22a26136a3f39a48377de2848c819b0f2b48ecd0583bde3a"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-004",
+      "underlying_test": "tests.test_lab_unit_fidelity::test_equivalent_count_notation_keeps_correct_scale[10^{3}/\\xb5L]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:16.016Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-004.png",
+      "sha256": "6d4ac9f7064b4eb31280b14a408c698b60330d3157dc1027597d1a4c0e4dd075"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-005",
+      "underlying_test": "tests.test_lab_unit_fidelity::test_equivalent_count_notation_keeps_correct_scale[\\xd7 10\\xb3/\\xb5L]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:16.116Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-005.png",
+      "sha256": "b2940150e7e4cfe5cf06af356a7657df4ce275b20aad1ddc7bb16d3fdacd6eb6"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-006",
+      "underlying_test": "tests.test_lab_unit_fidelity::test_equivalent_count_notation_keeps_correct_scale[K/\\xb5L]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:16.223Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-006.png",
+      "sha256": "91c001303faf1a2771d9a9c763c01b6a2a6628c770121a43a0f2d8dd3420718f"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-007",
+      "underlying_test": "tests.test_lab_unit_fidelity::test_equivalent_count_notation_keeps_correct_scale[10^9/L]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:16.338Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-007.png",
+      "sha256": "4251e64d6ced6562f208d634dcf8164007e9a6eb658e8a0c17a1d291a9c024f3"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-008",
+      "underlying_test": "tests.test_lab_unit_fidelity::test_equivalent_count_notation_keeps_correct_scale[G/L]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:16.451Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-008.png",
+      "sha256": "7d9f4b7f8860d0bc0b7752f92893ac2b8e0835e98d59646fb3ea7f1e1d44e77b"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-009",
+      "underlying_test": "tests.test_lab_unit_fidelity::test_equivalent_count_notation_keeps_correct_scale[10\\xb3/mm\\xb3]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:16.561Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-009.png",
+      "sha256": "e8dc9d22e01fed2e0d2be8c5c7dfa34972c2f06c9b7bdc47a27e2f8c65c8f0c7"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-010",
+      "underlying_test": "tests.test_lab_unit_fidelity::test_equivalent_count_notation_keeps_correct_scale[10^3/mm3]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:16.675Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-010.png",
+      "sha256": "92289bc7d6097e608548d30bc929e977c32b5869f511c2f71cd4c47fa9f2a718"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-011",
+      "underlying_test": "tests.test_lab_unit_fidelity::test_unsupported_micro_denominator_scale_never_becomes_within[10^9/\\xb5L]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:16.808Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-011.png",
+      "sha256": "6c61ee874f49c81ad9d169eeb791db7930e5ecb8c53c0e767618b62c81db5a13"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-012",
+      "underlying_test": "tests.test_lab_unit_fidelity::test_unsupported_micro_denominator_scale_never_becomes_within[10\\u2079/uL]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:16.922Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-012.png",
+      "sha256": "eaeaa7827021dcaeeb89a181630146bdbbd5fa9dad81cee3227c6dde8dd726fc"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-013",
+      "underlying_test": "tests.test_lab_unit_fidelity::test_unsupported_micro_denominator_scale_never_becomes_within[G/\\xb5L]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:17.024Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-013.png",
+      "sha256": "d967e2fe4c3677821274d7549015c9dbef3b54036c5f81300e6c2ea91cda4992"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-014",
+      "underlying_test": "tests.test_lab_unit_fidelity::test_unsupported_micro_denominator_scale_never_becomes_within[10^12/\\xb5L]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:17.153Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-014.png",
+      "sha256": "25128e4937c14ffa72110e8ca62604b9bc6627b6c5d9fa38e5c5f4af97834a59"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-015",
+      "underlying_test": "tests.test_lab_unit_fidelity::test_mass_units_are_not_confused_with_count_prefix",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:17.277Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-015.png",
+      "sha256": "c6a4c39fd4470b0dc68523bf8d67728ce4ce636f839acc1ea9b93902292817ba"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-016",
+      "underlying_test": "tests.test_lab_unit_fidelity::test_source_to_confirmation_to_writer_keeps_exact_unit[10\\xb3/\\xb5L]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:17.417Z",
+      "status": "PASS",
+      "execution_ms": 3,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-016.png",
+      "sha256": "705ad22f1c8929748a9018972e817d0df65894fba299c2c70b857bef4c17c1d7"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-017",
+      "underlying_test": "tests.test_lab_unit_fidelity::test_source_to_confirmation_to_writer_keeps_exact_unit[10^9/L]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:17.555Z",
+      "status": "PASS",
+      "execution_ms": 2,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-017.png",
+      "sha256": "e8f78cd42d4cc6bccfb529c200608191d673216deb50d95e09bfb03470982979"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-018",
+      "underlying_test": "tests.test_lab_unit_fidelity::test_bad_existing_confirmed_row_is_rejected_before_writer_display",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:17.700Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-018.png",
+      "sha256": "a2a7446cc324ab0abc09abdfbadc030e4d56150b2d90a763a65d59e51a045a4d"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-019",
+      "underlying_test": "tests.test_lab_unit_fidelity::test_superscript_source_cell_copied_without_llm_conversion",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:17.824Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-019.png",
+      "sha256": "dbb5c41655932035f472f772fd971e48da822deb92b2660df3b457cb01ed0227"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-020",
+      "underlying_test": "tests.test_lab_unit_fidelity::test_structuring_rewrite_uses_proven_source_cell_not_clinical_guess",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:17.945Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-020.png",
+      "sha256": "82c0c613d82fae2e1249f847b738129f290c238f4b7d22914ba6b947c53197f1"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-021",
+      "underlying_test": "tests.test_lab_unit_fidelity::test_ambiguous_or_unmatched_source_never_repairs_units[<table><tr><td>Novel count</td><td>7.41</td><td>10\\xb3/\\xb5L</td><td>10\\u2076/\\xb5L</td></tr></table>]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:18.081Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-021.png",
+      "sha256": "74dfd7c12e0a25ac157c7edb25d91fba854ee8fa64529e95cdc78ef50f5c08d0"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-022",
+      "underlying_test": "tests.test_lab_unit_fidelity::test_ambiguous_or_unmatched_source_never_repairs_units[<table><tr><td>Other count</td><td>7.41</td><td>10\\xb3/\\xb5L</td></tr></table>]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:18.194Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-022.png",
+      "sha256": "65be4d84a955fd963d36edad6b60f6c6f9d81a63914162e9aa914416259d214c"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-023",
+      "underlying_test": "tests.test_lab_unit_fidelity::test_ambiguous_or_unmatched_source_never_repairs_units[<table><tr><td>Novel count</td><td>7.42</td><td>10\\xb3/\\xb5L</td></tr></table>]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:18.307Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-023.png",
+      "sha256": "19b766e07bc7bc649ad09a6a60a7f1c647ceff4d3a45f8939822162c05920ae1"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-024",
+      "underlying_test": "tests.test_lab_unit_fidelity::test_source_that_already_has_bad_scale_is_not_repaired_from_lab_knowledge",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:18.445Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-024.png",
+      "sha256": "e638acb91a7060923d2cfdcd2273e2eddd86034373cad9331ce5f48d15e606ed"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-025",
+      "underlying_test": "tests.test_bound_output::test_734_i02_exposure_is_now_rejected_before_a_passing_reviewer",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:18.570Z",
+      "status": "PASS",
+      "execution_ms": 218,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-025.png",
+      "sha256": "a8c73b58d2666493392bc193fe83e693c3004c9c601cb0301685ee752f6b093d"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-026",
+      "underlying_test": "tests.test_bound_output::test_hedged_and_alternate_staging_cannot_be_personalized[\\u0e2d\\u0e32\\u0e08\\u0e40\\u0e1b\\u0e47\\u0e19\\u0e20\\u0e32\\u0e27\\u0e30\\u0e44\\u0e15\\u0e40\\u0e23\\u0e37\\u0e49\\u0e2d\\u0e23\\u0e31\\u0e07\\u0e23\\u0e30\\u0e22\\u0e30\\u0e17\\u0e35\\u0e48 \\u0e54]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:18.689Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-026.png",
+      "sha256": "f0f4cd6a917879de1005507fda9ee959ecaa046483ebb09ed5c685f9084a530d"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-027",
+      "underlying_test": "tests.test_bound_output::test_hedged_and_alternate_staging_cannot_be_personalized[\\u0e42\\u0e23\\u0e04\\u0e44\\u0e15\\u0e40\\u0e23\\u0e37\\u0e49\\u0e2d\\u0e23\\u0e31\\u0e07\\u0e23\\u0e30\\u0e22\\u0e30 IV]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:18.806Z",
+      "status": "PASS",
+      "execution_ms": 3,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-027.png",
+      "sha256": "8132d2d1b51969ed48e8e2b1b65b8891a42c5cb0ccee78cf62959b7d7811c6f1"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-028",
+      "underlying_test": "tests.test_bound_output::test_hedged_and_alternate_staging_cannot_be_personalized[CKD G4 may explain your result.]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:18.925Z",
+      "status": "PASS",
+      "execution_ms": 3,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-028.png",
+      "sha256": "cccf9ef518a6d92d65d2a4708f0022b23ee05005277b2bd026dbe7d697a7b22c"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-029",
+      "underlying_test": "tests.test_bound_output::test_hedged_and_alternate_staging_cannot_be_personalized[Your kidney disease may be stage IV.]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:19.057Z",
+      "status": "PASS",
+      "execution_ms": 3,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-029.png",
+      "sha256": "145a697e983ca6f24d85ee3dca5a4396c37075ac437a6924073f3c0b9bc5ef46"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-030",
+      "underlying_test": "tests.test_bound_output::test_hedged_and_alternate_staging_cannot_be_personalized[This may be stage 4 CKD.]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:19.172Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-030.png",
+      "sha256": "7fe85c3065ebfa2ba6ae6f6f14c03a7d4988d7fe0956a61465cf61ffe944e0ce"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-031",
+      "underlying_test": "tests.test_bound_output::test_numeric_retesting_advice_is_not_added_to_a_report[\\u0e04\\u0e27\\u0e23\\u0e15\\u0e23\\u0e27\\u0e08\\u0e0b\\u0e49\\u0e33\\u0e43\\u0e19\\u0e2d\\u0e35\\u0e01 7 \\u0e40\\u0e14\\u0e37\\u0e2d\\u0e19]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:19.290Z",
+      "status": "PASS",
+      "execution_ms": 3,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-031.png",
+      "sha256": "aefc971c2cdab4a8e58de2266f325894face8ba18e7495943acf0cde1d592fb6"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-032",
+      "underlying_test": "tests.test_bound_output::test_numeric_retesting_advice_is_not_added_to_a_report[You might repeat the test in 7 months.]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:19.405Z",
+      "status": "PASS",
+      "execution_ms": 5,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-032.png",
+      "sha256": "e3877f44eeac8d0a7d62ab634bbc3fafc789ba0cae5ef7bd51257d4be1d132d1"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-033",
+      "underlying_test": "tests.test_bound_output::test_uncertainty_statement_is_allowed",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:19.523Z",
+      "status": "PASS",
+      "execution_ms": 3,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-033.png",
+      "sha256": "785c1034aa9e744e8bc322786c1946601210830131cbf473387bde5abbb9a5ba"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-034",
+      "underlying_test": "tests.test_bound_output::test_unknown_clinical_paraphrase_never_enters_final_report_reply",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:19.641Z",
+      "status": "PASS",
+      "execution_ms": 30,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-034.png",
+      "sha256": "0716b649b3fa7834a036ec07b618deedd78cf5c5f8e42c059419c5420ae70c1f"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-035",
+      "underlying_test": "tests.test_bound_output::test_rendered_cells_are_bound_by_row_id_not_fuzzy_bilingual_name",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:19.755Z",
+      "status": "PASS",
+      "execution_ms": 3,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-035.png",
+      "sha256": "ad35eee4b73cd1be6991075e21894d2dde6fb1496119eb8d6016d6843ddb321b"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-036",
+      "underlying_test": "tests.test_bound_output::test_duplicate_names_keep_unique_ids_and_disable_uncertain_comparison",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:19.876Z",
+      "status": "PASS",
+      "execution_ms": 3,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-036.png",
+      "sha256": "87fc834d0f544b20dd9dfa317d21f6d734065c75bf68ae8ac64a86e696738b7a"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-037",
+      "underlying_test": "tests.test_bound_output::test_legacy_modified_observation_is_not_repaired_by_row_binding",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:19.997Z",
+      "status": "PASS",
+      "execution_ms": 29,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-037.png",
+      "sha256": "2685d466365f996e1a58d5b2e180ddab92eb252e95fc3966eb7f1d38ba154c80"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-038",
+      "underlying_test": "tests.test_bound_output::test_conflicting_flag_and_contaminated_range_are_exposed_not_repaired",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:20.125Z",
+      "status": "PASS",
+      "execution_ms": 3,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-038.png",
+      "sha256": "ae5fcd368d141d34d5dc90fa2116cb5659cdf2c5eee6e915b84ff5ba2a362773"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-039",
+      "underlying_test": "tests.test_bound_output::test_unknown_headers_can_still_verify_complete_same_row_cells",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:20.243Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-039.png",
+      "sha256": "be06063a31fcdd00c4c97ef530c2bd3eb38eb27265f1dfcc4242d3b8d34c2400"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-040",
+      "underlying_test": "tests.test_bound_output::test_fallback_cannot_move_another_rows_cell_or_rewrite_unit_glyphs[change0]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:20.374Z",
+      "status": "PASS",
+      "execution_ms": 3,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-040.png",
+      "sha256": "8e26d30838165dc331a70af24c2ef9fb41bdbe444f80553609fbe0c5d078c1ad"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-041",
+      "underlying_test": "tests.test_bound_output::test_fallback_cannot_move_another_rows_cell_or_rewrite_unit_glyphs[change1]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:20.501Z",
+      "status": "PASS",
+      "execution_ms": 3,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-041.png",
+      "sha256": "cadbd6342f93b1ad8c8208c08ebd7c06f74c4fd3255e6e5d9bad3e4b05881973"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-042",
+      "underlying_test": "tests.test_bound_output::test_fallback_cannot_move_another_rows_cell_or_rewrite_unit_glyphs[change2]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:20.627Z",
+      "status": "PASS",
+      "execution_ms": 3,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-042.png",
+      "sha256": "5974d30120fa3fed629751e56de8be47c3f48bedbaa134138f1902f2a04ecc6c"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-043",
+      "underlying_test": "tests.test_bound_output::test_fallback_cannot_reuse_one_row_for_duplicate_output",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:20.744Z",
+      "status": "PASS",
+      "execution_ms": 3,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-043.png",
+      "sha256": "ff8c22e741997feadb35ab6d05640375f472186336b8409a4aea7dcfc4175c3b"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-044",
+      "underlying_test": "tests.test_bound_output::test_plain_or_merged_layout_is_not_falsely_certified",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:20.851Z",
+      "status": "PASS",
+      "execution_ms": 3,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-044.png",
+      "sha256": "f27fef22c272813b83dc0819ec59d9c8dbeaa84962b0380ba0b02f2166e5682b"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-045",
+      "underlying_test": "tests.test_bound_output::test_direct_bilingual_html_preserves_whole_row_and_unit_exponent",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:20.982Z",
+      "status": "PASS",
+      "execution_ms": 3,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-045.png",
+      "sha256": "9f6167facc91b7b0d93261335e73f8086052fc2819c8794f5a2b73b53dab259e"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-046",
+      "underlying_test": "tests.test_bound_output::test_exact_policy_fields_remove_fabricated_promises_without_refusing[Can I get a 175% refund?-keys0]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:21.103Z",
+      "status": "PASS",
+      "execution_ms": 3,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-046.png",
+      "sha256": "b3c6e3bbc66c4422a40bfedab4b89fe65b731c37d328e5a449577ddc41bdfa75"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-047",
+      "underlying_test": "tests.test_bound_output::test_exact_policy_fields_remove_fabricated_promises_without_refusing[\\u0e21\\u0e35\\u0e1a\\u0e23\\u0e34\\u0e01\\u0e32\\u0e23\\u0e40\\u0e08\\u0e32\\u0e30\\u0e40\\u0e25\\u0e37\\u0e2d\\u0e14\\u0e16\\u0e36\\u0e07\\u0e1a\\u0e49\\u0e32\\u0e19\\u0e44\\u0e2b\\u0e21-keys1]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:21.222Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-047.png",
+      "sha256": "ee08452cc7e39065eb5ccadf96622f9cf8cc68bbfee3d874df67619b6ff71d8a"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-048",
+      "underlying_test": "tests.test_bound_output::test_policy_is_not_hardcoded_to_the_benchmark",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:21.338Z",
+      "status": "PASS",
+      "execution_ms": 3,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-048.png",
+      "sha256": "6e53ce37387c167023df7164bc707041b65671537ee8a16f2b9439756d62a844"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-049",
+      "underlying_test": "tests.test_bound_output::test_iapp_failure_stops_before_writer_and_never_auto_retries",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:21.457Z",
+      "status": "PASS",
+      "execution_ms": 16,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-049.png",
+      "sha256": "2722814b4d15c7bea18d7ad1b2add82e09f3400d4e3e2f60f25c1577fb139dd8"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-050",
+      "underlying_test": "tests.test_bound_output::test_unknown_clinical_prose_is_not_saved_or_returned_by_chat_api",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:21.569Z",
+      "status": "PASS",
+      "execution_ms": 125,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-050.png",
+      "sha256": "14b67d764b70beffc5db5402e22a0e26da830ae037825f8855a9793232276588"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-051",
+      "underlying_test": "tests.test_bound_output::test_comparators_and_qualitative_cells_survive_final_sanitizer[4-<5]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:21.691Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-051.png",
+      "sha256": "c8196b93eda4df10fcc157d5be4748d9e07584bd934c319b15e16be03bc2cde6"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-052",
+      "underlying_test": "tests.test_bound_output::test_comparators_and_qualitative_cells_survive_final_sanitizer[4->=3]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:21.811Z",
+      "status": "PASS",
+      "execution_ms": 5,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-052.png",
+      "sha256": "caaf023c38390c8911c0c8aee39486485730eca533cabbb7e8d3526d907365c0"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-053",
+      "underlying_test": "tests.test_bound_output::test_comparators_and_qualitative_cells_survive_final_sanitizer[<5-<7]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:21.922Z",
+      "status": "PASS",
+      "execution_ms": 3,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-053.png",
+      "sha256": "fb2bb4006ac1a704a3f5b4934260820d840b1196400f352cb8294162e620ae3f"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-054",
+      "underlying_test": "tests.test_bound_output::test_comparators_and_qualitative_cells_survive_final_sanitizer[Negative-Negative]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:22.037Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-054.png",
+      "sha256": "fb7316956712f8e45dd69f62f6245867fdeb7794315e4222226be4d9558f7cea"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-055",
+      "underlying_test": "tests.test_bound_output::test_unbound_name_does_not_skip_later_cross_row_check",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:22.134Z",
+      "status": "PASS",
+      "execution_ms": 5,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-055.png",
+      "sha256": "75bf3c169ec07031f2224ef11201b38249426957fc926052b320c5166f46b1a1"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-056",
+      "underlying_test": "tests.test_bound_output::test_flag_that_conflicts_with_within_range_is_uncertain[H]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:22.234Z",
+      "status": "PASS",
+      "execution_ms": 3,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-056.png",
+      "sha256": "daa0e173ce79d4ea5cf03148c83f2df06b6a84803dfbf8edade5f350f5a19996"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-057",
+      "underlying_test": "tests.test_bound_output::test_flag_that_conflicts_with_within_range_is_uncertain[HH]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:22.353Z",
+      "status": "PASS",
+      "execution_ms": 3,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-057.png",
+      "sha256": "be743662915d8e666ca95c7468412871930042349ed6134c03ee3a14cbc35d3e"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-058",
+      "underlying_test": "tests.test_bound_output::test_flag_that_conflicts_with_within_range_is_uncertain[L]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:22.475Z",
+      "status": "PASS",
+      "execution_ms": 3,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-058.png",
+      "sha256": "a70cbefe77fe95e0bec1a3aa5863b680043c50acfef313b86b3b97f34115f4f8"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-059",
+      "underlying_test": "tests.test_bound_output::test_flag_that_conflicts_with_within_range_is_uncertain[LL]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:22.586Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-059.png",
+      "sha256": "d72236413811870ea196cdd0f2608fce50c8e27e1197da0dc553c6adcccf5683"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-060",
+      "underlying_test": "tests.test_bound_output::test_uncertain_report_card_status_is_unknown_after_validation",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:22.705Z",
+      "status": "PASS",
+      "execution_ms": 32,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-060.png",
+      "sha256": "1feeb2b6d432760b5b0dd58d2953fa18845f7fb55c8e3ef29d6ecb78b3dd44a9"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-061",
+      "underlying_test": "tests.test_bound_output::test_reader_verifies_fallback_at_real_read_report_boundary[False]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:22.805Z",
+      "status": "PASS",
+      "execution_ms": 7,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-061.png",
+      "sha256": "488c7fc3ca2f3abb4ab4c35f3dafdc2a288735ede9d1a81373b30eca7ad72c32"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-062",
+      "underlying_test": "tests.test_bound_output::test_reader_verifies_fallback_at_real_read_report_boundary[True]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:22.915Z",
+      "status": "PASS",
+      "execution_ms": 6,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-062.png",
+      "sha256": "f52c08b790cdc7a6df20be2413ea7980ac12ee063911bec1dcc744cb34bb71b2"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-063",
+      "underlying_test": "tests.test_bound_output::test_exact_policy_recovery_retains_withheld_verdict_and_output_guard[False]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:23.016Z",
+      "status": "PASS",
+      "execution_ms": 37,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-063.png",
+      "sha256": "d540d9ee1b380e6641a7fcc0d53967f43c88b3e98ebfd6480c4d7f2ddc3ea66d"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-064",
+      "underlying_test": "tests.test_bound_output::test_exact_policy_recovery_retains_withheld_verdict_and_output_guard[True]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:23.116Z",
+      "status": "PASS",
+      "execution_ms": 30,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-064.png",
+      "sha256": "a73d2b1978727efcb01b916eccbd589beb8fd58225020b9341bb06b8eebc2e59"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-065",
+      "underlying_test": "tests.test_bound_output::test_confirming_raw_cells_cannot_reenable_a_contradictory_comparison",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:23.220Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-065.png",
+      "sha256": "d23d9e6b31b2853989d10e6a8309c06b0d84829c03b8c48ca3221b575356466d"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-066",
+      "underlying_test": "tests.test_candidate_contracts::test_native_html_keeps_columns_glyphs_negative_values_and_full_reference",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:23.332Z",
+      "status": "PASS",
+      "execution_ms": 5,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-066.png",
+      "sha256": "d2213a39f928de3781f4aa288719e3beaff75f57a46b0792c73df6c88d0fe035"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-067",
+      "underlying_test": "tests.test_candidate_contracts::test_ambiguous_html_never_silently_drops_or_infers_cells[<table><tr><th>Test name</th><th>Result</th><th>Unit</th><th></th><th>Reference value</th></tr>\\n<tr><td>Unfamiliar marker</td><td>-7.25</td><td>10<sup>9</sup>/\\xb5L</td><td>not a flag</td><td>Group A: -6 \\u2013 -2<br>unit</td></tr>\\n<tr><td>Second marker</td><td>Trace</td><td>-</td><td>-</td><td>Not established</td></tr></table>]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:23.436Z",
+      "status": "PASS",
+      "execution_ms": 6,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-067.png",
+      "sha256": "da7931b2d81b512777baf279871122d3d4ac79b6cdfc79df429ced7fd584c86b"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-068",
+      "underlying_test": "tests.test_candidate_contracts::test_ambiguous_html_never_silently_drops_or_infers_cells[<table><tr><th>Test name</th><th>Result</th><th>Unit</th><th></th><th>Reference value</th></tr>\\n<tr><td>Unfamiliar marker</td><td>-7.25</td><td>10<sup>9</sup>/\\xb5L</td><td>L</td><td>Group A: -6 \\u2013 -2<br>unit</td></tr>\\n<tr><td>Second marker</td><td colspan=\"2\">Trace</td><td>-</td><td>-</td><td>Not established</td></tr></table>]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:23.553Z",
+      "status": "PASS",
+      "execution_ms": 5,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-068.png",
+      "sha256": "6e935c6981bb1d97452057d1ad7367406967520006a66556f5bf933f1a7502c3"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-069",
+      "underlying_test": "tests.test_candidate_contracts::test_ambiguous_html_never_silently_drops_or_infers_cells[<table><tr><th>Test name</th><th>Result</th><th>Unit</th><th></th><th>Reference value</th></tr>\\n<tr><td>Unfamiliar marker</td><td>10<sup>9</sup>/\\xb5L</td><td>L</td><td>Group A: -6 \\u2013 -2<br>unit</td></tr>\\n<tr><td>Second marker</td><td>Trace</td><td>-</td><td>-</td><td>Not established</td></tr></table>]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:23.677Z",
+      "status": "PASS",
+      "execution_ms": 5,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-069.png",
+      "sha256": "e8f9f40157aaf2a4ed8aa86a9a588ed915d2c126f8e576294c218b15d0374a11"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-070",
+      "underlying_test": "tests.test_candidate_contracts::test_ambiguous_html_never_silently_drops_or_infers_cells[<table><tr><th>Test name</th><th>Result</th><th>Unit</th><th></th><th>Reference value</th></tr>\\n<tr><td>Unfamiliar marker</td><td>-7.25</td><td>10<sup>9</sup>/\\xb5L</td><td>L</td><td>Group A: -6 \\u2013 -2<br>unit</td></tr>\\n<tr><td>Second marker</td><td>Trace</td><td>-</td><td>-</td><td>Not established</td></tr>]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:23.813Z",
+      "status": "PASS",
+      "execution_ms": 5,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-070.png",
+      "sha256": "f103e21089905127c7a3cc7d3c784ca4b62c9cad0e6a3323b57666e3ab121cd8"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-071",
+      "underlying_test": "tests.test_candidate_contracts::test_ambiguous_html_never_silently_drops_or_infers_cells[<table><tr><th>Test name</th><th>Result</th><th>Unit</th><th></th><th>Reference value</th></tr>\\n<tr><td>Unfamiliar marker</td><td>-7.25</td><td>10<sup>9</sup>/\\xb5L</td><td>L</td><td>Group A: -6 \\u2013 -2<br>unit</td></tr>\\n<tr><td>Second marker</td><td>Trace</td><td>-</td><td>-</td><td>Not established</td></tr></table><table><tr><td>Name</td></tr><tr><td>UNTRUSTED_ID</td></tr></table>]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:23.925Z",
+      "status": "PASS",
+      "execution_ms": 5,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-071.png",
+      "sha256": "391abd1f18a2cf69394c462dd7654e166232855d0815c64e8199033b4c4f8ac5"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-072",
+      "underlying_test": "tests.test_candidate_contracts::test_ambiguous_html_never_silently_drops_or_infers_cells[<table><tr><th>Test name</th><th>Result</th><th>Unit</th><th></th><th>Reference value</th></tr>\\n<tr><td>Unfamiliar marker</td><td>-7.25</td><td>10<sup>9</sup>/\\xb5L</td><td>L</td><td>Group A: -6 \\u2013 -2<br>unit</td></tr>\\n<tr><td>Second marker</td><td><script>unsafe</script></td><td>-</td><td>-</td><td>Not established</td></tr></table>]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:24.040Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-072.png",
+      "sha256": "ef8281defa2a4f78737c476443e95d0fa5c5ab923b5da0f7cf0605044f5ba8f9"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-073",
+      "underlying_test": "tests.test_candidate_contracts::test_html_explicit_flag_column_accepts_unknown_flag_verbatim",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:24.154Z",
+      "status": "PASS",
+      "execution_ms": 5,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-073.png",
+      "sha256": "a07180710bcd7b4ceed88b4224705b0e0f9cfac33ebf58fae01bb8d18f493d8b"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-074",
+      "underlying_test": "tests.test_candidate_contracts::test_html_path_preserves_document_guards_without_second_llm",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:24.273Z",
+      "status": "PASS",
+      "execution_ms": 7,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-074.png",
+      "sha256": "da83df86a761661fa6c6f773214076f9b263d00b3da00a9c41ab78b27ff7ae21"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-075",
+      "underlying_test": "tests.test_candidate_contracts::test_single_supplied_comparison_is_only_arithmetic[17.3-2.4-9.8-above]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:24.389Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-075.png",
+      "sha256": "66519bc90425a833ce8c5df37bd1e9a1cb966956a4dac1a5a277054c7226f218"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-076",
+      "underlying_test": "tests.test_candidate_contracts::test_single_supplied_comparison_is_only_arithmetic[-7--8--2-within]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:24.507Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-076.png",
+      "sha256": "366d4e9cc191789693691af29a1078a4eecf9a863bacd7c46ef584c8c920daa6"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-077",
+      "underlying_test": "tests.test_candidate_contracts::test_single_supplied_comparison_is_only_arithmetic[0.2-0.3-1.4-below]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:24.623Z",
+      "status": "PASS",
+      "execution_ms": 5,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-077.png",
+      "sha256": "e6b6477c790a944cce4968e541b8a3a111e867659895233ec00e0cda8bc6fd3c"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-078",
+      "underlying_test": "tests.test_candidate_contracts::test_ambiguous_comparison_is_not_completed_from_knowledge[Marker is 7; reference range 3\\u20139 mg/L.]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:24.735Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-078.png",
+      "sha256": "8e959b7f65c87ffc841d75fa5f4fac7172162913a7823d3ca45230ab2cf253e2"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-079",
+      "underlying_test": "tests.test_candidate_contracts::test_ambiguous_comparison_is_not_completed_from_knowledge[Marker is 7 mg/L; reference range 3\\u20139 g/L.]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:24.841Z",
+      "status": "PASS",
+      "execution_ms": 5,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-079.png",
+      "sha256": "bb0271fc8e3f3be66b6939f20082f90a8de63f702782dc91318b27fa91e91868"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-080",
+      "underlying_test": "tests.test_candidate_contracts::test_ambiguous_comparison_is_not_completed_from_knowledge[Marker is 7 mg/L; second marker 8 mg/L; range 3\\u20139 mg/L.]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:24.951Z",
+      "status": "PASS",
+      "execution_ms": 5,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-080.png",
+      "sha256": "0a9c607b210e58128e4146422f93016b57f4055ed6e7b29c36293196df2982d9"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-081",
+      "underlying_test": "tests.test_candidate_contracts::test_ambiguous_comparison_is_not_completed_from_knowledge[Marker is 7 mg/L, age 50, range 3\\u20139 mg/L.]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:25.051Z",
+      "status": "PASS",
+      "execution_ms": 5,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-081.png",
+      "sha256": "9ba69def60f14e6b4133e5f59a7ae14298649e7b007e2133cd1d3fc175f29074"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-082",
+      "underlying_test": "tests.test_candidate_contracts::test_ambiguous_comparison_is_not_completed_from_knowledge[Marker is 7 mg/L; range 9\\u20133 mg/L.]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:25.169Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-082.png",
+      "sha256": "e84173a17209a66afc7586a1c2ef13828406c4fd23ec1cf70397d4dfd516f791"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-083",
+      "underlying_test": "tests.test_candidate_contracts::test_ambiguous_comparison_is_not_completed_from_knowledge[Marker is 7 mg/L; no printed range.]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:25.282Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-083.png",
+      "sha256": "3e9ad3c850e86783a9559465904fea8895900b4e1bab9c78fa7061db8967339c"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-084",
+      "underlying_test": "tests.test_candidate_contracts::test_observation_ids_resolve_authoritative_values_without_model_retyping",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:25.385Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-084.png",
+      "sha256": "a0c55eb0e891aa2ad9424d499d9036e505b887be9ad00b5f3d9006c88ffbe1e4"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-085",
+      "underlying_test": "tests.test_candidate_contracts::test_observation_ids_never_override_changed_legacy_values_or_unknown_rows",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:25.504Z",
+      "status": "PASS",
+      "execution_ms": 5,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-085.png",
+      "sha256": "19bcb944d514ec967d1d22c0c85435413d4c3d4081cba51b90fa84e38b854cbe"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-086",
+      "underlying_test": "tests.test_candidate_contracts::test_pure_text_lab_question_preserves_role_but_excludes_sales_evidence",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:25.618Z",
+      "status": "PASS",
+      "execution_ms": 35,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-086.png",
+      "sha256": "0e10e610778f5b67613ee9b8ad4fb54d6c0ff199416d49a78e7e4a4dece913c0"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-087",
+      "underlying_test": "tests.test_candidate_contracts::test_explicit_purchase_question_retains_catalog_access",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:25.715Z",
+      "status": "PASS",
+      "execution_ms": 33,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-087.png",
+      "sha256": "27a0c2aa5cdec2f52de4888eeeccd5c2490a6fc6ec626196f1cdc2416f33c383"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-088",
+      "underlying_test": "tests.test_candidate_contracts::test_organization_lookup_returns_only_organization_packages",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:25.820Z",
+      "status": "PASS",
+      "execution_ms": 30,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-088.png",
+      "sha256": "0a0121c443cb2337174836abf69a2e332921daee2d4ba6924d99b313c5018beb"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-089",
+      "underlying_test": "tests.test_candidate_contracts::test_unverified_refund_percentage_rejected_even_in_negation",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:25.932Z",
+      "status": "PASS",
+      "execution_ms": 5,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-089.png",
+      "sha256": "2ee3ad1bf83d744340001090077c54664455a77a74b96e5b5fbd7a908abf559e"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-090",
+      "underlying_test": "tests.test_candidate_contracts::test_ocr_transport_disables_sampling_without_changing_budget_or_attempts",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:26.036Z",
+      "status": "PASS",
+      "execution_ms": 8,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-090.png",
+      "sha256": "1d02893296887e1c47bbfd0a27a3cd138838c0bd5b7c73379d322dff095f9c17"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-091",
+      "underlying_test": "tests.test_candidate_contracts::test_retrieval_named_analyte_outranks_unrelated_shared_units",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:26.156Z",
+      "status": "PASS",
+      "execution_ms": 6,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-091.png",
+      "sha256": "0869d8d9e7dc9dd6f34e2f7fa05f6cd8e738759289b959ed496c25d73b01f0a8"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-092",
+      "underlying_test": "tests.test_candidate_contracts::test_refund_echo_gets_one_rewrite_and_all_checks_run",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:26.276Z",
+      "status": "PASS",
+      "execution_ms": 31,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-092.png",
+      "sha256": "c4166ab0ee0a28b0ced7f66789d82189fd93b5ba8471f1b59512b9d4b6eacf71"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-093",
+      "underlying_test": "tests.test_candidate_contracts::test_nonexact_or_negated_value_never_becomes_exact_arithmetic[not ]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:26.409Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-093.png",
+      "sha256": "d085ef906cf730145407f9b92bc70448d0f6a4dcd9148ff8b16571c83396ccdb"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-094",
+      "underlying_test": "tests.test_candidate_contracts::test_nonexact_or_negated_value_never_becomes_exact_arithmetic[maybe ]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:26.538Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-094.png",
+      "sha256": "5faa117b355a962e97f8da1fa9f8b72200a16979f621a8b8df390847ddc0db32"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-095",
+      "underlying_test": "tests.test_candidate_contracts::test_nonexact_or_negated_value_never_becomes_exact_arithmetic[about ]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:26.672Z",
+      "status": "PASS",
+      "execution_ms": 5,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-095.png",
+      "sha256": "c51aa7787a7c26d44730801efae248ad0bdeb951278cdad2aa8a5a619a11b2c5"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-096",
+      "underlying_test": "tests.test_candidate_contracts::test_nonexact_or_negated_value_never_becomes_exact_arithmetic[> ]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:26.785Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-096.png",
+      "sha256": "a93fb368f1be02801aa6a748783a017507a21bfa2bd4a73d87ed4e125dfcf557"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-097",
+      "underlying_test": "tests.test_candidate_contracts::test_nonexact_or_negated_value_never_becomes_exact_arithmetic[<= ]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:26.900Z",
+      "status": "PASS",
+      "execution_ms": 5,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-097.png",
+      "sha256": "97885461060bfb056c5b8d5f68898925c999a04fdb564b0a4c6a1c8f288ffe59"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-098",
+      "underlying_test": "tests.test_candidate_contracts::test_nonexact_or_negated_value_never_becomes_exact_arithmetic[\\u0e44\\u0e21\\u0e48\\u0e43\\u0e0a\\u0e48 ]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:27.018Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-098.png",
+      "sha256": "817156e7441059ca4557d3921b0ebe39c941fb5fee053c9ffc37bf4a29b9c517"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-099",
+      "underlying_test": "tests.test_candidate_contracts::test_nonexact_or_negated_value_never_becomes_exact_arithmetic[\\u0e1b\\u0e23\\u0e30\\u0e21\\u0e32\\u0e13 ]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:27.152Z",
+      "status": "PASS",
+      "execution_ms": 3,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-099.png",
+      "sha256": "cb9de2c0fd896d343492a05912cd40f6139045aeedb9cddd0199443d04a42481"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-100",
+      "underlying_test": "tests.test_candidate_contracts::test_disconnect_joins_cleanup_but_keeps_pending_work_registered[True]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:27.274Z",
+      "status": "PASS",
+      "execution_ms": 7,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-100.png",
+      "sha256": "fbd1282e9412ff862bba093eaab07e5eb9f25609c4d529d70365ba389e63f1f9"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-101",
+      "underlying_test": "tests.test_candidate_contracts::test_disconnect_joins_cleanup_but_keeps_pending_work_registered[False]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:27.393Z",
+      "status": "PASS",
+      "execution_ms": 123,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-101.png",
+      "sha256": "ff0bedfa93342af5371764541d61b5f17071fac8ea96f686b8ac677fdfaa3698"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-102",
+      "underlying_test": "tests.test_candidate_contracts::test_case_sensitive_units_are_not_assumed_equivalent",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:27.544Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-102.png",
+      "sha256": "50ae1337f28d6366a04f66825971b97204b1a1e80f65e9770649d3d9bb4e0d0a"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-103",
+      "underlying_test": "tests.test_candidate_contracts::test_html_unknown_extra_column_is_not_silently_ignored",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:27.682Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-103.png",
+      "sha256": "f6b4ac269bc5c0502dee4e2889a9b685df83fc295078d896097476452009a538"
+    },
+    {
+      "case_id": "unit-literal-prompt-regression-captures-104",
+      "underlying_test": "tests.test_candidate_contracts::test_organization_scope_stays_service_only_with_a_medical_search",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-literal-prompt-regression.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:27.809Z",
+      "status": "PASS",
+      "execution_ms": 52,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-literal-prompt-regression-captures\\unit-literal-prompt-regression-captures-104.png",
+      "sha256": "d6ea67ed5c3aa8ba0f5afaee35ed116b9f7b018ccc4ea4aded8df15ce6912be4"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "at": "2026-10-12T11:40:44.683566+00:00",
+  "owner_ceiling": 3000,
+  "previous_effective_ceiling": 3000,
+  "safety_stop_effective_ceiling": 260,
+  "prior": 24,
+  "new_admissions": 236,
+  "case": "EXP-OCR-14",
+  "finding": "WBC source unit10^3/uL became10^9/uL in displayed explanation; response also said within printed interval",
+  "severity": "CRITICAL_OCR_UNIT_GROUNDING_FAILURE",
+  "mechanism": "Lower harness-only admission ceiling to consumed count; no next provider admission; current admitted calls may finish. No counter reset or application/provider credential change.",
+  "resume_requires": "Owner review of finding and explicit safety-stop release; do not rerun completed cases automatically"
+}

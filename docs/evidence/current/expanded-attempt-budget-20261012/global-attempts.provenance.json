@@ -1,0 +1,14 @@
+{
+  "source": "C:\\Users\\User\\Desktop\\myProject\\LabClear\\docs\\evidence\\current\\expanded-live-20261012-01\\global-attempts.sqlite3",
+  "method": "SQLite backup preserves236attempt rows,prior24; original safety-stopped database immutable",
+  "authorized_total": 4000,
+  "snapshot": {
+    "ceiling": 4000,
+    "prior_conservative": 24,
+    "new_attempts": 236,
+    "remaining": 3740,
+    "statuses": {
+      "succeeded": 236
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "reliability": {
+    "executed": 24,
+    "passed": 24
+  },
+  "gate_final_reverification": {
+    "executed": 8,
+    "passed": 8
+  },
+  "planned_ui": 24,
+  "planned_ui_passed": 23,
+  "ui_executed": 38,
+  "ui_passed": 37,
+  "ui_failed": 1,
+  "provider_attempts_new": 0,
+  "prior_responses_conservative": 23,
+  "live_frozen_not_run": 20,
+  "live_expanded_not_run": 128,
+  "screenshot_count": 254
+}

@@ -1,0 +1,17 @@
+ACCOUNTING_PREFLIGHT {"prior": 24, "remaining": 3709, "money_remaining": 289.1836, "old_reserved": 0.2281}
+2026-10-12 19:38:44,052 INFO labclear.request: {"event":"startup","at":1791808724.052,"in_flight":0}
+2026-10-12 19:38:46,855 INFO labclear.request: {"event":"document_worker","at":1791808726.855,"request_id":"req_a82e6ce6a05374fc","worker":"ok","pages":1}
+2026-10-12 19:38:58,039 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 19:38:58,098 WARNING labclear.storage: storage_on_event_loop at=C:\Users\User\Desktop\myProject\LabClear\services\conversation_transport.py:117
+2026-10-12 19:38:58,114 WARNING labclear.storage: storage_on_event_loop at=C:\Users\User\Desktop\myProject\LabClear\services\cost_ledger.py:122
+2026-10-12 19:38:59,244 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 19:39:07,222 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 19:39:07,335 WARNING labclear.report: range_not_compared shapes=9.99 - 99.99 | 999 - 999
+2026-10-12 19:39:07,336 INFO labclear.request: {"event":"ocr_row_binding","at":1791808747.337,"request_id":"req_a82e6ce6a05374fc","step":"rows","reason":"ambiguous_html_structure"}
+2026-10-12 19:39:07,337 INFO labclear.request: {"event":"ocr_unit_fidelity","at":1791808747.337,"request_id":"req_a82e6ce6a05374fc","step":"rows","reason":"unique_explicit_name_value_unit_cell:0"}
+2026-10-12 19:39:07,337 INFO labclear.request: {"event":"ocr_unit_source_probe","at":1791808747.337,"request_id":"req_a82e6ce6a05374fc","step":"rows","reason":"{\"tables\":1,\"incomplete\":false,\"scales\":[15,null,null],\"latex\":false}"}
+2026-10-12 19:39:08,280 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 19:39:08,395 INFO labclear.request: {"event":"workflow","at":1791808748.395,"request_id":"req_a82e6ce6a05374fc","turn_id":"49bba2898a30a613b18b7654d4faa44c","route":"/chat/report","kind":"ocr","stream":true,"outcome":"done","status":200,"code":null,"origin":null,"step":"rows","duration_ms":22047,"attempts":4,"dropped_events":0}
+2026-10-12 19:39:08,396 INFO labclear.request: {"event":"http","at":1791808748.396,"request_id":"req_a82e6ce6a05374fc","method":"POST","route":"/api/business/chat/report","status":200,"duration_ms":22078}
+2026-10-12 19:39:08,888 INFO labclear.request: {"event":"http","at":1791808748.889,"request_id":"req_b8e92c4df8f4a51f","method":"GET","route":"/api/business/reports/{id}","status":401,"duration_ms":282}
+2026-10-12 19:39:09,244 INFO labclear.request: {"event":"http","at":1791808749.243,"request_id":"req_aa82a511c6ffe69d","method":"POST","route":"/api/business/chat/report/confirm","status":422,"duration_ms":31}

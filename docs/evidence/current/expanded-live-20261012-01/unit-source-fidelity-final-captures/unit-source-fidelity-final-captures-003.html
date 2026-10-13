@@ -1,0 +1,47 @@
+<!doctype html><meta charset="utf-8"><style>body{font:20px sans-serif;color:#21172f;margin:40px}h1,h2{color:#6539a9}p{overflow-wrap:anywhere}pre{font:15px monospace;white-space:pre-wrap}label{background:#f4effb;padding:8px}</style><h1>LabClear — OFFLINE / MOCK</h1><h2>unit-source-fidelity-final-captures-003 — ERROR</h2><label>Actual browser-rendered test result; not an application interaction or live AI</label><p>Source: docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-final.xml</p><p>Test: ::tests.test_answer_checks</p><p>Expected: named assertions pass with outbound provider sockets blocked</p><p>Actual: ERROR</p><p>Execution: 0ms; provider attempts0</p><pre>&lt;error message=&quot;collection failure&quot;&gt;.venv\Lib\site-packages\_pytest\python.py:508: in importtestmodule
+    mod = import_path(
+.venv\Lib\site-packages\_pytest\pathlib.py:596: in import_path
+    importlib.import_module(module_name)
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\importlib\__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;frozen importlib._bootstrap&gt;:1387: in _gcd_import
+    ???
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+.venv\Lib\site-packages\_pytest\assertion\rewrite.py:188: in exec_module
+    exec(co, module.__dict__)
+tests\test_answer_checks.py:16: in &lt;module&gt;
+    from tests.test_business_dots import REPORT, payload, script
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+.venv\Lib\site-packages\_pytest\assertion\rewrite.py:188: in exec_module
+    exec(co, module.__dict__)
+tests\test_business_dots.py:15: in &lt;module&gt;
+    from tests.test_business_v3 import client, isolated, promote  # noqa: F401
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+.venv\Lib\site-packages\_pytest\assertion\rewrite.py:188: in exec_module
+    exec(co, module.__dict__)
+tests\test_business_v3.py:8: in &lt;module&gt;
+    from main import app
+main.py:17: in &lt;module&gt;
+    from routers.ai_admin import router as ai_admin_router
+routers\ai_admin.py:12: in &lt;module&gt;
+    from routers.business import ConversationError, Strict, staff
+E     File &quot;C:\Users\User\Desktop\myProject\LabClear\routers\business.py&quot;, line 847
+E       from services.lab_units import require_supported_units
+E   IndentationError: unexpected indent&lt;/error&gt;</pre>

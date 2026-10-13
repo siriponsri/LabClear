@@ -1,0 +1,57 @@
+{
+  "server_pid": 40068,
+  "owner_coordination_confirmation": "หยุดหมดแล้วครับ คุณเริ่มใหม่ได้เลยครับ",
+  "owner_repair_authorization": "Pepo แก้ไขมาเลยครับ",
+  "owner_global_cap_authorization": "ขยายเพดานเป็น 4,000 ได้เลยครับ",
+  "old_cycle_preserved": "live-ui-live-ui-20261012T102549",
+  "old_database_preserved": "C:\\Users\\User\\Desktop\\myProject\\LabClear\\eval_runs\\live-ui-20261012T102549\\server-state\\business.sqlite3",
+  "global_gate_path": "C:\\Users\\User\\Desktop\\myProject\\LabClear\\docs\\evidence\\current\\expanded-attempt-budget-20261012\\global-attempts.sqlite3",
+  "global_gate": {
+    "ceiling": 4000,
+    "prior_conservative": 24,
+    "new_attempts": 283,
+    "remaining": 3693,
+    "statuses": {
+      "succeeded": 283
+    }
+  },
+  "durable_usage": {
+    "cycle": "live-ui-live-ui-20261012T102549",
+    "used": 307,
+    "limit": 5000,
+    "by_slot": {
+      "guard": 119,
+      "agent_plan": 36,
+      "agent_advisor": 20,
+      "agent_review": 29,
+      "vision": 35,
+      "llm": 31,
+      "agent_explainer": 37
+    },
+    "storage": "sqlite"
+  },
+  "money_ledger": {
+    "available": true,
+    "scope": "project_total",
+    "cap_thb": 300.0,
+    "prior_spend_thb": 0.0,
+    "settled_thb": 10.8586,
+    "reserved_thb": 0.2281,
+    "calls": 307,
+    "remaining_thb": 288.9133,
+    "priced_models": [
+      "openthai-systemone",
+      "typhoon-ocr",
+      "typhoon-v2.5-30b-a3b-instruct"
+    ],
+    "enabled": true
+  },
+  "mode": "LIVE_PROVIDER_LOCAL_UI",
+  "whole_case_retries": 0,
+  "workflow_cap": 12,
+  "provider_models": {
+    "llm": "typhoon/typhoon-v2.5-30b-a3b-instruct",
+    "guard": "iapp_systemone",
+    "vision": "typhoon/typhoon-ocr"
+  }
+}

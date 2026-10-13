@@ -1,0 +1,982 @@
+{
+  "started_at": "2026-10-12T09:23:52.605Z",
+  "finished_at": "2026-10-12T09:27:04.820Z",
+  "candidate_sha": "c1d54939d05d4a2a978ce960835e51c2ea655a6c",
+  "working_tree_dirty": true,
+  "git_diff_binary_sha256": "573ebca630f42656892570798afb1f24dfe8b9675c141b988146ce6d6e7949be",
+  "status_porcelain_at_start": [
+    "M routers/business.py",
+    " M static/js/workspace.js",
+    " M tests/browser/uat.cjs",
+    " M tests/test_business_v3.py",
+    "?? docs/evidence/current/p0-phase-handoff-20261012-01/",
+    "?? docs/evidence/current/p0-phase-safety-20261012-02/",
+    "?? docs/evidence/current/report-render-main-20261012-01/"
+  ],
+  "environment": {
+    "platform": "win32",
+    "architecture": "x64",
+    "node": "v24.19.0",
+    "playwright": "1.56.1",
+    "browser": "Chromium",
+    "browser_version": "141.0.7390.37",
+    "python": "Python 3.12.10",
+    "timezone": "Asia/Bangkok",
+    "fixture": "isolated SQLite; PROVIDER_NETWORK_ENABLED=false; synthetic test data"
+  },
+  "mode": "MOCKED_TEST_ONLY for LLM and OCR; real UI/API/storage/permissions. Not model or OCR quality evidence.",
+  "passed": 38,
+  "failed": 0,
+  "exit_code": 0,
+  "records": [
+    {
+      "id": "UI-01",
+      "name": "Home: segmented tabs keyboard, comparison audience toggle, theme toggle persists, search routes to filtered catalog, no overflow",
+      "expected": "All scenario assertions and required UI steps complete.",
+      "actual": "All scenario assertions passed.",
+      "status": "PASS",
+      "ms": 10379
+    },
+    {
+      "id": "UI-02",
+      "name": "Catalog: filter, URL state, chip removal, empty state, reset, sort, back/forward",
+      "expected": "All scenario assertions and required UI steps complete.",
+      "actual": "All scenario assertions passed.",
+      "status": "PASS",
+      "ms": 2998
+    },
+    {
+      "id": "UI-02b",
+      "name": "Catalog: network error shows recoverable error state",
+      "expected": "All scenario assertions and required UI steps complete.",
+      "actual": "All scenario assertions passed.",
+      "status": "PASS",
+      "ms": 421
+    },
+    {
+      "id": "UI-03",
+      "name": "Compare: tray limit, compare table, assistant hand-off link, clear",
+      "expected": "All scenario assertions and required UI steps complete.",
+      "actual": "All scenario assertions passed.",
+      "status": "PASS",
+      "ms": 1547
+    },
+    {
+      "id": "UI-04",
+      "name": "Package detail CTA leads to booking view; guest account gate prevents booking; invalid package is 404",
+      "expected": "All scenario assertions and required UI steps complete.",
+      "actual": "All scenario assertions passed.",
+      "status": "PASS",
+      "ms": 1827
+    },
+    {
+      "id": "UI-05",
+      "name": "Account: create account, label updates, survives reload",
+      "expected": "All scenario assertions and required UI steps complete.",
+      "actual": "All scenario assertions passed.",
+      "status": "PASS",
+      "ms": 2069
+    },
+    {
+      "id": "UI-06",
+      "name": "Booking form: center, date, live slots, request created as awaiting confirmation",
+      "expected": "All scenario assertions and required UI steps complete.",
+      "actual": "All scenario assertions passed.",
+      "status": "PASS",
+      "ms": 1602
+    },
+    {
+      "id": "UI-07",
+      "name": "Chat: proposal does not book; sending request creates exactly one more request",
+      "expected": "All scenario assertions and required UI steps complete.",
+      "actual": "All scenario assertions passed.",
+      "status": "PASS",
+      "ms": 2274
+    },
+    {
+      "id": "UI-08",
+      "name": "Chat: failed reply is marked, retry answers without duplicating the message; sources render",
+      "expected": "All scenario assertions and required UI steps complete.",
+      "actual": "All scenario assertions passed.",
+      "status": "PASS",
+      "ms": 3009
+    },
+    {
+      "id": "UI-09",
+      "name": "Reports: upload (OCR double), source image, edit, explicit confirmation, context chip, reload",
+      "expected": "All scenario assertions and required UI steps complete.",
+      "actual": "All scenario assertions passed.",
+      "status": "PASS",
+      "ms": 2189
+    },
+    {
+      "id": "UI-10",
+      "name": "Organization page: inquiry form validation and submission for the signed-in account",
+      "expected": "All scenario assertions and required UI steps complete.",
+      "actual": "All scenario assertions passed.",
+      "status": "PASS",
+      "ms": 995
+    },
+    {
+      "id": "UI-11",
+      "name": "Manager: separate session sign-in, inbox shows organization request with details",
+      "expected": "All scenario assertions and required UI steps complete.",
+      "actual": "All scenario assertions passed.",
+      "status": "PASS",
+      "ms": 2407
+    },
+    {
+      "id": "UI-12",
+      "name": "Staff: take over, issue quotation v1 then revision v2",
+      "expected": "All scenario assertions and required UI steps complete.",
+      "actual": "All scenario assertions passed.",
+      "status": "PASS",
+      "ms": 949
+    },
+    {
+      "id": "UI-13",
+      "name": "Staff: confirm one request, decline another with a reason",
+      "expected": "All scenario assertions and required UI steps complete.",
+      "actual": "All scenario assertions passed.",
+      "status": "PASS",
+      "ms": 6193
+    },
+    {
+      "id": "UI-14",
+      "name": "Customer: notifications from events, calendar file, quotation versions and PDF, accept latest",
+      "expected": "All scenario assertions and required UI steps complete.",
+      "actual": "All scenario assertions passed.",
+      "status": "PASS",
+      "ms": 2276
+    },
+    {
+      "id": "UI-15",
+      "name": "Payment simulator: PromptPay test payment, signed success, paid state persists",
+      "expected": "All scenario assertions and required UI steps complete.",
+      "actual": "All scenario assertions passed.",
+      "status": "PASS",
+      "ms": 2050
+    },
+    {
+      "id": "UI-16",
+      "name": "Website handoff: customer asks for team, staff takes over, reply reaches customer, and customer confirms assistant resume",
+      "expected": "All scenario assertions and required UI steps complete.",
+      "actual": "All scenario assertions passed.",
+      "status": "PASS",
+      "ms": 33928
+    },
+    {
+      "id": "UI-16b",
+      "name": "Handoff privacy: no history is preselected or visible in the unassigned staff queue",
+      "expected": "All scenario assertions and required UI steps complete.",
+      "actual": "All scenario assertions passed.",
+      "status": "PASS",
+      "ms": 3770
+    },
+    {
+      "id": "UI-16c",
+      "name": "Handoff sharing notice fits a mobile dialog without clipping or control overlap",
+      "expected": "All scenario assertions and required UI steps complete.",
+      "actual": "All scenario assertions passed.",
+      "status": "PASS",
+      "ms": 1821
+    },
+    {
+      "id": "UI-17",
+      "name": "Manager: price edit persists and reaches the public catalog; branch staff cannot see manager tools",
+      "expected": "All scenario assertions and required UI steps complete.",
+      "actual": "All scenario assertions passed.",
+      "status": "PASS",
+      "ms": 3086
+    },
+    {
+      "id": "UI-18",
+      "name": "Channels: LINE simulator event through adapter, worker run, simulated delivery recorded",
+      "expected": "All scenario assertions and required UI steps complete.",
+      "actual": "All scenario assertions passed.",
+      "status": "PASS",
+      "ms": 2621
+    },
+    {
+      "id": "UI-28",
+      "name": "Manager: AI providers page saves a provider, masks the key, never returns it",
+      "expected": "All scenario assertions and required UI steps complete.",
+      "actual": "All scenario assertions passed.",
+      "status": "PASS",
+      "ms": 3137
+    },
+    {
+      "id": "UI-23",
+      "name": "Staff dashboard: numbers from records, capacity table, centers edit, roles pause/resume, audit log",
+      "expected": "All scenario assertions and required UI steps complete.",
+      "actual": "All scenario assertions passed.",
+      "status": "PASS",
+      "ms": 5067
+    },
+    {
+      "id": "UI-25",
+      "name": "Staff customers and payments: list from records, customer history dialog, payment state filter",
+      "expected": "All scenario assertions and required UI steps complete.",
+      "actual": "All scenario assertions passed.",
+      "status": "PASS",
+      "ms": 3511
+    },
+    {
+      "id": "UI-24",
+      "name": "Assistant dock on public pages: page-aware, role label, shortcut goes straight to the booking form",
+      "expected": "All scenario assertions and required UI steps complete.",
+      "actual": "All scenario assertions passed.",
+      "status": "PASS",
+      "ms": 4079
+    },
+    {
+      "id": "UI-19",
+      "name": "Permission: customer cannot use staff APIs; staff views ask to sign in",
+      "expected": "All scenario assertions and required UI steps complete.",
+      "actual": "All scenario assertions passed.",
+      "status": "PASS",
+      "ms": 977
+    },
+    {
+      "id": "UI-20",
+      "name": "Keyboard and dialogs: visible focus, Escape closes dialog",
+      "expected": "All scenario assertions and required UI steps complete.",
+      "actual": "All scenario assertions passed.",
+      "status": "PASS",
+      "ms": 9442
+    },
+    {
+      "id": "UI-26",
+      "name": "AI Lab Report: free reading, upgrade prompt, Plus via signed test payment, multi-image reading, lab dashboard over time, printable Lab Report",
+      "expected": "All scenario assertions and required UI steps complete.",
+      "actual": "All scenario assertions passed.",
+      "status": "PASS",
+      "ms": 12811
+    },
+    {
+      "id": "UI-27",
+      "name": "Website v5: product deck tabs, search dialog (Ctrl K), nav dropdown, AI Lab Report page",
+      "expected": "All scenario assertions and required UI steps complete.",
+      "actual": "All scenario assertions passed.",
+      "status": "PASS",
+      "ms": 4027
+    },
+    {
+      "id": "UI-29",
+      "name": "Sign-in: demo accounts by typing (not listed), admin goes to the service desk and AI providers, test-02 has Plus",
+      "expected": "All scenario assertions and required UI steps complete.",
+      "actual": "All scenario assertions passed.",
+      "status": "PASS",
+      "ms": 4385
+    },
+    {
+      "id": "UI-30",
+      "name": "Report in the chat: thumbnail before and after sending, live steps, values card, one-click confirm answers the question",
+      "expected": "All scenario assertions and required UI steps complete.",
+      "actual": "All scenario assertions passed.",
+      "status": "PASS",
+      "ms": 5286
+    },
+    {
+      "id": "UI-31",
+      "name": "Chats and projects: new chat, project, rename, switch back, drawer on mobile",
+      "expected": "All scenario assertions and required UI steps complete.",
+      "actual": "All scenario assertions passed.",
+      "status": "PASS",
+      "ms": 5008
+    },
+    {
+      "id": "UI-32",
+      "name": "Website: sign in from the header with a typed demo account, account menu, sign out; journey section; agents on AI providers",
+      "expected": "All scenario assertions and required UI steps complete.",
+      "actual": "All scenario assertions passed.",
+      "status": "PASS",
+      "ms": 4353
+    },
+    {
+      "id": "UI-33",
+      "name": "Guest: upload/image preview, no persisted token, reload revokes chat and image, no history after signup",
+      "expected": "All scenario assertions and required UI steps complete.",
+      "actual": "All scenario assertions passed.",
+      "status": "PASS",
+      "ms": 7402
+    },
+    {
+      "id": "UI-34",
+      "name": "Navigation: delayed view cannot overwrite latest click; booking fields survive sign-in; customer staff URL stays private",
+      "expected": "All scenario assertions and required UI steps complete.",
+      "actual": "All scenario assertions passed.",
+      "status": "PASS",
+      "ms": 3114
+    },
+    {
+      "id": "UI-21-tablet",
+      "name": "tablet: pages without horizontal overflow, navigation drawer, filters toggle, reduced motion",
+      "expected": "All scenario assertions and required UI steps complete.",
+      "actual": "All scenario assertions passed.",
+      "status": "PASS",
+      "ms": 14047
+    },
+    {
+      "id": "UI-21-mobile",
+      "name": "mobile: pages without horizontal overflow, navigation drawer, filters toggle, reduced motion",
+      "expected": "All scenario assertions and required UI steps complete.",
+      "actual": "All scenario assertions passed.",
+      "status": "PASS",
+      "ms": 11659
+    },
+    {
+      "id": "UI-22",
+      "name": "No uncaught browser JavaScript errors",
+      "expected": "All scenario assertions and required UI steps complete.",
+      "actual": "All scenario assertions passed.",
+      "status": "PASS",
+      "ms": 2
+    }
+  ],
+  "errors": [],
+  "screenshots": [
+    "UI-01_home-1440.png",
+    "UI-02_catalog-1440.png",
+    "UI-02b_catalog-network-error-1440.png",
+    "UI-03_compare-1440.png",
+    "UI-04_guest-account-required.png",
+    "UI-04_package-not-found.png",
+    "UI-05_account-persisted-1440.png",
+    "UI-06_book-1440.png",
+    "UI-07_chat-preview-1440.png",
+    "UI-08_chat-retry-error-1440.png",
+    "UI-08_chat-source-1440.png",
+    "UI-09_report-review-1440.png",
+    "UI-10_organization-done-1440.png",
+    "UI-11_staff-overview-1440.png",
+    "UI-12_staff-quote-1440.png",
+    "UI-13_staff-appointments-1440.png",
+    "UI-13_manager-simulated-receipt-1440.png",
+    "UI-14_notifications-1440.png",
+    "UI-15_payment-simulator-1440.png",
+    "UI-16_handoff-bot-chat-1440.png",
+    "UI-16_handoff-sharing-selected-1440.png",
+    "UI-16_handoff-queued-1440.png",
+    "UI-16_handoff-staff-second-reply-1440.png",
+    "UI-16_handoff-staff-second-reply-customer-1440.png",
+    "UI-16_handoff-resume-prompt-1440.png",
+    "UI-16_handoff-resumed-1440.png",
+    "UI-16_handoff-requeued-1440.png",
+    "UI-16_staff-inbox-1440.png",
+    "UI-16_handoff-closed-390.png",
+    "UI-16_handoff-new-chat-390.png",
+    "UI-16_handoff-history-closed-390.png",
+    "UI-16b_handoff-sharing-none-1440.png",
+    "UI-16b_handoff-queue-no-history-1440.png",
+    "UI-16c_handoff-sharing-mobile-390.png",
+    "UI-17_manager-price-simulator-1440.png",
+    "UI-18_channels-1440.png",
+    "UI-28_ai-providers-1440.png",
+    "UI-23_staff-audit-1440.png",
+    "UI-25_staff-customers-1440.png",
+    "UI-25_staff-payments-1440.png",
+    "UI-24_dock-1440.png",
+    "UI-19_customer-staff-denied-1440.png",
+    "UI-20_keyboard-dialog-1440.png",
+    "UI-26_labs-free-1440.png",
+    "UI-26_plan-free-1440.png",
+    "UI-26_labs-plus-1440.png",
+    "UI-26_lab-report-1440.png",
+    "UI-27_search-dialog-1440.png",
+    "UI-27_lab-reports-1440.png",
+    "UI-29_signin-1440.png",
+    "UI-30_chat-report-card-1440.png",
+    "UI-30_chat-report-answer-1440.png",
+    "UI-31_chats-1440.png",
+    "UI-31_chats-390.png",
+    "UI-32_header-menu-1440.png",
+    "UI-32_ai-agents-1440.png",
+    "UI-33_guest-temporary-1440.png",
+    "UI-34_customer-staff-url-private-1440.png",
+    "UI-21-tablet_home-768.png",
+    "UI-21-tablet_catalog-filters-768.png",
+    "UI-21-tablet_app-768.png",
+    "UI-21-mobile_home-390.png",
+    "UI-21-mobile_catalog-filters-390.png",
+    "UI-21-mobile_app-390.png"
+  ],
+  "screenshot_evidence": [
+    {
+      "case_id": "UI-01",
+      "file": "UI-01_home-1440.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "1e9123832897d3baf4e8828ae680222ea135845a01bdeaefac8ccce332661d22"
+    },
+    {
+      "case_id": "UI-02",
+      "file": "UI-02_catalog-1440.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "6c5e8451c658a7e6c868688522493582439e24a788afc691af7c565a52fef5ee"
+    },
+    {
+      "case_id": "UI-02b",
+      "file": "UI-02b_catalog-network-error-1440.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "a5309d75a124f51c8681b668f666d7bad2631b72c527d4496b25aff505f17f43"
+    },
+    {
+      "case_id": "UI-03",
+      "file": "UI-03_compare-1440.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "87ba4b656ccd8bcbd6cacea52fa032c68bbcfc207d682f86b0f47cfe133f0b97"
+    },
+    {
+      "case_id": "UI-04",
+      "file": "UI-04_guest-account-required.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "9dd4105052b82a270635ad836e2d86e6fc17967bf929c37fe225bcb165d2ff08"
+    },
+    {
+      "case_id": "UI-04",
+      "file": "UI-04_package-not-found.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "24ef07c4187c0b63fc0bd6fd0cd97e25ed775c67ba538f9aeae83d4e060b60c4"
+    },
+    {
+      "case_id": "UI-05",
+      "file": "UI-05_account-persisted-1440.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "094878b272b3d681ad62acd6e4b567f614aeabd4da7f19560540bdd91c99401e"
+    },
+    {
+      "case_id": "UI-06",
+      "file": "UI-06_book-1440.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "9946f54ae979fb96da344dba69777920ab3032db90992e0a2ac8b13184f34052"
+    },
+    {
+      "case_id": "UI-07",
+      "file": "UI-07_chat-preview-1440.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "566f9d821f330dc317a2cad92e5f58517cd1a93c0cfddbbdd694eb3cd474aeb7"
+    },
+    {
+      "case_id": "UI-08",
+      "file": "UI-08_chat-retry-error-1440.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "96605ac2f058ade81345e03d1ba3befcdfa35eba18f5b4abde6dacefb223386f"
+    },
+    {
+      "case_id": "UI-08",
+      "file": "UI-08_chat-source-1440.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "2c09db60af63ad34d4832a5baba651522ec02bc19dd6fd7e9497203dc0019713"
+    },
+    {
+      "case_id": "UI-09",
+      "file": "UI-09_report-review-1440.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "9c7c7437068daa36578210a9325255ecea4fee5f0fd3ce8aa1c5336a5fbf8d45"
+    },
+    {
+      "case_id": "UI-10",
+      "file": "UI-10_organization-done-1440.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "7eff0a7794068fd5ffd824bad34dcc8a2d557bd585890c432fe440bc15af06a0"
+    },
+    {
+      "case_id": "UI-11",
+      "file": "UI-11_staff-overview-1440.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "449250d6fb45f390067d906e1512d729f01973e8c556eb91f44d876bfce760e1"
+    },
+    {
+      "case_id": "UI-12",
+      "file": "UI-12_staff-quote-1440.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "b4432ba9b93408735270779fbeebc9c58b5d7ac8fccc29b90f0089663d9ec999"
+    },
+    {
+      "case_id": "UI-13",
+      "file": "UI-13_staff-appointments-1440.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "bc4fcad1c20806cc102616519888ba4a279083f2346cbfc853922aeb81321f92"
+    },
+    {
+      "case_id": "UI-13",
+      "file": "UI-13_manager-simulated-receipt-1440.png",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "sha256": "0d50430c7341f5d850aaa0a13c511775278e9e44e35e8ba6a7bcc62b8eda4194"
+    },
+    {
+      "case_id": "UI-14",
+      "file": "UI-14_notifications-1440.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "704c3947e2827f8199a8386634859a77b7a09efaf7fe7a20ec9a62e08a25eb25"
+    },
+    {
+      "case_id": "UI-15",
+      "file": "UI-15_payment-simulator-1440.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "9194eaad8e290c111d5b7bf0204cda7603049390387b14e1c478999ac42a990f"
+    },
+    {
+      "case_id": "UI-16",
+      "file": "UI-16_handoff-bot-chat-1440.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "240056a0e28faca37584de2161c4bee270435c657fabc923d3674959f97a1492"
+    },
+    {
+      "case_id": "UI-16",
+      "file": "UI-16_handoff-sharing-selected-1440.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "01aae7d7127c525508858a6cac578904ae6d909357410b05d4964942e70213f7"
+    },
+    {
+      "case_id": "UI-16",
+      "file": "UI-16_handoff-queued-1440.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "6247682a40744025b40acaa3d180d88be995e162364dc8d12227b8dfa1958947"
+    },
+    {
+      "case_id": "UI-16",
+      "file": "UI-16_handoff-staff-second-reply-1440.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "c62f89f7ecd3b53b9988304d62ab35dd5d4ac1ac4c59b063ebacae87dcdc65d7"
+    },
+    {
+      "case_id": "UI-16",
+      "file": "UI-16_handoff-staff-second-reply-customer-1440.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "8069e88ca4c39fcf2eef3a4bb2992ab099d747ba137c50216cd416574695b1f4"
+    },
+    {
+      "case_id": "UI-16",
+      "file": "UI-16_handoff-resume-prompt-1440.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "bb7c6a473601448f0c1e6f403d4d43409c45db230e3f551d97652be67a471308"
+    },
+    {
+      "case_id": "UI-16",
+      "file": "UI-16_handoff-resumed-1440.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "3b7c64f43f3458e26276255ca70c324e69c8832a1a687ce2797664a5e9ad571c"
+    },
+    {
+      "case_id": "UI-16",
+      "file": "UI-16_handoff-requeued-1440.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "b6b6d00165aa5aed316bf1e75f4b1af52e7c2edfedbab30a6764eac2157e001e"
+    },
+    {
+      "case_id": "UI-16",
+      "file": "UI-16_staff-inbox-1440.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "1042da6727724f14561c88053654c53d1abbf8a96b9757ec139a61b8514bd5fe"
+    },
+    {
+      "case_id": "UI-16",
+      "file": "UI-16_handoff-closed-390.png",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "sha256": "e04e57971aa529944707c8b98bae1838d3aac43936a7a0c53cb9a79a9120e317"
+    },
+    {
+      "case_id": "UI-16",
+      "file": "UI-16_handoff-new-chat-390.png",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "sha256": "dbf1255e8110af98a66bf53b9a9dc9d19d1ab2c7ee6bd53237bdc0242b6b8bac"
+    },
+    {
+      "case_id": "UI-16",
+      "file": "UI-16_handoff-history-closed-390.png",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "sha256": "c14c75a532d7ed3efc6f64d909809dc68c3fb5e15c1f89325e572ef1b5ce4918"
+    },
+    {
+      "case_id": "UI-16b",
+      "file": "UI-16b_handoff-sharing-none-1440.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "7d144269c76fecc51d8ab7ad4761d6188c1d4b59d761874b14ea6394899bc50d"
+    },
+    {
+      "case_id": "UI-16b",
+      "file": "UI-16b_handoff-queue-no-history-1440.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "f111421c54d97614a4d393bb384286c59e1015f3982fd5402f68cec6172b6c87"
+    },
+    {
+      "case_id": "UI-16c",
+      "file": "UI-16c_handoff-sharing-mobile-390.png",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "sha256": "74cbff1afa8bbe9f6653d382ce971320fcaf88bf44b150a00dbb7da80551a7a8"
+    },
+    {
+      "case_id": "UI-17",
+      "file": "UI-17_manager-price-simulator-1440.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "461d2921db4f9e487a0373bf603a554636ec6d1d5070c9b51964e32475dc61da"
+    },
+    {
+      "case_id": "UI-18",
+      "file": "UI-18_channels-1440.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "cdfa38589e25a5b8db8ec16611a2cba61f4f818416508440da8ef6bac2e1ccb7"
+    },
+    {
+      "case_id": "UI-28",
+      "file": "UI-28_ai-providers-1440.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "c1d8632c09ecdf8ca340d44ddcc42b9addd8b6520f919332d24421b140e7f167"
+    },
+    {
+      "case_id": "UI-23",
+      "file": "UI-23_staff-audit-1440.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "f8206fdc7cc685cec383aa06e0c24cf93de4810627cbefdb57e00ca3d4157e51"
+    },
+    {
+      "case_id": "UI-25",
+      "file": "UI-25_staff-customers-1440.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "d85a7d991a11d1386273077d5a73839e5a73d6e2e1019b27e6eceb5213b46f39"
+    },
+    {
+      "case_id": "UI-25",
+      "file": "UI-25_staff-payments-1440.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "71d8d674604405bac7d803272200df185b2d3752c9fc876d596068c10734723d"
+    },
+    {
+      "case_id": "UI-24",
+      "file": "UI-24_dock-1440.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "33a6913078dad294c7c25c227e9b3383acf2e044c037c9849d0bc4cdda37cf5a"
+    },
+    {
+      "case_id": "UI-19",
+      "file": "UI-19_customer-staff-denied-1440.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "058ebf65cb7a4f28b04655c2cccf0d8d4205d04999fec110b71f306194bdf72f"
+    },
+    {
+      "case_id": "UI-20",
+      "file": "UI-20_keyboard-dialog-1440.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "8429d9b7d96273f6b98e93517ee8bc78fd09adf577cb6ebd1a973cea3c2033a8"
+    },
+    {
+      "case_id": "UI-26",
+      "file": "UI-26_labs-free-1440.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "f7989b6b43211c03d549f29ec7dcf2c7ab46b1c587fc5ade7d65ac99daa92787"
+    },
+    {
+      "case_id": "UI-26",
+      "file": "UI-26_plan-free-1440.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "a580d89e03166d19ec9aabc01278d38f2c172f64ca698d327a33178b7194c7b3"
+    },
+    {
+      "case_id": "UI-26",
+      "file": "UI-26_labs-plus-1440.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "9203b7ce15161a229b6519eb1c903724183e8f1775d71bbc2b50b1466a35718e"
+    },
+    {
+      "case_id": "UI-26",
+      "file": "UI-26_lab-report-1440.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "b22dc2ddc7d6891f0d6e5ccd12666514e7434c2872045d6d0d6802105faf0e31"
+    },
+    {
+      "case_id": "UI-27",
+      "file": "UI-27_search-dialog-1440.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "d9b8d9f56a7e339ebb2fcc16831fdd218ea78822fb971c46557e479712f5ee6c"
+    },
+    {
+      "case_id": "UI-27",
+      "file": "UI-27_lab-reports-1440.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "33d35abf55ddd592cbcc2677c64bc634e841892167caed8132dc44f1c320d3c2"
+    },
+    {
+      "case_id": "UI-29",
+      "file": "UI-29_signin-1440.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "93e84ea75326ce880f998e78c21f556a77973cde3a20643982d0635512299378"
+    },
+    {
+      "case_id": "UI-30",
+      "file": "UI-30_chat-report-card-1440.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "836340423bb893a6aacf360a2d787f37e8bc38ba1a0fe3ff75d26db1c61772b7"
+    },
+    {
+      "case_id": "UI-30",
+      "file": "UI-30_chat-report-answer-1440.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "e3c8b6390cc602ab69ba3ef4d067361d72197745575f3935d160036b7b47cb1c"
+    },
+    {
+      "case_id": "UI-31",
+      "file": "UI-31_chats-1440.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "f9d2b4b5de54692b2fda089e73dba18547eb33ae3230d0c827dfd28e51040888"
+    },
+    {
+      "case_id": "UI-31",
+      "file": "UI-31_chats-390.png",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "sha256": "f705f034ffed4f8be2897ea3a0ad47786e39970b8b967ba65d03ad3babb82f0e"
+    },
+    {
+      "case_id": "UI-32",
+      "file": "UI-32_header-menu-1440.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "aa6cb0ea3e440283b6adbaa6ec41b1f09e9deb2c4575b0537c49ab1c6f25825e"
+    },
+    {
+      "case_id": "UI-32",
+      "file": "UI-32_ai-agents-1440.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "9a88f4f159265b1baa15e667036e06ccb39d967e1ccdcfbd854bd21fa4a4390a"
+    },
+    {
+      "case_id": "UI-33",
+      "file": "UI-33_guest-temporary-1440.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "4c90c83911585bb40d72461e2d4616bbe06e0d3898ac94e4576f918559f4fda6"
+    },
+    {
+      "case_id": "UI-34",
+      "file": "UI-34_customer-staff-url-private-1440.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "bd9de02d92fccc9f98925f40fda3d868d311cf326172a9124a2e8c4215b4eca8"
+    },
+    {
+      "case_id": "UI-21-tablet",
+      "file": "UI-21-tablet_home-768.png",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "sha256": "48ed673b3de66edfa6d0fc991baf9e7e05e29b76bb8d1642fb37c0ab28c23274"
+    },
+    {
+      "case_id": "UI-21-tablet",
+      "file": "UI-21-tablet_catalog-filters-768.png",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "sha256": "04e9b5d2f26aa0f78ea71ca9f38866ff22d9377a39a322b8768e10655794681f"
+    },
+    {
+      "case_id": "UI-21-tablet",
+      "file": "UI-21-tablet_app-768.png",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "sha256": "a0cba4697b75130d52e1b14b2566b7079735fbad6d4262ec04bcd472ffc65f06"
+    },
+    {
+      "case_id": "UI-21-mobile",
+      "file": "UI-21-mobile_home-390.png",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "sha256": "dcbc55378079d50596b6f44d287191c7a30533d69795af5983e3a5028c4a0176"
+    },
+    {
+      "case_id": "UI-21-mobile",
+      "file": "UI-21-mobile_catalog-filters-390.png",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "sha256": "7cc1fd869ad95eb00ed6d7d95a9772b2eb2cef9f33d09ecb3c594772543dd468"
+    },
+    {
+      "case_id": "UI-21-mobile",
+      "file": "UI-21-mobile_app-390.png",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "sha256": "4fe510de8071f34db975012b752dff2257d07c9392a40879f8ee79ea2e517a10"
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "text_only_cases": 62,
+  "text_only_turns": 78,
+  "max_provider_attempts": 936,
+  "current_global_total": 307,
+  "global_total_upper_envelope": 1243,
+  "remaining_image_dependent_cases": 66,
+  "day_guard_prior": 119,
+  "decision_basis": "Typed questions times permutations; not one HTTP request by assumption. Existing production conservative default unchanged; run-scoped accounting only.",
+  "source_input_sha256": "9be80a9f72273990ee4b4d0ea965f0e7f46d129a7f16c17e06fbde17fe29bc31",
+  "owner_confirmation": "Owner confirmed no iApp use outside LabClear today. Exact configured hosted routes match publicly free offerings. No invoice or console credit balance accessed."
+}

@@ -1,0 +1,90 @@
+{
+  "executions": 5,
+  "records": [
+    {
+      "case_id": "unit-source-fidelity-final-captures-001",
+      "underlying_test": "::tests.test_bound_output",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-final.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:09.548Z",
+      "status": "ERROR",
+      "execution_ms": 0,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-final-captures\\unit-source-fidelity-final-captures-001.png",
+      "sha256": "aa1674b0853357f14b4349e653b1049a7d858e6c2e68ded3f8af58f3507b86de"
+    },
+    {
+      "case_id": "unit-source-fidelity-final-captures-002",
+      "underlying_test": "::tests.test_candidate_contracts",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-final.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:09.732Z",
+      "status": "ERROR",
+      "execution_ms": 0,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-final-captures\\unit-source-fidelity-final-captures-002.png",
+      "sha256": "64a76c3ff513b6abc31b6785617916f63255b87da51f5c61947f363e721ea3cc"
+    },
+    {
+      "case_id": "unit-source-fidelity-final-captures-003",
+      "underlying_test": "::tests.test_answer_checks",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-final.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:09.917Z",
+      "status": "ERROR",
+      "execution_ms": 0,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-final-captures\\unit-source-fidelity-final-captures-003.png",
+      "sha256": "6a1a686beb77e362f83723d18aa28fc4e50f17bb6d30d5a3e332a18f23ca81f0"
+    },
+    {
+      "case_id": "unit-source-fidelity-final-captures-004",
+      "underlying_test": "::tests.test_business_v3",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-final.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:10.070Z",
+      "status": "ERROR",
+      "execution_ms": 0,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-final-captures\\unit-source-fidelity-final-captures-004.png",
+      "sha256": "f7fab01f79abd3ee7402691f477d450029070e410f506c37d79792b98ba76df9"
+    },
+    {
+      "case_id": "unit-source-fidelity-final-captures-005",
+      "underlying_test": "::tests.test_guest_privacy_302",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-final.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:10.215Z",
+      "status": "ERROR",
+      "execution_ms": 0,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-final-captures\\unit-source-fidelity-final-captures-005.png",
+      "sha256": "b89ff0ead118ae8a8b96e0ac5024ce67aeb5473b9089c91582602b1e716b44c4"
+    }
+  ]
+}

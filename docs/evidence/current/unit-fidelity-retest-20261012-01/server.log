@@ -1,0 +1,2 @@
+ACCOUNTING_PREFLIGHT {"prior": 24, "remaining": 3740, "money_remaining": 290.0596, "old_reserved": 0.2281}
+2026-10-12 19:09:35,429 INFO labclear.request: {"event":"startup","at":1791806975.429,"in_flight":0}

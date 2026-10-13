@@ -1,0 +1,1008 @@
+{
+  "executions": 59,
+  "records": [
+    {
+      "case_id": "unit-repair-initial-captures-001",
+      "underlying_test": "tests.test_lab_unit_fidelity::test_equivalent_count_notation_keeps_correct_scale[10\\xb3/\\xb5L]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-repair-initial.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:09:44.314Z",
+      "status": "FAIL",
+      "execution_ms": 2,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-repair-initial-captures\\unit-repair-initial-captures-001.png",
+      "sha256": "f8f7338f3f62ff84226f6db1f0b6c1598c1bc653fbd8dcff22969f976c27dadb"
+    },
+    {
+      "case_id": "unit-repair-initial-captures-002",
+      "underlying_test": "tests.test_bound_output::test_rendered_cells_are_bound_by_row_id_not_fuzzy_bilingual_name",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-repair-initial.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:09:44.486Z",
+      "status": "FAIL",
+      "execution_ms": 3,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-repair-initial-captures\\unit-repair-initial-captures-002.png",
+      "sha256": "d1b8dd229059f49482282765f5a676d94370f4a4b38f1117d6bd261b062d232c"
+    },
+    {
+      "case_id": "unit-repair-initial-captures-003",
+      "underlying_test": "tests.test_bound_output::test_duplicate_names_keep_unique_ids_and_disable_uncertain_comparison",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-repair-initial.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:09:44.626Z",
+      "status": "FAIL",
+      "execution_ms": 3,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-repair-initial-captures\\unit-repair-initial-captures-003.png",
+      "sha256": "3a42c8090faff3a659f5d294f7642ba0981e2936755097c2216233de64f2e7e1"
+    },
+    {
+      "case_id": "unit-repair-initial-captures-004",
+      "underlying_test": "tests.test_bound_output::test_legacy_modified_observation_is_not_repaired_by_row_binding",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-repair-initial.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:09:44.784Z",
+      "status": "FAIL",
+      "execution_ms": 33,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-repair-initial-captures\\unit-repair-initial-captures-004.png",
+      "sha256": "750e4c23d297ee522a21ee3868426b48759c2330abe87c96701ebea3df604d75"
+    },
+    {
+      "case_id": "unit-repair-initial-captures-005",
+      "underlying_test": "tests.test_bound_output::test_unknown_headers_can_still_verify_complete_same_row_cells",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-repair-initial.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:09:44.990Z",
+      "status": "FAIL",
+      "execution_ms": 3,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-repair-initial-captures\\unit-repair-initial-captures-005.png",
+      "sha256": "d2e251e80df115d53f536e79006c5d7e8a98802826efa5d5e970a1315cfab767"
+    },
+    {
+      "case_id": "unit-repair-initial-captures-006",
+      "underlying_test": "tests.test_bound_output::test_comparators_and_qualitative_cells_survive_final_sanitizer[4-<5]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-repair-initial.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:09:45.108Z",
+      "status": "PASS",
+      "execution_ms": 5,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-repair-initial-captures\\unit-repair-initial-captures-006.png",
+      "sha256": "2fc7b0b3bc6390d44c93d87bf9f0c11a50c786eeda5874e5f0c28ace69a8bff4"
+    },
+    {
+      "case_id": "unit-repair-initial-captures-007",
+      "underlying_test": "tests.test_bound_output::test_comparators_and_qualitative_cells_survive_final_sanitizer[4->=3]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-repair-initial.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:09:45.246Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-repair-initial-captures\\unit-repair-initial-captures-007.png",
+      "sha256": "e3a1ebca5b464835d23c52d40870463150c32333e6919dea60957fc6e394c56d"
+    },
+    {
+      "case_id": "unit-repair-initial-captures-008",
+      "underlying_test": "tests.test_bound_output::test_comparators_and_qualitative_cells_survive_final_sanitizer[<5-<7]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-repair-initial.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:09:45.378Z",
+      "status": "PASS",
+      "execution_ms": 5,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-repair-initial-captures\\unit-repair-initial-captures-008.png",
+      "sha256": "884349c7d907097a4fbbcd72de747e0b3e61a49d12837aefcb0a82e30405d026"
+    },
+    {
+      "case_id": "unit-repair-initial-captures-009",
+      "underlying_test": "tests.test_bound_output::test_comparators_and_qualitative_cells_survive_final_sanitizer[Negative-Negative]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-repair-initial.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:09:45.507Z",
+      "status": "PASS",
+      "execution_ms": 5,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-repair-initial-captures\\unit-repair-initial-captures-009.png",
+      "sha256": "996ea7673e5e5614aa19b6beec7e16aea917c219fcf32a28a45e6e501d02d71e"
+    },
+    {
+      "case_id": "unit-repair-initial-captures-010",
+      "underlying_test": "tests.test_bound_output::test_unbound_name_does_not_skip_later_cross_row_check",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-repair-initial.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:09:45.644Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-repair-initial-captures\\unit-repair-initial-captures-010.png",
+      "sha256": "de61c48665067be4cb3b2764e92398e506359d83574d92825c0c867c52bfe29c"
+    },
+    {
+      "case_id": "unit-repair-initial-captures-011",
+      "underlying_test": "tests.test_bound_output::test_flag_that_conflicts_with_within_range_is_uncertain[H]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-repair-initial.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:09:45.777Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-repair-initial-captures\\unit-repair-initial-captures-011.png",
+      "sha256": "1a31968ca432f08c321c5e37e4076bfee0475aba8457daad3ac6faa9d0c5e364"
+    },
+    {
+      "case_id": "unit-repair-initial-captures-012",
+      "underlying_test": "tests.test_bound_output::test_flag_that_conflicts_with_within_range_is_uncertain[HH]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-repair-initial.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:09:45.901Z",
+      "status": "PASS",
+      "execution_ms": 8,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-repair-initial-captures\\unit-repair-initial-captures-012.png",
+      "sha256": "b1c1e164cc444534eb9f0cb7521c6e1f745fbddd5577974546e8574be13ecaab"
+    },
+    {
+      "case_id": "unit-repair-initial-captures-013",
+      "underlying_test": "tests.test_bound_output::test_flag_that_conflicts_with_within_range_is_uncertain[L]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-repair-initial.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:09:46.027Z",
+      "status": "PASS",
+      "execution_ms": 6,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-repair-initial-captures\\unit-repair-initial-captures-013.png",
+      "sha256": "bbb2cf914092f43543da8be3b6f37244aa1823201e6b72a34948ead8b629ebbf"
+    },
+    {
+      "case_id": "unit-repair-initial-captures-014",
+      "underlying_test": "tests.test_bound_output::test_flag_that_conflicts_with_within_range_is_uncertain[LL]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-repair-initial.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:09:46.161Z",
+      "status": "PASS",
+      "execution_ms": 5,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-repair-initial-captures\\unit-repair-initial-captures-014.png",
+      "sha256": "2316b1d7543e135d8421f4eb93b9e6476c4960f5344e80e6d6f51e2674a5e7a1"
+    },
+    {
+      "case_id": "unit-repair-initial-captures-015",
+      "underlying_test": "tests.test_bound_output::test_uncertain_report_card_status_is_unknown_after_validation",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-repair-initial.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:09:46.293Z",
+      "status": "PASS",
+      "execution_ms": 32,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-repair-initial-captures\\unit-repair-initial-captures-015.png",
+      "sha256": "524405754be54edda0de7eddb3d0a3a6e58a9da0a5853942520518572596642f"
+    },
+    {
+      "case_id": "unit-repair-initial-captures-016",
+      "underlying_test": "tests.test_bound_output::test_reader_verifies_fallback_at_real_read_report_boundary[False]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-repair-initial.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:09:46.425Z",
+      "status": "PASS",
+      "execution_ms": 8,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-repair-initial-captures\\unit-repair-initial-captures-016.png",
+      "sha256": "6572a32f998dde1b1c683918e9b66cf5a576171f4f71ad99159098ba1854b599"
+    },
+    {
+      "case_id": "unit-repair-initial-captures-017",
+      "underlying_test": "tests.test_bound_output::test_reader_verifies_fallback_at_real_read_report_boundary[True]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-repair-initial.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:09:46.556Z",
+      "status": "PASS",
+      "execution_ms": 9,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-repair-initial-captures\\unit-repair-initial-captures-017.png",
+      "sha256": "9b0e2380df831dc9c7af6b7b3446f00dd89ea5b5e1a75af13752047abfedecfa"
+    },
+    {
+      "case_id": "unit-repair-initial-captures-018",
+      "underlying_test": "tests.test_bound_output::test_exact_policy_recovery_retains_withheld_verdict_and_output_guard[False]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-repair-initial.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:09:46.692Z",
+      "status": "PASS",
+      "execution_ms": 37,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-repair-initial-captures\\unit-repair-initial-captures-018.png",
+      "sha256": "1fa84f1a2f806aaf68368461119ba65bd4cd279d5fc0dc382424cf6b291f40a0"
+    },
+    {
+      "case_id": "unit-repair-initial-captures-019",
+      "underlying_test": "tests.test_bound_output::test_exact_policy_recovery_retains_withheld_verdict_and_output_guard[True]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-repair-initial.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:09:46.820Z",
+      "status": "PASS",
+      "execution_ms": 41,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-repair-initial-captures\\unit-repair-initial-captures-019.png",
+      "sha256": "539f5523c517c6f6c9b15d642243e5e8f6a26c2041230a245efbf49dff8105b1"
+    },
+    {
+      "case_id": "unit-repair-initial-captures-020",
+      "underlying_test": "tests.test_bound_output::test_confirming_raw_cells_cannot_reenable_a_contradictory_comparison",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-repair-initial.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:09:46.938Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-repair-initial-captures\\unit-repair-initial-captures-020.png",
+      "sha256": "8d667cc1a8ade5e30314d9652674a63056f5d8824ef90190d8b0685031004ad6"
+    },
+    {
+      "case_id": "unit-repair-initial-captures-021",
+      "underlying_test": "tests.test_candidate_contracts::test_native_html_keeps_columns_glyphs_negative_values_and_full_reference",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-repair-initial.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:09:47.075Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-repair-initial-captures\\unit-repair-initial-captures-021.png",
+      "sha256": "e9661a8b5b59c4b0fb70e636d461e34e34ad24a331e4f42993a005b9030112ea"
+    },
+    {
+      "case_id": "unit-repair-initial-captures-022",
+      "underlying_test": "tests.test_candidate_contracts::test_ambiguous_html_never_silently_drops_or_infers_cells[<table><tr><th>Test name</th><th>Result</th><th>Unit</th><th></th><th>Reference value</th></tr>\\n<tr><td>Unfamiliar marker</td><td>-7.25</td><td>10<sup>9</sup>/\\xb5L</td><td>not a flag</td><td>Group A: -6 \\u2013 -2<br>unit</td></tr>\\n<tr><td>Second marker</td><td>Trace</td><td>-</td><td>-</td><td>Not established</td></tr></table>]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-repair-initial.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:09:47.192Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-repair-initial-captures\\unit-repair-initial-captures-022.png",
+      "sha256": "27f9ed2ce59885d67ab5781f016bdb2f178d73af9c225742b5ad9b8edc190f1d"
+    },
+    {
+      "case_id": "unit-repair-initial-captures-023",
+      "underlying_test": "tests.test_candidate_contracts::test_ambiguous_html_never_silently_drops_or_infers_cells[<table><tr><th>Test name</th><th>Result</th><th>Unit</th><th></th><th>Reference value</th></tr>\\n<tr><td>Unfamiliar marker</td><td>-7.25</td><td>10<sup>9</sup>/\\xb5L</td><td>L</td><td>Group A: -6 \\u2013 -2<br>unit</td></tr>\\n<tr><td>Second marker</td><td colspan=\"2\">Trace</td><td>-</td><td>-</td><td>Not established</td></tr></table>]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-repair-initial.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:09:47.310Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-repair-initial-captures\\unit-repair-initial-captures-023.png",
+      "sha256": "17067640c6960749ab805fd14f42fa79ccf6f4475755e4719e443dff7af99fa0"
+    },
+    {
+      "case_id": "unit-repair-initial-captures-024",
+      "underlying_test": "tests.test_candidate_contracts::test_ambiguous_html_never_silently_drops_or_infers_cells[<table><tr><th>Test name</th><th>Result</th><th>Unit</th><th></th><th>Reference value</th></tr>\\n<tr><td>Unfamiliar marker</td><td>10<sup>9</sup>/\\xb5L</td><td>L</td><td>Group A: -6 \\u2013 -2<br>unit</td></tr>\\n<tr><td>Second marker</td><td>Trace</td><td>-</td><td>-</td><td>Not established</td></tr></table>]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-repair-initial.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:09:47.438Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-repair-initial-captures\\unit-repair-initial-captures-024.png",
+      "sha256": "80901a74f5ff099cfe30fba542034885da8156f053aa9e2696721b64e6a8ba5c"
+    },
+    {
+      "case_id": "unit-repair-initial-captures-025",
+      "underlying_test": "tests.test_candidate_contracts::test_ambiguous_html_never_silently_drops_or_infers_cells[<table><tr><th>Test name</th><th>Result</th><th>Unit</th><th></th><th>Reference value</th></tr>\\n<tr><td>Unfamiliar marker</td><td>-7.25</td><td>10<sup>9</sup>/\\xb5L</td><td>L</td><td>Group A: -6 \\u2013 -2<br>unit</td></tr>\\n<tr><td>Second marker</td><td>Trace</td><td>-</td><td>-</td><td>Not established</td></tr>]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-repair-initial.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:09:47.556Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-repair-initial-captures\\unit-repair-initial-captures-025.png",
+      "sha256": "1bfb11fdd646e1c494938a63fcbef04e78e84b5bd0624227ed0a9a3461929d99"
+    },
+    {
+      "case_id": "unit-repair-initial-captures-026",
+      "underlying_test": "tests.test_candidate_contracts::test_ambiguous_html_never_silently_drops_or_infers_cells[<table><tr><th>Test name</th><th>Result</th><th>Unit</th><th></th><th>Reference value</th></tr>\\n<tr><td>Unfamiliar marker</td><td>-7.25</td><td>10<sup>9</sup>/\\xb5L</td><td>L</td><td>Group A: -6 \\u2013 -2<br>unit</td></tr>\\n<tr><td>Second marker</td><td>Trace</td><td>-</td><td>-</td><td>Not established</td></tr></table><table><tr><td>Name</td></tr><tr><td>UNTRUSTED_ID</td></tr></table>]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-repair-initial.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:09:47.673Z",
+      "status": "PASS",
+      "execution_ms": 6,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-repair-initial-captures\\unit-repair-initial-captures-026.png",
+      "sha256": "e8467afe0933e341cbf2aa759319e7659e0b9019c327eb285517ad2825400ab7"
+    },
+    {
+      "case_id": "unit-repair-initial-captures-027",
+      "underlying_test": "tests.test_candidate_contracts::test_ambiguous_html_never_silently_drops_or_infers_cells[<table><tr><th>Test name</th><th>Result</th><th>Unit</th><th></th><th>Reference value</th></tr>\\n<tr><td>Unfamiliar marker</td><td>-7.25</td><td>10<sup>9</sup>/\\xb5L</td><td>L</td><td>Group A: -6 \\u2013 -2<br>unit</td></tr>\\n<tr><td>Second marker</td><td><script>unsafe</script></td><td>-</td><td>-</td><td>Not established</td></tr></table>]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-repair-initial.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:09:47.808Z",
+      "status": "PASS",
+      "execution_ms": 6,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-repair-initial-captures\\unit-repair-initial-captures-027.png",
+      "sha256": "eea8ae88dafce28161635a93065e08d5552e5cf2b2a5a8c3be2a66f7f77a1334"
+    },
+    {
+      "case_id": "unit-repair-initial-captures-028",
+      "underlying_test": "tests.test_candidate_contracts::test_html_explicit_flag_column_accepts_unknown_flag_verbatim",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-repair-initial.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:09:47.924Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-repair-initial-captures\\unit-repair-initial-captures-028.png",
+      "sha256": "e13d4987ad8f9fbc1a7ce69cdcb6571e8e8d0660e20496ff2be7c0a3ce2388c9"
+    },
+    {
+      "case_id": "unit-repair-initial-captures-029",
+      "underlying_test": "tests.test_candidate_contracts::test_html_path_preserves_document_guards_without_second_llm",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-repair-initial.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:09:48.037Z",
+      "status": "PASS",
+      "execution_ms": 7,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-repair-initial-captures\\unit-repair-initial-captures-029.png",
+      "sha256": "7135118a2f4b4814f8095e8a19228fb456b72e56b248e9c08f88087400af2cbc"
+    },
+    {
+      "case_id": "unit-repair-initial-captures-030",
+      "underlying_test": "tests.test_candidate_contracts::test_single_supplied_comparison_is_only_arithmetic[17.3-2.4-9.8-above]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-repair-initial.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:09:48.152Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-repair-initial-captures\\unit-repair-initial-captures-030.png",
+      "sha256": "f9af0440068ac5c3ed7b65323dc82cca6f9f12e7e523425c4e3e4d9b8705cb3f"
+    },
+    {
+      "case_id": "unit-repair-initial-captures-031",
+      "underlying_test": "tests.test_candidate_contracts::test_single_supplied_comparison_is_only_arithmetic[-7--8--2-within]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-repair-initial.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:09:48.287Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-repair-initial-captures\\unit-repair-initial-captures-031.png",
+      "sha256": "5a29bba8e6021d78a92bd1fc8a5c7adbfa07d193cd3d757a10b54aeb181de06e"
+    },
+    {
+      "case_id": "unit-repair-initial-captures-032",
+      "underlying_test": "tests.test_candidate_contracts::test_single_supplied_comparison_is_only_arithmetic[0.2-0.3-1.4-below]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-repair-initial.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:09:48.402Z",
+      "status": "PASS",
+      "execution_ms": 5,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-repair-initial-captures\\unit-repair-initial-captures-032.png",
+      "sha256": "38a2c24f2f2d27aa66f4aa4a5e309495c01789186df0bb034e204fcf61720a3f"
+    },
+    {
+      "case_id": "unit-repair-initial-captures-033",
+      "underlying_test": "tests.test_candidate_contracts::test_ambiguous_comparison_is_not_completed_from_knowledge[Marker is 7; reference range 3\\u20139 mg/L.]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-repair-initial.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:09:48.540Z",
+      "status": "PASS",
+      "execution_ms": 5,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-repair-initial-captures\\unit-repair-initial-captures-033.png",
+      "sha256": "f034aea18f2d283b93aaa87f4cbc24854fb29fc9704367e3dfe630ab0b0667b7"
+    },
+    {
+      "case_id": "unit-repair-initial-captures-034",
+      "underlying_test": "tests.test_candidate_contracts::test_ambiguous_comparison_is_not_completed_from_knowledge[Marker is 7 mg/L; reference range 3\\u20139 g/L.]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-repair-initial.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:09:48.658Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-repair-initial-captures\\unit-repair-initial-captures-034.png",
+      "sha256": "60de0e9755d50716daa1793b26ed9132099af3c25e8b4e62e5be6d4aaf13b4c7"
+    },
+    {
+      "case_id": "unit-repair-initial-captures-035",
+      "underlying_test": "tests.test_candidate_contracts::test_ambiguous_comparison_is_not_completed_from_knowledge[Marker is 7 mg/L; second marker 8 mg/L; range 3\\u20139 mg/L.]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-repair-initial.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:09:48.777Z",
+      "status": "PASS",
+      "execution_ms": 6,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-repair-initial-captures\\unit-repair-initial-captures-035.png",
+      "sha256": "e6801b71e489150f0702e7bd77281a388b5ffd610f38e327010fd7b4c25e3263"
+    },
+    {
+      "case_id": "unit-repair-initial-captures-036",
+      "underlying_test": "tests.test_candidate_contracts::test_ambiguous_comparison_is_not_completed_from_knowledge[Marker is 7 mg/L, age 50, range 3\\u20139 mg/L.]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-repair-initial.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:09:48.904Z",
+      "status": "PASS",
+      "execution_ms": 6,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-repair-initial-captures\\unit-repair-initial-captures-036.png",
+      "sha256": "ff0c62b70d7a026ac5b6a8a62562fee8db952c34c95373f8b6a086cd64749df3"
+    },
+    {
+      "case_id": "unit-repair-initial-captures-037",
+      "underlying_test": "tests.test_candidate_contracts::test_ambiguous_comparison_is_not_completed_from_knowledge[Marker is 7 mg/L; range 9\\u20133 mg/L.]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-repair-initial.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:09:49.042Z",
+      "status": "PASS",
+      "execution_ms": 5,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-repair-initial-captures\\unit-repair-initial-captures-037.png",
+      "sha256": "b610c3291420b5bcceeaca9c017298203a774cbe78f571f1ffeb154eb14cf0fa"
+    },
+    {
+      "case_id": "unit-repair-initial-captures-038",
+      "underlying_test": "tests.test_candidate_contracts::test_ambiguous_comparison_is_not_completed_from_knowledge[Marker is 7 mg/L; no printed range.]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-repair-initial.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:09:49.180Z",
+      "status": "PASS",
+      "execution_ms": 5,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-repair-initial-captures\\unit-repair-initial-captures-038.png",
+      "sha256": "c5a0cd00943bf2c77ddaa5de82a303d8721142c577aa0a9a28fc0ba7449c6168"
+    },
+    {
+      "case_id": "unit-repair-initial-captures-039",
+      "underlying_test": "tests.test_candidate_contracts::test_observation_ids_resolve_authoritative_values_without_model_retyping",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-repair-initial.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:09:49.305Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-repair-initial-captures\\unit-repair-initial-captures-039.png",
+      "sha256": "a524eb727877db67406626eb2df046831605cd574cd26e1246ad3d41cbe281df"
+    },
+    {
+      "case_id": "unit-repair-initial-captures-040",
+      "underlying_test": "tests.test_candidate_contracts::test_observation_ids_never_override_changed_legacy_values_or_unknown_rows",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-repair-initial.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:09:49.434Z",
+      "status": "PASS",
+      "execution_ms": 6,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-repair-initial-captures\\unit-repair-initial-captures-040.png",
+      "sha256": "3c2c8ba0ea53fb5312fd79ef5f829038b532c78210f209c72fec6dad3ebf5c07"
+    },
+    {
+      "case_id": "unit-repair-initial-captures-041",
+      "underlying_test": "tests.test_candidate_contracts::test_pure_text_lab_question_preserves_role_but_excludes_sales_evidence",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-repair-initial.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:09:49.571Z",
+      "status": "PASS",
+      "execution_ms": 32,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-repair-initial-captures\\unit-repair-initial-captures-041.png",
+      "sha256": "f7ff90148ad0f2c08a3050bc6708a4928733daed773904886b1a068ced545dd2"
+    },
+    {
+      "case_id": "unit-repair-initial-captures-042",
+      "underlying_test": "tests.test_candidate_contracts::test_explicit_purchase_question_retains_catalog_access",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-repair-initial.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:09:49.687Z",
+      "status": "PASS",
+      "execution_ms": 30,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-repair-initial-captures\\unit-repair-initial-captures-042.png",
+      "sha256": "28a8025dfd50ac1f48f599392ef2ddfee59cd358493c94c6a992f9572f0d0577"
+    },
+    {
+      "case_id": "unit-repair-initial-captures-043",
+      "underlying_test": "tests.test_candidate_contracts::test_organization_lookup_returns_only_organization_packages",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-repair-initial.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:09:49.800Z",
+      "status": "PASS",
+      "execution_ms": 28,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-repair-initial-captures\\unit-repair-initial-captures-043.png",
+      "sha256": "db3c92922d870d85a06f3cfa2c727bcdd95e7ae8eb3f8ae142792530fbca9225"
+    },
+    {
+      "case_id": "unit-repair-initial-captures-044",
+      "underlying_test": "tests.test_candidate_contracts::test_unverified_refund_percentage_rejected_even_in_negation",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-repair-initial.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:09:49.919Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-repair-initial-captures\\unit-repair-initial-captures-044.png",
+      "sha256": "3c946f1ddc28128e08cdf50f36013d8fd7545b9a4b0550885ae1f2eee181ea2a"
+    },
+    {
+      "case_id": "unit-repair-initial-captures-045",
+      "underlying_test": "tests.test_candidate_contracts::test_ocr_transport_disables_sampling_without_changing_budget_or_attempts",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-repair-initial.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:09:50.037Z",
+      "status": "PASS",
+      "execution_ms": 8,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-repair-initial-captures\\unit-repair-initial-captures-045.png",
+      "sha256": "aa7777184e8b5756d639cbfcad318ec1c8f1d05877d77e8f67ae54bebf0f8ab9"
+    },
+    {
+      "case_id": "unit-repair-initial-captures-046",
+      "underlying_test": "tests.test_candidate_contracts::test_retrieval_named_analyte_outranks_unrelated_shared_units",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-repair-initial.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:09:50.170Z",
+      "status": "PASS",
+      "execution_ms": 5,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-repair-initial-captures\\unit-repair-initial-captures-046.png",
+      "sha256": "60be1ccc00333039145664180506f3b6fd656999e4a1dd43f403d5ff4fa5d3c5"
+    },
+    {
+      "case_id": "unit-repair-initial-captures-047",
+      "underlying_test": "tests.test_candidate_contracts::test_refund_echo_gets_one_rewrite_and_all_checks_run",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-repair-initial.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:09:50.289Z",
+      "status": "PASS",
+      "execution_ms": 33,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-repair-initial-captures\\unit-repair-initial-captures-047.png",
+      "sha256": "37c1fa98265a621031caa61282b88a2d0fe325228d5db1b8bcce36a2bfe8b573"
+    },
+    {
+      "case_id": "unit-repair-initial-captures-048",
+      "underlying_test": "tests.test_candidate_contracts::test_nonexact_or_negated_value_never_becomes_exact_arithmetic[not ]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-repair-initial.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:09:50.418Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-repair-initial-captures\\unit-repair-initial-captures-048.png",
+      "sha256": "affa6bbdf29ed83c5754237b32280163d4ff17153ab829876f9776daf2e46c83"
+    },
+    {
+      "case_id": "unit-repair-initial-captures-049",
+      "underlying_test": "tests.test_candidate_contracts::test_nonexact_or_negated_value_never_becomes_exact_arithmetic[maybe ]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-repair-initial.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:09:50.540Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-repair-initial-captures\\unit-repair-initial-captures-049.png",
+      "sha256": "865bde57c9848870f15e15a1ef68c4b0d73349e8963618b743c412eac249b104"
+    },
+    {
+      "case_id": "unit-repair-initial-captures-050",
+      "underlying_test": "tests.test_candidate_contracts::test_nonexact_or_negated_value_never_becomes_exact_arithmetic[about ]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-repair-initial.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:09:50.657Z",
+      "status": "PASS",
+      "execution_ms": 5,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-repair-initial-captures\\unit-repair-initial-captures-050.png",
+      "sha256": "186e870911568ff133f0b0bc04a2b38d6497aafeab5c5cbc18558e7b865f810e"
+    },
+    {
+      "case_id": "unit-repair-initial-captures-051",
+      "underlying_test": "tests.test_candidate_contracts::test_nonexact_or_negated_value_never_becomes_exact_arithmetic[> ]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-repair-initial.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:09:50.784Z",
+      "status": "PASS",
+      "execution_ms": 6,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-repair-initial-captures\\unit-repair-initial-captures-051.png",
+      "sha256": "37e55f1d5c8be1e169d6c8e4c2679ab11c7c45da39e2561f08eaf1afa59360cd"
+    },
+    {
+      "case_id": "unit-repair-initial-captures-052",
+      "underlying_test": "tests.test_candidate_contracts::test_nonexact_or_negated_value_never_becomes_exact_arithmetic[<= ]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-repair-initial.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:09:50.930Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-repair-initial-captures\\unit-repair-initial-captures-052.png",
+      "sha256": "ae4590828c9629f84232fc56a4a5b9097e95c20bb24ff9b0cdf85e467cdd72b6"
+    },
+    {
+      "case_id": "unit-repair-initial-captures-053",
+      "underlying_test": "tests.test_candidate_contracts::test_nonexact_or_negated_value_never_becomes_exact_arithmetic[\\u0e44\\u0e21\\u0e48\\u0e43\\u0e0a\\u0e48 ]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-repair-initial.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:09:51.057Z",
+      "status": "PASS",
+      "execution_ms": 3,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-repair-initial-captures\\unit-repair-initial-captures-053.png",
+      "sha256": "80feae502e3072c4f094ab75af21360b6ccea9a5f6b667b589798d7199dc251a"
+    },
+    {
+      "case_id": "unit-repair-initial-captures-054",
+      "underlying_test": "tests.test_candidate_contracts::test_nonexact_or_negated_value_never_becomes_exact_arithmetic[\\u0e1b\\u0e23\\u0e30\\u0e21\\u0e32\\u0e13 ]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-repair-initial.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:09:51.195Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-repair-initial-captures\\unit-repair-initial-captures-054.png",
+      "sha256": "ab4f390647d64031f7cb46d01d69244d455296d48823e7d52c0720a677ed015d"
+    },
+    {
+      "case_id": "unit-repair-initial-captures-055",
+      "underlying_test": "tests.test_candidate_contracts::test_disconnect_joins_cleanup_but_keeps_pending_work_registered[True]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-repair-initial.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:09:51.318Z",
+      "status": "PASS",
+      "execution_ms": 10,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-repair-initial-captures\\unit-repair-initial-captures-055.png",
+      "sha256": "ad606c3fff5f39627fc49cb6987ac234cff0027747b2f28c896574594062e740"
+    },
+    {
+      "case_id": "unit-repair-initial-captures-056",
+      "underlying_test": "tests.test_candidate_contracts::test_disconnect_joins_cleanup_but_keeps_pending_work_registered[False]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-repair-initial.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:09:51.435Z",
+      "status": "PASS",
+      "execution_ms": 126,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-repair-initial-captures\\unit-repair-initial-captures-056.png",
+      "sha256": "2da492d734b3734d4a8cdca0d8702901832a908ad29d79567ca057d92cbb8891"
+    },
+    {
+      "case_id": "unit-repair-initial-captures-057",
+      "underlying_test": "tests.test_candidate_contracts::test_case_sensitive_units_are_not_assumed_equivalent",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-repair-initial.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:09:51.555Z",
+      "status": "PASS",
+      "execution_ms": 6,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-repair-initial-captures\\unit-repair-initial-captures-057.png",
+      "sha256": "179b218d9ff921b77e07f1615369fda6e9d83ebe38b20793af3aceb23e2c84ea"
+    },
+    {
+      "case_id": "unit-repair-initial-captures-058",
+      "underlying_test": "tests.test_candidate_contracts::test_html_unknown_extra_column_is_not_silently_ignored",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-repair-initial.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:09:51.673Z",
+      "status": "PASS",
+      "execution_ms": 7,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-repair-initial-captures\\unit-repair-initial-captures-058.png",
+      "sha256": "0da40130d190a8816185a30089ef0135178ecf8e66d73acb34123afa651a7e32"
+    },
+    {
+      "case_id": "unit-repair-initial-captures-059",
+      "underlying_test": "tests.test_candidate_contracts::test_organization_scope_stays_service_only_with_a_medical_search",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-repair-initial.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:09:51.782Z",
+      "status": "PASS",
+      "execution_ms": 36,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-repair-initial-captures\\unit-repair-initial-captures-059.png",
+      "sha256": "3ca019779e22f7f8c5d7595cd21a49953969c8d5aa180d465710fb55df65f8be"
+    }
+  ]
+}

@@ -1,0 +1,170 @@
+[
+  {
+    "source": "05_C_Hematology.png",
+    "provenance": {
+      "source_file": "C:\\Users\\User\\Downloads\\Thai_Lab_Reports_Reference_v3\\Thai_Lab_Reports_Reference_v3\\png\\05_C_Hematology.png",
+      "focused_file": "docs\\evidence\\current\\focused-unit-pixels-20261012-02\\05_C_Hematology-unit-cells.png",
+      "regions": [
+        {
+          "source_sha256": "dd10636b44e4c6285c52fbb9800cdf7a24053420f14c4e7379024e210daaf134",
+          "source_dimensions": [
+            1654,
+            2339
+          ],
+          "source_rect_xywh": [
+            675,
+            550,
+            130,
+            47
+          ],
+          "magnification": 4,
+          "resampling": "LANCZOS",
+          "region_sha256": "fed705f19314471cd08810209b52509cb237da74e80b9bdd1a411e75f73274fd",
+          "independent_source_sample": false
+        },
+        {
+          "source_sha256": "dd10636b44e4c6285c52fbb9800cdf7a24053420f14c4e7379024e210daaf134",
+          "source_dimensions": [
+            1654,
+            2339
+          ],
+          "source_rect_xywh": [
+            675,
+            792,
+            130,
+            47
+          ],
+          "magnification": 4,
+          "resampling": "LANCZOS",
+          "region_sha256": "8ded7f12e556bf2d23c776e907f8dafa5d81422ed03b2665639e9fd28f9566a3",
+          "independent_source_sample": false
+        },
+        {
+          "source_sha256": "dd10636b44e4c6285c52fbb9800cdf7a24053420f14c4e7379024e210daaf134",
+          "source_dimensions": [
+            1654,
+            2339
+          ],
+          "source_rect_xywh": [
+            675,
+            871,
+            130,
+            47
+          ],
+          "magnification": 4,
+          "resampling": "LANCZOS",
+          "region_sha256": "272f3ec87184a794563452cbb4a585c8d4fa335c052549d7f07c5fc647a8d26e",
+          "independent_source_sample": false
+        }
+      ],
+      "no_gold_read": true,
+      "privacy": "Only three unit cells; no identity fields, values, or names",
+      "purpose": "Different focused region and higher magnification; not a repeated full-image call"
+    },
+    "model": "typhoon-ocr",
+    "scope": "FOCUSED_PIXELS_ONLY_NOT_APPLICATION_FLOW",
+    "no_gold_read": true,
+    "raw_transcription": "{\"units\": \"10\\\\(^3\\\\)/μL\\n10\\\\(^3\\\\)/μL\\n10\\\\(^6\\\\)/μL\"}",
+    "execution": "UNPARSEABLE_NO_CORRECTION",
+    "parse_error": "ValueError",
+    "provider_attempts": 1,
+    "elapsed_ms": 1922,
+    "settled_estimate_thb": 0.00442,
+    "additional_review": {
+      "explicit_units": [
+        "10^3/μL",
+        "10^3/μL",
+        "10^6/μL"
+      ],
+      "source_pixel_review": "Raised3,3,6 and denominatorμL match viewed source cells",
+      "scope": "6 focused unit cells across2 existing synthetic source images; source full-image OCR remains unresolved",
+      "requires_human_confirmation": true,
+      "auto_applied": false,
+      "source_ocr_accuracy_pass": false
+    }
+  },
+  {
+    "source": "06_C_Thyroid.png",
+    "provenance": {
+      "source_file": "C:\\Users\\User\\Downloads\\Thai_Lab_Reports_Reference_v3\\Thai_Lab_Reports_Reference_v3\\png\\06_C_Thyroid.png",
+      "focused_file": "docs\\evidence\\current\\focused-unit-pixels-20261012-02\\06_C_Thyroid-unit-cells.png",
+      "regions": [
+        {
+          "source_sha256": "59e2b2b9957b418d265ff87c9b590bcee74cadf7be047ba7a331cf9a8200f65f",
+          "source_dimensions": [
+            1654,
+            2339
+          ],
+          "source_rect_xywh": [
+            675,
+            550,
+            130,
+            47
+          ],
+          "magnification": 4,
+          "resampling": "LANCZOS",
+          "region_sha256": "fed705f19314471cd08810209b52509cb237da74e80b9bdd1a411e75f73274fd",
+          "independent_source_sample": false
+        },
+        {
+          "source_sha256": "59e2b2b9957b418d265ff87c9b590bcee74cadf7be047ba7a331cf9a8200f65f",
+          "source_dimensions": [
+            1654,
+            2339
+          ],
+          "source_rect_xywh": [
+            675,
+            792,
+            130,
+            47
+          ],
+          "magnification": 4,
+          "resampling": "LANCZOS",
+          "region_sha256": "8ded7f12e556bf2d23c776e907f8dafa5d81422ed03b2665639e9fd28f9566a3",
+          "independent_source_sample": false
+        },
+        {
+          "source_sha256": "59e2b2b9957b418d265ff87c9b590bcee74cadf7be047ba7a331cf9a8200f65f",
+          "source_dimensions": [
+            1654,
+            2339
+          ],
+          "source_rect_xywh": [
+            675,
+            871,
+            130,
+            47
+          ],
+          "magnification": 4,
+          "resampling": "LANCZOS",
+          "region_sha256": "272f3ec87184a794563452cbb4a585c8d4fa335c052549d7f07c5fc647a8d26e",
+          "independent_source_sample": false
+        }
+      ],
+      "no_gold_read": true,
+      "privacy": "Only three unit cells; no identity fields, values, or names",
+      "purpose": "Different focused region and higher magnification; not a repeated full-image call"
+    },
+    "model": "typhoon-ocr",
+    "scope": "FOCUSED_PIXELS_ONLY_NOT_APPLICATION_FLOW",
+    "no_gold_read": true,
+    "raw_transcription": "{\"units\": \"10\\\\(^3\\\\)/μL\\n10\\\\(^3\\\\)/μL\\n10\\\\(^6\\\\)/μL\"}",
+    "execution": "UNPARSEABLE_NO_CORRECTION",
+    "parse_error": "ValueError",
+    "provider_attempts": 1,
+    "elapsed_ms": 1485,
+    "settled_estimate_thb": 0.00442,
+    "additional_review": {
+      "explicit_units": [
+        "10^3/μL",
+        "10^3/μL",
+        "10^6/μL"
+      ],
+      "source_pixel_review": "Raised3,3,6 and denominatorμL match viewed source cells",
+      "scope": "6 focused unit cells across2 existing synthetic source images; source full-image OCR remains unresolved",
+      "requires_human_confirmation": true,
+      "auto_applied": false,
+      "source_ocr_accuracy_pass": false
+    }
+  }
+]

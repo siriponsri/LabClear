@@ -1,0 +1,532 @@
+{
+  "executions": 31,
+  "records": [
+    {
+      "case_id": "text-quota-offline-captures-001",
+      "underlying_test": "tests.test_expanded_question_quota::test_multiple_questions_are_not_one_request_one_decision",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/text-quota-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T15:06:11.120Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\text-quota-offline-captures\\text-quota-offline-captures-001.png",
+      "sha256": "835daa8e879c76d6f172578c797cdb7128d0c7c349ffab7d267023103f6e6df4"
+    },
+    {
+      "case_id": "text-quota-offline-captures-002",
+      "underlying_test": "tests.test_expanded_question_quota::test_explicit_permutations_multiply_each_question",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/text-quota-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T15:06:11.519Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\text-quota-offline-captures\\text-quota-offline-captures-002.png",
+      "sha256": "4b1dbcb6753e5754a661847fcc9e8e68ca3fc8188241128f9e7ee07cd824ff82"
+    },
+    {
+      "case_id": "text-quota-offline-captures-003",
+      "underlying_test": "tests.test_expanded_question_quota::test_unknown_or_automatic_decision_cost_is_blocked[body0]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/text-quota-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T15:06:11.910Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\text-quota-offline-captures\\text-quota-offline-captures-003.png",
+      "sha256": "d4406abfb29f9f0939ad3c9833fa52aa51ac4141f2244d4e242548aa649cbe1a"
+    },
+    {
+      "case_id": "text-quota-offline-captures-004",
+      "underlying_test": "tests.test_expanded_question_quota::test_unknown_or_automatic_decision_cost_is_blocked[body1]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/text-quota-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T15:06:12.192Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\text-quota-offline-captures\\text-quota-offline-captures-004.png",
+      "sha256": "9a186133e163372d0cb5b2380dde53dff22d9cf1e2616bccd5731efe1c694166"
+    },
+    {
+      "case_id": "text-quota-offline-captures-005",
+      "underlying_test": "tests.test_expanded_question_quota::test_unknown_or_automatic_decision_cost_is_blocked[body2]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/text-quota-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T15:06:12.564Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\text-quota-offline-captures\\text-quota-offline-captures-005.png",
+      "sha256": "87c5c5585bc23ae149c193ef660d453989c77e60abffc362d97b070d217d4554"
+    },
+    {
+      "case_id": "text-quota-offline-captures-006",
+      "underlying_test": "tests.test_expanded_question_quota::test_unknown_or_automatic_decision_cost_is_blocked[body3]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/text-quota-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T15:06:12.816Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\text-quota-offline-captures\\text-quota-offline-captures-006.png",
+      "sha256": "e775232261212de651269a8a7fce2f9f48f6c4c17e6dfa72257256effcbd2217"
+    },
+    {
+      "case_id": "text-quota-offline-captures-007",
+      "underlying_test": "tests.test_expanded_question_quota::test_unknown_or_automatic_decision_cost_is_blocked[body4]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/text-quota-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T15:06:13.068Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\text-quota-offline-captures\\text-quota-offline-captures-007.png",
+      "sha256": "dffb03440155e690c9df54a7f7a8ad8da9a87c6f97c05b000c181d5b64e6edf9"
+    },
+    {
+      "case_id": "text-quota-offline-captures-008",
+      "underlying_test": "tests.test_expanded_question_quota::test_unknown_or_automatic_decision_cost_is_blocked[body5]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/text-quota-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T15:06:13.442Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\text-quota-offline-captures\\text-quota-offline-captures-008.png",
+      "sha256": "f11ddaa763b39cdfbe4a24e7023be8f55a13f9e8a76d9fa64d51dc182dbc6a4c"
+    },
+    {
+      "case_id": "text-quota-offline-captures-009",
+      "underlying_test": "tests.test_expanded_free_estimate::test_unverified_route_does_not_enable_mode",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/text-quota-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T15:06:13.706Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\text-quota-offline-captures\\text-quota-offline-captures-009.png",
+      "sha256": "3acb16c82423d623c3702fa573e40c418127c805d556c5490a6cf83b59880316"
+    },
+    {
+      "case_id": "text-quota-offline-captures-010",
+      "underlying_test": "tests.test_expanded_free_estimate::test_public_price_alone_does_not_verify_account",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/text-quota-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T15:06:13.977Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\text-quota-offline-captures\\text-quota-offline-captures-010.png",
+      "sha256": "1ee53bc84273b5d9279cbd13d729031ac9e710dd21d8b8a5a964aa67c85e46c5"
+    },
+    {
+      "case_id": "text-quota-offline-captures-011",
+      "underlying_test": "tests.test_expanded_free_estimate::test_reviewed_exact_route_is_accepted",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/text-quota-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T15:06:14.328Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\text-quota-offline-captures\\text-quota-offline-captures-011.png",
+      "sha256": "b38720af149d8855722ff3e598494adfcd7284dc1aa51f9eb74de5bc968a6f88"
+    },
+    {
+      "case_id": "text-quota-offline-captures-012",
+      "underlying_test": "tests.test_expanded_free_estimate::test_shadow_uses_usage_and_contains_no_prompt",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/text-quota-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T15:06:14.648Z",
+      "status": "PASS",
+      "execution_ms": 13,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\text-quota-offline-captures\\text-quota-offline-captures-012.png",
+      "sha256": "609b68e3d1d8fadf745a973d125d587797d204d6b436982de5dd1f05113cf6ee"
+    },
+    {
+      "case_id": "text-quota-offline-captures-013",
+      "underlying_test": "tests.test_expanded_attempt_gate::test_prior_attempts_reduce_remaining",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/text-quota-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T15:06:15.008Z",
+      "status": "PASS",
+      "execution_ms": 19,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\text-quota-offline-captures\\text-quota-offline-captures-013.png",
+      "sha256": "8735763927d6bfeb81293be658856b4b00d2423c87523351003b36fdb2f2f9af"
+    },
+    {
+      "case_id": "text-quota-offline-captures-014",
+      "underlying_test": "tests.test_expanded_attempt_gate::test_ceiling_blocks_before_attempt",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/text-quota-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T15:06:15.309Z",
+      "status": "PASS",
+      "execution_ms": 26,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\text-quota-offline-captures\\text-quota-offline-captures-014.png",
+      "sha256": "a964799d1354aedb3a55ab16a01397080d14ee9fd13fd34b50cd809e366a88d1"
+    },
+    {
+      "case_id": "text-quota-offline-captures-015",
+      "underlying_test": "tests.test_expanded_attempt_gate::test_inflight_reserved_counts_concurrently",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/text-quota-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T15:06:15.545Z",
+      "status": "PASS",
+      "execution_ms": 845,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\text-quota-offline-captures\\text-quota-offline-captures-015.png",
+      "sha256": "350466369ba3159083fd8f9a9bd2620b704268e51e9c6de853c64d101d922c32"
+    },
+    {
+      "case_id": "text-quota-offline-captures-016",
+      "underlying_test": "tests.test_expanded_attempt_gate::test_failure_never_refunds",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/text-quota-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T15:06:15.837Z",
+      "status": "PASS",
+      "execution_ms": 32,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\text-quota-offline-captures\\text-quota-offline-captures-016.png",
+      "sha256": "e1132b2b5d7fadc16b85cf14ac0100b594f2c08e1d17d4bfa5b42aab550ef0a5"
+    },
+    {
+      "case_id": "text-quota-offline-captures-017",
+      "underlying_test": "tests.test_expanded_attempt_gate::test_cancellation_never_refunds",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/text-quota-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T15:06:16.200Z",
+      "status": "PASS",
+      "execution_ms": 32,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\text-quota-offline-captures\\text-quota-offline-captures-017.png",
+      "sha256": "f981684b2dd5886d43f92b412d65b6b4f94177f1db05dff79517e887ab97a79c"
+    },
+    {
+      "case_id": "text-quota-offline-captures-018",
+      "underlying_test": "tests.test_expanded_attempt_gate::test_reopen_preserves_attempts",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/text-quota-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T15:06:16.531Z",
+      "status": "PASS",
+      "execution_ms": 27,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\text-quota-offline-captures\\text-quota-offline-captures-018.png",
+      "sha256": "bf1fde0321b7ce974528a6c44642103e49cd08c41989468820eddce61f534537"
+    },
+    {
+      "case_id": "text-quota-offline-captures-019",
+      "underlying_test": "tests.test_expanded_attempt_gate::test_workflow_cap_includes_guard_vision_repair",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/text-quota-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T15:06:16.838Z",
+      "status": "PASS",
+      "execution_ms": 106,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\text-quota-offline-captures\\text-quota-offline-captures-019.png",
+      "sha256": "90249de093ece60b9f59aefc3ea5860c5956e93ac3211034fc319bdaff27cb0c"
+    },
+    {
+      "case_id": "text-quota-offline-captures-020",
+      "underlying_test": "tests.test_expanded_attempt_gate::test_duplicate_finish_does_not_double_count",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/text-quota-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T15:06:17.119Z",
+      "status": "PASS",
+      "execution_ms": 37,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\text-quota-offline-captures\\text-quota-offline-captures-020.png",
+      "sha256": "c6d1ca1d76d5dd51dcb51d888c0ce286f64cccf20e8227b072d62da3b9be814c"
+    },
+    {
+      "case_id": "text-quota-offline-captures-021",
+      "underlying_test": "tests.test_expanded_attempt_gate::test_authorized_4000_total_preserves_prior_and_reserved_history",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/text-quota-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T15:06:17.415Z",
+      "status": "PASS",
+      "execution_ms": 36,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\text-quota-offline-captures\\text-quota-offline-captures-021.png",
+      "sha256": "f6263a9c5d7873d4018c632bcc4966dceda3c3cce6505151b2bd5abf84abf9bd"
+    },
+    {
+      "case_id": "text-quota-offline-captures-022",
+      "underlying_test": "tests.test_cost_ledger::test_estimate_and_settlement_with_usage",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/text-quota-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T15:06:17.713Z",
+      "status": "PASS",
+      "execution_ms": 76,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\text-quota-offline-captures\\text-quota-offline-captures-022.png",
+      "sha256": "e5c1a95450f656f565f4ac250b16c82c917414b151ba5da0d770f0eed91cc7d7"
+    },
+    {
+      "case_id": "text-quota-offline-captures-023",
+      "underlying_test": "tests.test_cost_ledger::test_failed_call_keeps_conservative_charge",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/text-quota-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T15:06:17.964Z",
+      "status": "PASS",
+      "execution_ms": 33,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\text-quota-offline-captures\\text-quota-offline-captures-023.png",
+      "sha256": "a381c5ef40136e9959eb9e1485e0667ce8e1647c51eaf1e052d8dc6a22d5d430"
+    },
+    {
+      "case_id": "text-quota-offline-captures-024",
+      "underlying_test": "tests.test_cost_ledger::test_fail_closed_on_unknown_model_or_prior_spend",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/text-quota-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T15:06:18.258Z",
+      "status": "PASS",
+      "execution_ms": 3,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\text-quota-offline-captures\\text-quota-offline-captures-024.png",
+      "sha256": "b1798042f712de7f60d3a0264476fb69dd4ad76a1db3e375f7bceb3d151e66a7"
+    },
+    {
+      "case_id": "text-quota-offline-captures-025",
+      "underlying_test": "tests.test_cost_ledger::test_cap_counts_prior_spend_and_blocks_before_request",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/text-quota-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T15:06:18.559Z",
+      "status": "PASS",
+      "execution_ms": 23,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\text-quota-offline-captures\\text-quota-offline-captures-025.png",
+      "sha256": "b57da5002a15020829676642afb07a1c82dc6dee12180ccb3c3a2391debc1aba"
+    },
+    {
+      "case_id": "text-quota-offline-captures-026",
+      "underlying_test": "tests.test_cost_ledger::test_ledger_survives_restart",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/text-quota-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T15:06:18.885Z",
+      "status": "PASS",
+      "execution_ms": 36,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\text-quota-offline-captures\\text-quota-offline-captures-026.png",
+      "sha256": "ee5f7e8247328f6d78237727a164ac46bacaaae67e04b3de87ca7b36770599c6"
+    },
+    {
+      "case_id": "text-quota-offline-captures-027",
+      "underlying_test": "tests.test_cost_ledger::test_verified_free_reporting_preserves_history_above_estimated_cap",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/text-quota-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T15:06:19.237Z",
+      "status": "PASS",
+      "execution_ms": 40,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\text-quota-offline-captures\\text-quota-offline-captures-027.png",
+      "sha256": "2096b53d7b6ea5dbe039116bfc11ce6674d51cedf75caf58cb151cf914c2891a"
+    },
+    {
+      "case_id": "text-quota-offline-captures-028",
+      "underlying_test": "tests.test_cost_ledger::test_reporting_only_rejects_paid_or_unknown_price[None]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/text-quota-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T15:06:19.574Z",
+      "status": "PASS",
+      "execution_ms": 17,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\text-quota-offline-captures\\text-quota-offline-captures-028.png",
+      "sha256": "218fbd3da6f6ae686448821967fbbcfd85398cc3b08e2a320c5f9bf61392d871"
+    },
+    {
+      "case_id": "text-quota-offline-captures-029",
+      "underlying_test": "tests.test_cost_ledger::test_reporting_only_rejects_paid_or_unknown_price[price1]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/text-quota-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T15:06:19.899Z",
+      "status": "PASS",
+      "execution_ms": 20,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\text-quota-offline-captures\\text-quota-offline-captures-029.png",
+      "sha256": "22465adfe2d5adb8a5ec315c0d36a1a9aeb2256da0548bffa979dbe58a68d316"
+    },
+    {
+      "case_id": "text-quota-offline-captures-030",
+      "underlying_test": "tests.test_cost_ledger::test_reporting_only_rejects_paid_or_unknown_price[price2]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/text-quota-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T15:06:20.265Z",
+      "status": "PASS",
+      "execution_ms": 19,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\text-quota-offline-captures\\text-quota-offline-captures-030.png",
+      "sha256": "b5a62f126122f5629911827e74aaffea1beda29c4c3a1bf737f501a347e0ea5d"
+    },
+    {
+      "case_id": "text-quota-offline-captures-031",
+      "underlying_test": "tests.test_cost_ledger::test_transport_blocks_without_network_call_when_budget_exceeded",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/text-quota-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T15:06:20.596Z",
+      "status": "PASS",
+      "execution_ms": 30,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\text-quota-offline-captures\\text-quota-offline-captures-031.png",
+      "sha256": "f5f3df63b0ee6d487deb0555b7a055facf6d6c62eb937f42374e9070e06e838b"
+    }
+  ]
+}

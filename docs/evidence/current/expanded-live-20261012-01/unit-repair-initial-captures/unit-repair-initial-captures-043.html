@@ -1,0 +1,21 @@
+<!doctype html><meta charset="utf-8"><style>body{font:20px sans-serif;color:#21172f;margin:40px}h1,h2{color:#6539a9}p{overflow-wrap:anywhere}pre{font:15px monospace;white-space:pre-wrap}label{background:#f4effb;padding:8px}</style><h1>LabClear — OFFLINE / MOCK</h1><h2>unit-repair-initial-captures-043 — FAIL</h2><label>Actual browser-rendered test result; not an application interaction or live AI</label><p>Source: docs/evidence/current/expanded-live-20261012-01/unit-repair-initial.xml</p><p>Test: tests.test_bound_output::test_unknown_clinical_prose_is_not_saved_or_returned_by_chat_api</p><p>Expected: named assertions pass with outbound provider sockets blocked</p><p>Actual: FAIL</p><p>Execution: 121ms; provider attempts0</p><pre>&lt;failure message=&quot;assert 422 == 200&amp;#10; +  where 422 = &lt;Response [422 Unprocessable Entity]&gt;.status_code&quot;&gt;monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x000001833EFF4AA0&gt;
+
+    def test_unknown_clinical_prose_is_not_saved_or_returned_by_chat_api(monkeypatch):
+        from services import business_store as db
+        from services.chat_sessions import conversation
+        c=client(False);owner=c.get(&#39;/api/business/session&#39;).json()[&#39;user&#39;][&#39;id&#39;]
+        with db.transaction() as tx:
+            tx.put(&#39;bound_synthetic&#39;,&#39;report&#39;,owner,REPORT)
+            conv=conversation(tx,owner);conv[&#39;data&#39;][&#39;report_id&#39;]=&#39;bound_synthetic&#39;;tx.put(conv[&#39;id&#39;],&#39;conversation&#39;,owner,conv[&#39;data&#39;])
+        script(monkeypatch,{&#39;action&#39;:&#39;answer&#39;,&#39;dot&#39;:&#39;explainer&#39;,&#39;query&#39;:&#39;glucose&#39;},reply=&#39;Your kidneys have permanently stopped functioning [nlm-x].&#39;)
+        async def stages(messages,model,**kwargs):
+            if model is business_agent.Plan:return business_agent.Plan(action=&#39;answer&#39;,dot=&#39;explainer&#39;,query=&#39;glucose&#39;)
+            if model is Answer:return Answer(reply=&#39;Your kidneys have permanently stopped functioning [nlm-x].&#39;)
+            return EvidenceReview(supported=True,values_preserved=True,within_scope=True)
+        monkeypatch.setattr(business_agent,&#39;complete_json&#39;,stages)
+        response=c.post(&#39;/api/business/chat&#39;,json={&#39;message&#39;:&#39;Explain this report&#39;,&#39;page&#39;:{&#39;language&#39;:&#39;en&#39;}})
+&gt;       assert response.status_code==200
+E       assert 422 == 200
+E        +  where 422 = &lt;Response [422 Unprocessable Entity]&gt;.status_code
+
+tests\test_bound_output.py:146: AssertionError&lt;/failure&gt;</pre>

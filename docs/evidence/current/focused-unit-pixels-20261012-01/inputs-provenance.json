@@ -1,0 +1,122 @@
+[
+  {
+    "source_file": "C:\\Users\\User\\Downloads\\Thai_Lab_Reports_Reference_v3\\Thai_Lab_Reports_Reference_v3\\png\\05_C_Hematology.png",
+    "focused_file": "docs\\evidence\\current\\focused-unit-pixels-20261012-01\\05_C_Hematology-focused-rows.png",
+    "regions": [
+      {
+        "source_sha256": "dd10636b44e4c6285c52fbb9800cdf7a24053420f14c4e7379024e210daaf134",
+        "source_dimensions": [
+          1654,
+          2339
+        ],
+        "source_rect_xywh": [
+          65,
+          550,
+          780,
+          47
+        ],
+        "magnification": 2,
+        "resampling": "LANCZOS",
+        "region_sha256": "382684238d3a1f9c3c09d583159cd7cf4dad299d9960cb3dad617c19174c2488",
+        "independent_source_sample": false
+      },
+      {
+        "source_sha256": "dd10636b44e4c6285c52fbb9800cdf7a24053420f14c4e7379024e210daaf134",
+        "source_dimensions": [
+          1654,
+          2339
+        ],
+        "source_rect_xywh": [
+          65,
+          792,
+          780,
+          47
+        ],
+        "magnification": 2,
+        "resampling": "LANCZOS",
+        "region_sha256": "d7ae9308a0c6fbedd2db3b11f17a21ebd5be552f3e286d9724acfdb6007e2aad",
+        "independent_source_sample": false
+      },
+      {
+        "source_sha256": "dd10636b44e4c6285c52fbb9800cdf7a24053420f14c4e7379024e210daaf134",
+        "source_dimensions": [
+          1654,
+          2339
+        ],
+        "source_rect_xywh": [
+          65,
+          871,
+          780,
+          47
+        ],
+        "magnification": 2,
+        "resampling": "LANCZOS",
+        "region_sha256": "f23b09dfb9f88ec7dff9196db8a40377e52dfdcfd419d666fe83725bfa5fe854",
+        "independent_source_sample": false
+      }
+    ],
+    "no_gold_read": true,
+    "privacy": "Only printed laboratory rows; no identity headers or footers",
+    "purpose": "Human-selected source pixel regions, not automatic source localization"
+  },
+  {
+    "source_file": "C:\\Users\\User\\Downloads\\Thai_Lab_Reports_Reference_v3\\Thai_Lab_Reports_Reference_v3\\png\\06_C_Thyroid.png",
+    "focused_file": "docs\\evidence\\current\\focused-unit-pixels-20261012-01\\06_C_Thyroid-focused-rows.png",
+    "regions": [
+      {
+        "source_sha256": "59e2b2b9957b418d265ff87c9b590bcee74cadf7be047ba7a331cf9a8200f65f",
+        "source_dimensions": [
+          1654,
+          2339
+        ],
+        "source_rect_xywh": [
+          65,
+          550,
+          780,
+          47
+        ],
+        "magnification": 2,
+        "resampling": "LANCZOS",
+        "region_sha256": "aabaead840ab9f481d02b1b785a72ef74e089a1f7ae8460b5ff77bc7d466f718",
+        "independent_source_sample": false
+      },
+      {
+        "source_sha256": "59e2b2b9957b418d265ff87c9b590bcee74cadf7be047ba7a331cf9a8200f65f",
+        "source_dimensions": [
+          1654,
+          2339
+        ],
+        "source_rect_xywh": [
+          65,
+          792,
+          780,
+          47
+        ],
+        "magnification": 2,
+        "resampling": "LANCZOS",
+        "region_sha256": "48d25e3b1c445ab9008e77e5afb69d1cbf6f4c4478afd8406fe3db5bcfc8355c",
+        "independent_source_sample": false
+      },
+      {
+        "source_sha256": "59e2b2b9957b418d265ff87c9b590bcee74cadf7be047ba7a331cf9a8200f65f",
+        "source_dimensions": [
+          1654,
+          2339
+        ],
+        "source_rect_xywh": [
+          65,
+          871,
+          780,
+          47
+        ],
+        "magnification": 2,
+        "resampling": "LANCZOS",
+        "region_sha256": "c54508d9cc6af3477578c66fac084e4424625a260dfdd80a2254028dcdf9d107",
+        "independent_source_sample": false
+      }
+    ],
+    "no_gold_read": true,
+    "privacy": "Only printed laboratory rows; no identity headers or footers",
+    "purpose": "Human-selected source pixel regions, not automatic source localization"
+  }
+]

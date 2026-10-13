@@ -1,0 +1,35 @@
+<!doctype html><meta charset="utf-8"><style>body{font:20px sans-serif;color:#21172f;margin:40px}h1,h2{color:#6539a9}p{overflow-wrap:anywhere}pre{font:15px monospace;white-space:pre-wrap}label{background:#f4effb;padding:8px}</style><h1>LabClear — OFFLINE / MOCK</h1><h2>unit-repair-initial-captures-027 — FAIL</h2><label>Actual browser-rendered test result; not an application interaction or live AI</label><p>Source: docs/evidence/current/expanded-live-20261012-01/unit-repair-initial.xml</p><p>Test: tests.test_bound_output::test_unknown_clinical_paraphrase_never_enters_final_report_reply</p><p>Expected: named assertions pass with outbound provider sockets blocked</p><p>Actual: FAIL</p><p>Execution: 36ms; provider attempts0</p><pre>&lt;failure message=&quot;services.conversation_transport.ConversationError: A count-unit scale could not be verified. Review the exponent and volume unit against the original, then edit the row before confirming. No unit was corrected automatically.&quot;&gt;monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x000001833F1BC170&gt;
+
+    def test_unknown_clinical_paraphrase_never_enters_final_report_reply(monkeypatch):
+        calls=script(monkeypatch,{&#39;action&#39;:&#39;answer&#39;,&#39;dot&#39;:&#39;explainer&#39;,&#39;query&#39;:&#39;glucose&#39;},reply=&#39;Your kidneys have permanently stopped functioning [nlm-x].&#39;)
+&gt;       out=asyncio.run(business_agent.run(&#39;Explain this report&#39;,{&#39;report&#39;:REPORT,&#39;explain_report&#39;:True}))
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_bound_output.py:42: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+services\business_agent.py:362: in run
+    report_binding=render_bound_report(answer,role_report,evidence,preferred_language,message)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+services\report_binding.py:71: in render
+    require_supported_units(rows)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+rows = [{&#39;id&#39;: &#39;a&#39;, &#39;name&#39;: &#39;Marker Alpha\nดัชนีอัลฟา&#39;, &#39;value&#39;: &#39;17.00&#39;, &#39;unit&#39;: &#39;10⁹/µL&#39;, ...}, {&#39;id&#39;: &#39;b&#39;, &#39;name&#39;: &#39;Marker Beta&#39;, &#39;value&#39;: &#39;4.25&#39;, &#39;unit&#39;: &#39;g/L&#39;, ...}]
+
+    def require_supported_units(rows):
+        from services.conversation_transport import ConversationError
+        if any(unit_issue(r.unit if hasattr(r,&#39;unit&#39;) else r.get(&#39;unit&#39;,&#39;&#39;)) for r in rows):
+&gt;           raise ConversationError(&#39;unit_unverified&#39;,
+                &#39;A count-unit scale could not be verified. Review the exponent and volume unit against the original, then edit the row before confirming. No unit was corrected automatically.&#39;,422)
+E           services.conversation_transport.ConversationError: A count-unit scale could not be verified. Review the exponent and volume unit against the original, then edit the row before confirming. No unit was corrected automatically.
+
+services\lab_units.py:37: ConversationError&lt;/failure&gt;</pre>

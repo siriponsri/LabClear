@@ -1,0 +1,328 @@
+{
+  "executions": 19,
+  "records": [
+    {
+      "case_id": "free-estimate-mode-offline-captures-001",
+      "underlying_test": "tests.test_cost_ledger::test_estimate_and_settlement_with_usage",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/free-estimate-mode-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T13:15:14.651Z",
+      "status": "PASS",
+      "execution_ms": 88,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\free-estimate-mode-offline-captures\\free-estimate-mode-offline-captures-001.png",
+      "sha256": "5843a779df6fa8ac4baec6ea069d8386a5f2413ab5f3455d8f8415affa3f124f"
+    },
+    {
+      "case_id": "free-estimate-mode-offline-captures-002",
+      "underlying_test": "tests.test_cost_ledger::test_failed_call_keeps_conservative_charge",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/free-estimate-mode-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T13:15:14.800Z",
+      "status": "PASS",
+      "execution_ms": 39,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\free-estimate-mode-offline-captures\\free-estimate-mode-offline-captures-002.png",
+      "sha256": "16ab96bc16a9a21344f3e8238a38fc807af147a49a3a317de2fc9153b97c17b0"
+    },
+    {
+      "case_id": "free-estimate-mode-offline-captures-003",
+      "underlying_test": "tests.test_cost_ledger::test_fail_closed_on_unknown_model_or_prior_spend",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/free-estimate-mode-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T13:15:14.918Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\free-estimate-mode-offline-captures\\free-estimate-mode-offline-captures-003.png",
+      "sha256": "2275b3c44b8614a82be9026b9dd15ed0433df4b5b3cfc1886a2b78af0f44952b"
+    },
+    {
+      "case_id": "free-estimate-mode-offline-captures-004",
+      "underlying_test": "tests.test_cost_ledger::test_cap_counts_prior_spend_and_blocks_before_request",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/free-estimate-mode-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T13:15:15.087Z",
+      "status": "PASS",
+      "execution_ms": 31,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\free-estimate-mode-offline-captures\\free-estimate-mode-offline-captures-004.png",
+      "sha256": "a68781ef73df33b042a377b604821d720e1f9df7fe5907f901ea1f5b8eff09fd"
+    },
+    {
+      "case_id": "free-estimate-mode-offline-captures-005",
+      "underlying_test": "tests.test_cost_ledger::test_ledger_survives_restart",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/free-estimate-mode-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T13:15:15.226Z",
+      "status": "PASS",
+      "execution_ms": 44,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\free-estimate-mode-offline-captures\\free-estimate-mode-offline-captures-005.png",
+      "sha256": "716c0a737ebc7ef97c0431b55aba2af527ecbde55c78417b32651fe46dabf892"
+    },
+    {
+      "case_id": "free-estimate-mode-offline-captures-006",
+      "underlying_test": "tests.test_cost_ledger::test_verified_free_reporting_preserves_history_above_estimated_cap",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/free-estimate-mode-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T13:15:15.358Z",
+      "status": "PASS",
+      "execution_ms": 49,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\free-estimate-mode-offline-captures\\free-estimate-mode-offline-captures-006.png",
+      "sha256": "b45ae42824a3bb31623bbd0527093f4543bab8c33527154eac2d59a9bba8fb47"
+    },
+    {
+      "case_id": "free-estimate-mode-offline-captures-007",
+      "underlying_test": "tests.test_cost_ledger::test_reporting_only_rejects_paid_or_unknown_price[None]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/free-estimate-mode-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T13:15:15.510Z",
+      "status": "PASS",
+      "execution_ms": 22,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\free-estimate-mode-offline-captures\\free-estimate-mode-offline-captures-007.png",
+      "sha256": "9eb59b60c88a771e42ff2c1f592db2938644f3c6a0f782ac40a1a5ecdcb4302d"
+    },
+    {
+      "case_id": "free-estimate-mode-offline-captures-008",
+      "underlying_test": "tests.test_cost_ledger::test_reporting_only_rejects_paid_or_unknown_price[price1]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/free-estimate-mode-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T13:15:15.666Z",
+      "status": "PASS",
+      "execution_ms": 24,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\free-estimate-mode-offline-captures\\free-estimate-mode-offline-captures-008.png",
+      "sha256": "00d3251ac074875bae00c90b6a7583a9d959659206bbf6b536fa6ed7b432f719"
+    },
+    {
+      "case_id": "free-estimate-mode-offline-captures-009",
+      "underlying_test": "tests.test_cost_ledger::test_reporting_only_rejects_paid_or_unknown_price[price2]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/free-estimate-mode-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T13:15:15.812Z",
+      "status": "PASS",
+      "execution_ms": 25,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\free-estimate-mode-offline-captures\\free-estimate-mode-offline-captures-009.png",
+      "sha256": "803451f996def09520c7f798e7389518db73a27fd943b37fbc5a78d4bb5efa3f"
+    },
+    {
+      "case_id": "free-estimate-mode-offline-captures-010",
+      "underlying_test": "tests.test_cost_ledger::test_transport_blocks_without_network_call_when_budget_exceeded",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/free-estimate-mode-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T13:15:15.962Z",
+      "status": "PASS",
+      "execution_ms": 31,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\free-estimate-mode-offline-captures\\free-estimate-mode-offline-captures-010.png",
+      "sha256": "29af4e5e89d98ed0e7509ddd079b24c7ff3d661e7f549ad5ff94c20436352874"
+    },
+    {
+      "case_id": "free-estimate-mode-offline-captures-011",
+      "underlying_test": "tests.test_expanded_attempt_gate::test_prior_attempts_reduce_remaining",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/free-estimate-mode-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T13:15:16.112Z",
+      "status": "PASS",
+      "execution_ms": 26,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\free-estimate-mode-offline-captures\\free-estimate-mode-offline-captures-011.png",
+      "sha256": "d595a7c59d491d5be6abdb30b5881fd36a64fb53d7b618ac5d93ad7035240977"
+    },
+    {
+      "case_id": "free-estimate-mode-offline-captures-012",
+      "underlying_test": "tests.test_expanded_attempt_gate::test_ceiling_blocks_before_attempt",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/free-estimate-mode-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T13:15:16.267Z",
+      "status": "PASS",
+      "execution_ms": 33,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\free-estimate-mode-offline-captures\\free-estimate-mode-offline-captures-012.png",
+      "sha256": "d15493893541396905dd3d18992ecc158be1b9c296e9fe3c589d87a063f05721"
+    },
+    {
+      "case_id": "free-estimate-mode-offline-captures-013",
+      "underlying_test": "tests.test_expanded_attempt_gate::test_inflight_reserved_counts_concurrently",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/free-estimate-mode-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T13:15:16.414Z",
+      "status": "PASS",
+      "execution_ms": 1000,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\free-estimate-mode-offline-captures\\free-estimate-mode-offline-captures-013.png",
+      "sha256": "22b3b587627741b469b894dd424c8ce118b1b0727c3f1ecf36f86fca11448175"
+    },
+    {
+      "case_id": "free-estimate-mode-offline-captures-014",
+      "underlying_test": "tests.test_expanded_attempt_gate::test_failure_never_refunds",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/free-estimate-mode-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T13:15:16.588Z",
+      "status": "PASS",
+      "execution_ms": 112,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\free-estimate-mode-offline-captures\\free-estimate-mode-offline-captures-014.png",
+      "sha256": "639dbfa3e839809936aeeff53b87f139cbe034d4a5bd512026ed57ed18d192e0"
+    },
+    {
+      "case_id": "free-estimate-mode-offline-captures-015",
+      "underlying_test": "tests.test_expanded_attempt_gate::test_cancellation_never_refunds",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/free-estimate-mode-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T13:15:16.746Z",
+      "status": "PASS",
+      "execution_ms": 82,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\free-estimate-mode-offline-captures\\free-estimate-mode-offline-captures-015.png",
+      "sha256": "df2c2cd6d147165cbfd57145aba4c305ad2d947626a9ccdbbfa874208f2df87f"
+    },
+    {
+      "case_id": "free-estimate-mode-offline-captures-016",
+      "underlying_test": "tests.test_expanded_attempt_gate::test_reopen_preserves_attempts",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/free-estimate-mode-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T13:15:16.908Z",
+      "status": "PASS",
+      "execution_ms": 64,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\free-estimate-mode-offline-captures\\free-estimate-mode-offline-captures-016.png",
+      "sha256": "ab87a74b7635eaffee99643d01b2ec771897fe0c29272556d47c072b7633c3c6"
+    },
+    {
+      "case_id": "free-estimate-mode-offline-captures-017",
+      "underlying_test": "tests.test_expanded_attempt_gate::test_workflow_cap_includes_guard_vision_repair",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/free-estimate-mode-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T13:15:17.186Z",
+      "status": "PASS",
+      "execution_ms": 265,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\free-estimate-mode-offline-captures\\free-estimate-mode-offline-captures-017.png",
+      "sha256": "9e63b2888528fb6ef3b2b8c0d3c7f09078519497887b0d05cc642da0788c936d"
+    },
+    {
+      "case_id": "free-estimate-mode-offline-captures-018",
+      "underlying_test": "tests.test_expanded_attempt_gate::test_duplicate_finish_does_not_double_count",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/free-estimate-mode-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T13:15:17.484Z",
+      "status": "PASS",
+      "execution_ms": 105,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\free-estimate-mode-offline-captures\\free-estimate-mode-offline-captures-018.png",
+      "sha256": "a2b37c10644ad1761e51d7413a9b1cc669e7b432b5584c0258f909f704ef6fca"
+    },
+    {
+      "case_id": "free-estimate-mode-offline-captures-019",
+      "underlying_test": "tests.test_expanded_attempt_gate::test_authorized_4000_total_preserves_prior_and_reserved_history",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/free-estimate-mode-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T13:15:17.800Z",
+      "status": "PASS",
+      "execution_ms": 96,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\free-estimate-mode-offline-captures\\free-estimate-mode-offline-captures-019.png",
+      "sha256": "56c2b08a42a35e29773c6750448e94acbd2af171f4ed60f5b036167068dabf16"
+    }
+  ]
+}

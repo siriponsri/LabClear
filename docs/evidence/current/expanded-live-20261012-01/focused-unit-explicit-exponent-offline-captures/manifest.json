@@ -1,0 +1,379 @@
+{
+  "executions": 22,
+  "records": [
+    {
+      "case_id": "focused-unit-explicit-exponent-offline-captures-001",
+      "underlying_test": "tests.test_focused_unit_cells::test_explicit_math_exponent_and_newlines_are_preserved",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/focused-unit-explicit-exponent-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T15:06:05.114Z",
+      "status": "PASS",
+      "execution_ms": 2,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\focused-unit-explicit-exponent-offline-captures\\focused-unit-explicit-exponent-offline-captures-001.png",
+      "sha256": "883cfd229fe3148b9ca6aa2166f595a633f7e98c1f232724a0d2eaab4be2f54b"
+    },
+    {
+      "case_id": "focused-unit-explicit-exponent-offline-captures-002",
+      "underlying_test": "tests.test_focused_unit_cells::test_ambiguous_or_wrong_count_scale_is_never_guessed[{\"units\":[\"103/\\xb5L\"]}]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/focused-unit-explicit-exponent-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T15:06:05.341Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\focused-unit-explicit-exponent-offline-captures\\focused-unit-explicit-exponent-offline-captures-002.png",
+      "sha256": "43c7a015af5e8879673624dff8befc48b216c9cb8158ed31b2a1919259445736"
+    },
+    {
+      "case_id": "focused-unit-explicit-exponent-offline-captures-003",
+      "underlying_test": "tests.test_focused_unit_cells::test_ambiguous_or_wrong_count_scale_is_never_guessed[{\"units\":[\"10^9/\\xb5L\"]}]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/focused-unit-explicit-exponent-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T15:06:05.590Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\focused-unit-explicit-exponent-offline-captures\\focused-unit-explicit-exponent-offline-captures-003.png",
+      "sha256": "85beebc7e4ac2a57fd942f4e7b5e34554c3044cda25e54fe176aeb6f5e2fdbf5"
+    },
+    {
+      "case_id": "focused-unit-explicit-exponent-offline-captures-004",
+      "underlying_test": "tests.test_focused_unit_cells::test_ambiguous_or_wrong_count_scale_is_never_guessed[{\"units\":[]}]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/focused-unit-explicit-exponent-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T15:06:05.823Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\focused-unit-explicit-exponent-offline-captures\\focused-unit-explicit-exponent-offline-captures-004.png",
+      "sha256": "5cb725d93a72ea0867975fe6e3e7ff2fffc85c90f5649087e080711459da2b29"
+    },
+    {
+      "case_id": "focused-unit-explicit-exponent-offline-captures-005",
+      "underlying_test": "tests.test_focused_unit_cells::test_ambiguous_or_wrong_count_scale_is_never_guessed[{\"units\":[\"10^3/\\xb5L\",\"10^6/\\xb5L\"]}]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/focused-unit-explicit-exponent-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T15:06:06.027Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\focused-unit-explicit-exponent-offline-captures\\focused-unit-explicit-exponent-offline-captures-005.png",
+      "sha256": "3fea375ea95fea6e9e6a7e4ebe321f613a94bc4d66295855737e373ae908fd4a"
+    },
+    {
+      "case_id": "focused-unit-explicit-exponent-offline-captures-006",
+      "underlying_test": "tests.test_focused_unit_cells::test_ambiguous_or_wrong_count_scale_is_never_guessed[{\"units\":[null]}]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/focused-unit-explicit-exponent-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T15:06:06.276Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\focused-unit-explicit-exponent-offline-captures\\focused-unit-explicit-exponent-offline-captures-006.png",
+      "sha256": "b5afdff09274d255dd28ec7cc53bd0f8596865d0f075548afc69d5106002d36a"
+    },
+    {
+      "case_id": "focused-unit-explicit-exponent-offline-captures-007",
+      "underlying_test": "tests.test_unit_region_verification::test_crop_bounds_and_immutable_source",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/focused-unit-explicit-exponent-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T15:06:06.546Z",
+      "status": "PASS",
+      "execution_ms": 26,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\focused-unit-explicit-exponent-offline-captures\\focused-unit-explicit-exponent-offline-captures-007.png",
+      "sha256": "45bfcd78abb687a9487595139024c7edd728ec5f5ca23ec8993860e681e3acd8"
+    },
+    {
+      "case_id": "focused-unit-explicit-exponent-offline-captures-008",
+      "underlying_test": "tests.test_unit_region_verification::test_bad_coordinates_rejected[rect0]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/focused-unit-explicit-exponent-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T15:06:06.803Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\focused-unit-explicit-exponent-offline-captures\\focused-unit-explicit-exponent-offline-captures-008.png",
+      "sha256": "aadcc81a5c362505f2b3684f0d409239e00c1631efaf16b99f141b9f309a21fa"
+    },
+    {
+      "case_id": "focused-unit-explicit-exponent-offline-captures-009",
+      "underlying_test": "tests.test_unit_region_verification::test_bad_coordinates_rejected[rect1]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/focused-unit-explicit-exponent-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T15:06:07.068Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\focused-unit-explicit-exponent-offline-captures\\focused-unit-explicit-exponent-offline-captures-009.png",
+      "sha256": "99e53a86d8fbadec78f1bfd10f87ff44cd131fa78022db31bfae85abb1fbe285"
+    },
+    {
+      "case_id": "focused-unit-explicit-exponent-offline-captures-010",
+      "underlying_test": "tests.test_unit_region_verification::test_bad_coordinates_rejected[rect2]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/focused-unit-explicit-exponent-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T15:06:07.365Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\focused-unit-explicit-exponent-offline-captures\\focused-unit-explicit-exponent-offline-captures-010.png",
+      "sha256": "21668c13ac6f239cfd9f70ff120fa38cf55f285772638b449fcbca4f3d5353f5"
+    },
+    {
+      "case_id": "focused-unit-explicit-exponent-offline-captures-011",
+      "underlying_test": "tests.test_unit_region_verification::test_bad_coordinates_rejected[rect3]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/focused-unit-explicit-exponent-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T15:06:07.677Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\focused-unit-explicit-exponent-offline-captures\\focused-unit-explicit-exponent-offline-captures-011.png",
+      "sha256": "430efc7e01f65a4e72a7ee91f5dcd03444306553abd8a53cc471482933e4c4fb"
+    },
+    {
+      "case_id": "focused-unit-explicit-exponent-offline-captures-012",
+      "underlying_test": "tests.test_unit_region_verification::test_unit_only_candidate_never_changes_field_or_confirms",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/focused-unit-explicit-exponent-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T15:06:07.908Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\focused-unit-explicit-exponent-offline-captures\\focused-unit-explicit-exponent-offline-captures-012.png",
+      "sha256": "332650691995c8ca205e09118cce06d80758de0b0504643a7a769230984823de"
+    },
+    {
+      "case_id": "focused-unit-explicit-exponent-offline-captures-013",
+      "underlying_test": "tests.test_unit_region_verification::test_no_guess_from_bad_or_ambiguous_evidence[rows0]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/focused-unit-explicit-exponent-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T15:06:08.171Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\focused-unit-explicit-exponent-offline-captures\\focused-unit-explicit-exponent-offline-captures-013.png",
+      "sha256": "b7cc1de6a5970cd0c15a9f13ca8b48c3e704e4df0adead0a61b98b081771b685"
+    },
+    {
+      "case_id": "focused-unit-explicit-exponent-offline-captures-014",
+      "underlying_test": "tests.test_unit_region_verification::test_no_guess_from_bad_or_ambiguous_evidence[rows1]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/focused-unit-explicit-exponent-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T15:06:08.477Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\focused-unit-explicit-exponent-offline-captures\\focused-unit-explicit-exponent-offline-captures-014.png",
+      "sha256": "e723ada8f3d2c4c11b327db5c6a7442a683aec8782b5b12f80468073944a108f"
+    },
+    {
+      "case_id": "focused-unit-explicit-exponent-offline-captures-015",
+      "underlying_test": "tests.test_unit_region_verification::test_no_guess_from_bad_or_ambiguous_evidence[rows2]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/focused-unit-explicit-exponent-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T15:06:08.747Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\focused-unit-explicit-exponent-offline-captures\\focused-unit-explicit-exponent-offline-captures-015.png",
+      "sha256": "1ee9816abbac875268bf95942a3f497ff70864d1c2eb8cc473a20fbdbbfdc60e"
+    },
+    {
+      "case_id": "focused-unit-explicit-exponent-offline-captures-016",
+      "underlying_test": "tests.test_unit_region_verification::test_no_guess_from_bad_or_ambiguous_evidence[rows3]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/focused-unit-explicit-exponent-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T15:06:09.046Z",
+      "status": "PASS",
+      "execution_ms": 2,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\focused-unit-explicit-exponent-offline-captures\\focused-unit-explicit-exponent-offline-captures-016.png",
+      "sha256": "e511c94ad6e7c72601d5b1c4c3b7ba319b7dbc5906ec865fbc13ff81a0ed8e46"
+    },
+    {
+      "case_id": "focused-unit-explicit-exponent-offline-captures-017",
+      "underlying_test": "tests.test_unit_region_verification::test_explicit_html_superscript_is_preserved",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/focused-unit-explicit-exponent-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T15:06:09.311Z",
+      "status": "PASS",
+      "execution_ms": 8,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\focused-unit-explicit-exponent-offline-captures\\focused-unit-explicit-exponent-offline-captures-017.png",
+      "sha256": "de5af5bd9d61afe1d946c347aab661e10e563edb9c1e9b52402f8f1e844c3f5f"
+    },
+    {
+      "case_id": "focused-unit-explicit-exponent-offline-captures-018",
+      "underlying_test": "tests.test_unit_region_verification::test_literal_list_shape_keeps_ambiguous_plain_digits_unmodified",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/focused-unit-explicit-exponent-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T15:06:09.573Z",
+      "status": "PASS",
+      "execution_ms": 2,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\focused-unit-explicit-exponent-offline-captures\\focused-unit-explicit-exponent-offline-captures-018.png",
+      "sha256": "ba190181f7ee90ebf75f8385418c8a96a10731f66ea4bbd7aefd91d659e3f729"
+    },
+    {
+      "case_id": "focused-unit-explicit-exponent-offline-captures-019",
+      "underlying_test": "tests.test_unit_region_verification::test_literal_parser_never_executes_code",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/focused-unit-explicit-exponent-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T15:06:09.850Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\focused-unit-explicit-exponent-offline-captures\\focused-unit-explicit-exponent-offline-captures-019.png",
+      "sha256": "b37a695df2cf38b6946644342611533d3c42c6b1e1e8a3340a5a705a94c731f2"
+    },
+    {
+      "case_id": "focused-unit-explicit-exponent-offline-captures-020",
+      "underlying_test": "tests.test_unit_region_verification::test_malformed_focused_response_rejected[not a table]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/focused-unit-explicit-exponent-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T15:06:10.106Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\focused-unit-explicit-exponent-offline-captures\\focused-unit-explicit-exponent-offline-captures-020.png",
+      "sha256": "a1f414b85b675dbdb19567a340c84cad3aad21dcdce1830860a112b24c2e79fe"
+    },
+    {
+      "case_id": "focused-unit-explicit-exponent-offline-captures-021",
+      "underlying_test": "tests.test_unit_region_verification::test_malformed_focused_response_rejected[<table><tr><td>unit</td></tr>]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/focused-unit-explicit-exponent-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T15:06:10.417Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\focused-unit-explicit-exponent-offline-captures\\focused-unit-explicit-exponent-offline-captures-021.png",
+      "sha256": "7e709dd6f13d5e4381266d5eb60886012f6153be77c0cf53acec576eb40f8539"
+    },
+    {
+      "case_id": "focused-unit-explicit-exponent-offline-captures-022",
+      "underlying_test": "tests.test_unit_region_verification::test_malformed_focused_response_rejected[{\"rows\":[{\"name\":\"x\",\"value\":7,\"unit\":\"u\"}]}]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/focused-unit-explicit-exponent-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T15:06:10.757Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\focused-unit-explicit-exponent-offline-captures\\focused-unit-explicit-exponent-offline-captures-022.png",
+      "sha256": "9789de0001ee6c965cd8201fba027f49afcf94151c3e0407de4256c914e5c8d4"
+    }
+  ]
+}

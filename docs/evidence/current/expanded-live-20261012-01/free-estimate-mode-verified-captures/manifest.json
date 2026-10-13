@@ -1,0 +1,396 @@
+{
+  "executions": 23,
+  "records": [
+    {
+      "case_id": "free-estimate-mode-verified-captures-001",
+      "underlying_test": "tests.test_expanded_free_estimate::test_unverified_route_does_not_enable_mode",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/free-estimate-mode-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T13:15:18.107Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\free-estimate-mode-verified-captures\\free-estimate-mode-verified-captures-001.png",
+      "sha256": "7dfff1f64f47315006a786a79e7c656508606ae825ff45aea9dde149ca2ef3d7"
+    },
+    {
+      "case_id": "free-estimate-mode-verified-captures-002",
+      "underlying_test": "tests.test_expanded_free_estimate::test_public_price_alone_does_not_verify_account",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/free-estimate-mode-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T13:15:18.285Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\free-estimate-mode-verified-captures\\free-estimate-mode-verified-captures-002.png",
+      "sha256": "e4af8735fbaa8f13abdf49a315459d7979bf0c45c53c976f67ef8c5becca3827"
+    },
+    {
+      "case_id": "free-estimate-mode-verified-captures-003",
+      "underlying_test": "tests.test_expanded_free_estimate::test_reviewed_exact_route_is_accepted",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/free-estimate-mode-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T13:15:18.530Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\free-estimate-mode-verified-captures\\free-estimate-mode-verified-captures-003.png",
+      "sha256": "320191bd573686cf6736ac3ad241cb3f439476fbec7233f391ed00a298eaee24"
+    },
+    {
+      "case_id": "free-estimate-mode-verified-captures-004",
+      "underlying_test": "tests.test_expanded_free_estimate::test_shadow_uses_usage_and_contains_no_prompt",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/free-estimate-mode-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T13:15:18.698Z",
+      "status": "PASS",
+      "execution_ms": 40,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\free-estimate-mode-verified-captures\\free-estimate-mode-verified-captures-004.png",
+      "sha256": "282777caba6432f082750f234fa2e545559af724475fdff7f9429a3af9dd72c2"
+    },
+    {
+      "case_id": "free-estimate-mode-verified-captures-005",
+      "underlying_test": "tests.test_cost_ledger::test_estimate_and_settlement_with_usage",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/free-estimate-mode-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T13:15:18.965Z",
+      "status": "PASS",
+      "execution_ms": 73,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\free-estimate-mode-verified-captures\\free-estimate-mode-verified-captures-005.png",
+      "sha256": "510816312e3dec0fa65a26c4dcedf18066d77401282fe70419f070d82930fbe3"
+    },
+    {
+      "case_id": "free-estimate-mode-verified-captures-006",
+      "underlying_test": "tests.test_cost_ledger::test_failed_call_keeps_conservative_charge",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/free-estimate-mode-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T13:15:19.260Z",
+      "status": "PASS",
+      "execution_ms": 30,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\free-estimate-mode-verified-captures\\free-estimate-mode-verified-captures-006.png",
+      "sha256": "ef13c3932329bf4c1b4e1ececac26fd18355192424f78c88c0ab2d0900e536d3"
+    },
+    {
+      "case_id": "free-estimate-mode-verified-captures-007",
+      "underlying_test": "tests.test_cost_ledger::test_fail_closed_on_unknown_model_or_prior_spend",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/free-estimate-mode-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T13:15:19.513Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\free-estimate-mode-verified-captures\\free-estimate-mode-verified-captures-007.png",
+      "sha256": "d88a363572c883c62d31c5ce2eb98cf1d65f6d37ef958b2fd57c12fb92589a0d"
+    },
+    {
+      "case_id": "free-estimate-mode-verified-captures-008",
+      "underlying_test": "tests.test_cost_ledger::test_cap_counts_prior_spend_and_blocks_before_request",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/free-estimate-mode-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T13:15:19.791Z",
+      "status": "PASS",
+      "execution_ms": 26,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\free-estimate-mode-verified-captures\\free-estimate-mode-verified-captures-008.png",
+      "sha256": "69d6997edc7009cfc18260621f4a592b1b27666a4fff2e324c4b918b63137fcc"
+    },
+    {
+      "case_id": "free-estimate-mode-verified-captures-009",
+      "underlying_test": "tests.test_cost_ledger::test_ledger_survives_restart",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/free-estimate-mode-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T13:15:20.085Z",
+      "status": "PASS",
+      "execution_ms": 41,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\free-estimate-mode-verified-captures\\free-estimate-mode-verified-captures-009.png",
+      "sha256": "70964d3337083d9ea67a41e74a9befa9bcc5312f22438098e18b850b41cb58bf"
+    },
+    {
+      "case_id": "free-estimate-mode-verified-captures-010",
+      "underlying_test": "tests.test_cost_ledger::test_verified_free_reporting_preserves_history_above_estimated_cap",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/free-estimate-mode-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T13:15:20.298Z",
+      "status": "PASS",
+      "execution_ms": 44,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\free-estimate-mode-verified-captures\\free-estimate-mode-verified-captures-010.png",
+      "sha256": "762fb6deace2ac235e49d7962763dd0af37bba68ac8b1bc293ea34409d6b376e"
+    },
+    {
+      "case_id": "free-estimate-mode-verified-captures-011",
+      "underlying_test": "tests.test_cost_ledger::test_reporting_only_rejects_paid_or_unknown_price[None]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/free-estimate-mode-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T13:15:20.493Z",
+      "status": "PASS",
+      "execution_ms": 22,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\free-estimate-mode-verified-captures\\free-estimate-mode-verified-captures-011.png",
+      "sha256": "aa186930444fc25cd0537670e29681df4945f12a107cb087d0e93e8cbbc58c89"
+    },
+    {
+      "case_id": "free-estimate-mode-verified-captures-012",
+      "underlying_test": "tests.test_cost_ledger::test_reporting_only_rejects_paid_or_unknown_price[price1]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/free-estimate-mode-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T13:15:20.748Z",
+      "status": "PASS",
+      "execution_ms": 22,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\free-estimate-mode-verified-captures\\free-estimate-mode-verified-captures-012.png",
+      "sha256": "5390b6829f7952861130d5bb0979c76f81e44d2b884566255a92d169435f20ca"
+    },
+    {
+      "case_id": "free-estimate-mode-verified-captures-013",
+      "underlying_test": "tests.test_cost_ledger::test_reporting_only_rejects_paid_or_unknown_price[price2]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/free-estimate-mode-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T13:15:21.006Z",
+      "status": "PASS",
+      "execution_ms": 20,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\free-estimate-mode-verified-captures\\free-estimate-mode-verified-captures-013.png",
+      "sha256": "ebe4bc5362f47fa36b0dbce49a378d3cb8fe7b3df50e82b7668b0494ead1340e"
+    },
+    {
+      "case_id": "free-estimate-mode-verified-captures-014",
+      "underlying_test": "tests.test_cost_ledger::test_transport_blocks_without_network_call_when_budget_exceeded",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/free-estimate-mode-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T13:15:21.294Z",
+      "status": "PASS",
+      "execution_ms": 22,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\free-estimate-mode-verified-captures\\free-estimate-mode-verified-captures-014.png",
+      "sha256": "2fc60848610574ab464cec116d4b1f7a996f7bf3be2d00a8a0c1c8625f832d71"
+    },
+    {
+      "case_id": "free-estimate-mode-verified-captures-015",
+      "underlying_test": "tests.test_expanded_attempt_gate::test_prior_attempts_reduce_remaining",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/free-estimate-mode-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T13:15:21.536Z",
+      "status": "PASS",
+      "execution_ms": 25,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\free-estimate-mode-verified-captures\\free-estimate-mode-verified-captures-015.png",
+      "sha256": "2674a16e78ac425a651f6c6d9725f027604c4ff002d044af264f8d3e714ab544"
+    },
+    {
+      "case_id": "free-estimate-mode-verified-captures-016",
+      "underlying_test": "tests.test_expanded_attempt_gate::test_ceiling_blocks_before_attempt",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/free-estimate-mode-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T13:15:21.782Z",
+      "status": "PASS",
+      "execution_ms": 28,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\free-estimate-mode-verified-captures\\free-estimate-mode-verified-captures-016.png",
+      "sha256": "fd558664f79f0eb2930799ecbf1d98588e514cc7e689c5730063f54df453e323"
+    },
+    {
+      "case_id": "free-estimate-mode-verified-captures-017",
+      "underlying_test": "tests.test_expanded_attempt_gate::test_inflight_reserved_counts_concurrently",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/free-estimate-mode-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T13:15:22.059Z",
+      "status": "PASS",
+      "execution_ms": 891,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\free-estimate-mode-verified-captures\\free-estimate-mode-verified-captures-017.png",
+      "sha256": "5f8f915a726c67e6f784d89453581d5be3b83f0d925a55e70df88011aeacc248"
+    },
+    {
+      "case_id": "free-estimate-mode-verified-captures-018",
+      "underlying_test": "tests.test_expanded_attempt_gate::test_failure_never_refunds",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/free-estimate-mode-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T13:15:22.298Z",
+      "status": "PASS",
+      "execution_ms": 37,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\free-estimate-mode-verified-captures\\free-estimate-mode-verified-captures-018.png",
+      "sha256": "413e04dbbe7b88ae4289a82b941ded6f9f8dee0fde1ac648f3ac185fcd0e1be6"
+    },
+    {
+      "case_id": "free-estimate-mode-verified-captures-019",
+      "underlying_test": "tests.test_expanded_attempt_gate::test_cancellation_never_refunds",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/free-estimate-mode-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T13:15:22.578Z",
+      "status": "PASS",
+      "execution_ms": 39,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\free-estimate-mode-verified-captures\\free-estimate-mode-verified-captures-019.png",
+      "sha256": "ff24c0c62a40f9ddc771f6e7b50a64de5cdd4af292808d5e400318cf853fe68f"
+    },
+    {
+      "case_id": "free-estimate-mode-verified-captures-020",
+      "underlying_test": "tests.test_expanded_attempt_gate::test_reopen_preserves_attempts",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/free-estimate-mode-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T13:15:22.875Z",
+      "status": "PASS",
+      "execution_ms": 38,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\free-estimate-mode-verified-captures\\free-estimate-mode-verified-captures-020.png",
+      "sha256": "fe4c427f82058786260fd48fab206368fc9a9abe0ad52621a71de438a832dd88"
+    },
+    {
+      "case_id": "free-estimate-mode-verified-captures-021",
+      "underlying_test": "tests.test_expanded_attempt_gate::test_workflow_cap_includes_guard_vision_repair",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/free-estimate-mode-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T13:15:23.133Z",
+      "status": "PASS",
+      "execution_ms": 112,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\free-estimate-mode-verified-captures\\free-estimate-mode-verified-captures-021.png",
+      "sha256": "a939a13d45576ebf2dcf84605f5bea2f4178664bef62ae2756ecb5649f42657b"
+    },
+    {
+      "case_id": "free-estimate-mode-verified-captures-022",
+      "underlying_test": "tests.test_expanded_attempt_gate::test_duplicate_finish_does_not_double_count",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/free-estimate-mode-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T13:15:23.340Z",
+      "status": "PASS",
+      "execution_ms": 37,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\free-estimate-mode-verified-captures\\free-estimate-mode-verified-captures-022.png",
+      "sha256": "5b4ceb0acaff51cf3c6cc0751bd7d1e7689d1a1608f3344b16c8e2f465a5ed55"
+    },
+    {
+      "case_id": "free-estimate-mode-verified-captures-023",
+      "underlying_test": "tests.test_expanded_attempt_gate::test_authorized_4000_total_preserves_prior_and_reserved_history",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/free-estimate-mode-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T13:15:23.626Z",
+      "status": "PASS",
+      "execution_ms": 44,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\free-estimate-mode-verified-captures\\free-estimate-mode-verified-captures-023.png",
+      "sha256": "4279bcb9d8448436d244c8e357e2d39ca17014ef9d51297d35c264b53ef4e005"
+    }
+  ]
+}

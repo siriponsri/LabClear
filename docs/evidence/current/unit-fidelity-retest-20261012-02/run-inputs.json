@@ -1,0 +1,30 @@
+{
+  "purpose": "Authorized targeted before/after unit-fidelity retest",
+  "before_run": "expanded-live-20261012-01",
+  "cases": [
+    {
+      "id": "EXP-OCR-14",
+      "kind": "OCR",
+      "split": "expanded_owner",
+      "turns": [
+        "อ่านรายการ ผล หน่วย ช่วงอ้างอิง และ flag ตามภาพ หากอ่านไม่ได้ให้ระบุว่าไม่ทราบ"
+      ],
+      "image": "C:\\Users\\User\\Desktop\\myProject\\LabClear\\docs\\evidence\\current\\expanded-live-20261012-01\\inputs\\EXP-OCR-14.png",
+      "variant_spec": "rotate 4 degrees / reduced quality",
+      "variant_prepared": true,
+      "source_sample_index": 4
+    },
+    {
+      "id": "EXP-OCR-16",
+      "kind": "OCR",
+      "split": "expanded_owner",
+      "turns": [
+        "อ่านรายการ ผล หน่วย ช่วงอ้างอิง และ flag ตามภาพ หากอ่านไม่ได้ให้ระบุว่าไม่ทราบ"
+      ],
+      "image": "C:\\Users\\User\\Desktop\\myProject\\LabClear\\docs\\evidence\\current\\expanded-live-20261012-01\\inputs\\EXP-OCR-16.png",
+      "variant_spec": "original",
+      "variant_prepared": true,
+      "source_sample_index": 5
+    }
+  ]
+}

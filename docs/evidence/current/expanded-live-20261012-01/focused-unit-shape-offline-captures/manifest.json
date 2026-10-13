@@ -1,0 +1,277 @@
+{
+  "executions": 16,
+  "records": [
+    {
+      "case_id": "focused-unit-shape-offline-captures-001",
+      "underlying_test": "tests.test_unit_region_verification::test_crop_bounds_and_immutable_source",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/focused-unit-shape-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T15:06:01.470Z",
+      "status": "PASS",
+      "execution_ms": 27,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\focused-unit-shape-offline-captures\\focused-unit-shape-offline-captures-001.png",
+      "sha256": "f7541ad6ebb1ec858ae8a48d5e0f1cc100476f771ba6d409179aec3f56697541"
+    },
+    {
+      "case_id": "focused-unit-shape-offline-captures-002",
+      "underlying_test": "tests.test_unit_region_verification::test_bad_coordinates_rejected[rect0]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/focused-unit-shape-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T15:06:01.669Z",
+      "status": "PASS",
+      "execution_ms": 2,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\focused-unit-shape-offline-captures\\focused-unit-shape-offline-captures-002.png",
+      "sha256": "363ce378c6fd0a12fa8893abdf72805ba807a049fdf8e611cfd46e79407ca417"
+    },
+    {
+      "case_id": "focused-unit-shape-offline-captures-003",
+      "underlying_test": "tests.test_unit_region_verification::test_bad_coordinates_rejected[rect1]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/focused-unit-shape-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T15:06:01.896Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\focused-unit-shape-offline-captures\\focused-unit-shape-offline-captures-003.png",
+      "sha256": "e367cd05baecbbe98cccdbf26cce3dae8e584a4c7f0810718b5a171e15d2c277"
+    },
+    {
+      "case_id": "focused-unit-shape-offline-captures-004",
+      "underlying_test": "tests.test_unit_region_verification::test_bad_coordinates_rejected[rect2]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/focused-unit-shape-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T15:06:02.144Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\focused-unit-shape-offline-captures\\focused-unit-shape-offline-captures-004.png",
+      "sha256": "500326ccb89208066f032d8523a09536450b8e5c119cb6ba83f8816b7fba807c"
+    },
+    {
+      "case_id": "focused-unit-shape-offline-captures-005",
+      "underlying_test": "tests.test_unit_region_verification::test_bad_coordinates_rejected[rect3]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/focused-unit-shape-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T15:06:02.409Z",
+      "status": "PASS",
+      "execution_ms": 2,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\focused-unit-shape-offline-captures\\focused-unit-shape-offline-captures-005.png",
+      "sha256": "cfc6c10dd91c9b51fac2d57652cfd7252d6034b85e3beae40917bc5c3fc83821"
+    },
+    {
+      "case_id": "focused-unit-shape-offline-captures-006",
+      "underlying_test": "tests.test_unit_region_verification::test_unit_only_candidate_never_changes_field_or_confirms",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/focused-unit-shape-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T15:06:02.672Z",
+      "status": "PASS",
+      "execution_ms": 2,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\focused-unit-shape-offline-captures\\focused-unit-shape-offline-captures-006.png",
+      "sha256": "641e0f1c57eef276bb293d78ac9aada5aeaf511fb3c2397f50b05e0654794e7a"
+    },
+    {
+      "case_id": "focused-unit-shape-offline-captures-007",
+      "underlying_test": "tests.test_unit_region_verification::test_no_guess_from_bad_or_ambiguous_evidence[rows0]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/focused-unit-shape-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T15:06:02.894Z",
+      "status": "PASS",
+      "execution_ms": 2,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\focused-unit-shape-offline-captures\\focused-unit-shape-offline-captures-007.png",
+      "sha256": "1ee35206ea58d474d480be08801bbc96e445c195e74fe5884f566d73cc5f714a"
+    },
+    {
+      "case_id": "focused-unit-shape-offline-captures-008",
+      "underlying_test": "tests.test_unit_region_verification::test_no_guess_from_bad_or_ambiguous_evidence[rows1]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/focused-unit-shape-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T15:06:03.171Z",
+      "status": "PASS",
+      "execution_ms": 2,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\focused-unit-shape-offline-captures\\focused-unit-shape-offline-captures-008.png",
+      "sha256": "c8e37ffa0228833f3732a5c4dc901dc016a09b0bb1fc257f5852c7d3727a67c9"
+    },
+    {
+      "case_id": "focused-unit-shape-offline-captures-009",
+      "underlying_test": "tests.test_unit_region_verification::test_no_guess_from_bad_or_ambiguous_evidence[rows2]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/focused-unit-shape-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T15:06:03.428Z",
+      "status": "PASS",
+      "execution_ms": 2,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\focused-unit-shape-offline-captures\\focused-unit-shape-offline-captures-009.png",
+      "sha256": "f702289274ba6695d5f961fb89f00aaf15aa0d2154325cdab8114cb141d84243"
+    },
+    {
+      "case_id": "focused-unit-shape-offline-captures-010",
+      "underlying_test": "tests.test_unit_region_verification::test_no_guess_from_bad_or_ambiguous_evidence[rows3]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/focused-unit-shape-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T15:06:03.670Z",
+      "status": "PASS",
+      "execution_ms": 2,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\focused-unit-shape-offline-captures\\focused-unit-shape-offline-captures-010.png",
+      "sha256": "f0be708e4694e53e368a319166b0b1eb12a23b0da02dd6e5a1740ddf34bc25bb"
+    },
+    {
+      "case_id": "focused-unit-shape-offline-captures-011",
+      "underlying_test": "tests.test_unit_region_verification::test_explicit_html_superscript_is_preserved",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/focused-unit-shape-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T15:06:03.886Z",
+      "status": "PASS",
+      "execution_ms": 11,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\focused-unit-shape-offline-captures\\focused-unit-shape-offline-captures-011.png",
+      "sha256": "76fd04c7d1bc0311db8c7ae75d767a261848cfac1ae78f098d6ba0fb7b98eec4"
+    },
+    {
+      "case_id": "focused-unit-shape-offline-captures-012",
+      "underlying_test": "tests.test_unit_region_verification::test_literal_list_shape_keeps_ambiguous_plain_digits_unmodified",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/focused-unit-shape-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T15:06:04.111Z",
+      "status": "PASS",
+      "execution_ms": 2,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\focused-unit-shape-offline-captures\\focused-unit-shape-offline-captures-012.png",
+      "sha256": "0d38a116a55e879a8548dedc2dafd1322678bd24d0a37bd17b7633e29437bc46"
+    },
+    {
+      "case_id": "focused-unit-shape-offline-captures-013",
+      "underlying_test": "tests.test_unit_region_verification::test_literal_parser_never_executes_code",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/focused-unit-shape-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T15:06:04.287Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\focused-unit-shape-offline-captures\\focused-unit-shape-offline-captures-013.png",
+      "sha256": "155d5eac9c408301b2ac87db50c913db6e39a3d6a3830a64e36737f9f5ebae23"
+    },
+    {
+      "case_id": "focused-unit-shape-offline-captures-014",
+      "underlying_test": "tests.test_unit_region_verification::test_malformed_focused_response_rejected[not a table]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/focused-unit-shape-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T15:06:04.456Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\focused-unit-shape-offline-captures\\focused-unit-shape-offline-captures-014.png",
+      "sha256": "c486427fae005d1cce5282590830c8aa9aa35eee08267ea7d7d035a840cd9e18"
+    },
+    {
+      "case_id": "focused-unit-shape-offline-captures-015",
+      "underlying_test": "tests.test_unit_region_verification::test_malformed_focused_response_rejected[<table><tr><td>unit</td></tr>]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/focused-unit-shape-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T15:06:04.684Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\focused-unit-shape-offline-captures\\focused-unit-shape-offline-captures-015.png",
+      "sha256": "e1dc626cad1e2bc5f5ea2d7a3971e578ca341b6d1c09e2f6e5943a8e5e41d49e"
+    },
+    {
+      "case_id": "focused-unit-shape-offline-captures-016",
+      "underlying_test": "tests.test_unit_region_verification::test_malformed_focused_response_rejected[{\"rows\":[{\"name\":\"x\",\"value\":7,\"unit\":\"u\"}]}]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/focused-unit-shape-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T15:06:04.880Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\focused-unit-shape-offline-captures\\focused-unit-shape-offline-captures-016.png",
+      "sha256": "5598e639b019677da782a8a09ded09a343cdf1247fe28e641a0f613b8f524475"
+    }
+  ]
+}

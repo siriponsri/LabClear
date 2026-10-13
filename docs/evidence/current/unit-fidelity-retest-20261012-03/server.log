@@ -1,0 +1,26 @@
+ACCOUNTING_PREFLIGHT {"prior": 24, "remaining": 3725, "money_remaining": 289.5052, "old_reserved": 0.2281}
+2026-10-12 19:29:55,444 INFO labclear.request: {"event":"startup","at":1791808195.445,"in_flight":0}
+2026-10-12 19:29:58,069 INFO labclear.request: {"event":"document_worker","at":1791808198.07,"request_id":"req_c144678a9184e8c1","worker":"ok","pages":1}
+2026-10-12 19:30:11,124 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 19:30:11,370 WARNING labclear.storage: storage_on_event_loop at=C:\Users\User\Desktop\myProject\LabClear\services\conversation_transport.py:117
+2026-10-12 19:30:11,397 WARNING labclear.storage: storage_on_event_loop at=C:\Users\User\Desktop\myProject\LabClear\services\cost_ledger.py:122
+2026-10-12 19:30:12,871 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 19:30:21,288 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 19:30:21,852 WARNING labclear.report: range_not_compared shapes=9.99 - 99.99
+2026-10-12 19:30:21,861 INFO labclear.request: {"event":"ocr_row_binding","at":1791808221.862,"request_id":"req_c144678a9184e8c1","step":"rows","reason":"ambiguous_html_structure"}
+2026-10-12 19:30:21,862 INFO labclear.request: {"event":"ocr_unit_fidelity","at":1791808221.862,"request_id":"req_c144678a9184e8c1","step":"rows","reason":"unique_explicit_name_value_unit_cell:0"}
+2026-10-12 19:30:24,196 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 19:30:24,597 INFO labclear.request: {"event":"workflow","at":1791808224.597,"request_id":"req_c144678a9184e8c1","turn_id":"9db3a6b003818e49cc0c6ead7a870320","route":"/chat/report","kind":"ocr","stream":true,"outcome":"done","status":200,"code":null,"origin":null,"step":"rows","duration_ms":26969,"attempts":4,"dropped_events":0}
+2026-10-12 19:30:24,606 INFO labclear.request: {"event":"http","at":1791808224.606,"request_id":"req_c144678a9184e8c1","method":"POST","route":"/api/business/chat/report","status":200,"duration_ms":27000}
+2026-10-12 19:30:25,756 INFO labclear.request: {"event":"http","at":1791808225.756,"request_id":"req_25e065dc7cff2fbc","method":"POST","route":"/api/business/chat/report/confirm","status":422,"duration_ms":391}
+2026-10-12 19:30:35,452 INFO labclear.request: {"event":"document_worker","at":1791808235.452,"request_id":"req_0426979f11d1ad0e","worker":"ok","pages":1}
+2026-10-12 19:30:51,888 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 19:30:55,124 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 19:31:05,437 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 19:31:05,706 WARNING labclear.report: range_not_compared shapes=9.99 - 9.99 | 9.99 - 99.99
+2026-10-12 19:31:05,710 INFO labclear.request: {"event":"ocr_row_binding","at":1791808265.711,"request_id":"req_0426979f11d1ad0e","step":"rows","reason":"ambiguous_html_structure"}
+2026-10-12 19:31:05,710 INFO labclear.request: {"event":"ocr_unit_fidelity","at":1791808265.711,"request_id":"req_0426979f11d1ad0e","step":"rows","reason":"unique_explicit_name_value_unit_cell:0"}
+2026-10-12 19:31:09,243 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 19:31:09,821 INFO labclear.request: {"event":"workflow","at":1791808269.82,"request_id":"req_0426979f11d1ad0e","turn_id":"b95971e9f086eed2a9a93cf05939769e","route":"/chat/report","kind":"ocr","stream":true,"outcome":"done","status":200,"code":null,"origin":null,"step":"rows","duration_ms":34828,"attempts":4,"dropped_events":0}
+2026-10-12 19:31:09,826 INFO labclear.request: {"event":"http","at":1791808269.826,"request_id":"req_0426979f11d1ad0e","method":"POST","route":"/api/business/chat/report","status":200,"duration_ms":34859}
+2026-10-12 19:31:11,355 INFO labclear.request: {"event":"http","at":1791808271.356,"request_id":"req_3011acbf0716d7e7","method":"POST","route":"/api/business/chat/report/confirm","status":422,"duration_ms":797}

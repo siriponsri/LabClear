@@ -1,0 +1,42 @@
+{
+  "gate": {
+    "ceiling": 4000,
+    "prior_conservative": 24,
+    "new_attempts": 259,
+    "remaining": 3717,
+    "statuses": {
+      "succeeded": 259
+    }
+  },
+  "durable_usage": {
+    "cycle": "live-ui-live-ui-20261012T102549",
+    "used": 283,
+    "limit": 5000,
+    "by_slot": {
+      "guard": 109,
+      "agent_plan": 36,
+      "agent_advisor": 20,
+      "agent_review": 29,
+      "vision": 26,
+      "llm": 26,
+      "agent_explainer": 37
+    },
+    "storage": "sqlite"
+  },
+  "money_ledger": {
+    "available": true,
+    "scope": "project_total",
+    "cap_thb": 300.0,
+    "prior_spend_thb": 0.0,
+    "settled_thb": 10.4249,
+    "reserved_thb": 0.2281,
+    "calls": 283,
+    "remaining_thb": 289.3469,
+    "priced_models": [
+      "openthai-systemone",
+      "typhoon-ocr",
+      "typhoon-v2.5-30b-a3b-instruct"
+    ],
+    "enabled": true
+  }
+}

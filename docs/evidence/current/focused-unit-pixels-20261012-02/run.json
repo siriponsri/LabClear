@@ -1,0 +1,25 @@
+{
+  "mode": "LIVE_FOCUSED_PIXEL_EXPERIMENT",
+  "before": {
+    "ceiling": 4000,
+    "prior_conservative": 24,
+    "new_attempts": 281,
+    "remaining": 3695,
+    "statuses": {
+      "succeeded": 281
+    }
+  },
+  "after": {
+    "ceiling": 4000,
+    "prior_conservative": 24,
+    "new_attempts": 283,
+    "remaining": 3693,
+    "statuses": {
+      "succeeded": 283
+    }
+  },
+  "max_attempts": 2,
+  "whole_workflow_retries": 0,
+  "gold_read": false,
+  "results": 2
+}

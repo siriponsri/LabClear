@@ -1,0 +1,43 @@
+{
+  "owner_coordination_confirmation": "หยุดหมดแล้วครับ คุณเริ่มใหม่ได้เลยครับ",
+  "old_cycle_preserved": "live-ui-live-ui-20261012T102549",
+  "old_database_preserved": "C:\\Users\\User\\Desktop\\myProject\\LabClear\\eval_runs\\live-ui-20261012T102549\\server-state\\business.sqlite3",
+  "global_gate": {
+    "ceiling": 3000,
+    "prior_conservative": 24,
+    "new_attempts": 0,
+    "remaining": 2976,
+    "statuses": {}
+  },
+  "durable_usage": {
+    "cycle": "live-ui-live-ui-20261012T102549",
+    "used": 24,
+    "limit": 5000,
+    "by_slot": {
+      "guard": 8,
+      "agent_plan": 5,
+      "agent_advisor": 7,
+      "agent_review": 4
+    },
+    "storage": "sqlite"
+  },
+  "money_ledger": {
+    "available": true,
+    "scope": "project_total",
+    "cap_thb": 300.0,
+    "prior_spend_thb": 0.0,
+    "settled_thb": 1.0092,
+    "reserved_thb": 0.2281,
+    "calls": 24,
+    "remaining_thb": 298.7627,
+    "priced_models": [
+      "openthai-systemone",
+      "typhoon-ocr",
+      "typhoon-v2.5-30b-a3b-instruct"
+    ],
+    "enabled": true
+  },
+  "mode": "LIVE_PROVIDER_LOCAL_UI",
+  "whole_case_retries": 0,
+  "workflow_cap": 12
+}

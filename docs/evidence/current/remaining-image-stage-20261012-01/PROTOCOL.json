@@ -1,0 +1,11 @@
+{
+  "authorization": "Owner authorizes incomplete coverage and all screenshots under same4000 cap",
+  "source_sha256": "9be80a9f72273990ee4b4d0ea965f0e7f46d129a7f16c17e06fbde17fe29bc31",
+  "cases": 19,
+  "all_input_overrides_disclosed": true,
+  "no_auto_confirmation": true,
+  "no_claim_of_final_answer_accuracy": true,
+  "image_attack_endpoint": "document treated as data; observe reading-stage behavior only",
+  "repeat_policy": "no whole-case retries",
+  "prior_counters_preserved": true
+}

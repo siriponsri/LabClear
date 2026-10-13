@@ -1,0 +1,1 @@
+The01 harness skipped image upload while trying to skip confirmation. Preserved03 recorded harness errors and allcharged attempts. Corrected targetedconfirmationanchor; rerun19 previouslymissing image-stage cases only. No best-answer selection,no counter reset,noauto-confirmation.

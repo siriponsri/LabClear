@@ -1,0 +1,105 @@
+{
+  "at": "2026-10-12T17:19:47.434729+00:00",
+  "source": "extracted corrected source ZIP",
+  "cases": [
+    {
+      "id": "CONTEXT01",
+      "action": "Different account and session",
+      "mode": "OFFLINE_REAL_HTTP_AGENT_DOUBLE",
+      "actual_outcome": "PASS",
+      "assertions": {
+        "foreign_canary_absent": true,
+        "own_canary_present": true
+      },
+      "at": "2026-10-12T17:19:46.789789+00:00",
+      "provider_calls": 0
+    },
+    {
+      "id": "CONTEXT02",
+      "action": "Open prior own chat",
+      "mode": "OFFLINE_REAL_HTTP_AGENT_DOUBLE",
+      "actual_outcome": "PASS",
+      "assertions": {
+        "prior_own_chat_present": true,
+        "other_own_chat_absent": true
+      },
+      "at": "2026-10-12T17:19:46.879334+00:00",
+      "provider_calls": 0
+    },
+    {
+      "id": "CONTEXT03",
+      "action": "New chat in a second project",
+      "mode": "OFFLINE_REAL_HTTP_AGENT_DOUBLE",
+      "actual_outcome": "PASS",
+      "assertions": {
+        "first_project_context_absent": true,
+        "other_chat_absent": true
+      },
+      "at": "2026-10-12T17:19:46.983993+00:00",
+      "provider_calls": 0
+    },
+    {
+      "id": "CONTEXT04",
+      "action": "Real logout then real login as B",
+      "mode": "OFFLINE_REAL_HTTP_AGENT_DOUBLE",
+      "actual_outcome": "PASS",
+      "assertions": {
+        "account_A_absent": true,
+        "account_B_present": true
+      },
+      "at": "2026-10-12T17:19:47.246721+00:00",
+      "provider_calls": 0
+    },
+    {
+      "id": "CONTEXT05",
+      "action": "Guest page close/reload HTTP sequence",
+      "mode": "OFFLINE_REAL_HTTP_AGENT_DOUBLE",
+      "actual_outcome": "PASS",
+      "assertions": {
+        "old_guest_token_revoked": true,
+        "old_guest_context_absent": true
+      },
+      "at": "2026-10-12T17:19:47.292348+00:00",
+      "provider_calls": 0
+    },
+    {
+      "id": "CONTEXT06",
+      "action": "Real new-chat route in Guest session",
+      "mode": "OFFLINE_REAL_HTTP_AGENT_DOUBLE",
+      "actual_outcome": "PASS",
+      "assertions": {
+        "prior_guest_chat_absent": true
+      },
+      "at": "2026-10-12T17:19:47.325576+00:00",
+      "provider_calls": 0
+    },
+    {
+      "id": "CONTEXT07",
+      "action": "Reset with supported new-chat action",
+      "mode": "OFFLINE_REAL_HTTP_AGENT_DOUBLE",
+      "actual_outcome": "PASS",
+      "assertions": {
+        "prior_active_context_absent": true
+      },
+      "at": "2026-10-12T17:19:47.396610+00:00",
+      "provider_calls": 0
+    },
+    {
+      "id": "CONTEXT08",
+      "action": "Foreign chat open denial and malicious follow-up",
+      "mode": "OFFLINE_REAL_HTTP_AGENT_DOUBLE",
+      "actual_outcome": "PASS",
+      "assertions": {
+        "foreign_open_denied": true,
+        "foreign_canary_absent": true
+      },
+      "at": "2026-10-12T17:19:47.427715+00:00",
+      "provider_calls": 0
+    }
+  ],
+  "pass": 8,
+  "network_connection_attempts": 0,
+  "provider_calls": 0,
+  "baseline_provider_attempts_preserved": 722,
+  "limits": "Real HTTP/auth/ownership/history boundaries with explicit agent double. Guest close/reload sequence exercised through HTTP, not a browser reload. No live LLM resistance or clinical validation claim."
+}

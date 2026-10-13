@@ -1,0 +1,12 @@
+{
+  "authorized_total_ceiling": 4000,
+  "consumed_total": 303,
+  "remaining_authorized_attempts": 3697,
+  "effective_safety_ceiling": 303,
+  "prior_conservative": 24,
+  "new_admissions": 279,
+  "reason": "OCR_FIDELITY_TARGETED_VERIFICATION_NOT_PASSED",
+  "resume_requires": "Owner decision on stronger OCR verification or revised scope; no automatic remaining-suite run",
+  "count_history_preserved": true,
+  "money_cap_changed": false
+}

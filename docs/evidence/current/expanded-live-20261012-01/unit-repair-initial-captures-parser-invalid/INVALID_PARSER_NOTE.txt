@@ -1,0 +1,1 @@
+INVALID: initial XML regex parser captured59 of97 records; preserved for audit. Replaced by complete capture set parsed with non-greedy testcase attributes. No test/provider rerun.

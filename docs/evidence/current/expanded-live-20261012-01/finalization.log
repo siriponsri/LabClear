@@ -1,0 +1,59 @@
+2026-10-12T11:34:32.075Z Watching run completion; zero provider calls; no live process interaction.
+2026-10-12T11:42:48.291Z COMMAND -B scripts/expanded_score.py EXIT 0
+{
+  "planned": 148,
+  "executed": 37,
+  "new_receipted_attempts": 236,
+  "new_receipted_settled_estimate_thb": 8.7031,
+  "by_split": {
+    "rubric_regression": {
+      "PASS": 15,
+      "FAIL": 1,
+      "ERROR": 4
+    },
+    "expanded_owner": {
+      "ERROR": 9,
+      "REVIEW_PENDING": 5,
+      "FAIL": 3,
+      "NOT_RUN": 111
+    }
+  },
+  "classifier_metrics": "PENDING_ADJUDICATION_ERRORS_AND_PENDING_NOT_COUNTED_AS_TN",
+  "canonical_frozen_input_hashes_preserved": true
+}
+
+2026-10-12T11:42:49.031Z COMMAND scripts/expanded_evidence_audit.cjs EXIT 0
+{
+  "checked_at": "2026-10-12T11:42:49.005Z",
+  "frozen_file_count": 9,
+  "offline_captures": 254,
+  "offline_unique_capture_case_ids": 70,
+  "live_executed": 37,
+  "live_captures": 92,
+  "errors": [],
+  "assessment": "PASS"
+}
+
+2026-10-12T11:42:53.855Z COMMAND scripts/expanded_live_appendix.cjs EXIT 0
+{
+  "executed": 37,
+  "captures": 92,
+  "renders": [
+    {
+      "file": "C:\\Users\\User\\Desktop\\myProject\\LabClear\\docs\\report\\LabClear_Expanded_Testing_Report_TH.pdf",
+      "sha256": "632319d28920f2921779c581da2a78225f3aee643d3afa5e5defabc19937ac6f"
+    },
+    {
+      "file": "C:\\Users\\User\\Desktop\\myProject\\LabClear\\docs\\report\\LabClear_Expanded_Test_Appendix_TH.pdf",
+      "sha256": "6bd17c2a7862946ee98f70f9ded74e672ad5f429e6a36db217b83553ba84150f"
+    }
+  ]
+}
+
+2026-10-12T11:42:55.764Z COMMAND -B scripts/expanded_render_qa.py docs/report/LabClear_Expanded_Testing_Report_TH.pdf docs/evidence/current/expanded-live-20261012-01/report-render-qa EXIT 0
+{"pages": 16, "replacement_glyphs": 0}
+
+2026-10-12T11:43:02.071Z COMMAND -B scripts/expanded_render_qa.py docs/report/LabClear_Expanded_Test_Appendix_TH.pdf docs/evidence/current/expanded-live-20261012-01/appendix-render-qa EXIT 0
+{"pages": 38, "replacement_glyphs": 0}
+
+2026-10-12T11:43:02.072Z Rendered final execution snapshot. Human semantic review and visual inspection remain pending; not clinical validation.

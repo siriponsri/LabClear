@@ -1,0 +1,553 @@
+ACCOUNTING_PREFLIGHT {"prior": 24, "remaining": 3693, "money_remaining": 288.9133, "old_reserved": 0.2281}
+2026-10-12 20:58:59,337 INFO labclear.request: {"event":"startup","at":1791813539.338,"in_flight":0}
+2026-10-12 20:59:04,900 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 20:59:04,974 WARNING labclear.storage: storage_on_event_loop at=C:\Users\User\Desktop\myProject\LabClear\services\conversation_transport.py:117
+2026-10-12 20:59:04,983 WARNING labclear.storage: storage_on_event_loop at=C:\Users\User\Desktop\myProject\LabClear\services\cost_ledger.py:122
+2026-10-12 20:59:05,004 INFO labclear.request: {"event":"workflow","at":1791813545.005,"request_id":"req_8f09e05b7ce511de","turn_id":"3c46d1978a413b68489eb7c8909ced78","route":"/chat","kind":"ai","stream":true,"outcome":"error","status":422,"code":"safety_blocked","origin":"client","step":"safety_in","duration_ms":1610,"attempts":1,"dropped_events":0}
+2026-10-12 20:59:05,005 INFO labclear.request: {"event":"http","at":1791813545.006,"request_id":"req_8f09e05b7ce511de","method":"POST","route":"/api/business/chat","status":200,"duration_ms":1625}
+2026-10-12 20:59:08,366 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 20:59:08,435 INFO labclear.request: {"event":"workflow","at":1791813548.435,"request_id":"req_2da3cde23bf6ed6e","turn_id":"3d6f38b9fc29be8989e1cbc7183c8f6d","route":"/chat","kind":"ai","stream":true,"outcome":"error","status":422,"code":"safety_blocked","origin":"client","step":"safety_in","duration_ms":1156,"attempts":1,"dropped_events":0}
+2026-10-12 20:59:08,437 INFO labclear.request: {"event":"http","at":1791813548.437,"request_id":"req_2da3cde23bf6ed6e","method":"POST","route":"/api/business/chat","status":200,"duration_ms":1156}
+2026-10-12 20:59:11,348 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 20:59:12,777 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 20:59:15,622 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 20:59:17,097 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 20:59:17,173 INFO labclear.request: {"event":"review_rejected","at":1791813557.173,"request_id":"req_00ce43f41ea8e2d5","code":"review_failed","step":"review","reason":"evidence_not_supported,report_values_not_preserved,outside_allowed_scope","attempts":1}
+2026-10-12 20:59:17,173 WARNING labclear.model: answer_rewrite reason=review_failed
+2026-10-12 20:59:20,043 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 20:59:21,500 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 20:59:21,607 INFO labclear.request: {"event":"review_rejected","at":1791813561.607,"request_id":"req_00ce43f41ea8e2d5","code":"review_failed","step":"review","reason":"evidence_not_supported,report_values_not_preserved,outside_allowed_scope","attempts":2}
+2026-10-12 20:59:22,978 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 20:59:23,093 INFO labclear.request: {"event":"workflow","at":1791813563.094,"request_id":"req_00ce43f41ea8e2d5","turn_id":"abf53a3526dbec8ed33bd6c26403cd9b","route":"/chat","kind":"ai","stream":true,"outcome":"error","status":422,"code":"safety_blocked","origin":"client","step":"safety_out","duration_ms":12797,"attempts":7,"dropped_events":0}
+2026-10-12 20:59:23,097 INFO labclear.request: {"event":"http","at":1791813563.096,"request_id":"req_00ce43f41ea8e2d5","method":"POST","route":"/api/business/chat","status":200,"duration_ms":12797}
+2026-10-12 20:59:27,455 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 20:59:27,586 INFO labclear.request: {"event":"workflow","at":1791813567.585,"request_id":"req_5c6c87227a2da135","turn_id":"3ff08d434c90963c62f4e5322062344e","route":"/chat","kind":"ai","stream":true,"outcome":"error","status":422,"code":"safety_blocked","origin":"client","step":"safety_in","duration_ms":1453,"attempts":1,"dropped_events":0}
+2026-10-12 20:59:27,588 INFO labclear.request: {"event":"http","at":1791813567.587,"request_id":"req_5c6c87227a2da135","method":"POST","route":"/api/business/chat","status":200,"duration_ms":1469}
+2026-10-12 20:59:30,719 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 20:59:32,965 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 20:59:35,533 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 20:59:36,847 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 20:59:36,939 INFO labclear.request: {"event":"review_rejected","at":1791813576.939,"request_id":"req_1c09c1a31783180a","code":"review_failed","step":"review","reason":"evidence_not_supported,report_values_not_preserved,outside_allowed_scope","attempts":1}
+2026-10-12 20:59:36,939 WARNING labclear.model: answer_rewrite reason=review_failed
+2026-10-12 20:59:39,083 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 20:59:40,725 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 20:59:40,857 INFO labclear.request: {"event":"review_rejected","at":1791813580.858,"request_id":"req_1c09c1a31783180a","code":"review_failed","step":"review","reason":"evidence_not_supported,report_values_not_preserved,outside_allowed_scope","attempts":2}
+2026-10-12 20:59:42,115 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 20:59:42,253 INFO labclear.request: {"event":"workflow","at":1791813582.253,"request_id":"req_1c09c1a31783180a","turn_id":"4e7e9b0cc667d04f70b7f1a9d3948727","route":"/chat","kind":"ai","stream":true,"outcome":"done","status":200,"code":null,"origin":null,"step":"safety_out","duration_ms":12594,"attempts":7,"dropped_events":0}
+2026-10-12 20:59:42,253 INFO labclear.request: {"event":"http","at":1791813582.254,"request_id":"req_1c09c1a31783180a","method":"POST","route":"/api/business/chat","status":200,"duration_ms":12609}
+2026-10-12 20:59:46,005 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 20:59:46,122 INFO labclear.request: {"event":"workflow","at":1791813586.123,"request_id":"req_62c60d220e090f45","turn_id":"626e9c5911704afe4a0f60f3c02923d3","route":"/chat","kind":"ai","stream":true,"outcome":"error","status":422,"code":"safety_blocked","origin":"client","step":"safety_in","duration_ms":1625,"attempts":1,"dropped_events":0}
+2026-10-12 20:59:46,123 INFO labclear.request: {"event":"http","at":1791813586.124,"request_id":"req_62c60d220e090f45","method":"POST","route":"/api/business/chat","status":200,"duration_ms":1641}
+2026-10-12 20:59:49,763 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 20:59:51,718 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 20:59:55,841 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 20:59:55,936 INFO labclear.request: {"event":"content_rejected","at":1791813595.937,"request_id":"req_0b95e121815734c3","code":"evidence_review_failed","step":"draft","reason":"business_source_for_medical_claim","attempts":1}
+2026-10-12 20:59:55,937 WARNING labclear.model: answer_rewrite reason=evidence_review_failed
+2026-10-12 20:59:59,786 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 20:59:59,890 INFO labclear.request: {"event":"content_rejected","at":1791813599.89,"request_id":"req_0b95e121815734c3","code":"evidence_review_failed","step":"draft","reason":"business_source_for_medical_claim","attempts":2}
+2026-10-12 20:59:59,904 INFO labclear.request: {"event":"workflow","at":1791813599.905,"request_id":"req_0b95e121815734c3","turn_id":"521af4a11f87c61ad0ae3f89cce08b88","route":"/chat","kind":"ai","stream":true,"outcome":"error","status":502,"code":"evidence_review_failed","origin":"app","step":"draft","duration_ms":11437,"attempts":4,"dropped_events":0}
+2026-10-12 20:59:59,907 INFO labclear.request: {"event":"http","at":1791813599.908,"request_id":"req_0b95e121815734c3","method":"POST","route":"/api/business/chat","status":200,"duration_ms":11453}
+2026-10-12 21:00:03,267 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:00:05,306 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:00:11,112 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:00:13,093 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:00:14,532 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:00:14,669 INFO labclear.request: {"event":"workflow","at":1791813614.669,"request_id":"req_f4e391233a3ef81b","turn_id":"7bd75cf404a6214e7f436e604f411383","route":"/chat","kind":"ai","stream":true,"outcome":"done","status":200,"code":null,"origin":null,"step":"safety_out","duration_ms":12656,"attempts":5,"dropped_events":0}
+2026-10-12 21:00:14,672 INFO labclear.request: {"event":"http","at":1791813614.673,"request_id":"req_f4e391233a3ef81b","method":"POST","route":"/api/business/chat","status":200,"duration_ms":12672}
+2026-10-12 21:00:18,230 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:00:18,342 INFO labclear.request: {"event":"workflow","at":1791813618.342,"request_id":"req_9d4d837f5afc3209","turn_id":"f7a65975f72ed112260af82db8a0d7f0","route":"/chat","kind":"ai","stream":true,"outcome":"error","status":422,"code":"safety_blocked","origin":"client","step":"safety_in","duration_ms":1422,"attempts":1,"dropped_events":0}
+2026-10-12 21:00:18,344 INFO labclear.request: {"event":"http","at":1791813618.345,"request_id":"req_9d4d837f5afc3209","method":"POST","route":"/api/business/chat","status":200,"duration_ms":1422}
+2026-10-12 21:00:21,765 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:00:23,741 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:00:26,827 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:00:28,585 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:00:28,691 INFO labclear.request: {"event":"review_rejected","at":1791813628.691,"request_id":"req_146893f736a73a68","code":"review_failed","step":"review","reason":"evidence_not_supported,report_values_not_preserved,outside_allowed_scope","attempts":1}
+2026-10-12 21:00:28,691 WARNING labclear.model: answer_rewrite reason=review_failed
+2026-10-12 21:00:30,991 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:00:32,672 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:00:33,675 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:00:33,770 INFO labclear.request: {"event":"workflow","at":1791813633.771,"request_id":"req_146893f736a73a68","turn_id":"ea6bd2413ca0cd2ee39a07f757bab061","route":"/chat","kind":"ai","stream":true,"outcome":"done","status":200,"code":null,"origin":null,"step":"safety_out","duration_ms":13312,"attempts":7,"dropped_events":0}
+2026-10-12 21:00:33,772 INFO labclear.request: {"event":"http","at":1791813633.773,"request_id":"req_146893f736a73a68","method":"POST","route":"/api/business/chat","status":200,"duration_ms":13312}
+2026-10-12 21:00:36,591 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:00:38,159 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:00:45,437 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:00:45,521 INFO labclear.request: {"event":"content_rejected","at":1791813645.521,"request_id":"req_bff8197e59758412","code":"evidence_review_failed","step":"draft","reason":"business_source_for_medical_claim","attempts":1}
+2026-10-12 21:00:45,521 WARNING labclear.model: answer_rewrite reason=evidence_review_failed
+2026-10-12 21:00:51,397 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:00:51,466 INFO labclear.request: {"event":"content_rejected","at":1791813651.467,"request_id":"req_bff8197e59758412","code":"evidence_review_failed","step":"draft","reason":"business_source_for_medical_claim","attempts":2}
+2026-10-12 21:00:51,477 INFO labclear.request: {"event":"workflow","at":1791813651.477,"request_id":"req_bff8197e59758412","turn_id":"07ac07eb37f855ecc6b741806f1f3aa7","route":"/chat","kind":"ai","stream":true,"outcome":"error","status":502,"code":"evidence_review_failed","origin":"app","step":"draft","duration_ms":15750,"attempts":4,"dropped_events":0}
+2026-10-12 21:00:51,479 INFO labclear.request: {"event":"http","at":1791813651.479,"request_id":"req_bff8197e59758412","method":"POST","route":"/api/business/chat","status":200,"duration_ms":15750}
+2026-10-12 21:00:55,053 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:00:55,178 INFO labclear.request: {"event":"workflow","at":1791813655.178,"request_id":"req_215522dad470aae5","turn_id":"e2743664ad4e8b2d288a08a541c88708","route":"/chat","kind":"ai","stream":true,"outcome":"error","status":422,"code":"safety_blocked","origin":"client","step":"safety_in","duration_ms":1640,"attempts":1,"dropped_events":0}
+2026-10-12 21:00:55,181 INFO labclear.request: {"event":"http","at":1791813655.18,"request_id":"req_215522dad470aae5","method":"POST","route":"/api/business/chat","status":200,"duration_ms":1640}
+2026-10-12 21:00:58,686 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:01:01,228 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:01:10,923 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:01:12,392 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:01:13,515 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:01:13,624 INFO labclear.request: {"event":"workflow","at":1791813673.624,"request_id":"req_371e2aadb6a41a15","turn_id":"d6f5bff557f7511c716299dd851341c3","route":"/chat","kind":"ai","stream":true,"outcome":"done","status":200,"code":null,"origin":null,"step":"safety_out","duration_ms":16266,"attempts":5,"dropped_events":0}
+2026-10-12 21:01:13,626 INFO labclear.request: {"event":"http","at":1791813673.626,"request_id":"req_371e2aadb6a41a15","method":"POST","route":"/api/business/chat","status":200,"duration_ms":16281}
+2026-10-12 21:01:16,792 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:01:18,838 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:01:24,610 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:01:26,229 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:01:27,310 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:01:27,441 INFO labclear.request: {"event":"workflow","at":1791813687.441,"request_id":"req_54f79e48f89bc223","turn_id":"3baafd1984becd47f9f3c443f8aaabf5","route":"/chat","kind":"ai","stream":true,"outcome":"done","status":200,"code":null,"origin":null,"step":"safety_out","duration_ms":11890,"attempts":5,"dropped_events":0}
+2026-10-12 21:01:27,442 INFO labclear.request: {"event":"http","at":1791813687.442,"request_id":"req_54f79e48f89bc223","method":"POST","route":"/api/business/chat","status":200,"duration_ms":11890}
+2026-10-12 21:01:30,335 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:01:32,224 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:01:37,279 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:01:38,705 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:01:39,874 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:01:39,985 INFO labclear.request: {"event":"workflow","at":1791813699.985,"request_id":"req_36f384dfbb3c80db","turn_id":"7348011160ae487309253b7e47dc3ab0","route":"/chat","kind":"ai","stream":true,"outcome":"done","status":200,"code":null,"origin":null,"step":"safety_out","duration_ms":10656,"attempts":5,"dropped_events":0}
+2026-10-12 21:01:39,987 INFO labclear.request: {"event":"http","at":1791813699.987,"request_id":"req_36f384dfbb3c80db","method":"POST","route":"/api/business/chat","status":200,"duration_ms":10672}
+2026-10-12 21:01:42,803 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:01:45,013 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:01:49,078 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:01:49,154 INFO labclear.request: {"event":"content_rejected","at":1791813709.154,"request_id":"req_4aaee4a3f7b97a3e","code":"evidence_review_failed","step":"draft","reason":"business_source_for_medical_claim","attempts":1}
+2026-10-12 21:01:49,155 WARNING labclear.model: answer_rewrite reason=evidence_review_failed
+2026-10-12 21:01:53,861 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:01:55,498 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:01:55,586 INFO labclear.request: {"event":"review_rejected","at":1791813715.587,"request_id":"req_4aaee4a3f7b97a3e","code":"review_failed","step":"review","reason":"evidence_not_supported,report_values_not_preserved,outside_allowed_scope","attempts":2}
+2026-10-12 21:01:56,730 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:01:56,822 INFO labclear.request: {"event":"workflow","at":1791813716.822,"request_id":"req_4aaee4a3f7b97a3e","turn_id":"a5669b4a850fad88117909d193990e90","route":"/chat","kind":"ai","stream":true,"outcome":"done","status":200,"code":null,"origin":null,"step":"safety_out","duration_ms":15000,"attempts":6,"dropped_events":0}
+2026-10-12 21:01:56,823 INFO labclear.request: {"event":"http","at":1791813716.824,"request_id":"req_4aaee4a3f7b97a3e","method":"POST","route":"/api/business/chat","status":200,"duration_ms":15016}
+2026-10-12 21:02:00,004 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:02:02,667 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:02:16,185 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:02:17,639 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:02:18,780 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:02:18,901 INFO labclear.request: {"event":"workflow","at":1791813738.902,"request_id":"req_7ecf34cb6e3982d1","turn_id":"d5228a4ce2ceaf6fbb6f587dfc26e864","route":"/chat","kind":"ai","stream":true,"outcome":"done","status":200,"code":null,"origin":null,"step":"safety_out","duration_ms":20125,"attempts":5,"dropped_events":0}
+2026-10-12 21:02:18,902 INFO labclear.request: {"event":"http","at":1791813738.903,"request_id":"req_7ecf34cb6e3982d1","method":"POST","route":"/api/business/chat","status":200,"duration_ms":20125}
+2026-10-12 21:02:22,196 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:02:22,309 INFO labclear.request: {"event":"workflow","at":1791813742.309,"request_id":"req_569ebbb89134aae9","turn_id":"1543978a6345e3d10e5bbf9b9d3be372","route":"/chat","kind":"ai","stream":true,"outcome":"error","status":422,"code":"safety_blocked","origin":"client","step":"safety_in","duration_ms":1062,"attempts":1,"dropped_events":0}
+2026-10-12 21:02:22,310 INFO labclear.request: {"event":"http","at":1791813742.31,"request_id":"req_569ebbb89134aae9","method":"POST","route":"/api/business/chat","status":200,"duration_ms":1078}
+2026-10-12 21:02:25,150 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:02:26,958 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:02:32,263 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:02:34,004 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:02:35,230 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:02:35,333 INFO labclear.request: {"event":"workflow","at":1791813755.334,"request_id":"req_3ce0d1649201afca","turn_id":"662fe8aaedb74b7cd09dd35d95b88867","route":"/chat","kind":"ai","stream":true,"outcome":"done","status":200,"code":null,"origin":null,"step":"safety_out","duration_ms":11094,"attempts":5,"dropped_events":0}
+2026-10-12 21:02:35,334 INFO labclear.request: {"event":"http","at":1791813755.335,"request_id":"req_3ce0d1649201afca","method":"POST","route":"/api/business/chat","status":200,"duration_ms":11110}
+2026-10-12 21:02:38,714 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:02:40,963 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:02:44,652 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:02:52,434 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:02:53,812 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:02:53,943 INFO labclear.request: {"event":"workflow","at":1791813773.943,"request_id":"req_e29192f5be16b6c0","turn_id":"f5ee4aad29cfd5144d85bd4caa09298e","route":"/chat","kind":"ai","stream":true,"outcome":"done","status":200,"code":null,"origin":null,"step":"safety_out","duration_ms":16281,"attempts":5,"dropped_events":0}
+2026-10-12 21:02:53,947 INFO labclear.request: {"event":"http","at":1791813773.947,"request_id":"req_e29192f5be16b6c0","method":"POST","route":"/api/business/chat","status":200,"duration_ms":16281}
+2026-10-12 21:02:57,058 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:02:59,806 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:03:04,685 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:03:06,179 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:03:06,973 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:03:07,049 INFO labclear.request: {"event":"workflow","at":1791813787.048,"request_id":"req_50043472f169afaa","turn_id":"2628052eeaa15591ab28a592947f51f8","route":"/chat","kind":"ai","stream":true,"outcome":"done","status":200,"code":null,"origin":null,"step":"safety_out","duration_ms":11141,"attempts":5,"dropped_events":0}
+2026-10-12 21:03:07,049 INFO labclear.request: {"event":"http","at":1791813787.049,"request_id":"req_50043472f169afaa","method":"POST","route":"/api/business/chat","status":200,"duration_ms":11156}
+2026-10-12 21:03:10,293 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:03:13,491 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:03:19,677 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:03:21,310 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:03:22,583 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:03:22,699 INFO labclear.request: {"event":"workflow","at":1791813802.7,"request_id":"req_616f987c2dc417c0","turn_id":"cfb1e1a6e9762b1e7b4f80b19952b075","route":"/chat","kind":"ai","stream":true,"outcome":"done","status":200,"code":null,"origin":null,"step":"safety_out","duration_ms":13594,"attempts":5,"dropped_events":0}
+2026-10-12 21:03:22,701 INFO labclear.request: {"event":"http","at":1791813802.702,"request_id":"req_616f987c2dc417c0","method":"POST","route":"/api/business/chat","status":200,"duration_ms":13594}
+2026-10-12 21:03:26,377 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:03:29,189 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:03:32,587 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:03:34,211 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:03:35,235 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:03:35,352 INFO labclear.request: {"event":"workflow","at":1791813815.353,"request_id":"req_57b1aa1f94eb038c","turn_id":"d920e64759bc5c12bd161f17b1b5966a","route":"/chat","kind":"ai","stream":true,"outcome":"done","status":200,"code":null,"origin":null,"step":"safety_out","duration_ms":10172,"attempts":5,"dropped_events":0}
+2026-10-12 21:03:35,353 INFO labclear.request: {"event":"http","at":1791813815.354,"request_id":"req_57b1aa1f94eb038c","method":"POST","route":"/api/business/chat","status":200,"duration_ms":10187}
+2026-10-12 21:03:38,191 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:03:40,201 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:03:45,325 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:03:45,425 WARNING labclear.model: answer_rewrite reason=evidence_missing
+2026-10-12 21:03:47,934 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:03:48,044 INFO labclear.request: {"event":"workflow","at":1791813828.045,"request_id":"req_1bac558db50b661d","turn_id":"e6d702b9cd6c4e9e6fc8f3917cdb54b2","route":"/chat","kind":"ai","stream":true,"outcome":"error","status":502,"code":"evidence_missing","origin":"app","step":"draft","duration_ms":10813,"attempts":4,"dropped_events":0}
+2026-10-12 21:03:48,045 INFO labclear.request: {"event":"http","at":1791813828.046,"request_id":"req_1bac558db50b661d","method":"POST","route":"/api/business/chat","status":200,"duration_ms":10828}
+2026-10-12 21:03:51,416 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:03:53,669 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:04:06,160 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:04:08,005 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:04:09,154 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:04:09,252 INFO labclear.request: {"event":"workflow","at":1791813849.253,"request_id":"req_e1bf5f49a9027539","turn_id":"5c5e1813ed01deb182af1e656047d103","route":"/chat","kind":"ai","stream":true,"outcome":"done","status":200,"code":null,"origin":null,"step":"safety_out","duration_ms":18766,"attempts":5,"dropped_events":0}
+2026-10-12 21:04:09,255 INFO labclear.request: {"event":"http","at":1791813849.256,"request_id":"req_e1bf5f49a9027539","method":"POST","route":"/api/business/chat","status":200,"duration_ms":18797}
+2026-10-12 21:04:12,304 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:04:14,009 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:04:17,999 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:04:18,080 WARNING labclear.model: model_output_invalid step=answer problem=not_json
+2026-10-12 21:04:21,318 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:04:22,830 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:04:23,946 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:04:24,049 INFO labclear.request: {"event":"workflow","at":1791813864.049,"request_id":"req_f61ae7f1164418b7","turn_id":"0ef6d4e711798d8d48a43ffbce26825c","route":"/chat","kind":"ai","stream":true,"outcome":"done","status":200,"code":null,"origin":null,"step":"safety_out","duration_ms":12813,"attempts":6,"dropped_events":0}
+2026-10-12 21:04:24,049 INFO labclear.request: {"event":"http","at":1791813864.049,"request_id":"req_f61ae7f1164418b7","method":"POST","route":"/api/business/chat","status":200,"duration_ms":12813}
+2026-10-12 21:04:26,848 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:04:29,120 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:04:44,152 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:04:44,230 WARNING labclear.model: answer_rewrite reason=evidence_missing
+2026-10-12 21:04:46,279 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:04:46,403 INFO labclear.request: {"event":"workflow","at":1791813886.404,"request_id":"req_01aaa63d972a01fa","turn_id":"515303b2f6a769b93d4c815b895f03f0","route":"/chat","kind":"ai","stream":true,"outcome":"error","status":502,"code":"evidence_missing","origin":"app","step":"draft","duration_ms":20437,"attempts":4,"dropped_events":0}
+2026-10-12 21:04:46,406 INFO labclear.request: {"event":"http","at":1791813886.406,"request_id":"req_01aaa63d972a01fa","method":"POST","route":"/api/business/chat","status":200,"duration_ms":20453}
+2026-10-12 21:04:50,213 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:04:52,243 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:04:57,327 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:04:59,408 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:04:59,484 INFO labclear.request: {"event":"review_rejected","at":1791813899.485,"request_id":"req_ba85aa2e643ecde6","code":"review_failed","step":"review","reason":"evidence_not_supported,report_values_not_preserved,outside_allowed_scope","attempts":1}
+2026-10-12 21:04:59,485 WARNING labclear.model: answer_rewrite reason=review_failed
+2026-10-12 21:05:02,561 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:05:04,324 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:05:05,553 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:05:05,665 INFO labclear.request: {"event":"workflow","at":1791813905.666,"request_id":"req_ba85aa2e643ecde6","turn_id":"33b1d1d3fc16390a15fd784f74c0102c","route":"/chat","kind":"ai","stream":true,"outcome":"done","status":200,"code":null,"origin":null,"step":"safety_out","duration_ms":16594,"attempts":7,"dropped_events":0}
+2026-10-12 21:05:05,666 INFO labclear.request: {"event":"http","at":1791813905.667,"request_id":"req_ba85aa2e643ecde6","method":"POST","route":"/api/business/chat","status":200,"duration_ms":16610}
+2026-10-12 21:05:08,625 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:05:10,750 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:05:21,321 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:05:21,442 WARNING labclear.model: model_output_invalid step=answer problem=not_json
+2026-10-12 21:05:24,168 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:05:25,638 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:05:26,578 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:05:26,678 INFO labclear.request: {"event":"workflow","at":1791813926.679,"request_id":"req_aa1d891c6fbc8fd0","turn_id":"80be81e40a48830b6aec8c2c74cdddd9","route":"/chat","kind":"ai","stream":true,"outcome":"done","status":200,"code":null,"origin":null,"step":"safety_out","duration_ms":19078,"attempts":6,"dropped_events":0}
+2026-10-12 21:05:26,681 INFO labclear.request: {"event":"http","at":1791813926.681,"request_id":"req_aa1d891c6fbc8fd0","method":"POST","route":"/api/business/chat","status":200,"duration_ms":19093}
+2026-10-12 21:05:29,516 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:05:29,591 INFO labclear.request: {"event":"workflow","at":1791813929.592,"request_id":"req_20cbe85d32dd96eb","turn_id":"1b9f7fb8e25ac00cc47ce91e93227967","route":"/chat","kind":"ai","stream":true,"outcome":"error","status":422,"code":"safety_blocked","origin":"client","step":"safety_in","duration_ms":1000,"attempts":1,"dropped_events":0}
+2026-10-12 21:05:29,592 INFO labclear.request: {"event":"http","at":1791813929.592,"request_id":"req_20cbe85d32dd96eb","method":"POST","route":"/api/business/chat","status":200,"duration_ms":1016}
+2026-10-12 21:05:32,463 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:05:34,938 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:05:47,257 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:05:47,346 INFO labclear.request: {"event":"content_rejected","at":1791813947.347,"request_id":"req_f8c1791f064a13d4","code":"evidence_review_failed","step":"draft","reason":"business_source_for_medical_claim","attempts":1}
+2026-10-12 21:05:47,347 WARNING labclear.model: answer_rewrite reason=evidence_review_failed
+2026-10-12 21:05:56,041 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:05:56,116 INFO labclear.request: {"event":"content_rejected","at":1791813956.116,"request_id":"req_f8c1791f064a13d4","code":"evidence_review_failed","step":"draft","reason":"business_source_for_medical_claim","attempts":2}
+2026-10-12 21:05:56,142 INFO labclear.request: {"event":"workflow","at":1791813956.143,"request_id":"req_f8c1791f064a13d4","turn_id":"0dbfbcda8650f22780aa2f0e80dd91b3","route":"/chat","kind":"ai","stream":true,"outcome":"error","status":502,"code":"evidence_review_failed","origin":"app","step":"draft","duration_ms":24688,"attempts":4,"dropped_events":0}
+2026-10-12 21:05:56,144 INFO labclear.request: {"event":"http","at":1791813956.144,"request_id":"req_f8c1791f064a13d4","method":"POST","route":"/api/business/chat","status":200,"duration_ms":24688}
+2026-10-12 21:05:59,210 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:06:01,466 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:06:04,990 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:06:06,411 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:06:07,521 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:06:07,634 INFO labclear.request: {"event":"workflow","at":1791813967.634,"request_id":"req_b2c61b79716eb677","turn_id":"311dde523849b16297f8722c46a05a89","route":"/chat","kind":"ai","stream":true,"outcome":"done","status":200,"code":null,"origin":null,"step":"safety_out","duration_ms":9625,"attempts":5,"dropped_events":0}
+2026-10-12 21:06:07,636 INFO labclear.request: {"event":"http","at":1791813967.637,"request_id":"req_b2c61b79716eb677","method":"POST","route":"/api/business/chat","status":200,"duration_ms":9641}
+2026-10-12 21:06:10,514 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:06:14,160 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:06:22,147 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:06:24,075 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:06:25,218 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:06:25,359 INFO labclear.request: {"event":"workflow","at":1791813985.36,"request_id":"req_49ad19685d4e450b","turn_id":"0997185edfcb3860f1505cb9861886dd","route":"/chat","kind":"ai","stream":true,"outcome":"done","status":200,"code":null,"origin":null,"step":"safety_out","duration_ms":15797,"attempts":5,"dropped_events":0}
+2026-10-12 21:06:25,363 INFO labclear.request: {"event":"http","at":1791813985.364,"request_id":"req_49ad19685d4e450b","method":"POST","route":"/api/business/chat","status":200,"duration_ms":15812}
+2026-10-12 21:06:29,065 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:06:31,689 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:06:39,351 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:06:41,405 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:06:42,625 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:06:42,731 INFO labclear.request: {"event":"workflow","at":1791814002.732,"request_id":"req_27c5a86f38a62a1f","turn_id":"36bbd36159374b51e150e2705616477b","route":"/chat","kind":"ai","stream":true,"outcome":"done","status":200,"code":null,"origin":null,"step":"safety_out","duration_ms":14843,"attempts":5,"dropped_events":0}
+2026-10-12 21:06:42,733 INFO labclear.request: {"event":"http","at":1791814002.734,"request_id":"req_27c5a86f38a62a1f","method":"POST","route":"/api/business/chat","status":200,"duration_ms":14859}
+2026-10-12 21:06:46,519 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:06:48,868 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:06:56,973 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:06:58,602 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:06:59,670 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:06:59,816 INFO labclear.request: {"event":"workflow","at":1791814019.816,"request_id":"req_23f80c3fc525273a","turn_id":"d517076eeb4a6185278f43b2a929d79b","route":"/chat","kind":"ai","stream":true,"outcome":"done","status":200,"code":null,"origin":null,"step":"safety_out","duration_ms":14578,"attempts":5,"dropped_events":0}
+2026-10-12 21:06:59,819 INFO labclear.request: {"event":"http","at":1791814019.819,"request_id":"req_23f80c3fc525273a","method":"POST","route":"/api/business/chat","status":200,"duration_ms":14594}
+2026-10-12 21:07:02,741 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:07:05,196 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:07:11,868 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:07:13,272 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:07:14,337 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:07:14,428 INFO labclear.request: {"event":"workflow","at":1791814034.429,"request_id":"req_c9448be11a7340d5","turn_id":"ab8847cc26e843308c401bdd026eb997","route":"/chat","kind":"ai","stream":true,"outcome":"done","status":200,"code":null,"origin":null,"step":"safety_out","duration_ms":12687,"attempts":5,"dropped_events":0}
+2026-10-12 21:07:14,429 INFO labclear.request: {"event":"http","at":1791814034.43,"request_id":"req_c9448be11a7340d5","method":"POST","route":"/api/business/chat","status":200,"duration_ms":12703}
+2026-10-12 21:07:17,648 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:07:17,753 INFO labclear.request: {"event":"workflow","at":1791814037.754,"request_id":"req_86dc50d7b82b92c7","turn_id":"b1c19e8e5559f92c6c1290ff0ebe8987","route":"/chat","kind":"ai","stream":true,"outcome":"error","status":422,"code":"safety_blocked","origin":"client","step":"safety_in","duration_ms":1000,"attempts":1,"dropped_events":0}
+2026-10-12 21:07:17,755 INFO labclear.request: {"event":"http","at":1791814037.756,"request_id":"req_86dc50d7b82b92c7","method":"POST","route":"/api/business/chat","status":200,"duration_ms":1032}
+2026-10-12 21:07:20,722 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:07:20,818 INFO labclear.request: {"event":"workflow","at":1791814040.818,"request_id":"req_6a733c2ee0aef4d9","turn_id":"2cca9bfb7c27124b8b30622d912822bd","route":"/chat","kind":"ai","stream":true,"outcome":"error","status":422,"code":"safety_blocked","origin":"client","step":"safety_in","duration_ms":1109,"attempts":1,"dropped_events":0}
+2026-10-12 21:07:20,819 INFO labclear.request: {"event":"http","at":1791814040.819,"request_id":"req_6a733c2ee0aef4d9","method":"POST","route":"/api/business/chat","status":200,"duration_ms":1125}
+2026-10-12 21:07:24,203 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:07:24,287 INFO labclear.request: {"event":"workflow","at":1791814044.287,"request_id":"req_db5fb04b0fc3a056","turn_id":"35f7b0cd66996c9cacfeafce24324202","route":"/chat","kind":"ai","stream":true,"outcome":"error","status":422,"code":"safety_blocked","origin":"client","step":"safety_in","duration_ms":1516,"attempts":1,"dropped_events":0}
+2026-10-12 21:07:24,288 INFO labclear.request: {"event":"http","at":1791814044.288,"request_id":"req_db5fb04b0fc3a056","method":"POST","route":"/api/business/chat","status":200,"duration_ms":1516}
+2026-10-12 21:07:27,273 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:07:27,387 INFO labclear.request: {"event":"workflow","at":1791814047.388,"request_id":"req_1b944879d21cffde","turn_id":"b2b0ba9c57fabcc2802fae528e5dd38c","route":"/chat","kind":"ai","stream":true,"outcome":"error","status":422,"code":"safety_blocked","origin":"client","step":"safety_in","duration_ms":1391,"attempts":1,"dropped_events":0}
+2026-10-12 21:07:27,389 INFO labclear.request: {"event":"http","at":1791814047.39,"request_id":"req_1b944879d21cffde","method":"POST","route":"/api/business/chat","status":200,"duration_ms":1407}
+2026-10-12 21:07:30,521 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:07:30,604 INFO labclear.request: {"event":"workflow","at":1791814050.604,"request_id":"req_b72ef99ca50bbfa1","turn_id":"f146badb00423a2f75a7c2779c33aba1","route":"/chat","kind":"ai","stream":true,"outcome":"error","status":422,"code":"safety_blocked","origin":"client","step":"safety_in","duration_ms":1234,"attempts":1,"dropped_events":0}
+2026-10-12 21:07:30,605 INFO labclear.request: {"event":"http","at":1791814050.605,"request_id":"req_b72ef99ca50bbfa1","method":"POST","route":"/api/business/chat","status":200,"duration_ms":1250}
+2026-10-12 21:07:33,804 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:07:33,927 INFO labclear.request: {"event":"workflow","at":1791814053.927,"request_id":"req_cc4a5f199940fd31","turn_id":"64c40ccb02c3acc72e1e33d0bee71b86","route":"/chat","kind":"ai","stream":true,"outcome":"error","status":422,"code":"safety_blocked","origin":"client","step":"safety_in","duration_ms":1281,"attempts":1,"dropped_events":0}
+2026-10-12 21:07:33,929 INFO labclear.request: {"event":"http","at":1791814053.93,"request_id":"req_cc4a5f199940fd31","method":"POST","route":"/api/business/chat","status":200,"duration_ms":1296}
+2026-10-12 21:07:36,943 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:07:38,961 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:07:44,687 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:07:47,001 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:07:48,513 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:07:48,633 INFO labclear.request: {"event":"workflow","at":1791814068.634,"request_id":"req_21ba448e2f3e3289","turn_id":"bcdf4955301e652e935af56c1e685715","route":"/chat","kind":"ai","stream":true,"outcome":"done","status":200,"code":null,"origin":null,"step":"safety_out","duration_ms":12750,"attempts":5,"dropped_events":0}
+2026-10-12 21:07:48,635 INFO labclear.request: {"event":"http","at":1791814068.636,"request_id":"req_21ba448e2f3e3289","method":"POST","route":"/api/business/chat","status":200,"duration_ms":12750}
+2026-10-12 21:07:52,495 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:07:52,613 INFO labclear.request: {"event":"workflow","at":1791814072.614,"request_id":"req_960ccf441d0580c6","turn_id":"4e3deec0c526d8a5b55bb607f9d1ba13","route":"/chat","kind":"ai","stream":true,"outcome":"error","status":422,"code":"safety_blocked","origin":"client","step":"safety_in","duration_ms":1265,"attempts":1,"dropped_events":0}
+2026-10-12 21:07:52,615 INFO labclear.request: {"event":"http","at":1791814072.616,"request_id":"req_960ccf441d0580c6","method":"POST","route":"/api/business/chat","status":200,"duration_ms":1297}
+2026-10-12 21:07:56,059 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:07:56,165 INFO labclear.request: {"event":"workflow","at":1791814076.166,"request_id":"req_28cc0ab1bae279d3","turn_id":"15f6a825c259fd4c5cca90e77524de9e","route":"/chat","kind":"ai","stream":true,"outcome":"error","status":422,"code":"safety_blocked","origin":"client","step":"safety_in","duration_ms":1203,"attempts":1,"dropped_events":0}
+2026-10-12 21:07:56,167 INFO labclear.request: {"event":"http","at":1791814076.168,"request_id":"req_28cc0ab1bae279d3","method":"POST","route":"/api/business/chat","status":200,"duration_ms":1203}
+2026-10-12 21:07:59,040 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:07:59,118 INFO labclear.request: {"event":"workflow","at":1791814079.119,"request_id":"req_52918e4f0dd66e85","turn_id":"9059986ba83a63bf7264cc181fc74437","route":"/chat","kind":"ai","stream":true,"outcome":"error","status":422,"code":"safety_blocked","origin":"client","step":"safety_in","duration_ms":1063,"attempts":1,"dropped_events":0}
+2026-10-12 21:07:59,119 INFO labclear.request: {"event":"http","at":1791814079.12,"request_id":"req_52918e4f0dd66e85","method":"POST","route":"/api/business/chat","status":200,"duration_ms":1078}
+2026-10-12 21:08:02,377 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:08:04,672 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:08:09,463 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:08:11,307 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:08:12,463 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:08:12,590 INFO labclear.request: {"event":"workflow","at":1791814092.591,"request_id":"req_3803324647631358","turn_id":"a4bfc5da080d9e6edb32f689076ae11a","route":"/chat","kind":"ai","stream":true,"outcome":"done","status":200,"code":null,"origin":null,"step":"safety_out","duration_ms":11422,"attempts":5,"dropped_events":0}
+2026-10-12 21:08:12,595 INFO labclear.request: {"event":"http","at":1791814092.594,"request_id":"req_3803324647631358","method":"POST","route":"/api/business/chat","status":200,"duration_ms":11438}
+2026-10-12 21:08:15,403 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:08:15,536 INFO labclear.request: {"event":"workflow","at":1791814095.536,"request_id":"req_a0015751185d567c","turn_id":"163e651beb9039659f1502eb18aa9e54","route":"/chat","kind":"ai","stream":true,"outcome":"error","status":422,"code":"safety_blocked","origin":"client","step":"safety_in","duration_ms":1094,"attempts":1,"dropped_events":0}
+2026-10-12 21:08:15,536 INFO labclear.request: {"event":"http","at":1791814095.536,"request_id":"req_a0015751185d567c","method":"POST","route":"/api/business/chat","status":200,"duration_ms":1110}
+2026-10-12 21:08:18,793 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:08:20,929 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:08:27,281 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:08:27,365 INFO labclear.request: {"event":"content_rejected","at":1791814107.365,"request_id":"req_a8565d498b4e87f4","code":"evidence_review_failed","step":"draft","reason":"numeric_classification_without_unit","attempts":1}
+2026-10-12 21:08:27,366 WARNING labclear.model: answer_rewrite reason=evidence_review_failed
+2026-10-12 21:08:30,353 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:08:30,432 INFO labclear.request: {"event":"content_rejected","at":1791814110.433,"request_id":"req_a8565d498b4e87f4","code":"evidence_review_failed","step":"draft","reason":"numeric_classification_without_unit","attempts":2}
+2026-10-12 21:08:30,455 INFO labclear.request: {"event":"workflow","at":1791814110.456,"request_id":"req_a8565d498b4e87f4","turn_id":"426f1d8395a9863139d11b98822d3157","route":"/chat","kind":"ai","stream":true,"outcome":"error","status":502,"code":"evidence_review_failed","origin":"app","step":"draft","duration_ms":12844,"attempts":4,"dropped_events":0}
+2026-10-12 21:08:30,457 INFO labclear.request: {"event":"http","at":1791814110.458,"request_id":"req_a8565d498b4e87f4","method":"POST","route":"/api/business/chat","status":200,"duration_ms":12875}
+2026-10-12 21:08:33,222 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:08:36,088 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:08:42,847 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:08:44,894 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:08:45,983 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:08:46,066 INFO labclear.request: {"event":"workflow","at":1791814126.066,"request_id":"req_f2992e4e3a2107ad","turn_id":"390a1a6290ec6b71d108df4946dfb3cb","route":"/chat","kind":"ai","stream":true,"outcome":"done","status":200,"code":null,"origin":null,"step":"safety_out","duration_ms":13812,"attempts":5,"dropped_events":0}
+2026-10-12 21:08:46,067 INFO labclear.request: {"event":"http","at":1791814126.067,"request_id":"req_f2992e4e3a2107ad","method":"POST","route":"/api/business/chat","status":200,"duration_ms":13844}
+2026-10-12 21:08:49,597 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:08:51,526 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:08:53,927 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:09:01,230 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:09:01,313 INFO labclear.request: {"event":"review_rejected","at":1791814141.313,"request_id":"req_4e49efa51364a4d6","code":"review_failed","step":"review","reason":"evidence_not_supported,report_values_not_preserved,outside_allowed_scope","attempts":1}
+2026-10-12 21:09:01,314 WARNING labclear.model: answer_rewrite reason=review_failed
+2026-10-12 21:09:03,915 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:09:05,545 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:09:05,628 INFO labclear.request: {"event":"review_rejected","at":1791814145.628,"request_id":"req_4e49efa51364a4d6","code":"review_failed","step":"review","reason":"evidence_not_supported,report_values_not_preserved,outside_allowed_scope","attempts":2}
+2026-10-12 21:09:06,932 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:09:07,092 INFO labclear.request: {"event":"workflow","at":1791814147.092,"request_id":"req_4e49efa51364a4d6","turn_id":"47c67bef6532fc5b9b8c1d4cb0daaf02","route":"/chat","kind":"ai","stream":true,"outcome":"done","status":200,"code":null,"origin":null,"step":"safety_out","duration_ms":18422,"attempts":7,"dropped_events":0}
+2026-10-12 21:09:07,095 INFO labclear.request: {"event":"http","at":1791814147.095,"request_id":"req_4e49efa51364a4d6","method":"POST","route":"/api/business/chat","status":200,"duration_ms":18438}
+2026-10-12 21:09:10,904 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:09:13,490 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:09:19,598 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:09:19,676 WARNING labclear.model: model_output_invalid step=answer fields=reply categories=missing
+2026-10-12 21:09:21,340 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:09:22,249 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:09:22,289 INFO labclear.request: {"event":"review_rejected","at":1791814162.29,"request_id":"req_9e44bbc96b74ce57","code":"review_failed","step":"review","reason":"evidence_not_supported,report_values_not_preserved,outside_allowed_scope","attempts":1}
+2026-10-12 21:09:22,289 WARNING labclear.model: answer_rewrite reason=review_failed
+2026-10-12 21:09:23,591 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:09:24,404 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:09:24,438 INFO labclear.request: {"event":"review_rejected","at":1791814164.438,"request_id":"req_9e44bbc96b74ce57","code":"review_failed","step":"review","reason":"evidence_not_supported,report_values_not_preserved,outside_allowed_scope","attempts":2}
+2026-10-12 21:09:24,858 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:09:24,907 INFO labclear.request: {"event":"workflow","at":1791814164.908,"request_id":"req_9e44bbc96b74ce57","turn_id":"7c0f41f8bceb2f596d40c7bcd0f8d5a3","route":"/chat","kind":"ai","stream":true,"outcome":"done","status":200,"code":null,"origin":null,"step":"safety_out","duration_ms":15547,"attempts":8,"dropped_events":0}
+2026-10-12 21:09:24,908 INFO labclear.request: {"event":"http","at":1791814164.908,"request_id":"req_9e44bbc96b74ce57","method":"POST","route":"/api/business/chat","status":200,"duration_ms":15562}
+2026-10-12 21:09:26,767 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:09:28,025 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:09:33,221 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:09:34,207 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:09:34,864 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:09:34,918 INFO labclear.request: {"event":"workflow","at":1791814174.917,"request_id":"req_e0b1f6f0b86a89ea","turn_id":"3af13dfd16306e36ba584a609505f859","route":"/chat","kind":"ai","stream":true,"outcome":"done","status":200,"code":null,"origin":null,"step":"safety_out","duration_ms":8641,"attempts":5,"dropped_events":0}
+2026-10-12 21:09:34,918 INFO labclear.request: {"event":"http","at":1791814174.918,"request_id":"req_e0b1f6f0b86a89ea","method":"POST","route":"/api/business/chat","status":200,"duration_ms":8641}
+2026-10-12 21:09:37,091 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:09:38,798 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:09:45,357 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:09:45,430 WARNING labclear.model: model_output_invalid step=answer problem=not_json
+2026-10-12 21:09:49,203 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:09:51,203 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:09:51,269 INFO labclear.request: {"event":"review_rejected","at":1791814191.269,"request_id":"req_48f69a5d73c7ed3c","code":"review_failed","step":"review","reason":"evidence_not_supported,report_values_not_preserved,outside_allowed_scope","attempts":1}
+2026-10-12 21:09:51,269 WARNING labclear.model: answer_rewrite reason=review_failed
+2026-10-12 21:09:55,325 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:09:56,138 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:09:56,182 INFO labclear.request: {"event":"review_rejected","at":1791814196.182,"request_id":"req_48f69a5d73c7ed3c","code":"review_failed","step":"review","reason":"evidence_not_supported,report_values_not_preserved,outside_allowed_scope","attempts":2}
+2026-10-12 21:09:56,927 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:09:57,001 INFO labclear.request: {"event":"workflow","at":1791814197.001,"request_id":"req_48f69a5d73c7ed3c","turn_id":"ecb63ba71983299a3e56f25f232991ec","route":"/chat","kind":"ai","stream":true,"outcome":"done","status":200,"code":null,"origin":null,"step":"safety_out","duration_ms":20672,"attempts":8,"dropped_events":0}
+2026-10-12 21:09:57,003 INFO labclear.request: {"event":"http","at":1791814197.003,"request_id":"req_48f69a5d73c7ed3c","method":"POST","route":"/api/business/chat","status":200,"duration_ms":20672}
+2026-10-12 21:09:59,907 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:10:02,322 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:10:11,247 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:10:11,334 WARNING labclear.model: answer_rewrite reason=evidence_missing
+2026-10-12 21:10:14,856 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:10:16,578 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:10:18,078 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:10:18,230 INFO labclear.request: {"event":"workflow","at":1791814218.23,"request_id":"req_91ab6b08e871b2e8","turn_id":"31c9a6e5326f4e5dc952321026ba1e64","route":"/chat","kind":"ai","stream":true,"outcome":"done","status":200,"code":null,"origin":null,"step":"safety_out","duration_ms":19297,"attempts":6,"dropped_events":0}
+2026-10-12 21:10:18,233 INFO labclear.request: {"event":"http","at":1791814218.232,"request_id":"req_91ab6b08e871b2e8","method":"POST","route":"/api/business/chat","status":200,"duration_ms":19297}
+2026-10-12 21:10:21,089 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:10:22,924 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:10:28,223 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:10:30,169 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:10:31,180 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:10:31,292 INFO labclear.request: {"event":"workflow","at":1791814231.292,"request_id":"req_bf2dc48b5643bfd6","turn_id":"d73e22c9c43490975efd9a3548c918fb","route":"/chat","kind":"ai","stream":true,"outcome":"done","status":200,"code":null,"origin":null,"step":"safety_out","duration_ms":11235,"attempts":5,"dropped_events":0}
+2026-10-12 21:10:31,293 INFO labclear.request: {"event":"http","at":1791814231.293,"request_id":"req_bf2dc48b5643bfd6","method":"POST","route":"/api/business/chat","status":200,"duration_ms":11250}
+2026-10-12 21:10:34,257 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:10:37,542 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:10:44,294 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:10:45,560 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:10:46,135 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:10:46,208 INFO labclear.request: {"event":"workflow","at":1791814246.208,"request_id":"req_62ff2f03512b75ef","turn_id":"6710257a0339a0f4115acaa793ee4713","route":"/chat","kind":"ai","stream":true,"outcome":"done","status":200,"code":null,"origin":null,"step":"safety_out","duration_ms":13032,"attempts":5,"dropped_events":0}
+2026-10-12 21:10:46,209 INFO labclear.request: {"event":"http","at":1791814246.209,"request_id":"req_62ff2f03512b75ef","method":"POST","route":"/api/business/chat","status":200,"duration_ms":13047}
+2026-10-12 21:10:48,949 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:10:50,365 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:11:01,093 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:11:02,191 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:11:02,724 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:11:02,794 INFO labclear.request: {"event":"workflow","at":1791814262.794,"request_id":"req_ad59284685bab9c8","turn_id":"9e762d7744c9170cb3d90dd8cf857fb6","route":"/chat","kind":"ai","stream":true,"outcome":"done","status":200,"code":null,"origin":null,"step":"safety_out","duration_ms":14313,"attempts":5,"dropped_events":0}
+2026-10-12 21:11:02,795 INFO labclear.request: {"event":"http","at":1791814262.795,"request_id":"req_ad59284685bab9c8","method":"POST","route":"/api/business/chat","status":200,"duration_ms":14328}
+2026-10-12 21:11:05,087 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:11:06,890 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:11:13,470 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:11:14,592 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:11:15,238 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:11:15,323 INFO labclear.request: {"event":"workflow","at":1791814275.324,"request_id":"req_be09ccb91e8aaa36","turn_id":"80d370a17a03280a682c74705d250f2c","route":"/chat","kind":"ai","stream":true,"outcome":"done","status":200,"code":null,"origin":null,"step":"safety_out","duration_ms":10922,"attempts":5,"dropped_events":0}
+2026-10-12 21:11:15,326 INFO labclear.request: {"event":"http","at":1791814275.325,"request_id":"req_be09ccb91e8aaa36","method":"POST","route":"/api/business/chat","status":200,"duration_ms":10922}
+2026-10-12 21:11:17,499 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:11:19,210 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:11:24,291 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:11:24,332 WARNING labclear.model: answer_rejected reason=unknown_citation
+2026-10-12 21:11:24,332 WARNING labclear.model: answer_rewrite reason=citation_invalid
+2026-10-12 21:11:29,886 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:11:29,932 WARNING labclear.model: answer_rejected reason=unknown_citation
+2026-10-12 21:11:29,959 INFO labclear.request: {"event":"workflow","at":1791814289.959,"request_id":"req_3ef9474e47ad3af8","turn_id":"f5b38d0afe373e5b119be59c75f9e7d1","route":"/chat","kind":"ai","stream":true,"outcome":"error","status":502,"code":"citation_invalid","origin":"app","step":"draft","duration_ms":12985,"attempts":4,"dropped_events":0}
+2026-10-12 21:11:29,960 INFO labclear.request: {"event":"http","at":1791814289.96,"request_id":"req_3ef9474e47ad3af8","method":"POST","route":"/api/business/chat","status":200,"duration_ms":12985}
+2026-10-12 21:11:32,483 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:11:33,855 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:11:41,659 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:11:43,070 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:11:43,683 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:11:43,741 INFO labclear.request: {"event":"workflow","at":1791814303.741,"request_id":"req_72b52b34b36a6046","turn_id":"8c1396277eabf385d98f9ad6b6da6ae3","route":"/chat","kind":"ai","stream":true,"outcome":"done","status":200,"code":null,"origin":null,"step":"safety_out","duration_ms":11813,"attempts":5,"dropped_events":0}
+2026-10-12 21:11:43,741 INFO labclear.request: {"event":"http","at":1791814303.742,"request_id":"req_72b52b34b36a6046","method":"POST","route":"/api/business/chat","status":200,"duration_ms":11813}
+2026-10-12 21:11:46,141 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:11:47,575 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:11:58,437 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:11:58,472 WARNING labclear.model: answer_rewrite reason=evidence_missing
+2026-10-12 21:12:00,790 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:12:01,658 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:12:02,145 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:12:02,202 INFO labclear.request: {"event":"workflow","at":1791814322.203,"request_id":"req_d16d147f03f2bcad","turn_id":"61f47aa3e6fba0a04f46d28596ceb1dd","route":"/chat","kind":"ai","stream":true,"outcome":"done","status":200,"code":null,"origin":null,"step":"safety_out","duration_ms":16641,"attempts":6,"dropped_events":0}
+2026-10-12 21:12:02,203 INFO labclear.request: {"event":"http","at":1791814322.204,"request_id":"req_d16d147f03f2bcad","method":"POST","route":"/api/business/chat","status":200,"duration_ms":16641}
+2026-10-12 21:12:04,576 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:12:06,164 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:12:08,029 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:12:08,061 WARNING labclear.model: answer_rejected reason=unknown_citation
+2026-10-12 21:12:08,061 WARNING labclear.model: answer_rewrite reason=citation_invalid
+2026-10-12 21:12:10,372 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:12:10,406 WARNING labclear.model: answer_rejected reason=unknown_citation
+2026-10-12 21:12:10,420 INFO labclear.request: {"event":"workflow","at":1791814330.42,"request_id":"req_4913d91cb759780f","turn_id":"02c88faa229673d6acebbf8ecf9cfec2","route":"/chat","kind":"ai","stream":true,"outcome":"error","status":502,"code":"citation_invalid","origin":"app","step":"draft","duration_ms":6391,"attempts":4,"dropped_events":0}
+2026-10-12 21:12:10,421 INFO labclear.request: {"event":"http","at":1791814330.421,"request_id":"req_4913d91cb759780f","method":"POST","route":"/api/business/chat","status":200,"duration_ms":6391}
+2026-10-12 21:12:12,864 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:12:14,470 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:12:23,196 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:12:23,982 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:12:24,440 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:12:24,497 INFO labclear.request: {"event":"workflow","at":1791814344.497,"request_id":"req_3ac62f30096eb82d","turn_id":"06d1d1e7fa22cfd600c66d07896cbb83","route":"/chat","kind":"ai","stream":true,"outcome":"done","status":200,"code":null,"origin":null,"step":"safety_out","duration_ms":12078,"attempts":5,"dropped_events":0}
+2026-10-12 21:12:24,498 INFO labclear.request: {"event":"http","at":1791814344.497,"request_id":"req_3ac62f30096eb82d","method":"POST","route":"/api/business/chat","status":200,"duration_ms":12078}
+2026-10-12 21:12:26,692 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:12:28,724 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:12:36,523 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:12:37,340 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:12:37,377 INFO labclear.request: {"event":"review_rejected","at":1791814357.377,"request_id":"req_5c701304613c13cb","code":"review_failed","step":"review","reason":"evidence_not_supported,report_values_not_preserved,outside_allowed_scope","attempts":1}
+2026-10-12 21:12:37,377 WARNING labclear.model: answer_rewrite reason=review_failed
+2026-10-12 21:12:42,051 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:12:42,906 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:12:42,943 INFO labclear.request: {"event":"review_rejected","at":1791814362.942,"request_id":"req_5c701304613c13cb","code":"review_failed","step":"review","reason":"evidence_not_supported,report_values_not_preserved,outside_allowed_scope","attempts":2}
+2026-10-12 21:12:43,372 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:12:43,425 INFO labclear.request: {"event":"workflow","at":1791814363.425,"request_id":"req_5c701304613c13cb","turn_id":"dd05b156d54cc72ef0142a8f6cbef6a2","route":"/chat","kind":"ai","stream":true,"outcome":"done","status":200,"code":null,"origin":null,"step":"safety_out","duration_ms":17156,"attempts":7,"dropped_events":0}
+2026-10-12 21:12:43,425 INFO labclear.request: {"event":"http","at":1791814363.425,"request_id":"req_5c701304613c13cb","method":"POST","route":"/api/business/chat","status":200,"duration_ms":17156}
+2026-10-12 21:12:46,442 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:12:48,557 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:12:55,325 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:12:56,563 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:12:57,654 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:12:57,780 INFO labclear.request: {"event":"workflow","at":1791814377.781,"request_id":"req_dec3fbeb9b448396","turn_id":"5827a174485d8fef1552866ba21b6a47","route":"/chat","kind":"ai","stream":true,"outcome":"done","status":200,"code":null,"origin":null,"step":"safety_out","duration_ms":12531,"attempts":5,"dropped_events":0}
+2026-10-12 21:12:57,783 INFO labclear.request: {"event":"http","at":1791814377.783,"request_id":"req_dec3fbeb9b448396","method":"POST","route":"/api/business/chat","status":200,"duration_ms":12547}
+2026-10-12 21:13:01,511 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:13:03,643 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:13:12,917 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:13:14,193 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:13:14,820 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:13:14,879 INFO labclear.request: {"event":"workflow","at":1791814394.88,"request_id":"req_2a4d6c16fab4783b","turn_id":"51adefc26f2b10c0a880eec60d97c4d2","route":"/chat","kind":"ai","stream":true,"outcome":"done","status":200,"code":null,"origin":null,"step":"safety_out","duration_ms":14344,"attempts":5,"dropped_events":0}
+2026-10-12 21:13:14,881 INFO labclear.request: {"event":"http","at":1791814394.882,"request_id":"req_2a4d6c16fab4783b","method":"POST","route":"/api/business/chat","status":200,"duration_ms":14344}
+2026-10-12 21:13:16,911 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:13:18,215 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:13:26,868 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:13:26,902 WARNING labclear.model: model_output_invalid step=answer fields=reply categories=string_too_short
+2026-10-12 21:13:31,111 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:13:31,171 WARNING labclear.model: answer_rejected reason=unknown_citation
+2026-10-12 21:13:31,171 WARNING labclear.model: answer_rewrite reason=citation_invalid
+2026-10-12 21:13:34,256 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:13:34,314 WARNING labclear.model: answer_rejected reason=unknown_citation
+2026-10-12 21:13:34,339 INFO labclear.request: {"event":"workflow","at":1791814414.339,"request_id":"req_7093e8f3f2ddc0c1","turn_id":"8b530085f3dd7dc5519b5d58b244e1f1","route":"/chat","kind":"ai","stream":true,"outcome":"error","status":502,"code":"citation_invalid","origin":"app","step":"draft","duration_ms":17860,"attempts":5,"dropped_events":0}
+2026-10-12 21:13:34,340 INFO labclear.request: {"event":"http","at":1791814414.339,"request_id":"req_7093e8f3f2ddc0c1","method":"POST","route":"/api/business/chat","status":200,"duration_ms":17875}
+2026-10-12 21:13:37,144 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:13:38,587 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:13:48,051 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:13:48,090 WARNING labclear.model: answer_rewrite reason=evidence_missing
+2026-10-12 21:13:51,461 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:13:52,411 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:13:52,984 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:13:53,043 INFO labclear.request: {"event":"workflow","at":1791814433.044,"request_id":"req_a49de4f586d1c2b2","turn_id":"a63412d9e993dcb549baad322ad7724f","route":"/chat","kind":"ai","stream":true,"outcome":"done","status":200,"code":null,"origin":null,"step":"safety_out","duration_ms":16641,"attempts":6,"dropped_events":0}
+2026-10-12 21:13:53,043 INFO labclear.request: {"event":"http","at":1791814433.044,"request_id":"req_a49de4f586d1c2b2","method":"POST","route":"/api/business/chat","status":200,"duration_ms":16641}
+2026-10-12 21:13:55,327 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:13:56,937 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:14:02,263 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:14:03,357 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:14:03,975 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:14:04,046 INFO labclear.request: {"event":"workflow","at":1791814444.047,"request_id":"req_40e5a54ee89ec2bc","turn_id":"744815310591c949ec1cac7fa7a08f67","route":"/chat","kind":"ai","stream":true,"outcome":"done","status":200,"code":null,"origin":null,"step":"safety_out","duration_ms":9172,"attempts":5,"dropped_events":0}
+2026-10-12 21:14:04,046 INFO labclear.request: {"event":"http","at":1791814444.047,"request_id":"req_40e5a54ee89ec2bc","method":"POST","route":"/api/business/chat","status":200,"duration_ms":9172}
+2026-10-12 21:14:06,224 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:14:08,231 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:14:15,753 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:14:15,848 WARNING labclear.model: answer_rejected reason=unknown_citation
+2026-10-12 21:14:15,849 WARNING labclear.model: answer_rewrite reason=citation_invalid
+2026-10-12 21:14:21,675 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:14:21,775 WARNING labclear.model: answer_rejected reason=unknown_citation
+2026-10-12 21:14:21,850 INFO labclear.request: {"event":"workflow","at":1791814461.85,"request_id":"req_79b3694610eab050","turn_id":"6b24ed4f140346db022e6223d25bc313","route":"/chat","kind":"ai","stream":true,"outcome":"error","status":502,"code":"citation_invalid","origin":"app","step":"draft","duration_ms":16172,"attempts":4,"dropped_events":0}
+2026-10-12 21:14:21,853 INFO labclear.request: {"event":"http","at":1791814461.853,"request_id":"req_79b3694610eab050","method":"POST","route":"/api/business/chat","status":200,"duration_ms":16187}
+2026-10-12 21:14:26,184 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:14:28,343 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:14:37,152 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:14:38,378 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:14:38,889 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:14:38,943 INFO labclear.request: {"event":"workflow","at":1791814478.943,"request_id":"req_3e7673c58e483e0b","turn_id":"a970d425303d26b0fe9c2dfeb0b78ff7","route":"/chat","kind":"ai","stream":true,"outcome":"done","status":200,"code":null,"origin":null,"step":"safety_out","duration_ms":14078,"attempts":5,"dropped_events":0}
+2026-10-12 21:14:38,944 INFO labclear.request: {"event":"http","at":1791814478.944,"request_id":"req_3e7673c58e483e0b","method":"POST","route":"/api/business/chat","status":200,"duration_ms":14078}
+2026-10-12 21:14:41,269 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:14:43,132 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:14:56,927 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:14:56,985 WARNING labclear.model: answer_rewrite reason=evidence_missing
+2026-10-12 21:15:00,078 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:15:00,976 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:15:01,592 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:15:01,659 INFO labclear.request: {"event":"workflow","at":1791814501.66,"request_id":"req_9c29a468ac5bf8a8","turn_id":"4f58655c13d5d5bc7d8e5b4dec6b853c","route":"/chat","kind":"ai","stream":true,"outcome":"done","status":200,"code":null,"origin":null,"step":"safety_out","duration_ms":20906,"attempts":6,"dropped_events":0}
+2026-10-12 21:15:01,660 INFO labclear.request: {"event":"http","at":1791814501.661,"request_id":"req_9c29a468ac5bf8a8","method":"POST","route":"/api/business/chat","status":200,"duration_ms":20922}
+2026-10-12 21:15:03,728 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:15:05,726 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:15:09,326 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:15:09,397 WARNING labclear.model: answer_rejected reason=unknown_citation
+2026-10-12 21:15:09,398 WARNING labclear.model: answer_rewrite reason=citation_invalid
+2026-10-12 21:15:12,210 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:15:12,344 WARNING labclear.model: answer_rejected reason=unknown_citation
+2026-10-12 21:15:12,406 INFO labclear.request: {"event":"workflow","at":1791814512.406,"request_id":"req_e867a539c4a25f4f","turn_id":"7330ddcebd1d2c495997006e7bf5e0f8","route":"/chat","kind":"ai","stream":true,"outcome":"error","status":502,"code":"citation_invalid","origin":"app","step":"draft","duration_ms":9156,"attempts":4,"dropped_events":0}
+2026-10-12 21:15:12,408 INFO labclear.request: {"event":"http","at":1791814512.408,"request_id":"req_e867a539c4a25f4f","method":"POST","route":"/api/business/chat","status":200,"duration_ms":9156}
+2026-10-12 21:15:16,710 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:15:18,629 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:15:27,940 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:15:28,005 WARNING labclear.model: model_output_invalid step=answer problem=not_json
+2026-10-12 21:15:32,861 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:15:34,303 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:15:35,516 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:15:35,636 INFO labclear.request: {"event":"workflow","at":1791814535.636,"request_id":"req_b8572f174a21beca","turn_id":"0867a594706a5070f655a979b1fa1eb2","route":"/chat","kind":"ai","stream":true,"outcome":"done","status":200,"code":null,"origin":null,"step":"safety_out","duration_ms":20188,"attempts":6,"dropped_events":0}
+2026-10-12 21:15:35,639 INFO labclear.request: {"event":"http","at":1791814535.638,"request_id":"req_b8572f174a21beca","method":"POST","route":"/api/business/chat","status":200,"duration_ms":20188}
+2026-10-12 21:15:38,523 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:15:43,025 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:15:48,160 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:15:49,649 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:15:50,766 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:15:50,902 INFO labclear.request: {"event":"workflow","at":1791814550.903,"request_id":"req_65f9e7b742d0e5d8","turn_id":"f6f40c1dd990bcb2d5eb60a245b3e75c","route":"/chat","kind":"ai","stream":true,"outcome":"done","status":200,"code":null,"origin":null,"step":"safety_out","duration_ms":13453,"attempts":5,"dropped_events":0}
+2026-10-12 21:15:50,906 INFO labclear.request: {"event":"http","at":1791814550.906,"request_id":"req_65f9e7b742d0e5d8","method":"POST","route":"/api/business/chat","status":200,"duration_ms":13469}
+2026-10-12 21:15:53,801 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 21:15:56,041 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:15:59,844 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:15:59,933 WARNING labclear.model: answer_rejected reason=unknown_citation
+2026-10-12 21:15:59,933 WARNING labclear.model: answer_rewrite reason=citation_invalid
+2026-10-12 21:16:03,821 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 21:16:03,861 WARNING labclear.model: answer_rejected reason=unknown_citation
+2026-10-12 21:16:03,880 INFO labclear.request: {"event":"workflow","at":1791814563.881,"request_id":"req_af406929e1970e72","turn_id":"555178de77c768a87779cf1509817c20","route":"/chat","kind":"ai","stream":true,"outcome":"error","status":502,"code":"citation_invalid","origin":"app","step":"draft","duration_ms":11282,"attempts":4,"dropped_events":0}
+2026-10-12 21:16:03,881 INFO labclear.request: {"event":"http","at":1791814563.882,"request_id":"req_af406929e1970e72","method":"POST","route":"/api/business/chat","status":200,"duration_ms":11313}

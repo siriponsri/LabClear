@@ -1,0 +1,43 @@
+{
+  "run_id": "expanded-tests-20261012-01",
+  "mode": "OFFLINE_MOCK",
+  "started_at": "2026-10-12T11:04:30.489Z",
+  "head": "d4ec2123c704acf571a02a188ef1c8c0c57e0827",
+  "status": " M docs/report/LabClear_Architecture_Report_TH.md\n M docs/report/LabClear_Architecture_Report_TH.pdf\n M docs/report/LabClear_Business_Report_TH.md\n M docs/report/LabClear_Business_Report_TH.pdf\n M docs/report/README.md\n M routers/business.py\n M static/js/workspace.js\n M tests/browser/uat.cjs\n M tests/test_business_v3.py\n?? docs/evidence/current/p0-phase-handoff-20261012-01/\n?? docs/evidence/current/p0-phase-safety-20261012-02/\n?? docs/evidence/current/report-render-main-20261012-01/\n?? docs/evidence/current/report-render-main-20261012-02/\n?? eval/extended/\n?? scripts/expanded_attempt_gate.py\n?? scripts/expanded_live_preflight.py\n?? scripts/expanded_offline_cases.json\n?? scripts/expanded_offline_run.cjs\n?? scripts/live_ui_eval.cjs\n?? scripts/live_ui_server.py\n?? scripts/score_live_ui_eval.py\n?? student_report/\n?? tests/test_expanded_attempt_gate.py\n",
+  "diff_binary_sha256": "b892a8831bd0fcf5d4aeb73891d3aa0c22c4c5f934d4bd76510c43d2c76213ce",
+  "node": "v24.19.0",
+  "platform": "win32",
+  "provider_attempts": 0,
+  "prior_live_responses_conservative": 23,
+  "global_attempt_ceiling": 3000,
+  "live_execution": "BLOCKED_OLD_RUN_UNRECONCILED",
+  "sources": {
+    "eval/coursework/dataset.json": "2ebb1a06ff5a487647a2d5b9ca4f1cfe9b5ff9f677a82576d977c1ace521931e",
+    "eval/coursework/rubric.json": "ebfa957227a4b2f97413b1c3284ec8311273a4481631b77702087e0bea830a86",
+    "tests/browser/uat.cjs": "270f053c6d9e6b37f8263255757bed995678a36784d9a49e47ecc75cb624d388",
+    "scripts/expanded_offline_cases.json": "cf5e5ae063b763288712e8b45672f6af098bda1fae8cd94786f8e5632c395992"
+  },
+  "reliability_exit": 0,
+  "instrumented_source_sha256": "a9ee5b63e42e1d39788c06e87eced5f8f06c24a1fc032da7788034c9e9712def",
+  "finished_at": "2026-10-12T11:11:08.805Z",
+  "offline_outcomes": {
+    "reliability": {
+      "executed": 24,
+      "passed": 24
+    },
+    "gate_final_reverification": {
+      "executed": 8,
+      "passed": 8
+    },
+    "planned_ui": 24,
+    "planned_ui_passed": 23,
+    "ui_executed": 38,
+    "ui_passed": 37,
+    "ui_failed": 1,
+    "provider_attempts_new": 0,
+    "prior_responses_conservative": 23,
+    "live_frozen_not_run": 20,
+    "live_expanded_not_run": 128,
+    "screenshot_count": 254
+  }
+}

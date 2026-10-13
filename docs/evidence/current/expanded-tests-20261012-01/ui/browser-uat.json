@@ -1,0 +1,2568 @@
+{
+  "started_at": "2026-10-12T11:04:36.634Z",
+  "finished_at": "2026-10-12T11:08:53.323Z",
+  "candidate_sha": "d4ec2123c704acf571a02a188ef1c8c0c57e0827",
+  "working_tree_dirty": true,
+  "git_diff_binary_sha256": "b892a8831bd0fcf5d4aeb73891d3aa0c22c4c5f934d4bd76510c43d2c76213ce",
+  "status_porcelain_at_start": [
+    "M docs/report/LabClear_Architecture_Report_TH.md",
+    " M docs/report/LabClear_Architecture_Report_TH.pdf",
+    " M docs/report/LabClear_Business_Report_TH.md",
+    " M docs/report/LabClear_Business_Report_TH.pdf",
+    " M docs/report/README.md",
+    " M routers/business.py",
+    " M static/js/workspace.js",
+    " M tests/browser/uat.cjs",
+    " M tests/test_business_v3.py",
+    "?? docs/evidence/current/expanded-tests-20261012-01/",
+    "?? docs/evidence/current/p0-phase-handoff-20261012-01/",
+    "?? docs/evidence/current/p0-phase-safety-20261012-02/",
+    "?? docs/evidence/current/report-render-main-20261012-01/",
+    "?? docs/evidence/current/report-render-main-20261012-02/",
+    "?? eval/extended/",
+    "?? scripts/expanded_attempt_gate.py",
+    "?? scripts/expanded_live_preflight.py",
+    "?? scripts/expanded_offline_cases.json",
+    "?? scripts/expanded_offline_run.cjs",
+    "?? scripts/live_ui_eval.cjs",
+    "?? scripts/live_ui_server.py",
+    "?? scripts/score_live_ui_eval.py",
+    "?? student_report/",
+    "?? tests/test_expanded_attempt_gate.py"
+  ],
+  "environment": {
+    "platform": "win32",
+    "architecture": "x64",
+    "node": "v24.19.0",
+    "playwright": "1.56.1",
+    "browser": "Chromium",
+    "browser_version": "141.0.7390.37",
+    "python": "Python 3.12.10",
+    "timezone": "Asia/Bangkok",
+    "fixture": "isolated SQLite; PROVIDER_NETWORK_ENABLED=false; synthetic test data"
+  },
+  "mode": "MOCKED_TEST_ONLY for LLM and OCR; real UI/API/storage/permissions. Not model or OCR quality evidence.",
+  "passed": 37,
+  "failed": 1,
+  "exit_code": 1,
+  "records": [
+    {
+      "id": "UI-01",
+      "name": "Home: segmented tabs keyboard, comparison audience toggle, theme toggle persists, search routes to filtered catalog, no overflow",
+      "expected": "All scenario assertions and required UI steps complete.",
+      "actual": "All scenario assertions passed.",
+      "status": "PASS",
+      "ms": 8328
+    },
+    {
+      "id": "UI-02",
+      "name": "Catalog: filter, URL state, chip removal, empty state, reset, sort, back/forward",
+      "expected": "All scenario assertions and required UI steps complete.",
+      "actual": "All scenario assertions passed.",
+      "status": "PASS",
+      "ms": 3015
+    },
+    {
+      "id": "UI-02b",
+      "name": "Catalog: network error shows recoverable error state",
+      "expected": "All scenario assertions and required UI steps complete.",
+      "actual": "All scenario assertions passed.",
+      "status": "PASS",
+      "ms": 543
+    },
+    {
+      "id": "UI-03",
+      "name": "Compare: tray limit, compare table, assistant hand-off link, clear",
+      "expected": "All scenario assertions and required UI steps complete.",
+      "actual": "All scenario assertions passed.",
+      "status": "PASS",
+      "ms": 2255
+    },
+    {
+      "id": "UI-04",
+      "name": "Package detail CTA leads to booking view; guest account gate prevents booking; invalid package is 404",
+      "expected": "All scenario assertions and required UI steps complete.",
+      "actual": "All scenario assertions passed.",
+      "status": "PASS",
+      "ms": 2781
+    },
+    {
+      "id": "UI-05",
+      "name": "Account: create account, label updates, survives reload",
+      "expected": "All scenario assertions and required UI steps complete.",
+      "actual": "All scenario assertions passed.",
+      "status": "PASS",
+      "ms": 3098
+    },
+    {
+      "id": "UI-06",
+      "name": "Booking form: center, date, live slots, request created as awaiting confirmation",
+      "expected": "All scenario assertions and required UI steps complete.",
+      "actual": "All scenario assertions passed.",
+      "status": "PASS",
+      "ms": 2240
+    },
+    {
+      "id": "UI-07",
+      "name": "Chat: proposal does not book; sending request creates exactly one more request",
+      "expected": "All scenario assertions and required UI steps complete.",
+      "actual": "All scenario assertions passed.",
+      "status": "PASS",
+      "ms": 3104
+    },
+    {
+      "id": "UI-08",
+      "name": "Chat: failed reply is marked, retry answers without duplicating the message; sources render",
+      "expected": "All scenario assertions and required UI steps complete.",
+      "actual": "All scenario assertions passed.",
+      "status": "PASS",
+      "ms": 3618
+    },
+    {
+      "id": "UI-09",
+      "name": "Reports: upload (OCR double), source image, edit, explicit confirmation, context chip, reload",
+      "expected": "All scenario assertions and required UI steps complete.",
+      "actual": "All scenario assertions passed.",
+      "status": "PASS",
+      "ms": 3834
+    },
+    {
+      "id": "UI-10",
+      "name": "Organization page: inquiry form validation and submission for the signed-in account",
+      "expected": "All scenario assertions and required UI steps complete.",
+      "actual": "All scenario assertions passed.",
+      "status": "PASS",
+      "ms": 1508
+    },
+    {
+      "id": "UI-11",
+      "name": "Manager: separate session sign-in, inbox shows organization request with details",
+      "expected": "All scenario assertions and required UI steps complete.",
+      "actual": "All scenario assertions passed.",
+      "status": "PASS",
+      "ms": 3303
+    },
+    {
+      "id": "UI-12",
+      "name": "Staff: take over, issue quotation v1 then revision v2",
+      "expected": "All scenario assertions and required UI steps complete.",
+      "actual": "All scenario assertions passed.",
+      "status": "PASS",
+      "ms": 1734
+    },
+    {
+      "id": "UI-13",
+      "name": "Staff: confirm one request, decline another with a reason",
+      "expected": "All scenario assertions and required UI steps complete.",
+      "actual": "All scenario assertions passed.",
+      "status": "PASS",
+      "ms": 6098
+    },
+    {
+      "id": "UI-14",
+      "name": "Customer: notifications from events, calendar file, quotation versions and PDF, accept latest",
+      "expected": "All scenario assertions and required UI steps complete.",
+      "actual": "All scenario assertions passed.",
+      "status": "PASS",
+      "ms": 1534
+    },
+    {
+      "id": "UI-15",
+      "name": "Payment simulator: PromptPay test payment, signed success, paid state persists",
+      "expected": "All scenario assertions and required UI steps complete.",
+      "actual": "All scenario assertions passed.",
+      "status": "PASS",
+      "ms": 2549
+    },
+    {
+      "id": "UI-16",
+      "name": "Website handoff: customer asks for team, staff takes over, reply reaches customer, and customer confirms assistant resume",
+      "expected": "All scenario assertions and required UI steps complete.",
+      "actual": "All scenario assertions passed.",
+      "status": "PASS",
+      "ms": 34074
+    },
+    {
+      "id": "UI-16b",
+      "name": "Handoff privacy: no history is preselected or visible in the unassigned staff queue",
+      "expected": "All scenario assertions and required UI steps complete.",
+      "actual": "All scenario assertions passed.",
+      "status": "PASS",
+      "ms": 3695
+    },
+    {
+      "id": "UI-16c",
+      "name": "Handoff sharing notice fits a mobile dialog without clipping or control overlap",
+      "expected": "All scenario assertions and required UI steps complete.",
+      "actual": "All scenario assertions passed.",
+      "status": "PASS",
+      "ms": 1687
+    },
+    {
+      "id": "UI-17",
+      "name": "Manager: price edit persists and reaches the public catalog; branch staff cannot see manager tools",
+      "expected": "All scenario assertions and required UI steps complete.",
+      "actual": "All scenario assertions passed.",
+      "status": "PASS",
+      "ms": 3549
+    },
+    {
+      "id": "UI-18",
+      "name": "Channels: LINE simulator event through adapter, worker run, simulated delivery recorded",
+      "expected": "All scenario assertions and required UI steps complete.",
+      "actual": "All scenario assertions passed.",
+      "status": "PASS",
+      "ms": 2358
+    },
+    {
+      "id": "UI-28",
+      "name": "Manager: AI providers page saves a provider, masks the key, never returns it",
+      "expected": "All scenario assertions and required UI steps complete.",
+      "actual": "locator.click: Timeout 30000ms exceeded.",
+      "status": "FAIL",
+      "ms": 31339,
+      "error": "locator.click: Timeout 30000ms exceeded."
+    },
+    {
+      "id": "UI-23",
+      "name": "Staff dashboard: numbers from records, capacity table, centers edit, roles pause/resume, audit log",
+      "expected": "All scenario assertions and required UI steps complete.",
+      "actual": "All scenario assertions passed.",
+      "status": "PASS",
+      "ms": 3503
+    },
+    {
+      "id": "UI-25",
+      "name": "Staff customers and payments: list from records, customer history dialog, payment state filter",
+      "expected": "All scenario assertions and required UI steps complete.",
+      "actual": "All scenario assertions passed.",
+      "status": "PASS",
+      "ms": 3049
+    },
+    {
+      "id": "UI-24",
+      "name": "Assistant dock on public pages: page-aware, role label, shortcut goes straight to the booking form",
+      "expected": "All scenario assertions and required UI steps complete.",
+      "actual": "All scenario assertions passed.",
+      "status": "PASS",
+      "ms": 5724
+    },
+    {
+      "id": "UI-19",
+      "name": "Permission: customer cannot use staff APIs; staff views ask to sign in",
+      "expected": "All scenario assertions and required UI steps complete.",
+      "actual": "All scenario assertions passed.",
+      "status": "PASS",
+      "ms": 1023
+    },
+    {
+      "id": "UI-20",
+      "name": "Keyboard and dialogs: visible focus, Escape closes dialog",
+      "expected": "All scenario assertions and required UI steps complete.",
+      "actual": "All scenario assertions passed.",
+      "status": "PASS",
+      "ms": 9735
+    },
+    {
+      "id": "UI-26",
+      "name": "AI Lab Report: free reading, upgrade prompt, Plus via signed test payment, multi-image reading, lab dashboard over time, printable Lab Report",
+      "expected": "All scenario assertions and required UI steps complete.",
+      "actual": "All scenario assertions passed.",
+      "status": "PASS",
+      "ms": 14303
+    },
+    {
+      "id": "UI-27",
+      "name": "Website v5: product deck tabs, search dialog (Ctrl K), nav dropdown, AI Lab Report page",
+      "expected": "All scenario assertions and required UI steps complete.",
+      "actual": "All scenario assertions passed.",
+      "status": "PASS",
+      "ms": 6019
+    },
+    {
+      "id": "UI-29",
+      "name": "Sign-in: demo accounts by typing (not listed), admin goes to the service desk and AI providers, test-02 has Plus",
+      "expected": "All scenario assertions and required UI steps complete.",
+      "actual": "All scenario assertions passed.",
+      "status": "PASS",
+      "ms": 6450
+    },
+    {
+      "id": "UI-30",
+      "name": "Report in the chat: thumbnail before and after sending, live steps, values card, one-click confirm answers the question",
+      "expected": "All scenario assertions and required UI steps complete.",
+      "actual": "All scenario assertions passed.",
+      "status": "PASS",
+      "ms": 5324
+    },
+    {
+      "id": "UI-31",
+      "name": "Chats and projects: new chat, project, rename, switch back, drawer on mobile",
+      "expected": "All scenario assertions and required UI steps complete.",
+      "actual": "All scenario assertions passed.",
+      "status": "PASS",
+      "ms": 6178
+    },
+    {
+      "id": "UI-32",
+      "name": "Website: sign in from the header with a typed demo account, account menu, sign out; journey section; agents on AI providers",
+      "expected": "All scenario assertions and required UI steps complete.",
+      "actual": "All scenario assertions passed.",
+      "status": "PASS",
+      "ms": 5888
+    },
+    {
+      "id": "UI-33",
+      "name": "Guest: upload/image preview, no persisted token, reload revokes chat and image, no history after signup",
+      "expected": "All scenario assertions and required UI steps complete.",
+      "actual": "All scenario assertions passed.",
+      "status": "PASS",
+      "ms": 8373
+    },
+    {
+      "id": "UI-34",
+      "name": "Navigation: delayed view cannot overwrite latest click; booking fields survive sign-in; customer staff URL stays private",
+      "expected": "All scenario assertions and required UI steps complete.",
+      "actual": "All scenario assertions passed.",
+      "status": "PASS",
+      "ms": 3764
+    },
+    {
+      "id": "UI-21-tablet",
+      "name": "tablet: pages without horizontal overflow, navigation drawer, filters toggle, reduced motion",
+      "expected": "All scenario assertions and required UI steps complete.",
+      "actual": "All scenario assertions passed.",
+      "status": "PASS",
+      "ms": 9684
+    },
+    {
+      "id": "UI-21-mobile",
+      "name": "mobile: pages without horizontal overflow, navigation drawer, filters toggle, reduced motion",
+      "expected": "All scenario assertions and required UI steps complete.",
+      "actual": "All scenario assertions passed.",
+      "status": "PASS",
+      "ms": 12219
+    },
+    {
+      "id": "UI-22",
+      "name": "No uncaught browser JavaScript errors",
+      "expected": "All scenario assertions and required UI steps complete.",
+      "actual": "All scenario assertions passed.",
+      "status": "PASS",
+      "ms": 0
+    }
+  ],
+  "errors": [],
+  "screenshots": [
+    "UI-01_home-1440.png",
+    "UI-01_executed-result-1.png",
+    "UI-02_catalog-1440.png",
+    "UI-02_executed-result-1.png",
+    "UI-02b_catalog-network-error-1440.png",
+    "UI-02b_executed-result-1.png",
+    "UI-03_compare-1440.png",
+    "UI-03_executed-result-1.png",
+    "UI-04_guest-account-required.png",
+    "UI-04_package-not-found.png",
+    "UI-04_executed-result-1.png",
+    "UI-05_account-persisted-1440.png",
+    "UI-05_executed-result-1.png",
+    "UI-06_book-1440.png",
+    "UI-06_executed-result-1.png",
+    "UI-07_chat-preview-1440.png",
+    "UI-07_executed-result-1.png",
+    "UI-08_chat-retry-error-1440.png",
+    "UI-08_chat-source-1440.png",
+    "UI-08_executed-result-1.png",
+    "UI-09_report-review-1440.png",
+    "UI-09_executed-result-1.png",
+    "UI-10_organization-done-1440.png",
+    "UI-10_executed-result-1.png",
+    "UI-11_staff-overview-1440.png",
+    "UI-11_executed-result-1.png",
+    "UI-11_executed-result-2.png",
+    "UI-12_staff-quote-1440.png",
+    "UI-12_executed-result-1.png",
+    "UI-12_executed-result-2.png",
+    "UI-13_staff-appointments-1440.png",
+    "UI-13_manager-simulated-receipt-1440.png",
+    "UI-13_executed-result-1.png",
+    "UI-13_executed-result-2.png",
+    "UI-14_notifications-1440.png",
+    "UI-14_executed-result-1.png",
+    "UI-14_executed-result-2.png",
+    "UI-15_payment-simulator-1440.png",
+    "UI-15_executed-result-1.png",
+    "UI-15_executed-result-2.png",
+    "UI-15_executed-result-3.png",
+    "UI-16_handoff-bot-chat-1440.png",
+    "UI-16_handoff-sharing-selected-1440.png",
+    "UI-16_handoff-queued-1440.png",
+    "UI-16_handoff-staff-second-reply-1440.png",
+    "UI-16_handoff-staff-second-reply-customer-1440.png",
+    "UI-16_handoff-resume-prompt-1440.png",
+    "UI-16_handoff-resumed-1440.png",
+    "UI-16_handoff-requeued-1440.png",
+    "UI-16_staff-inbox-1440.png",
+    "UI-16_handoff-closed-390.png",
+    "UI-16_handoff-new-chat-390.png",
+    "UI-16_handoff-history-closed-390.png",
+    "UI-16_executed-result-1.png",
+    "UI-16_executed-result-2.png",
+    "UI-16_executed-result-3.png",
+    "UI-16b_handoff-sharing-none-1440.png",
+    "UI-16b_handoff-queue-no-history-1440.png",
+    "UI-16b_executed-result-1.png",
+    "UI-16b_executed-result-2.png",
+    "UI-16b_executed-result-3.png",
+    "UI-16c_handoff-sharing-mobile-390.png",
+    "UI-16c_executed-result-1.png",
+    "UI-16c_executed-result-2.png",
+    "UI-16c_executed-result-3.png",
+    "UI-17_manager-price-simulator-1440.png",
+    "UI-17_executed-result-1.png",
+    "UI-17_executed-result-2.png",
+    "UI-17_executed-result-3.png",
+    "UI-17_executed-result-4.png",
+    "UI-18_channels-1440.png",
+    "UI-18_executed-result-1.png",
+    "UI-18_executed-result-2.png",
+    "UI-18_executed-result-3.png",
+    "UI-18_executed-result-4.png",
+    "UI-28_executed-result-1.png",
+    "UI-28_executed-result-2.png",
+    "UI-28_executed-result-3.png",
+    "UI-28_executed-result-4.png",
+    "UI-23_staff-audit-1440.png",
+    "UI-23_executed-result-1.png",
+    "UI-23_executed-result-2.png",
+    "UI-23_executed-result-3.png",
+    "UI-23_executed-result-4.png",
+    "UI-25_staff-customers-1440.png",
+    "UI-25_staff-payments-1440.png",
+    "UI-25_executed-result-1.png",
+    "UI-25_executed-result-2.png",
+    "UI-25_executed-result-3.png",
+    "UI-25_executed-result-4.png",
+    "UI-24_dock-1440.png",
+    "UI-24_executed-result-1.png",
+    "UI-24_executed-result-2.png",
+    "UI-24_executed-result-3.png",
+    "UI-24_executed-result-4.png",
+    "UI-24_executed-result-5.png",
+    "UI-19_customer-staff-denied-1440.png",
+    "UI-19_executed-result-1.png",
+    "UI-19_executed-result-2.png",
+    "UI-19_executed-result-3.png",
+    "UI-19_executed-result-4.png",
+    "UI-19_executed-result-5.png",
+    "UI-20_keyboard-dialog-1440.png",
+    "UI-20_executed-result-1.png",
+    "UI-20_executed-result-2.png",
+    "UI-20_executed-result-3.png",
+    "UI-20_executed-result-4.png",
+    "UI-20_executed-result-5.png",
+    "UI-26_labs-free-1440.png",
+    "UI-26_plan-free-1440.png",
+    "UI-26_labs-plus-1440.png",
+    "UI-26_lab-report-1440.png",
+    "UI-26_executed-result-1.png",
+    "UI-26_executed-result-2.png",
+    "UI-26_executed-result-3.png",
+    "UI-26_executed-result-4.png",
+    "UI-26_executed-result-5.png",
+    "UI-27_search-dialog-1440.png",
+    "UI-27_lab-reports-1440.png",
+    "UI-27_executed-result-1.png",
+    "UI-27_executed-result-2.png",
+    "UI-27_executed-result-3.png",
+    "UI-27_executed-result-4.png",
+    "UI-27_executed-result-5.png",
+    "UI-29_signin-1440.png",
+    "UI-29_executed-result-1.png",
+    "UI-29_executed-result-2.png",
+    "UI-29_executed-result-3.png",
+    "UI-29_executed-result-4.png",
+    "UI-29_executed-result-5.png",
+    "UI-30_chat-report-card-1440.png",
+    "UI-30_chat-report-answer-1440.png",
+    "UI-30_executed-result-1.png",
+    "UI-30_executed-result-2.png",
+    "UI-30_executed-result-3.png",
+    "UI-30_executed-result-4.png",
+    "UI-30_executed-result-5.png",
+    "UI-31_chats-1440.png",
+    "UI-31_chats-390.png",
+    "UI-31_executed-result-1.png",
+    "UI-31_executed-result-2.png",
+    "UI-31_executed-result-3.png",
+    "UI-31_executed-result-4.png",
+    "UI-31_executed-result-5.png",
+    "UI-32_header-menu-1440.png",
+    "UI-32_ai-agents-1440.png",
+    "UI-32_executed-result-1.png",
+    "UI-32_executed-result-2.png",
+    "UI-32_executed-result-3.png",
+    "UI-32_executed-result-4.png",
+    "UI-32_executed-result-5.png",
+    "UI-33_guest-temporary-1440.png",
+    "UI-33_executed-result-1.png",
+    "UI-33_executed-result-2.png",
+    "UI-33_executed-result-3.png",
+    "UI-33_executed-result-4.png",
+    "UI-33_executed-result-5.png",
+    "UI-34_customer-staff-url-private-1440.png",
+    "UI-34_executed-result-1.png",
+    "UI-34_executed-result-2.png",
+    "UI-34_executed-result-3.png",
+    "UI-34_executed-result-4.png",
+    "UI-34_executed-result-5.png",
+    "UI-21-tablet_home-768.png",
+    "UI-21-tablet_catalog-filters-768.png",
+    "UI-21-tablet_app-768.png",
+    "UI-21-tablet_executed-result-1.png",
+    "UI-21-tablet_executed-result-2.png",
+    "UI-21-tablet_executed-result-3.png",
+    "UI-21-tablet_executed-result-4.png",
+    "UI-21-tablet_executed-result-5.png",
+    "UI-21-mobile_home-390.png",
+    "UI-21-mobile_catalog-filters-390.png",
+    "UI-21-mobile_app-390.png",
+    "UI-21-mobile_executed-result-1.png",
+    "UI-21-mobile_executed-result-2.png",
+    "UI-21-mobile_executed-result-3.png",
+    "UI-21-mobile_executed-result-4.png",
+    "UI-21-mobile_executed-result-5.png",
+    "UI-22_executed-result-1.png",
+    "UI-22_executed-result-2.png",
+    "UI-22_executed-result-3.png",
+    "UI-22_executed-result-4.png",
+    "UI-22_executed-result-5.png"
+  ],
+  "screenshot_evidence": [
+    {
+      "case_id": "UI-01",
+      "file": "UI-01_home-1440.png",
+      "captured_at": "2026-10-12T11:04:45.018Z",
+      "step": "home-1440",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "08a7e2df7d92dd63b543f049a48d6b737f7e9f745be57ee496b8d382212a2f91"
+    },
+    {
+      "case_id": "UI-01",
+      "file": "UI-01_executed-result-1.png",
+      "captured_at": "2026-10-12T11:04:49.033Z",
+      "step": "executed-result-1",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "2609e9e3a3866a8233e3034995f306ce96ebfa6d7a00edfcb0d8acd741f7e9c6"
+    },
+    {
+      "case_id": "UI-02",
+      "file": "UI-02_catalog-1440.png",
+      "captured_at": "2026-10-12T11:04:52.056Z",
+      "step": "catalog-1440",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "6c5e8451c658a7e6c868688522493582439e24a788afc691af7c565a52fef5ee"
+    },
+    {
+      "case_id": "UI-02",
+      "file": "UI-02_executed-result-1.png",
+      "captured_at": "2026-10-12T11:04:52.347Z",
+      "step": "executed-result-1",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "6c5e8451c658a7e6c868688522493582439e24a788afc691af7c565a52fef5ee"
+    },
+    {
+      "case_id": "UI-02b",
+      "file": "UI-02b_catalog-network-error-1440.png",
+      "captured_at": "2026-10-12T11:04:52.740Z",
+      "step": "catalog-network-error-1440",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "a5309d75a124f51c8681b668f666d7bad2631b72c527d4496b25aff505f17f43"
+    },
+    {
+      "case_id": "UI-02b",
+      "file": "UI-02b_executed-result-1.png",
+      "captured_at": "2026-10-12T11:04:53.204Z",
+      "step": "executed-result-1",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "f217692614b1285a7974802052a961fead36d513404f1f0e6692afeef5846a0d"
+    },
+    {
+      "case_id": "UI-03",
+      "file": "UI-03_compare-1440.png",
+      "captured_at": "2026-10-12T11:04:55.170Z",
+      "step": "compare-1440",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "87ba4b656ccd8bcbd6cacea52fa032c68bbcfc207d682f86b0f47cfe133f0b97"
+    },
+    {
+      "case_id": "UI-03",
+      "file": "UI-03_executed-result-1.png",
+      "captured_at": "2026-10-12T11:04:55.730Z",
+      "step": "executed-result-1",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "d4abfbc71bc6928f588a473cfe8099bc91450abc21359a16d21d4a7094825c7a"
+    },
+    {
+      "case_id": "UI-04",
+      "file": "UI-04_guest-account-required.png",
+      "captured_at": "2026-10-12T11:04:57.963Z",
+      "step": "guest-account-required",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "4d8bb8482b582bf4ac9f7fe1ec5c9029fa0b090db2887c9c0d1bc50b925382cf"
+    },
+    {
+      "case_id": "UI-04",
+      "file": "UI-04_package-not-found.png",
+      "captured_at": "2026-10-12T11:04:58.511Z",
+      "step": "package-not-found",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "24ef07c4187c0b63fc0bd6fd0cd97e25ed775c67ba538f9aeae83d4e060b60c4"
+    },
+    {
+      "case_id": "UI-04",
+      "file": "UI-04_executed-result-1.png",
+      "captured_at": "2026-10-12T11:04:58.728Z",
+      "step": "executed-result-1",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "24ef07c4187c0b63fc0bd6fd0cd97e25ed775c67ba538f9aeae83d4e060b60c4"
+    },
+    {
+      "case_id": "UI-05",
+      "file": "UI-05_account-persisted-1440.png",
+      "captured_at": "2026-10-12T11:05:01.822Z",
+      "step": "account-persisted-1440",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "094878b272b3d681ad62acd6e4b567f614aeabd4da7f19560540bdd91c99401e"
+    },
+    {
+      "case_id": "UI-05",
+      "file": "UI-05_executed-result-1.png",
+      "captured_at": "2026-10-12T11:05:02.017Z",
+      "step": "executed-result-1",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "094878b272b3d681ad62acd6e4b567f614aeabd4da7f19560540bdd91c99401e"
+    },
+    {
+      "case_id": "UI-06",
+      "file": "UI-06_book-1440.png",
+      "captured_at": "2026-10-12T11:05:03.171Z",
+      "step": "book-1440",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "68748c830c76567d097dbe5166d0b3e628832dabb6d126f249554e5e70d158a1"
+    },
+    {
+      "case_id": "UI-06",
+      "file": "UI-06_executed-result-1.png",
+      "captured_at": "2026-10-12T11:05:04.471Z",
+      "step": "executed-result-1",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "29fc5e941e45d019400c81abd7dc122ae9f8dee109ecc6e49c5806bea127d38e"
+    },
+    {
+      "case_id": "UI-07",
+      "file": "UI-07_chat-preview-1440.png",
+      "captured_at": "2026-10-12T11:05:06.749Z",
+      "step": "chat-preview-1440",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "39c77105496c5cb3dee61ccec2be7c04fa39d08931e6fcb3692978f483df0f94"
+    },
+    {
+      "case_id": "UI-07",
+      "file": "UI-07_executed-result-1.png",
+      "captured_at": "2026-10-12T11:05:07.763Z",
+      "step": "executed-result-1",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "0d9c6c820fed73a7178294e8ca0aaaccc3caf6e9d46c0e33d43fc2ecde3ade92"
+    },
+    {
+      "case_id": "UI-08",
+      "file": "UI-08_chat-retry-error-1440.png",
+      "captured_at": "2026-10-12T11:05:09.057Z",
+      "step": "chat-retry-error-1440",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "cce2b99e1cc2cb43e2c752806a97ced4532a42cd555f8f9f96893260874ba50a"
+    },
+    {
+      "case_id": "UI-08",
+      "file": "UI-08_chat-source-1440.png",
+      "captured_at": "2026-10-12T11:05:11.382Z",
+      "step": "chat-source-1440",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "610cb29e8e46734d09a994ce15d5e132a02923e8e5a9b9c3521624fa0428cbe0"
+    },
+    {
+      "case_id": "UI-08",
+      "file": "UI-08_executed-result-1.png",
+      "captured_at": "2026-10-12T11:05:11.576Z",
+      "step": "executed-result-1",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "751135c5fb1a4555ba70bf099df165d4d70a1ab9efc06da2fe2c43420e943f96"
+    },
+    {
+      "case_id": "UI-09",
+      "file": "UI-09_report-review-1440.png",
+      "captured_at": "2026-10-12T11:05:13.887Z",
+      "step": "report-review-1440",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "5c4ed0cb447599f462a698d8a5f25e93631b6333e95a3b181288fa3bfbdcfa30"
+    },
+    {
+      "case_id": "UI-09",
+      "file": "UI-09_executed-result-1.png",
+      "captured_at": "2026-10-12T11:05:15.659Z",
+      "step": "executed-result-1",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "f775f5aaedd03bf23176f0e7a747045b4d9e1aec3f00d2ce5344f8e954695ebb"
+    },
+    {
+      "case_id": "UI-10",
+      "file": "UI-10_organization-done-1440.png",
+      "captured_at": "2026-10-12T11:05:17.171Z",
+      "step": "organization-done-1440",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "23cfa17dc0432dd8632c3935a804ad8181ec1563b15310283856bb4fda0a7b5d"
+    },
+    {
+      "case_id": "UI-10",
+      "file": "UI-10_executed-result-1.png",
+      "captured_at": "2026-10-12T11:05:17.362Z",
+      "step": "executed-result-1",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "23cfa17dc0432dd8632c3935a804ad8181ec1563b15310283856bb4fda0a7b5d"
+    },
+    {
+      "case_id": "UI-11",
+      "file": "UI-11_staff-overview-1440.png",
+      "captured_at": "2026-10-12T11:05:19.646Z",
+      "step": "staff-overview-1440",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "5603e0ac145d49bbcb84f1dd5dd436e36809d74d7f51f7f76a83f95b78c7acb9"
+    },
+    {
+      "case_id": "UI-11",
+      "file": "UI-11_executed-result-1.png",
+      "captured_at": "2026-10-12T11:05:20.966Z",
+      "step": "executed-result-1",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "23cfa17dc0432dd8632c3935a804ad8181ec1563b15310283856bb4fda0a7b5d"
+    },
+    {
+      "case_id": "UI-11",
+      "file": "UI-11_executed-result-2.png",
+      "captured_at": "2026-10-12T11:05:21.211Z",
+      "step": "executed-result-2",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "1afc8d97a5a6aaaeb4d060eb31e4d1da10b4edfce26bfa0ab7042181383bed9c"
+    },
+    {
+      "case_id": "UI-12",
+      "file": "UI-12_staff-quote-1440.png",
+      "captured_at": "2026-10-12T11:05:22.948Z",
+      "step": "staff-quote-1440",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "ba733d09c2b7943778f07be9f2f28cf14dec0a85cc293e8d86807c9b0552e844"
+    },
+    {
+      "case_id": "UI-12",
+      "file": "UI-12_executed-result-1.png",
+      "captured_at": "2026-10-12T11:05:23.125Z",
+      "step": "executed-result-1",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "23cfa17dc0432dd8632c3935a804ad8181ec1563b15310283856bb4fda0a7b5d"
+    },
+    {
+      "case_id": "UI-12",
+      "file": "UI-12_executed-result-2.png",
+      "captured_at": "2026-10-12T11:05:23.297Z",
+      "step": "executed-result-2",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "ba733d09c2b7943778f07be9f2f28cf14dec0a85cc293e8d86807c9b0552e844"
+    },
+    {
+      "case_id": "UI-13",
+      "file": "UI-13_staff-appointments-1440.png",
+      "captured_at": "2026-10-12T11:05:26.050Z",
+      "step": "staff-appointments-1440",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "bc4fcad1c20806cc102616519888ba4a279083f2346cbfc853922aeb81321f92"
+    },
+    {
+      "case_id": "UI-13",
+      "file": "UI-13_manager-simulated-receipt-1440.png",
+      "captured_at": "2026-10-12T11:05:29.391Z",
+      "step": "manager-simulated-receipt-1440",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "sha256": "5e542e37a8061248334871e94d338c4ec5c7116445bebe1f140f83695fb05456"
+    },
+    {
+      "case_id": "UI-13",
+      "file": "UI-13_executed-result-1.png",
+      "captured_at": "2026-10-12T11:05:29.514Z",
+      "step": "executed-result-1",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "23cfa17dc0432dd8632c3935a804ad8181ec1563b15310283856bb4fda0a7b5d"
+    },
+    {
+      "case_id": "UI-13",
+      "file": "UI-13_executed-result-2.png",
+      "captured_at": "2026-10-12T11:05:29.634Z",
+      "step": "executed-result-2",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "ba733d09c2b7943778f07be9f2f28cf14dec0a85cc293e8d86807c9b0552e844"
+    },
+    {
+      "case_id": "UI-14",
+      "file": "UI-14_notifications-1440.png",
+      "captured_at": "2026-10-12T11:05:31.166Z",
+      "step": "notifications-1440",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "2f2edb16c1887a5a381c3c8672d7934e68c6239354dffba47f77d2449b32b791"
+    },
+    {
+      "case_id": "UI-14",
+      "file": "UI-14_executed-result-1.png",
+      "captured_at": "2026-10-12T11:05:31.348Z",
+      "step": "executed-result-1",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "9a2e49e0289c00aaaf50e909945bb5b961088cc7da371ede690af020cccdaf90"
+    },
+    {
+      "case_id": "UI-14",
+      "file": "UI-14_executed-result-2.png",
+      "captured_at": "2026-10-12T11:05:31.513Z",
+      "step": "executed-result-2",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "7efb4145e38d48dc702f993bf3b216322079ff3a072eedc8c588c87701c41a93"
+    },
+    {
+      "case_id": "UI-15",
+      "file": "UI-15_payment-simulator-1440.png",
+      "captured_at": "2026-10-12T11:05:32.563Z",
+      "step": "payment-simulator-1440",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "c636b1ef4809748e43926d6c296a5f20bc0ab3363952a666747682b2854ae184"
+    },
+    {
+      "case_id": "UI-15",
+      "file": "UI-15_executed-result-1.png",
+      "captured_at": "2026-10-12T11:05:34.200Z",
+      "step": "executed-result-1",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "2d96058ae3d73c10452b53ac85de178eef0722d7da261874d6552341a6827885"
+    },
+    {
+      "case_id": "UI-15",
+      "file": "UI-15_executed-result-2.png",
+      "captured_at": "2026-10-12T11:05:34.339Z",
+      "step": "executed-result-2",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "7efb4145e38d48dc702f993bf3b216322079ff3a072eedc8c588c87701c41a93"
+    },
+    {
+      "case_id": "UI-15",
+      "file": "UI-15_executed-result-3.png",
+      "captured_at": "2026-10-12T11:05:34.430Z",
+      "step": "executed-result-3",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "sha256": "630771374699f901a5d61f389a466445aab2c20066372d70521ebae1896b5522"
+    },
+    {
+      "case_id": "UI-16",
+      "file": "UI-16_handoff-bot-chat-1440.png",
+      "captured_at": "2026-10-12T11:05:37.049Z",
+      "step": "handoff-bot-chat-1440",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "b34c5b2c48948c9f014587b6b0bebdbc3e5e5594aca41fbf1e57e132fbb5903b"
+    },
+    {
+      "case_id": "UI-16",
+      "file": "UI-16_handoff-sharing-selected-1440.png",
+      "captured_at": "2026-10-12T11:05:37.447Z",
+      "step": "handoff-sharing-selected-1440",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "5d7cc9e2b67bbe47e38f6317f5d741e249fb130399d460158b4ae759d7642811"
+    },
+    {
+      "case_id": "UI-16",
+      "file": "UI-16_handoff-queued-1440.png",
+      "captured_at": "2026-10-12T11:05:44.631Z",
+      "step": "handoff-queued-1440",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "b33615ed29326c48fab5500cdb0f8f1a507a4e40e878f7b83f29af578829536c"
+    },
+    {
+      "case_id": "UI-16",
+      "file": "UI-16_handoff-staff-second-reply-1440.png",
+      "captured_at": "2026-10-12T11:05:51.106Z",
+      "step": "handoff-staff-second-reply-1440",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "0e53631fce4372ee8f6da07035ac93a9447653e33f8819da82002cc1458d1545"
+    },
+    {
+      "case_id": "UI-16",
+      "file": "UI-16_handoff-staff-second-reply-customer-1440.png",
+      "captured_at": "2026-10-12T11:05:51.203Z",
+      "step": "handoff-staff-second-reply-customer-1440",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "d2a80c83b183c258b6eb442b6a3a0d11e0a69203ae9ef7af94e7bb8381709610"
+    },
+    {
+      "case_id": "UI-16",
+      "file": "UI-16_handoff-resume-prompt-1440.png",
+      "captured_at": "2026-10-12T11:05:54.889Z",
+      "step": "handoff-resume-prompt-1440",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "0e7ce9dd97274fbcf2e53648fbc43121bbb8893e90b4651255ee429bf7b395a6"
+    },
+    {
+      "case_id": "UI-16",
+      "file": "UI-16_handoff-resumed-1440.png",
+      "captured_at": "2026-10-12T11:05:55.992Z",
+      "step": "handoff-resumed-1440",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "799b413f2e9365f4024b9b9b04215be5be23fd632a4a1dabd7bc496fdba79ee3"
+    },
+    {
+      "case_id": "UI-16",
+      "file": "UI-16_handoff-requeued-1440.png",
+      "captured_at": "2026-10-12T11:06:03.906Z",
+      "step": "handoff-requeued-1440",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "0c2ac6323d05e67b45173249e87841f576a51c1ea2f5dda9282adb46d6b84196"
+    },
+    {
+      "case_id": "UI-16",
+      "file": "UI-16_staff-inbox-1440.png",
+      "captured_at": "2026-10-12T11:06:03.982Z",
+      "step": "staff-inbox-1440",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "bb06959dcad2798a656136a4dd111f92570901ff7a53a662a90e876528feae58"
+    },
+    {
+      "case_id": "UI-16",
+      "file": "UI-16_handoff-closed-390.png",
+      "captured_at": "2026-10-12T11:06:06.838Z",
+      "step": "handoff-closed-390",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "sha256": "8d402b0ad664452fcdf7757561ea833456bc87511b38991fc71f054dc290de88"
+    },
+    {
+      "case_id": "UI-16",
+      "file": "UI-16_handoff-new-chat-390.png",
+      "captured_at": "2026-10-12T11:06:07.854Z",
+      "step": "handoff-new-chat-390",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "sha256": "0bc48d96134987098ff53b5def9237a8609399c41bc76d034b76d6db54179c13"
+    },
+    {
+      "case_id": "UI-16",
+      "file": "UI-16_handoff-history-closed-390.png",
+      "captured_at": "2026-10-12T11:06:08.404Z",
+      "step": "handoff-history-closed-390",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "sha256": "6e1713baae358d3d39501c7cf13b6d5017d4995ddd37f24ffed7dc0d0f529cff"
+    },
+    {
+      "case_id": "UI-16",
+      "file": "UI-16_executed-result-1.png",
+      "captured_at": "2026-10-12T11:06:08.623Z",
+      "step": "executed-result-1",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "2d96058ae3d73c10452b53ac85de178eef0722d7da261874d6552341a6827885"
+    },
+    {
+      "case_id": "UI-16",
+      "file": "UI-16_executed-result-2.png",
+      "captured_at": "2026-10-12T11:06:08.735Z",
+      "step": "executed-result-2",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "236e5e59449b0d58b8cf10f021c0744fa506667e558cece7548ba2f999f1858a"
+    },
+    {
+      "case_id": "UI-16",
+      "file": "UI-16_executed-result-3.png",
+      "captured_at": "2026-10-12T11:06:08.806Z",
+      "step": "executed-result-3",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "sha256": "630771374699f901a5d61f389a466445aab2c20066372d70521ebae1896b5522"
+    },
+    {
+      "case_id": "UI-16b",
+      "file": "UI-16b_handoff-sharing-none-1440.png",
+      "captured_at": "2026-10-12T11:06:11.236Z",
+      "step": "handoff-sharing-none-1440",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "7681e41076d9512d93143ae087b597e2e198b50f534ef196d17ce152153c4b8d"
+    },
+    {
+      "case_id": "UI-16b",
+      "file": "UI-16b_handoff-queue-no-history-1440.png",
+      "captured_at": "2026-10-12T11:06:12.498Z",
+      "step": "handoff-queue-no-history-1440",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "12b1814c09eaf50f249bd556f2f81134fc9774498893ee06a857c5539f3d0a9c"
+    },
+    {
+      "case_id": "UI-16b",
+      "file": "UI-16b_executed-result-1.png",
+      "captured_at": "2026-10-12T11:06:12.590Z",
+      "step": "executed-result-1",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "2d96058ae3d73c10452b53ac85de178eef0722d7da261874d6552341a6827885"
+    },
+    {
+      "case_id": "UI-16b",
+      "file": "UI-16b_executed-result-2.png",
+      "captured_at": "2026-10-12T11:06:12.687Z",
+      "step": "executed-result-2",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "12b1814c09eaf50f249bd556f2f81134fc9774498893ee06a857c5539f3d0a9c"
+    },
+    {
+      "case_id": "UI-16b",
+      "file": "UI-16b_executed-result-3.png",
+      "captured_at": "2026-10-12T11:06:12.763Z",
+      "step": "executed-result-3",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "sha256": "630771374699f901a5d61f389a466445aab2c20066372d70521ebae1896b5522"
+    },
+    {
+      "case_id": "UI-16c",
+      "file": "UI-16c_handoff-sharing-mobile-390.png",
+      "captured_at": "2026-10-12T11:06:14.447Z",
+      "step": "handoff-sharing-mobile-390",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "sha256": "74cbff1afa8bbe9f6653d382ce971320fcaf88bf44b150a00dbb7da80551a7a8"
+    },
+    {
+      "case_id": "UI-16c",
+      "file": "UI-16c_executed-result-1.png",
+      "captured_at": "2026-10-12T11:06:14.554Z",
+      "step": "executed-result-1",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "2d96058ae3d73c10452b53ac85de178eef0722d7da261874d6552341a6827885"
+    },
+    {
+      "case_id": "UI-16c",
+      "file": "UI-16c_executed-result-2.png",
+      "captured_at": "2026-10-12T11:06:14.664Z",
+      "step": "executed-result-2",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "12b1814c09eaf50f249bd556f2f81134fc9774498893ee06a857c5539f3d0a9c"
+    },
+    {
+      "case_id": "UI-16c",
+      "file": "UI-16c_executed-result-3.png",
+      "captured_at": "2026-10-12T11:06:14.735Z",
+      "step": "executed-result-3",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "sha256": "630771374699f901a5d61f389a466445aab2c20066372d70521ebae1896b5522"
+    },
+    {
+      "case_id": "UI-17",
+      "file": "UI-17_manager-price-simulator-1440.png",
+      "captured_at": "2026-10-12T11:06:15.934Z",
+      "step": "manager-price-simulator-1440",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "14d644770c8622e480757fd7554ea269abd4de2a96897fd84abf2e5f5233af95"
+    },
+    {
+      "case_id": "UI-17",
+      "file": "UI-17_executed-result-1.png",
+      "captured_at": "2026-10-12T11:06:18.425Z",
+      "step": "executed-result-1",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "a3d14bf31aa86e1e871d10fb6b97188671754493b32971aa362e1696501498c6"
+    },
+    {
+      "case_id": "UI-17",
+      "file": "UI-17_executed-result-2.png",
+      "captured_at": "2026-10-12T11:06:18.564Z",
+      "step": "executed-result-2",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "088cd330e072f3adafe1205e0ccb865242ba5954227346da15ad0c4fdc88a11e"
+    },
+    {
+      "case_id": "UI-17",
+      "file": "UI-17_executed-result-3.png",
+      "captured_at": "2026-10-12T11:06:18.646Z",
+      "step": "executed-result-3",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "sha256": "630771374699f901a5d61f389a466445aab2c20066372d70521ebae1896b5522"
+    },
+    {
+      "case_id": "UI-17",
+      "file": "UI-17_executed-result-4.png",
+      "captured_at": "2026-10-12T11:06:18.733Z",
+      "step": "executed-result-4",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "sha256": "e27c1667062772af204c6b70372cf9731662a7f7a0efacfe35c915f49e5c03ea"
+    },
+    {
+      "case_id": "UI-18",
+      "file": "UI-18_channels-1440.png",
+      "captured_at": "2026-10-12T11:06:21.071Z",
+      "step": "channels-1440",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "ff39701a7ac6427ebab37fc21bc9bad3340b506b6f9637bb6759ecf1915aab9e"
+    },
+    {
+      "case_id": "UI-18",
+      "file": "UI-18_executed-result-1.png",
+      "captured_at": "2026-10-12T11:06:21.374Z",
+      "step": "executed-result-1",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "a3d14bf31aa86e1e871d10fb6b97188671754493b32971aa362e1696501498c6"
+    },
+    {
+      "case_id": "UI-18",
+      "file": "UI-18_executed-result-2.png",
+      "captured_at": "2026-10-12T11:06:21.698Z",
+      "step": "executed-result-2",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "6e051c09e6bcca805a4b8cc46e225bc8eda4bfa778a461f06febc6aac1d8f36a"
+    },
+    {
+      "case_id": "UI-18",
+      "file": "UI-18_executed-result-3.png",
+      "captured_at": "2026-10-12T11:06:21.875Z",
+      "step": "executed-result-3",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "sha256": "630771374699f901a5d61f389a466445aab2c20066372d70521ebae1896b5522"
+    },
+    {
+      "case_id": "UI-18",
+      "file": "UI-18_executed-result-4.png",
+      "captured_at": "2026-10-12T11:06:22.068Z",
+      "step": "executed-result-4",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "sha256": "e27c1667062772af204c6b70372cf9731662a7f7a0efacfe35c915f49e5c03ea"
+    },
+    {
+      "case_id": "UI-28",
+      "file": "UI-28_executed-result-1.png",
+      "captured_at": "2026-10-12T11:06:54.371Z",
+      "step": "executed-result-1",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "a3d14bf31aa86e1e871d10fb6b97188671754493b32971aa362e1696501498c6"
+    },
+    {
+      "case_id": "UI-28",
+      "file": "UI-28_executed-result-2.png",
+      "captured_at": "2026-10-12T11:06:54.576Z",
+      "step": "executed-result-2",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "a0b3db2ce851df3976ed54dd545d8fe40561f31604e6c84c9a4313a2a5dcebb3"
+    },
+    {
+      "case_id": "UI-28",
+      "file": "UI-28_executed-result-3.png",
+      "captured_at": "2026-10-12T11:06:54.702Z",
+      "step": "executed-result-3",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "sha256": "630771374699f901a5d61f389a466445aab2c20066372d70521ebae1896b5522"
+    },
+    {
+      "case_id": "UI-28",
+      "file": "UI-28_executed-result-4.png",
+      "captured_at": "2026-10-12T11:06:54.858Z",
+      "step": "executed-result-4",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "sha256": "e27c1667062772af204c6b70372cf9731662a7f7a0efacfe35c915f49e5c03ea"
+    },
+    {
+      "case_id": "UI-23",
+      "file": "UI-23_staff-audit-1440.png",
+      "captured_at": "2026-10-12T11:06:58.366Z",
+      "step": "staff-audit-1440",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "f3baccaf64142cea7d8872bca61ba5f12f43558dfb3cdb0f9511df835205fb66"
+    },
+    {
+      "case_id": "UI-23",
+      "file": "UI-23_executed-result-1.png",
+      "captured_at": "2026-10-12T11:06:58.626Z",
+      "step": "executed-result-1",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "a3d14bf31aa86e1e871d10fb6b97188671754493b32971aa362e1696501498c6"
+    },
+    {
+      "case_id": "UI-23",
+      "file": "UI-23_executed-result-2.png",
+      "captured_at": "2026-10-12T11:06:58.880Z",
+      "step": "executed-result-2",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "57b134c4efcc4d11db91436122017dc2119a4f1ba671dea95af776281ffe9dbc"
+    },
+    {
+      "case_id": "UI-23",
+      "file": "UI-23_executed-result-3.png",
+      "captured_at": "2026-10-12T11:06:59.021Z",
+      "step": "executed-result-3",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "sha256": "630771374699f901a5d61f389a466445aab2c20066372d70521ebae1896b5522"
+    },
+    {
+      "case_id": "UI-23",
+      "file": "UI-23_executed-result-4.png",
+      "captured_at": "2026-10-12T11:06:59.202Z",
+      "step": "executed-result-4",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "sha256": "e27c1667062772af204c6b70372cf9731662a7f7a0efacfe35c915f49e5c03ea"
+    },
+    {
+      "case_id": "UI-25",
+      "file": "UI-25_staff-customers-1440.png",
+      "captured_at": "2026-10-12T11:07:00.898Z",
+      "step": "staff-customers-1440",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "eb3b6732ea1eed890302bbe76e25bac76c87c50c5654702de7d0573c5e670b23"
+    },
+    {
+      "case_id": "UI-25",
+      "file": "UI-25_staff-payments-1440.png",
+      "captured_at": "2026-10-12T11:07:02.252Z",
+      "step": "staff-payments-1440",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "789f335ebf31b15375cc5da44a92398f48c72fa5b466be8fe5f667ade0e190be"
+    },
+    {
+      "case_id": "UI-25",
+      "file": "UI-25_executed-result-1.png",
+      "captured_at": "2026-10-12T11:07:02.481Z",
+      "step": "executed-result-1",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "a3d14bf31aa86e1e871d10fb6b97188671754493b32971aa362e1696501498c6"
+    },
+    {
+      "case_id": "UI-25",
+      "file": "UI-25_executed-result-2.png",
+      "captured_at": "2026-10-12T11:07:02.625Z",
+      "step": "executed-result-2",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "153b260d1ff16ef15e105c3fb153247102512118eb9b7870c1818b98293a2b19"
+    },
+    {
+      "case_id": "UI-25",
+      "file": "UI-25_executed-result-3.png",
+      "captured_at": "2026-10-12T11:07:02.759Z",
+      "step": "executed-result-3",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "sha256": "630771374699f901a5d61f389a466445aab2c20066372d70521ebae1896b5522"
+    },
+    {
+      "case_id": "UI-25",
+      "file": "UI-25_executed-result-4.png",
+      "captured_at": "2026-10-12T11:07:02.872Z",
+      "step": "executed-result-4",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "sha256": "e27c1667062772af204c6b70372cf9731662a7f7a0efacfe35c915f49e5c03ea"
+    },
+    {
+      "case_id": "UI-24",
+      "file": "UI-24_dock-1440.png",
+      "captured_at": "2026-10-12T11:07:05.691Z",
+      "step": "dock-1440",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "3f43d94147a12e9c1d78613e61a2269f6767eef1a5242c88b2a8b6d2a1add7d0"
+    },
+    {
+      "case_id": "UI-24",
+      "file": "UI-24_executed-result-1.png",
+      "captured_at": "2026-10-12T11:07:08.978Z",
+      "step": "executed-result-1",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "a3d14bf31aa86e1e871d10fb6b97188671754493b32971aa362e1696501498c6"
+    },
+    {
+      "case_id": "UI-24",
+      "file": "UI-24_executed-result-2.png",
+      "captured_at": "2026-10-12T11:07:09.207Z",
+      "step": "executed-result-2",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "82406bf609660e64b505e1885d0a5bf23373f01dd074422c9ffbec4411e14f29"
+    },
+    {
+      "case_id": "UI-24",
+      "file": "UI-24_executed-result-3.png",
+      "captured_at": "2026-10-12T11:07:09.420Z",
+      "step": "executed-result-3",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "sha256": "630771374699f901a5d61f389a466445aab2c20066372d70521ebae1896b5522"
+    },
+    {
+      "case_id": "UI-24",
+      "file": "UI-24_executed-result-4.png",
+      "captured_at": "2026-10-12T11:07:09.620Z",
+      "step": "executed-result-4",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "sha256": "e27c1667062772af204c6b70372cf9731662a7f7a0efacfe35c915f49e5c03ea"
+    },
+    {
+      "case_id": "UI-24",
+      "file": "UI-24_executed-result-5.png",
+      "captured_at": "2026-10-12T11:07:09.873Z",
+      "step": "executed-result-5",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "e7cd23a03f23227204ee5289bbb60eabbf0909b5df0d067e2f7d9c7cdbc262fd"
+    },
+    {
+      "case_id": "UI-19",
+      "file": "UI-19_customer-staff-denied-1440.png",
+      "captured_at": "2026-10-12T11:07:10.898Z",
+      "step": "customer-staff-denied-1440",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "058ebf65cb7a4f28b04655c2cccf0d8d4205d04999fec110b71f306194bdf72f"
+    },
+    {
+      "case_id": "UI-19",
+      "file": "UI-19_executed-result-1.png",
+      "captured_at": "2026-10-12T11:07:11.158Z",
+      "step": "executed-result-1",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "058ebf65cb7a4f28b04655c2cccf0d8d4205d04999fec110b71f306194bdf72f"
+    },
+    {
+      "case_id": "UI-19",
+      "file": "UI-19_executed-result-2.png",
+      "captured_at": "2026-10-12T11:07:11.356Z",
+      "step": "executed-result-2",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "82406bf609660e64b505e1885d0a5bf23373f01dd074422c9ffbec4411e14f29"
+    },
+    {
+      "case_id": "UI-19",
+      "file": "UI-19_executed-result-3.png",
+      "captured_at": "2026-10-12T11:07:11.546Z",
+      "step": "executed-result-3",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "sha256": "630771374699f901a5d61f389a466445aab2c20066372d70521ebae1896b5522"
+    },
+    {
+      "case_id": "UI-19",
+      "file": "UI-19_executed-result-4.png",
+      "captured_at": "2026-10-12T11:07:11.710Z",
+      "step": "executed-result-4",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "sha256": "e27c1667062772af204c6b70372cf9731662a7f7a0efacfe35c915f49e5c03ea"
+    },
+    {
+      "case_id": "UI-19",
+      "file": "UI-19_executed-result-5.png",
+      "captured_at": "2026-10-12T11:07:11.967Z",
+      "step": "executed-result-5",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "e7cd23a03f23227204ee5289bbb60eabbf0909b5df0d067e2f7d9c7cdbc262fd"
+    },
+    {
+      "case_id": "UI-20",
+      "file": "UI-20_keyboard-dialog-1440.png",
+      "captured_at": "2026-10-12T11:07:21.631Z",
+      "step": "keyboard-dialog-1440",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "837f14626dffcb5b1826e200280f5c675ecaea30ae5ade7f070961f171454ae5"
+    },
+    {
+      "case_id": "UI-20",
+      "file": "UI-20_executed-result-1.png",
+      "captured_at": "2026-10-12T11:07:21.923Z",
+      "step": "executed-result-1",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "058ebf65cb7a4f28b04655c2cccf0d8d4205d04999fec110b71f306194bdf72f"
+    },
+    {
+      "case_id": "UI-20",
+      "file": "UI-20_executed-result-2.png",
+      "captured_at": "2026-10-12T11:07:22.128Z",
+      "step": "executed-result-2",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "82406bf609660e64b505e1885d0a5bf23373f01dd074422c9ffbec4411e14f29"
+    },
+    {
+      "case_id": "UI-20",
+      "file": "UI-20_executed-result-3.png",
+      "captured_at": "2026-10-12T11:07:22.298Z",
+      "step": "executed-result-3",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "sha256": "630771374699f901a5d61f389a466445aab2c20066372d70521ebae1896b5522"
+    },
+    {
+      "case_id": "UI-20",
+      "file": "UI-20_executed-result-4.png",
+      "captured_at": "2026-10-12T11:07:22.485Z",
+      "step": "executed-result-4",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "sha256": "e27c1667062772af204c6b70372cf9731662a7f7a0efacfe35c915f49e5c03ea"
+    },
+    {
+      "case_id": "UI-20",
+      "file": "UI-20_executed-result-5.png",
+      "captured_at": "2026-10-12T11:07:22.717Z",
+      "step": "executed-result-5",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "e7cd23a03f23227204ee5289bbb60eabbf0909b5df0d067e2f7d9c7cdbc262fd"
+    },
+    {
+      "case_id": "UI-26",
+      "file": "UI-26_labs-free-1440.png",
+      "captured_at": "2026-10-12T11:07:29.595Z",
+      "step": "labs-free-1440",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "475c807fc5790f2c6231afbf95db7454159573d877a3336761fe2e875948094d"
+    },
+    {
+      "case_id": "UI-26",
+      "file": "UI-26_plan-free-1440.png",
+      "captured_at": "2026-10-12T11:07:30.526Z",
+      "step": "plan-free-1440",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "f20896347d6143e0397252121d3c6b439802b773bc2a8838791f5dc39d0e6aad"
+    },
+    {
+      "case_id": "UI-26",
+      "file": "UI-26_labs-plus-1440.png",
+      "captured_at": "2026-10-12T11:07:36.099Z",
+      "step": "labs-plus-1440",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "9203b7ce15161a229b6519eb1c903724183e8f1775d71bbc2b50b1466a35718e"
+    },
+    {
+      "case_id": "UI-26",
+      "file": "UI-26_lab-report-1440.png",
+      "captured_at": "2026-10-12T11:07:37.013Z",
+      "step": "lab-report-1440",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "84c993b1cf45f4fe48c3e51fddc22c2e6f207a0f35061ab2a958e2c5db2e88e6"
+    },
+    {
+      "case_id": "UI-26",
+      "file": "UI-26_executed-result-1.png",
+      "captured_at": "2026-10-12T11:07:37.144Z",
+      "step": "executed-result-1",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "058ebf65cb7a4f28b04655c2cccf0d8d4205d04999fec110b71f306194bdf72f"
+    },
+    {
+      "case_id": "UI-26",
+      "file": "UI-26_executed-result-2.png",
+      "captured_at": "2026-10-12T11:07:37.383Z",
+      "step": "executed-result-2",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "82406bf609660e64b505e1885d0a5bf23373f01dd074422c9ffbec4411e14f29"
+    },
+    {
+      "case_id": "UI-26",
+      "file": "UI-26_executed-result-3.png",
+      "captured_at": "2026-10-12T11:07:37.561Z",
+      "step": "executed-result-3",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "sha256": "630771374699f901a5d61f389a466445aab2c20066372d70521ebae1896b5522"
+    },
+    {
+      "case_id": "UI-26",
+      "file": "UI-26_executed-result-4.png",
+      "captured_at": "2026-10-12T11:07:37.728Z",
+      "step": "executed-result-4",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "sha256": "e27c1667062772af204c6b70372cf9731662a7f7a0efacfe35c915f49e5c03ea"
+    },
+    {
+      "case_id": "UI-26",
+      "file": "UI-26_executed-result-5.png",
+      "captured_at": "2026-10-12T11:07:37.967Z",
+      "step": "executed-result-5",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "e7cd23a03f23227204ee5289bbb60eabbf0909b5df0d067e2f7d9c7cdbc262fd"
+    },
+    {
+      "case_id": "UI-27",
+      "file": "UI-27_search-dialog-1440.png",
+      "captured_at": "2026-10-12T11:07:41.578Z",
+      "step": "search-dialog-1440",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "3d3e875d8f5537b83b5d66edb5b3b713d9aa15e76a15123197c2d90c59a8601d"
+    },
+    {
+      "case_id": "UI-27",
+      "file": "UI-27_lab-reports-1440.png",
+      "captured_at": "2026-10-12T11:07:43.969Z",
+      "step": "lab-reports-1440",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "6bea47d10491bbf80b4931d9c1679e11fb6b8302e72270fd100f4904e26a95e9"
+    },
+    {
+      "case_id": "UI-27",
+      "file": "UI-27_executed-result-1.png",
+      "captured_at": "2026-10-12T11:07:44.222Z",
+      "step": "executed-result-1",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "058ebf65cb7a4f28b04655c2cccf0d8d4205d04999fec110b71f306194bdf72f"
+    },
+    {
+      "case_id": "UI-27",
+      "file": "UI-27_executed-result-2.png",
+      "captured_at": "2026-10-12T11:07:44.424Z",
+      "step": "executed-result-2",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "82406bf609660e64b505e1885d0a5bf23373f01dd074422c9ffbec4411e14f29"
+    },
+    {
+      "case_id": "UI-27",
+      "file": "UI-27_executed-result-3.png",
+      "captured_at": "2026-10-12T11:07:44.595Z",
+      "step": "executed-result-3",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "sha256": "630771374699f901a5d61f389a466445aab2c20066372d70521ebae1896b5522"
+    },
+    {
+      "case_id": "UI-27",
+      "file": "UI-27_executed-result-4.png",
+      "captured_at": "2026-10-12T11:07:44.786Z",
+      "step": "executed-result-4",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "sha256": "e27c1667062772af204c6b70372cf9731662a7f7a0efacfe35c915f49e5c03ea"
+    },
+    {
+      "case_id": "UI-27",
+      "file": "UI-27_executed-result-5.png",
+      "captured_at": "2026-10-12T11:07:45.007Z",
+      "step": "executed-result-5",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "e7cd23a03f23227204ee5289bbb60eabbf0909b5df0d067e2f7d9c7cdbc262fd"
+    },
+    {
+      "case_id": "UI-29",
+      "file": "UI-29_signin-1440.png",
+      "captured_at": "2026-10-12T11:07:46.682Z",
+      "step": "signin-1440",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "93e84ea75326ce880f998e78c21f556a77973cde3a20643982d0635512299378"
+    },
+    {
+      "case_id": "UI-29",
+      "file": "UI-29_executed-result-1.png",
+      "captured_at": "2026-10-12T11:07:51.628Z",
+      "step": "executed-result-1",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "058ebf65cb7a4f28b04655c2cccf0d8d4205d04999fec110b71f306194bdf72f"
+    },
+    {
+      "case_id": "UI-29",
+      "file": "UI-29_executed-result-2.png",
+      "captured_at": "2026-10-12T11:07:51.781Z",
+      "step": "executed-result-2",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "82406bf609660e64b505e1885d0a5bf23373f01dd074422c9ffbec4411e14f29"
+    },
+    {
+      "case_id": "UI-29",
+      "file": "UI-29_executed-result-3.png",
+      "captured_at": "2026-10-12T11:07:51.890Z",
+      "step": "executed-result-3",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "sha256": "630771374699f901a5d61f389a466445aab2c20066372d70521ebae1896b5522"
+    },
+    {
+      "case_id": "UI-29",
+      "file": "UI-29_executed-result-4.png",
+      "captured_at": "2026-10-12T11:07:52.027Z",
+      "step": "executed-result-4",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "sha256": "e27c1667062772af204c6b70372cf9731662a7f7a0efacfe35c915f49e5c03ea"
+    },
+    {
+      "case_id": "UI-29",
+      "file": "UI-29_executed-result-5.png",
+      "captured_at": "2026-10-12T11:07:52.214Z",
+      "step": "executed-result-5",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "e7cd23a03f23227204ee5289bbb60eabbf0909b5df0d067e2f7d9c7cdbc262fd"
+    },
+    {
+      "case_id": "UI-30",
+      "file": "UI-30_chat-report-card-1440.png",
+      "captured_at": "2026-10-12T11:07:56.233Z",
+      "step": "chat-report-card-1440",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "a51e78fab420e1aa1ea5225e45ac2139f0e4b86c4882fbf9387382ffd5dfa291"
+    },
+    {
+      "case_id": "UI-30",
+      "file": "UI-30_chat-report-answer-1440.png",
+      "captured_at": "2026-10-12T11:07:57.519Z",
+      "step": "chat-report-answer-1440",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "cce8105674c6de0b77c7c3dc0fe98d51f039c51fbebaaa67c3b76ad5bbf46110"
+    },
+    {
+      "case_id": "UI-30",
+      "file": "UI-30_executed-result-1.png",
+      "captured_at": "2026-10-12T11:07:57.729Z",
+      "step": "executed-result-1",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "058ebf65cb7a4f28b04655c2cccf0d8d4205d04999fec110b71f306194bdf72f"
+    },
+    {
+      "case_id": "UI-30",
+      "file": "UI-30_executed-result-2.png",
+      "captured_at": "2026-10-12T11:07:57.973Z",
+      "step": "executed-result-2",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "82406bf609660e64b505e1885d0a5bf23373f01dd074422c9ffbec4411e14f29"
+    },
+    {
+      "case_id": "UI-30",
+      "file": "UI-30_executed-result-3.png",
+      "captured_at": "2026-10-12T11:07:58.198Z",
+      "step": "executed-result-3",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "sha256": "630771374699f901a5d61f389a466445aab2c20066372d70521ebae1896b5522"
+    },
+    {
+      "case_id": "UI-30",
+      "file": "UI-30_executed-result-4.png",
+      "captured_at": "2026-10-12T11:07:58.364Z",
+      "step": "executed-result-4",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "sha256": "e27c1667062772af204c6b70372cf9731662a7f7a0efacfe35c915f49e5c03ea"
+    },
+    {
+      "case_id": "UI-30",
+      "file": "UI-30_executed-result-5.png",
+      "captured_at": "2026-10-12T11:07:58.594Z",
+      "step": "executed-result-5",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "e7cd23a03f23227204ee5289bbb60eabbf0909b5df0d067e2f7d9c7cdbc262fd"
+    },
+    {
+      "case_id": "UI-31",
+      "file": "UI-31_chats-1440.png",
+      "captured_at": "2026-10-12T11:08:03.786Z",
+      "step": "chats-1440",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "3b9766354f714411e6ce8b27c3f364bf39ff322dc7bebd38019a15b1cff67000"
+    },
+    {
+      "case_id": "UI-31",
+      "file": "UI-31_chats-390.png",
+      "captured_at": "2026-10-12T11:08:04.726Z",
+      "step": "chats-390",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "sha256": "f705f034ffed4f8be2897ea3a0ad47786e39970b8b967ba65d03ad3babb82f0e"
+    },
+    {
+      "case_id": "UI-31",
+      "file": "UI-31_executed-result-1.png",
+      "captured_at": "2026-10-12T11:08:04.911Z",
+      "step": "executed-result-1",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "058ebf65cb7a4f28b04655c2cccf0d8d4205d04999fec110b71f306194bdf72f"
+    },
+    {
+      "case_id": "UI-31",
+      "file": "UI-31_executed-result-2.png",
+      "captured_at": "2026-10-12T11:08:05.095Z",
+      "step": "executed-result-2",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "82406bf609660e64b505e1885d0a5bf23373f01dd074422c9ffbec4411e14f29"
+    },
+    {
+      "case_id": "UI-31",
+      "file": "UI-31_executed-result-3.png",
+      "captured_at": "2026-10-12T11:08:05.264Z",
+      "step": "executed-result-3",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "sha256": "630771374699f901a5d61f389a466445aab2c20066372d70521ebae1896b5522"
+    },
+    {
+      "case_id": "UI-31",
+      "file": "UI-31_executed-result-4.png",
+      "captured_at": "2026-10-12T11:08:05.460Z",
+      "step": "executed-result-4",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "sha256": "e27c1667062772af204c6b70372cf9731662a7f7a0efacfe35c915f49e5c03ea"
+    },
+    {
+      "case_id": "UI-31",
+      "file": "UI-31_executed-result-5.png",
+      "captured_at": "2026-10-12T11:08:05.691Z",
+      "step": "executed-result-5",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "e7cd23a03f23227204ee5289bbb60eabbf0909b5df0d067e2f7d9c7cdbc262fd"
+    },
+    {
+      "case_id": "UI-32",
+      "file": "UI-32_header-menu-1440.png",
+      "captured_at": "2026-10-12T11:08:09.472Z",
+      "step": "header-menu-1440",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "e4d4f8c0ab24e30968fbc5d670e6abb4ed1f044795b9e9e696f08df0b70ffd15"
+    },
+    {
+      "case_id": "UI-32",
+      "file": "UI-32_ai-agents-1440.png",
+      "captured_at": "2026-10-12T11:08:11.569Z",
+      "step": "ai-agents-1440",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "34891bdb98a7c578d13379382f516f6330e04098f70c8a204be344840c1ac0b8"
+    },
+    {
+      "case_id": "UI-32",
+      "file": "UI-32_executed-result-1.png",
+      "captured_at": "2026-10-12T11:08:11.744Z",
+      "step": "executed-result-1",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "058ebf65cb7a4f28b04655c2cccf0d8d4205d04999fec110b71f306194bdf72f"
+    },
+    {
+      "case_id": "UI-32",
+      "file": "UI-32_executed-result-2.png",
+      "captured_at": "2026-10-12T11:08:11.907Z",
+      "step": "executed-result-2",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "82406bf609660e64b505e1885d0a5bf23373f01dd074422c9ffbec4411e14f29"
+    },
+    {
+      "case_id": "UI-32",
+      "file": "UI-32_executed-result-3.png",
+      "captured_at": "2026-10-12T11:08:12.038Z",
+      "step": "executed-result-3",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "sha256": "630771374699f901a5d61f389a466445aab2c20066372d70521ebae1896b5522"
+    },
+    {
+      "case_id": "UI-32",
+      "file": "UI-32_executed-result-4.png",
+      "captured_at": "2026-10-12T11:08:12.168Z",
+      "step": "executed-result-4",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "sha256": "e27c1667062772af204c6b70372cf9731662a7f7a0efacfe35c915f49e5c03ea"
+    },
+    {
+      "case_id": "UI-32",
+      "file": "UI-32_executed-result-5.png",
+      "captured_at": "2026-10-12T11:08:12.344Z",
+      "step": "executed-result-5",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "e7cd23a03f23227204ee5289bbb60eabbf0909b5df0d067e2f7d9c7cdbc262fd"
+    },
+    {
+      "case_id": "UI-33",
+      "file": "UI-33_guest-temporary-1440.png",
+      "captured_at": "2026-10-12T11:08:15.255Z",
+      "step": "guest-temporary-1440",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "bb986bfb777510154935864d0a82c27637f4d448be55e6d14acb7a2609aaeab7"
+    },
+    {
+      "case_id": "UI-33",
+      "file": "UI-33_executed-result-1.png",
+      "captured_at": "2026-10-12T11:08:20.897Z",
+      "step": "executed-result-1",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "058ebf65cb7a4f28b04655c2cccf0d8d4205d04999fec110b71f306194bdf72f"
+    },
+    {
+      "case_id": "UI-33",
+      "file": "UI-33_executed-result-2.png",
+      "captured_at": "2026-10-12T11:08:21.049Z",
+      "step": "executed-result-2",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "82406bf609660e64b505e1885d0a5bf23373f01dd074422c9ffbec4411e14f29"
+    },
+    {
+      "case_id": "UI-33",
+      "file": "UI-33_executed-result-3.png",
+      "captured_at": "2026-10-12T11:08:21.184Z",
+      "step": "executed-result-3",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "sha256": "630771374699f901a5d61f389a466445aab2c20066372d70521ebae1896b5522"
+    },
+    {
+      "case_id": "UI-33",
+      "file": "UI-33_executed-result-4.png",
+      "captured_at": "2026-10-12T11:08:21.322Z",
+      "step": "executed-result-4",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "sha256": "e27c1667062772af204c6b70372cf9731662a7f7a0efacfe35c915f49e5c03ea"
+    },
+    {
+      "case_id": "UI-33",
+      "file": "UI-33_executed-result-5.png",
+      "captured_at": "2026-10-12T11:08:21.517Z",
+      "step": "executed-result-5",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "e7cd23a03f23227204ee5289bbb60eabbf0909b5df0d067e2f7d9c7cdbc262fd"
+    },
+    {
+      "case_id": "UI-34",
+      "file": "UI-34_customer-staff-url-private-1440.png",
+      "captured_at": "2026-10-12T11:08:25.265Z",
+      "step": "customer-staff-url-private-1440",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "bd9de02d92fccc9f98925f40fda3d868d311cf326172a9124a2e8c4215b4eca8"
+    },
+    {
+      "case_id": "UI-34",
+      "file": "UI-34_executed-result-1.png",
+      "captured_at": "2026-10-12T11:08:25.490Z",
+      "step": "executed-result-1",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "058ebf65cb7a4f28b04655c2cccf0d8d4205d04999fec110b71f306194bdf72f"
+    },
+    {
+      "case_id": "UI-34",
+      "file": "UI-34_executed-result-2.png",
+      "captured_at": "2026-10-12T11:08:25.652Z",
+      "step": "executed-result-2",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "82406bf609660e64b505e1885d0a5bf23373f01dd074422c9ffbec4411e14f29"
+    },
+    {
+      "case_id": "UI-34",
+      "file": "UI-34_executed-result-3.png",
+      "captured_at": "2026-10-12T11:08:25.798Z",
+      "step": "executed-result-3",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "sha256": "630771374699f901a5d61f389a466445aab2c20066372d70521ebae1896b5522"
+    },
+    {
+      "case_id": "UI-34",
+      "file": "UI-34_executed-result-4.png",
+      "captured_at": "2026-10-12T11:08:25.946Z",
+      "step": "executed-result-4",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "sha256": "e27c1667062772af204c6b70372cf9731662a7f7a0efacfe35c915f49e5c03ea"
+    },
+    {
+      "case_id": "UI-34",
+      "file": "UI-34_executed-result-5.png",
+      "captured_at": "2026-10-12T11:08:26.162Z",
+      "step": "executed-result-5",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "e7cd23a03f23227204ee5289bbb60eabbf0909b5df0d067e2f7d9c7cdbc262fd"
+    },
+    {
+      "case_id": "UI-21-tablet",
+      "file": "UI-21-tablet_home-768.png",
+      "captured_at": "2026-10-12T11:08:33.569Z",
+      "step": "home-768",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "sha256": "6cdee5a4c1787876be2bd4594f0e5730037c777f2a77a9f7c807c35b7e1946d6"
+    },
+    {
+      "case_id": "UI-21-tablet",
+      "file": "UI-21-tablet_catalog-filters-768.png",
+      "captured_at": "2026-10-12T11:08:34.655Z",
+      "step": "catalog-filters-768",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "sha256": "04e9b5d2f26aa0f78ea71ca9f38866ff22d9377a39a322b8768e10655794681f"
+    },
+    {
+      "case_id": "UI-21-tablet",
+      "file": "UI-21-tablet_app-768.png",
+      "captured_at": "2026-10-12T11:08:35.842Z",
+      "step": "app-768",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "sha256": "a0cba4697b75130d52e1b14b2566b7079735fbad6d4262ec04bcd472ffc65f06"
+    },
+    {
+      "case_id": "UI-21-tablet",
+      "file": "UI-21-tablet_executed-result-1.png",
+      "captured_at": "2026-10-12T11:08:36.041Z",
+      "step": "executed-result-1",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "058ebf65cb7a4f28b04655c2cccf0d8d4205d04999fec110b71f306194bdf72f"
+    },
+    {
+      "case_id": "UI-21-tablet",
+      "file": "UI-21-tablet_executed-result-2.png",
+      "captured_at": "2026-10-12T11:08:36.228Z",
+      "step": "executed-result-2",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "82406bf609660e64b505e1885d0a5bf23373f01dd074422c9ffbec4411e14f29"
+    },
+    {
+      "case_id": "UI-21-tablet",
+      "file": "UI-21-tablet_executed-result-3.png",
+      "captured_at": "2026-10-12T11:08:36.347Z",
+      "step": "executed-result-3",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "sha256": "630771374699f901a5d61f389a466445aab2c20066372d70521ebae1896b5522"
+    },
+    {
+      "case_id": "UI-21-tablet",
+      "file": "UI-21-tablet_executed-result-4.png",
+      "captured_at": "2026-10-12T11:08:36.500Z",
+      "step": "executed-result-4",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "sha256": "e27c1667062772af204c6b70372cf9731662a7f7a0efacfe35c915f49e5c03ea"
+    },
+    {
+      "case_id": "UI-21-tablet",
+      "file": "UI-21-tablet_executed-result-5.png",
+      "captured_at": "2026-10-12T11:08:36.710Z",
+      "step": "executed-result-5",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "e7cd23a03f23227204ee5289bbb60eabbf0909b5df0d067e2f7d9c7cdbc262fd"
+    },
+    {
+      "case_id": "UI-21-mobile",
+      "file": "UI-21-mobile_home-390.png",
+      "captured_at": "2026-10-12T11:08:44.631Z",
+      "step": "home-390",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "sha256": "12c31ed19e12b731ee9f3f565fbecd98071b9156ee9a2be0caa2617a1604c232"
+    },
+    {
+      "case_id": "UI-21-mobile",
+      "file": "UI-21-mobile_catalog-filters-390.png",
+      "captured_at": "2026-10-12T11:08:47.036Z",
+      "step": "catalog-filters-390",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "sha256": "7cc1fd869ad95eb00ed6d7d95a9772b2eb2cef9f33d09ecb3c594772543dd468"
+    },
+    {
+      "case_id": "UI-21-mobile",
+      "file": "UI-21-mobile_app-390.png",
+      "captured_at": "2026-10-12T11:08:48.878Z",
+      "step": "app-390",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "sha256": "4fe510de8071f34db975012b752dff2257d07c9392a40879f8ee79ea2e517a10"
+    },
+    {
+      "case_id": "UI-21-mobile",
+      "file": "UI-21-mobile_executed-result-1.png",
+      "captured_at": "2026-10-12T11:08:49.188Z",
+      "step": "executed-result-1",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "058ebf65cb7a4f28b04655c2cccf0d8d4205d04999fec110b71f306194bdf72f"
+    },
+    {
+      "case_id": "UI-21-mobile",
+      "file": "UI-21-mobile_executed-result-2.png",
+      "captured_at": "2026-10-12T11:08:49.374Z",
+      "step": "executed-result-2",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "82406bf609660e64b505e1885d0a5bf23373f01dd074422c9ffbec4411e14f29"
+    },
+    {
+      "case_id": "UI-21-mobile",
+      "file": "UI-21-mobile_executed-result-3.png",
+      "captured_at": "2026-10-12T11:08:49.598Z",
+      "step": "executed-result-3",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "sha256": "630771374699f901a5d61f389a466445aab2c20066372d70521ebae1896b5522"
+    },
+    {
+      "case_id": "UI-21-mobile",
+      "file": "UI-21-mobile_executed-result-4.png",
+      "captured_at": "2026-10-12T11:08:49.802Z",
+      "step": "executed-result-4",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "sha256": "e27c1667062772af204c6b70372cf9731662a7f7a0efacfe35c915f49e5c03ea"
+    },
+    {
+      "case_id": "UI-21-mobile",
+      "file": "UI-21-mobile_executed-result-5.png",
+      "captured_at": "2026-10-12T11:08:50.185Z",
+      "step": "executed-result-5",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "e7cd23a03f23227204ee5289bbb60eabbf0909b5df0d067e2f7d9c7cdbc262fd"
+    },
+    {
+      "case_id": "UI-22",
+      "file": "UI-22_executed-result-1.png",
+      "captured_at": "2026-10-12T11:08:50.567Z",
+      "step": "executed-result-1",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "058ebf65cb7a4f28b04655c2cccf0d8d4205d04999fec110b71f306194bdf72f"
+    },
+    {
+      "case_id": "UI-22",
+      "file": "UI-22_executed-result-2.png",
+      "captured_at": "2026-10-12T11:08:50.797Z",
+      "step": "executed-result-2",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "82406bf609660e64b505e1885d0a5bf23373f01dd074422c9ffbec4411e14f29"
+    },
+    {
+      "case_id": "UI-22",
+      "file": "UI-22_executed-result-3.png",
+      "captured_at": "2026-10-12T11:08:51.000Z",
+      "step": "executed-result-3",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "sha256": "630771374699f901a5d61f389a466445aab2c20066372d70521ebae1896b5522"
+    },
+    {
+      "case_id": "UI-22",
+      "file": "UI-22_executed-result-4.png",
+      "captured_at": "2026-10-12T11:08:51.212Z",
+      "step": "executed-result-4",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "sha256": "e27c1667062772af204c6b70372cf9731662a7f7a0efacfe35c915f49e5c03ea"
+    },
+    {
+      "case_id": "UI-22",
+      "file": "UI-22_executed-result-5.png",
+      "captured_at": "2026-10-12T11:08:51.585Z",
+      "step": "executed-result-5",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "sha256": "e7cd23a03f23227204ee5289bbb60eabbf0909b5df0d067e2f7d9c7cdbc262fd"
+    }
+  ]
+}

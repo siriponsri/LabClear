@@ -1,0 +1,110 @@
+{
+  "run_id": "expanded-live-20261012-01",
+  "mode": "LIVE_PROVIDER_LOCAL_UI",
+  "started_at": "2026-10-12T11:18:56.751Z",
+  "base": "http://127.0.0.1:8290",
+  "server_banner": "",
+  "health": {
+    "status": "ok",
+    "app": "LabClear",
+    "environment": "development",
+    "version": "4.0.0-rc3",
+    "commit": "d4ec2123c704acf571a02a188ef1c8c0c57e0827"
+  },
+  "git_head": "d4ec2123c704acf571a02a188ef1c8c0c57e0827",
+  "git_dirty_files": [
+    "M docs/report/LabClear_Architecture_Report_TH.md",
+    " M docs/report/LabClear_Architecture_Report_TH.pdf",
+    " M docs/report/LabClear_Business_Report_TH.md",
+    " M docs/report/LabClear_Business_Report_TH.pdf",
+    " M docs/report/README.md",
+    " M routers/business.py",
+    " M static/js/workspace.js",
+    " M tests/browser/uat.cjs",
+    " M tests/test_business_v3.py",
+    "?? docs/evidence/current/expanded-live-20261012-01/",
+    "?? docs/evidence/current/expanded-tests-20261012-01/",
+    "?? docs/evidence/current/p0-phase-handoff-20261012-01/",
+    "?? docs/evidence/current/p0-phase-safety-20261012-02/",
+    "?? docs/evidence/current/report-render-main-20261012-01/",
+    "?? docs/evidence/current/report-render-main-20261012-02/",
+    "?? eval/expanded-owner-20261012/",
+    "?? eval/extended/",
+    "?? scripts/expanded_appendix.cjs",
+    "?? scripts/expanded_attempt_gate.py",
+    "?? scripts/expanded_live_preflight.py",
+    "?? scripts/expanded_live_run.cjs",
+    "?? scripts/expanded_live_server.py",
+    "?? scripts/expanded_offline_cases.json",
+    "?? scripts/expanded_offline_run.cjs",
+    "?? scripts/expanded_plan.cjs",
+    "?? scripts/expanded_prepare_images.cjs",
+    "?? scripts/live_ui_eval.cjs",
+    "?? scripts/live_ui_server.py",
+    "?? scripts/score_live_ui_eval.py",
+    "?? student_report/",
+    "?? tests/test_expanded_attempt_gate.py"
+  ],
+  "git_diff_sha256": "7d89285d7ef693027dec67a4cb42ffe484417dbf39ea892c28f3742f71cbc881",
+  "datasets": {
+    "coursework": "2ebb1a06ff5a487647a2d5b9ca4f1cfe9b5ff9f677a82576d977c1ace521931e",
+    "extended": "9be80a9f72273990ee4b4d0ea965f0e7f46d129a7f16c17e06fbde17fe29bc31"
+  },
+  "script_sha256": "8f2e5f1aa6406e696104fce493a78a586ae27557c5e07436f7df6c354dc34b21",
+  "repeat": 1,
+  "suite": "all",
+  "only": null,
+  "case_count": 148,
+  "budget_cycle": "live-ui-live-ui-20261012T102549",
+  "owner_global_attempt_ceiling": 3000,
+  "whole_case_retries": 0,
+  "accounting_preflight": {
+    "owner_coordination_confirmation": "หยุดหมดแล้วครับ คุณเริ่มใหม่ได้เลยครับ",
+    "old_cycle_preserved": "live-ui-live-ui-20261012T102549",
+    "old_database_preserved": "C:\\Users\\User\\Desktop\\myProject\\LabClear\\eval_runs\\live-ui-20261012T102549\\server-state\\business.sqlite3",
+    "global_gate": {
+      "ceiling": 3000,
+      "prior_conservative": 24,
+      "new_attempts": 0,
+      "remaining": 2976,
+      "statuses": {}
+    },
+    "durable_usage": {
+      "cycle": "live-ui-live-ui-20261012T102549",
+      "used": 24,
+      "limit": 5000,
+      "by_slot": {
+        "guard": 8,
+        "agent_plan": 5,
+        "agent_advisor": 7,
+        "agent_review": 4
+      },
+      "storage": "sqlite"
+    },
+    "money_ledger": {
+      "available": true,
+      "scope": "project_total",
+      "cap_thb": 300,
+      "prior_spend_thb": 0,
+      "settled_thb": 1.0092,
+      "reserved_thb": 0.2281,
+      "calls": 24,
+      "remaining_thb": 298.7627,
+      "priced_models": [
+        "openthai-systemone",
+        "typhoon-ocr",
+        "typhoon-v2.5-30b-a3b-instruct"
+      ],
+      "enabled": true
+    },
+    "mode": "LIVE_PROVIDER_LOCAL_UI",
+    "whole_case_retries": 0,
+    "workflow_cap": 12
+  },
+  "latency_definition": "Browser time from clicking Send (or the report confirmation button) until the UI finishes the turn (#stop hidden, #send enabled). Server request IDs and receipts are kept per turn.",
+  "playwright": "1.56.1",
+  "node": "v24.19.0",
+  "platform": "win32",
+  "finished_at": "2026-10-12T11:42:38.619Z",
+  "stop_reason": "expanded_attempt_limit"
+}

@@ -1,0 +1,413 @@
+{
+  "executions": 24,
+  "records": [
+    {
+      "case_id": "unit-source-probe-offline-captures-001",
+      "underlying_test": "tests.test_lab_unit_fidelity::test_equivalent_count_notation_keeps_correct_scale[10\\xb3/\\xb5L]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-probe-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:10.343Z",
+      "status": "PASS",
+      "execution_ms": 2,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-probe-offline-captures\\unit-source-probe-offline-captures-001.png",
+      "sha256": "6167af8b5da58e17ef558c87feab57e13002f730fc56f76a54f17982016a0346"
+    },
+    {
+      "case_id": "unit-source-probe-offline-captures-002",
+      "underlying_test": "tests.test_lab_unit_fidelity::test_equivalent_count_notation_keeps_correct_scale[10^3/uL]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-probe-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:10.459Z",
+      "status": "PASS",
+      "execution_ms": 3,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-probe-offline-captures\\unit-source-probe-offline-captures-002.png",
+      "sha256": "eff6c3295dc22326e82385711be903d1ddd9a9a119c93e6ba3b662e86dd4ddab"
+    },
+    {
+      "case_id": "unit-source-probe-offline-captures-003",
+      "underlying_test": "tests.test_lab_unit_fidelity::test_equivalent_count_notation_keeps_correct_scale[10^3/\\u03bcl]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-probe-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:10.571Z",
+      "status": "PASS",
+      "execution_ms": 3,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-probe-offline-captures\\unit-source-probe-offline-captures-003.png",
+      "sha256": "5318852a5c12ed4c7f8a0c436bb2943cda65d027e86fb1544ac1423bb10429c6"
+    },
+    {
+      "case_id": "unit-source-probe-offline-captures-004",
+      "underlying_test": "tests.test_lab_unit_fidelity::test_equivalent_count_notation_keeps_correct_scale[10^{3}/\\xb5L]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-probe-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:10.684Z",
+      "status": "PASS",
+      "execution_ms": 2,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-probe-offline-captures\\unit-source-probe-offline-captures-004.png",
+      "sha256": "7db876473d56336326ae3c9b33dd8951b9e25ff2add855152717a87b2689eaf0"
+    },
+    {
+      "case_id": "unit-source-probe-offline-captures-005",
+      "underlying_test": "tests.test_lab_unit_fidelity::test_equivalent_count_notation_keeps_correct_scale[\\xd7 10\\xb3/\\xb5L]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-probe-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:10.792Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-probe-offline-captures\\unit-source-probe-offline-captures-005.png",
+      "sha256": "f1dddcabf0be71b8d59cbd56564b8c1ad2cbe6c73e1ffee4d6a3d054936905ca"
+    },
+    {
+      "case_id": "unit-source-probe-offline-captures-006",
+      "underlying_test": "tests.test_lab_unit_fidelity::test_equivalent_count_notation_keeps_correct_scale[K/\\xb5L]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-probe-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:10.884Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-probe-offline-captures\\unit-source-probe-offline-captures-006.png",
+      "sha256": "4bdf2951b5e904711cb639977b112c79a5bdb1fe27c9dd4cfd194dc642cae36d"
+    },
+    {
+      "case_id": "unit-source-probe-offline-captures-007",
+      "underlying_test": "tests.test_lab_unit_fidelity::test_equivalent_count_notation_keeps_correct_scale[10^9/L]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-probe-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:11.002Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-probe-offline-captures\\unit-source-probe-offline-captures-007.png",
+      "sha256": "69cc3c24c348ea7f2aad884394ed26c6dd51c54fcfa1fcd7bed8fe5d21a9b644"
+    },
+    {
+      "case_id": "unit-source-probe-offline-captures-008",
+      "underlying_test": "tests.test_lab_unit_fidelity::test_equivalent_count_notation_keeps_correct_scale[G/L]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-probe-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:11.101Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-probe-offline-captures\\unit-source-probe-offline-captures-008.png",
+      "sha256": "8c52047b6eb53c508487b7b8b95216f06328b5dacff3acd85164ca73f30d0752"
+    },
+    {
+      "case_id": "unit-source-probe-offline-captures-009",
+      "underlying_test": "tests.test_lab_unit_fidelity::test_equivalent_count_notation_keeps_correct_scale[10\\xb3/mm\\xb3]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-probe-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:11.218Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-probe-offline-captures\\unit-source-probe-offline-captures-009.png",
+      "sha256": "ee2f833789ab91e5b91eb51c4699b4359924bc355239c2477c63a7b08fea8cbd"
+    },
+    {
+      "case_id": "unit-source-probe-offline-captures-010",
+      "underlying_test": "tests.test_lab_unit_fidelity::test_equivalent_count_notation_keeps_correct_scale[10^3/mm3]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-probe-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:11.337Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-probe-offline-captures\\unit-source-probe-offline-captures-010.png",
+      "sha256": "2b96f902b02dd110657077b29cf903d7fbf5d9f7734a4f4f85280217c8cd0fab"
+    },
+    {
+      "case_id": "unit-source-probe-offline-captures-011",
+      "underlying_test": "tests.test_lab_unit_fidelity::test_unsupported_micro_denominator_scale_never_becomes_within[10^9/\\xb5L]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-probe-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:11.453Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-probe-offline-captures\\unit-source-probe-offline-captures-011.png",
+      "sha256": "a513e394d6fdcf61be72b04719f6dffd99188e0db28d54353663188c94cad449"
+    },
+    {
+      "case_id": "unit-source-probe-offline-captures-012",
+      "underlying_test": "tests.test_lab_unit_fidelity::test_unsupported_micro_denominator_scale_never_becomes_within[10\\u2079/uL]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-probe-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:11.566Z",
+      "status": "PASS",
+      "execution_ms": 2,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-probe-offline-captures\\unit-source-probe-offline-captures-012.png",
+      "sha256": "b0f9714050af88380324cbc582f71edd17afdfef5afd59e95e758980a2a52ae4"
+    },
+    {
+      "case_id": "unit-source-probe-offline-captures-013",
+      "underlying_test": "tests.test_lab_unit_fidelity::test_unsupported_micro_denominator_scale_never_becomes_within[G/\\xb5L]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-probe-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:11.665Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-probe-offline-captures\\unit-source-probe-offline-captures-013.png",
+      "sha256": "8bf97de866dd24e2b901ea215d1fde1b21d687f3872a4e6644a5fc37a43a3d9d"
+    },
+    {
+      "case_id": "unit-source-probe-offline-captures-014",
+      "underlying_test": "tests.test_lab_unit_fidelity::test_unsupported_micro_denominator_scale_never_becomes_within[10^12/\\xb5L]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-probe-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:11.764Z",
+      "status": "PASS",
+      "execution_ms": 2,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-probe-offline-captures\\unit-source-probe-offline-captures-014.png",
+      "sha256": "4708b1785c3025f39adc8e5369d7223862078cd72417597b283e7d96086bbd9b"
+    },
+    {
+      "case_id": "unit-source-probe-offline-captures-015",
+      "underlying_test": "tests.test_lab_unit_fidelity::test_mass_units_are_not_confused_with_count_prefix",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-probe-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:11.865Z",
+      "status": "PASS",
+      "execution_ms": 2,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-probe-offline-captures\\unit-source-probe-offline-captures-015.png",
+      "sha256": "efd9e90a39affa15bed3b88a775dd42a773b758050d38ef939d638aef70715c5"
+    },
+    {
+      "case_id": "unit-source-probe-offline-captures-016",
+      "underlying_test": "tests.test_lab_unit_fidelity::test_source_to_confirmation_to_writer_keeps_exact_unit[10\\xb3/\\xb5L]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-probe-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:11.981Z",
+      "status": "PASS",
+      "execution_ms": 7,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-probe-offline-captures\\unit-source-probe-offline-captures-016.png",
+      "sha256": "ef9ee0d9dbd9593544b1d368ff84e77ae29a92da52cbb514ce559c00f7778c2d"
+    },
+    {
+      "case_id": "unit-source-probe-offline-captures-017",
+      "underlying_test": "tests.test_lab_unit_fidelity::test_source_to_confirmation_to_writer_keeps_exact_unit[10^9/L]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-probe-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:12.081Z",
+      "status": "PASS",
+      "execution_ms": 2,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-probe-offline-captures\\unit-source-probe-offline-captures-017.png",
+      "sha256": "188df1ed2468fddcae6aae6c536d31a4af4a585eb8bdc8543bd7aebef2c35c34"
+    },
+    {
+      "case_id": "unit-source-probe-offline-captures-018",
+      "underlying_test": "tests.test_lab_unit_fidelity::test_bad_existing_confirmed_row_is_rejected_before_writer_display",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-probe-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:12.183Z",
+      "status": "PASS",
+      "execution_ms": 3,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-probe-offline-captures\\unit-source-probe-offline-captures-018.png",
+      "sha256": "343c4120f833d277a1c2ef54f5522a3b9bd22c7f4181e03e186dfd51fffc40e4"
+    },
+    {
+      "case_id": "unit-source-probe-offline-captures-019",
+      "underlying_test": "tests.test_lab_unit_fidelity::test_superscript_source_cell_copied_without_llm_conversion",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-probe-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:12.283Z",
+      "status": "PASS",
+      "execution_ms": 2,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-probe-offline-captures\\unit-source-probe-offline-captures-019.png",
+      "sha256": "581728e6e9f2ca946646c9ea44276a7d4ad62dfa963549be1eee6e1e29c184c7"
+    },
+    {
+      "case_id": "unit-source-probe-offline-captures-020",
+      "underlying_test": "tests.test_lab_unit_fidelity::test_structuring_rewrite_uses_proven_source_cell_not_clinical_guess",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-probe-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:12.385Z",
+      "status": "PASS",
+      "execution_ms": 8,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-probe-offline-captures\\unit-source-probe-offline-captures-020.png",
+      "sha256": "157dfef384481547f1f2e2dcec2c72f8628a2c4e6b582e71f7afe8abb156f26d"
+    },
+    {
+      "case_id": "unit-source-probe-offline-captures-021",
+      "underlying_test": "tests.test_lab_unit_fidelity::test_ambiguous_or_unmatched_source_never_repairs_units[<table><tr><td>Novel count</td><td>7.41</td><td>10\\xb3/\\xb5L</td><td>10\\u2076/\\xb5L</td></tr></table>]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-probe-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:12.483Z",
+      "status": "PASS",
+      "execution_ms": 2,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-probe-offline-captures\\unit-source-probe-offline-captures-021.png",
+      "sha256": "f2156f52598abc03dc016f8cb8cb11d68853bdb07ff6815ed55b4da8f0b3fd8a"
+    },
+    {
+      "case_id": "unit-source-probe-offline-captures-022",
+      "underlying_test": "tests.test_lab_unit_fidelity::test_ambiguous_or_unmatched_source_never_repairs_units[<table><tr><td>Other count</td><td>7.41</td><td>10\\xb3/\\xb5L</td></tr></table>]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-probe-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:12.589Z",
+      "status": "PASS",
+      "execution_ms": 2,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-probe-offline-captures\\unit-source-probe-offline-captures-022.png",
+      "sha256": "f4163953d52e2696e5d432c048b7090bb69358d1076faed2c9f04a4f41e6a363"
+    },
+    {
+      "case_id": "unit-source-probe-offline-captures-023",
+      "underlying_test": "tests.test_lab_unit_fidelity::test_ambiguous_or_unmatched_source_never_repairs_units[<table><tr><td>Novel count</td><td>7.42</td><td>10\\xb3/\\xb5L</td></tr></table>]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-probe-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:12.710Z",
+      "status": "PASS",
+      "execution_ms": 2,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-probe-offline-captures\\unit-source-probe-offline-captures-023.png",
+      "sha256": "b86bdfa20edfa8dbbeb2a22bda514ab6d5364fb07567327c9eed0db3970dac60"
+    },
+    {
+      "case_id": "unit-source-probe-offline-captures-024",
+      "underlying_test": "tests.test_lab_unit_fidelity::test_source_that_already_has_bad_scale_is_not_repaired_from_lab_knowledge",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-probe-offline.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:49:12.818Z",
+      "status": "PASS",
+      "execution_ms": 2,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-probe-offline-captures\\unit-source-probe-offline-captures-024.png",
+      "sha256": "d0a5b5ffacf71c9463574817e364d27d57f989a3870a805dc82f9aebe0c68176"
+    }
+  ]
+}

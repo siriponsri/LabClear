@@ -1,0 +1,3507 @@
+{
+  "executions": 206,
+  "records": [
+    {
+      "case_id": "unit-source-fidelity-verified-captures-001",
+      "underlying_test": "tests.test_lab_unit_fidelity::test_equivalent_count_notation_keeps_correct_scale[10\\xb3/\\xb5L]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:03.758Z",
+      "status": "PASS",
+      "execution_ms": 2,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-001.png",
+      "sha256": "352d27634072a539bfc61e479ec0036214a429aa89a0ba233614d2684b4024de"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-002",
+      "underlying_test": "tests.test_lab_unit_fidelity::test_equivalent_count_notation_keeps_correct_scale[10^3/uL]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:03.907Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-002.png",
+      "sha256": "5043d1cab1efba6c5322d11b946819a278c40d41197411104c85366b7b40d64b"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-003",
+      "underlying_test": "tests.test_lab_unit_fidelity::test_equivalent_count_notation_keeps_correct_scale[10^3/\\u03bcl]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:04.056Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-003.png",
+      "sha256": "6ddee4ae0a933e0664ce63604960ddf17743a207f79e1cdab378cdfb511a1100"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-004",
+      "underlying_test": "tests.test_lab_unit_fidelity::test_equivalent_count_notation_keeps_correct_scale[10^{3}/\\xb5L]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:04.202Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-004.png",
+      "sha256": "7734e784b7c25957baaa518c2d24d790f22e00ba10589fc16fd1949e9e04a3ae"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-005",
+      "underlying_test": "tests.test_lab_unit_fidelity::test_equivalent_count_notation_keeps_correct_scale[\\xd7 10\\xb3/\\xb5L]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:04.352Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-005.png",
+      "sha256": "0adf981a90a76103cabbcf42c67a813111f7485fa7e582b5094113d215bc50e5"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-006",
+      "underlying_test": "tests.test_lab_unit_fidelity::test_equivalent_count_notation_keeps_correct_scale[K/\\xb5L]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:04.480Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-006.png",
+      "sha256": "77fe93c962604cc4f5d23a7e86c5895f86be8f708174c83ef29aaf796265f15f"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-007",
+      "underlying_test": "tests.test_lab_unit_fidelity::test_equivalent_count_notation_keeps_correct_scale[10^9/L]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:04.606Z",
+      "status": "PASS",
+      "execution_ms": 2,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-007.png",
+      "sha256": "f0bf20d9005d1a60cbaa61ccff826e42beb3ef65c98b8537cd7e57d28a89573b"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-008",
+      "underlying_test": "tests.test_lab_unit_fidelity::test_equivalent_count_notation_keeps_correct_scale[G/L]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:04.725Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-008.png",
+      "sha256": "b0fb034c7acc9cf63c131415e2eac3baffc171e1b484bbfc2b8ff5ed167b8a21"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-009",
+      "underlying_test": "tests.test_lab_unit_fidelity::test_equivalent_count_notation_keeps_correct_scale[10\\xb3/mm\\xb3]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:04.864Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-009.png",
+      "sha256": "ceb85fa08b2033f4f6373a0789cd5f317f5dae340c0011e5ccc78061e42a5cdc"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-010",
+      "underlying_test": "tests.test_lab_unit_fidelity::test_equivalent_count_notation_keeps_correct_scale[10^3/mm3]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:05.000Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-010.png",
+      "sha256": "952687b686d8d85852e22fb2555400a1e2fdcfcad1f67f37e765936f8e8c14fa"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-011",
+      "underlying_test": "tests.test_lab_unit_fidelity::test_unsupported_micro_denominator_scale_never_becomes_within[10^9/\\xb5L]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:05.126Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-011.png",
+      "sha256": "6bc19a9dbb944534dfa06052c3a1b64280ec5fa681d5ee3ff11abbeaddccb433"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-012",
+      "underlying_test": "tests.test_lab_unit_fidelity::test_unsupported_micro_denominator_scale_never_becomes_within[10\\u2079/uL]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:05.252Z",
+      "status": "PASS",
+      "execution_ms": 2,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-012.png",
+      "sha256": "b1de28e5106284f228bb92f1e0ecf1fda62d5c45368ce6f7a210f413b750d74d"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-013",
+      "underlying_test": "tests.test_lab_unit_fidelity::test_unsupported_micro_denominator_scale_never_becomes_within[G/\\xb5L]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:05.380Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-013.png",
+      "sha256": "3f61c69d0a19b6eb123dbad6358077b472423c2f360fd895659a039b73a0505d"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-014",
+      "underlying_test": "tests.test_lab_unit_fidelity::test_unsupported_micro_denominator_scale_never_becomes_within[10^12/\\xb5L]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:05.568Z",
+      "status": "PASS",
+      "execution_ms": 2,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-014.png",
+      "sha256": "b953fedade4f61396b03c8ec73d8a68bb9b1674822666132a69a37ac17e03d57"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-015",
+      "underlying_test": "tests.test_lab_unit_fidelity::test_mass_units_are_not_confused_with_count_prefix",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:05.781Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-015.png",
+      "sha256": "dc7e5827c541bf84c4b3b14e89aec8763cb9aa7dff6acc528cdb7c0af4d1f31f"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-016",
+      "underlying_test": "tests.test_lab_unit_fidelity::test_source_to_confirmation_to_writer_keeps_exact_unit[10\\xb3/\\xb5L]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:05.998Z",
+      "status": "PASS",
+      "execution_ms": 3,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-016.png",
+      "sha256": "ff7cd64db8a9f28cab9436f57f47b7c7f65004ee9b822ab255e6c71535cbe34a"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-017",
+      "underlying_test": "tests.test_lab_unit_fidelity::test_source_to_confirmation_to_writer_keeps_exact_unit[10^9/L]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:06.267Z",
+      "status": "PASS",
+      "execution_ms": 2,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-017.png",
+      "sha256": "d741552f46cac78ba2d61c7e50e2cf114f61a243fd7884657970e39bb216805b"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-018",
+      "underlying_test": "tests.test_lab_unit_fidelity::test_bad_existing_confirmed_row_is_rejected_before_writer_display",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:06.527Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-018.png",
+      "sha256": "fde4e40bc9980a14e55b349a663b8f60e1aab684cda2a649a194fc7090d580a7"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-019",
+      "underlying_test": "tests.test_lab_unit_fidelity::test_superscript_source_cell_copied_without_llm_conversion",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:06.765Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-019.png",
+      "sha256": "8a3b3db39372fef85c22360bbb493dd9dcec2cfe4a2d5cfd434e40f94aa58b41"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-020",
+      "underlying_test": "tests.test_lab_unit_fidelity::test_structuring_rewrite_uses_proven_source_cell_not_clinical_guess",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:06.958Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-020.png",
+      "sha256": "3af20dcf10f011ca9d75371215f4c8eaddd15bcc7bafc488039eafd8ba392c29"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-021",
+      "underlying_test": "tests.test_lab_unit_fidelity::test_ambiguous_or_unmatched_source_never_repairs_units[<table><tr><td>Novel count</td><td>7.41</td><td>10\\xb3/\\xb5L</td><td>10\\u2076/\\xb5L</td></tr></table>]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:07.153Z",
+      "status": "PASS",
+      "execution_ms": 2,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-021.png",
+      "sha256": "f37e38d9e0bfcb067f496d7e61cdaf81dd2811b2f7de97f375e46e06cfc43a6d"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-022",
+      "underlying_test": "tests.test_lab_unit_fidelity::test_ambiguous_or_unmatched_source_never_repairs_units[<table><tr><td>Other count</td><td>7.41</td><td>10\\xb3/\\xb5L</td></tr></table>]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:07.332Z",
+      "status": "PASS",
+      "execution_ms": 2,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-022.png",
+      "sha256": "3bfd9291d7dbcf19738a954ec480a658aef444b6fa5bf290922f523ca7fa5aab"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-023",
+      "underlying_test": "tests.test_lab_unit_fidelity::test_ambiguous_or_unmatched_source_never_repairs_units[<table><tr><td>Novel count</td><td>7.42</td><td>10\\xb3/\\xb5L</td></tr></table>]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:07.538Z",
+      "status": "PASS",
+      "execution_ms": 3,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-023.png",
+      "sha256": "a7ea92e38f8fea7fd505f9606c5d62d78d805acbb2d1b4824927b3c681190028"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-024",
+      "underlying_test": "tests.test_lab_unit_fidelity::test_source_that_already_has_bad_scale_is_not_repaired_from_lab_knowledge",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:07.766Z",
+      "status": "PASS",
+      "execution_ms": 1,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-024.png",
+      "sha256": "da65e1dc91a314ff4efeb80b06412e1f6d7c07397887565e6d73537d25096979"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-025",
+      "underlying_test": "tests.test_expanded_attempt_gate::test_prior_attempts_reduce_remaining",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:08.008Z",
+      "status": "PASS",
+      "execution_ms": 22,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-025.png",
+      "sha256": "c657c615320a9abcc12a38b228e56f18d7a68cac5ef895a1f73ca8a47fa9e1d6"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-026",
+      "underlying_test": "tests.test_expanded_attempt_gate::test_ceiling_blocks_before_attempt",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:08.216Z",
+      "status": "PASS",
+      "execution_ms": 18,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-026.png",
+      "sha256": "d850514aad0200620a4e1891c857e70ad6b232e87607eddd44fe13bfc8819b4d"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-027",
+      "underlying_test": "tests.test_expanded_attempt_gate::test_inflight_reserved_counts_concurrently",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:08.439Z",
+      "status": "PASS",
+      "execution_ms": 917,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-027.png",
+      "sha256": "3e96f467c7a750169b4b34def337c598e1555876cb539c3412c668b1a44c8817"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-028",
+      "underlying_test": "tests.test_expanded_attempt_gate::test_failure_never_refunds",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:08.716Z",
+      "status": "PASS",
+      "execution_ms": 27,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-028.png",
+      "sha256": "765d31bf24d2f8218bb3b6467cda2422244b6f62210e2556c65cef661bfb0e36"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-029",
+      "underlying_test": "tests.test_expanded_attempt_gate::test_cancellation_never_refunds",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:08.947Z",
+      "status": "PASS",
+      "execution_ms": 29,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-029.png",
+      "sha256": "8f9daff0a0754403f25b8f2507177ce328e03cf77aca091fb1069a244ca17ed0"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-030",
+      "underlying_test": "tests.test_expanded_attempt_gate::test_reopen_preserves_attempts",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:09.173Z",
+      "status": "PASS",
+      "execution_ms": 32,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-030.png",
+      "sha256": "6587fc055afc6931cec90518db6abfea5aa6147471c573a35acb2bb635e9b1ff"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-031",
+      "underlying_test": "tests.test_expanded_attempt_gate::test_workflow_cap_includes_guard_vision_repair",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:09.368Z",
+      "status": "PASS",
+      "execution_ms": 72,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-031.png",
+      "sha256": "2e23b0d2b784b4dfc5f9194127f8002d737ee9fdae5944d5b88e3f9ce857f97c"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-032",
+      "underlying_test": "tests.test_expanded_attempt_gate::test_duplicate_finish_does_not_double_count",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:09.551Z",
+      "status": "PASS",
+      "execution_ms": 25,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-032.png",
+      "sha256": "e5bf705782cbf632d0456a1e50e0b544598d2dc1028ebdfc8255fedd6a01ea1d"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-033",
+      "underlying_test": "tests.test_expanded_attempt_gate::test_authorized_4000_total_preserves_prior_and_reserved_history",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:09.795Z",
+      "status": "PASS",
+      "execution_ms": 29,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-033.png",
+      "sha256": "41a084d53470e2cd1c7ea430937dc0b9fddad5a7d819a4a0394ed3b89fed92b2"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-034",
+      "underlying_test": "tests.test_bound_output::test_734_i02_exposure_is_now_rejected_before_a_passing_reviewer",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:10.041Z",
+      "status": "PASS",
+      "execution_ms": 223,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-034.png",
+      "sha256": "105fb3957c40745064bc23c3cda917bf8def77d76feebfe38095349d98db0b82"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-035",
+      "underlying_test": "tests.test_bound_output::test_hedged_and_alternate_staging_cannot_be_personalized[\\u0e2d\\u0e32\\u0e08\\u0e40\\u0e1b\\u0e47\\u0e19\\u0e20\\u0e32\\u0e27\\u0e30\\u0e44\\u0e15\\u0e40\\u0e23\\u0e37\\u0e49\\u0e2d\\u0e23\\u0e31\\u0e07\\u0e23\\u0e30\\u0e22\\u0e30\\u0e17\\u0e35\\u0e48 \\u0e54]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:10.265Z",
+      "status": "PASS",
+      "execution_ms": 5,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-035.png",
+      "sha256": "1aedba9f518171611ad96a9e385c8a1525c513740074242adaf2861553c6a794"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-036",
+      "underlying_test": "tests.test_bound_output::test_hedged_and_alternate_staging_cannot_be_personalized[\\u0e42\\u0e23\\u0e04\\u0e44\\u0e15\\u0e40\\u0e23\\u0e37\\u0e49\\u0e2d\\u0e23\\u0e31\\u0e07\\u0e23\\u0e30\\u0e22\\u0e30 IV]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:10.602Z",
+      "status": "PASS",
+      "execution_ms": 3,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-036.png",
+      "sha256": "5bb00a31fb67102806ef73423934450041eef284b6b4a0d7ae8c4b85f6715e19"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-037",
+      "underlying_test": "tests.test_bound_output::test_hedged_and_alternate_staging_cannot_be_personalized[CKD G4 may explain your result.]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:10.887Z",
+      "status": "PASS",
+      "execution_ms": 3,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-037.png",
+      "sha256": "19543f196478f5b14f28ea629fa17f385fd46ccdc0bdbbdcdd48aff8d3ee1de1"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-038",
+      "underlying_test": "tests.test_bound_output::test_hedged_and_alternate_staging_cannot_be_personalized[Your kidney disease may be stage IV.]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:11.146Z",
+      "status": "PASS",
+      "execution_ms": 3,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-038.png",
+      "sha256": "552767e40d1729078b201a3e967d1640b5c2f94de214b8a1f6a66e516dd08919"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-039",
+      "underlying_test": "tests.test_bound_output::test_hedged_and_alternate_staging_cannot_be_personalized[This may be stage 4 CKD.]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:11.388Z",
+      "status": "PASS",
+      "execution_ms": 5,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-039.png",
+      "sha256": "11709f3878953c5a6169569c9aa9a9e2d77d452df7b9505ff785868dd286b1b0"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-040",
+      "underlying_test": "tests.test_bound_output::test_numeric_retesting_advice_is_not_added_to_a_report[\\u0e04\\u0e27\\u0e23\\u0e15\\u0e23\\u0e27\\u0e08\\u0e0b\\u0e49\\u0e33\\u0e43\\u0e19\\u0e2d\\u0e35\\u0e01 7 \\u0e40\\u0e14\\u0e37\\u0e2d\\u0e19]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:11.652Z",
+      "status": "PASS",
+      "execution_ms": 3,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-040.png",
+      "sha256": "16459fe3ec1ffb953942b947a81af545ddabc4bec6fef60b9afe6f1ab0058d4b"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-041",
+      "underlying_test": "tests.test_bound_output::test_numeric_retesting_advice_is_not_added_to_a_report[You might repeat the test in 7 months.]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:11.862Z",
+      "status": "PASS",
+      "execution_ms": 3,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-041.png",
+      "sha256": "10d2a343ffcb7bacbc33cd11da5ac64a83b679a74fc8fc40a451c0d2194088ea"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-042",
+      "underlying_test": "tests.test_bound_output::test_uncertainty_statement_is_allowed",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:12.138Z",
+      "status": "PASS",
+      "execution_ms": 3,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-042.png",
+      "sha256": "718204ba0edaa351bf425ebc5611e818a19bf97c2fd0b542485dc14d4e6ebc5d"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-043",
+      "underlying_test": "tests.test_bound_output::test_unknown_clinical_paraphrase_never_enters_final_report_reply",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:12.386Z",
+      "status": "PASS",
+      "execution_ms": 35,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-043.png",
+      "sha256": "6a1260de0b69c64535a1d935932475ead47e36327048419d3d6899ca6a3cb9ed"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-044",
+      "underlying_test": "tests.test_bound_output::test_rendered_cells_are_bound_by_row_id_not_fuzzy_bilingual_name",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:12.615Z",
+      "status": "PASS",
+      "execution_ms": 3,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-044.png",
+      "sha256": "333298b32c5d6550b1988198947a6c2dd23197e0d84af819325f3d8a2401183d"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-045",
+      "underlying_test": "tests.test_bound_output::test_duplicate_names_keep_unique_ids_and_disable_uncertain_comparison",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:12.830Z",
+      "status": "PASS",
+      "execution_ms": 3,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-045.png",
+      "sha256": "35562f8823b86a5dc3b791d4200d52a33e33da6fbe74eaf1f0fa7a561f37b2d7"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-046",
+      "underlying_test": "tests.test_bound_output::test_legacy_modified_observation_is_not_repaired_by_row_binding",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:13.097Z",
+      "status": "PASS",
+      "execution_ms": 28,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-046.png",
+      "sha256": "7f096bcb51c578e39f44a02b2a30dd325bba138bf1edbd2bd5a4d74e9d0acab1"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-047",
+      "underlying_test": "tests.test_bound_output::test_conflicting_flag_and_contaminated_range_are_exposed_not_repaired",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:13.362Z",
+      "status": "PASS",
+      "execution_ms": 3,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-047.png",
+      "sha256": "2d99b1d5b73ac140430acabb2bf8e23acf0421562ffb7440b1249e49aa805234"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-048",
+      "underlying_test": "tests.test_bound_output::test_unknown_headers_can_still_verify_complete_same_row_cells",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:13.612Z",
+      "status": "PASS",
+      "execution_ms": 3,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-048.png",
+      "sha256": "e62d8c7556097cd10d782cac3f6586a7b91493c83af61f8e2e39d0f037318d77"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-049",
+      "underlying_test": "tests.test_bound_output::test_fallback_cannot_move_another_rows_cell_or_rewrite_unit_glyphs[change0]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:13.872Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-049.png",
+      "sha256": "76d2861995039adb2f8cd48a60e0ff4706f84fca40ba5a35071c705e7a034842"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-050",
+      "underlying_test": "tests.test_bound_output::test_fallback_cannot_move_another_rows_cell_or_rewrite_unit_glyphs[change1]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:14.094Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-050.png",
+      "sha256": "4a0da18df0a73b39e64b800e4b541a48e274ba7dcc934b792fa58fe9e5d05049"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-051",
+      "underlying_test": "tests.test_bound_output::test_fallback_cannot_move_another_rows_cell_or_rewrite_unit_glyphs[change2]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:14.363Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-051.png",
+      "sha256": "03fd68378dc30a70f66d9bb1b033d7c28251aa53a8ec1583ff0d62058c20cbf5"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-052",
+      "underlying_test": "tests.test_bound_output::test_fallback_cannot_reuse_one_row_for_duplicate_output",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:14.591Z",
+      "status": "PASS",
+      "execution_ms": 3,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-052.png",
+      "sha256": "925c43da955820f3963599098603308c4ae71ccacacfcc669c868f087c7fbdb1"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-053",
+      "underlying_test": "tests.test_bound_output::test_plain_or_merged_layout_is_not_falsely_certified",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:14.859Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-053.png",
+      "sha256": "74e3a19b2ac8fbf83e4bae16fef0ace1b5c49b22905811b17f90b327f5673604"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-054",
+      "underlying_test": "tests.test_bound_output::test_direct_bilingual_html_preserves_whole_row_and_unit_exponent",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:15.074Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-054.png",
+      "sha256": "ea9d42f7a1b95eb47bbe514c076cf4a905b249c9c2f59ed22d1152bd74d25816"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-055",
+      "underlying_test": "tests.test_bound_output::test_exact_policy_fields_remove_fabricated_promises_without_refusing[Can I get a 175% refund?-keys0]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:15.364Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-055.png",
+      "sha256": "cca604df778cafa1e5e2464ba2a41a28e43e4ac2d292332216e2cd2ae6bf5093"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-056",
+      "underlying_test": "tests.test_bound_output::test_exact_policy_fields_remove_fabricated_promises_without_refusing[\\u0e21\\u0e35\\u0e1a\\u0e23\\u0e34\\u0e01\\u0e32\\u0e23\\u0e40\\u0e08\\u0e32\\u0e30\\u0e40\\u0e25\\u0e37\\u0e2d\\u0e14\\u0e16\\u0e36\\u0e07\\u0e1a\\u0e49\\u0e32\\u0e19\\u0e44\\u0e2b\\u0e21-keys1]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:15.653Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-056.png",
+      "sha256": "fbc2b3f37020a78b4cef5c05b473c188cf1feb0442252057318be1a1911816f5"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-057",
+      "underlying_test": "tests.test_bound_output::test_policy_is_not_hardcoded_to_the_benchmark",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:15.938Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-057.png",
+      "sha256": "7c9b3c8f7a59a27df56bad51e8294b52609610dbd0385b5e8a0ea4ce0fcbd11c"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-058",
+      "underlying_test": "tests.test_bound_output::test_iapp_failure_stops_before_writer_and_never_auto_retries",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:16.219Z",
+      "status": "PASS",
+      "execution_ms": 18,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-058.png",
+      "sha256": "89b7a215587b9998d6f3af8fbd171c728b21df85a35895085976b20707b14873"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-059",
+      "underlying_test": "tests.test_bound_output::test_unknown_clinical_prose_is_not_saved_or_returned_by_chat_api",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:16.445Z",
+      "status": "PASS",
+      "execution_ms": 120,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-059.png",
+      "sha256": "74a8a471588cf28e6a3e961b1781ead30b4bf3c348b317b6339aa5aeda9394bb"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-060",
+      "underlying_test": "tests.test_bound_output::test_comparators_and_qualitative_cells_survive_final_sanitizer[4-<5]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:16.714Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-060.png",
+      "sha256": "2f5ca1a3c7b1816977a238f5ea520aa78e89e6d72820b48d4a3fcad71a4dd294"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-061",
+      "underlying_test": "tests.test_bound_output::test_comparators_and_qualitative_cells_survive_final_sanitizer[4->=3]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:16.976Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-061.png",
+      "sha256": "04ba2fc620bcac4da06e648846a6bbb9a3b75546cc813ffa6d9df25da0f1f30c"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-062",
+      "underlying_test": "tests.test_bound_output::test_comparators_and_qualitative_cells_survive_final_sanitizer[<5-<7]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:17.215Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-062.png",
+      "sha256": "65f4305f2bdfa02a70e8e535cbbc5bcc81ec64e6791d69d28b033bac173f65d3"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-063",
+      "underlying_test": "tests.test_bound_output::test_comparators_and_qualitative_cells_survive_final_sanitizer[Negative-Negative]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:17.476Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-063.png",
+      "sha256": "809b0a9a1ed2784af0e7df26a618a1f66ea1602603780f289b068aa4bf0420b9"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-064",
+      "underlying_test": "tests.test_bound_output::test_unbound_name_does_not_skip_later_cross_row_check",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:17.736Z",
+      "status": "PASS",
+      "execution_ms": 3,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-064.png",
+      "sha256": "997866ecc6fab726add72eb6c133bfbb13bdc73a0b4a0ef069657db5bc43577f"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-065",
+      "underlying_test": "tests.test_bound_output::test_flag_that_conflicts_with_within_range_is_uncertain[H]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:18.091Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-065.png",
+      "sha256": "a653c8d6b70cda91a43622cd00a473af1b723d31cf9c60a4ef23cab7a983bf2f"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-066",
+      "underlying_test": "tests.test_bound_output::test_flag_that_conflicts_with_within_range_is_uncertain[HH]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:18.420Z",
+      "status": "PASS",
+      "execution_ms": 3,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-066.png",
+      "sha256": "31394897fe5f22b71a63ccdaa8fb7795033bff100b73189cc72a106167b4fdf8"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-067",
+      "underlying_test": "tests.test_bound_output::test_flag_that_conflicts_with_within_range_is_uncertain[L]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:18.641Z",
+      "status": "PASS",
+      "execution_ms": 3,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-067.png",
+      "sha256": "99d3b7a90b3e315c9d3be83d2a8942d8b2868053653c3b46a20c672a43af54e2"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-068",
+      "underlying_test": "tests.test_bound_output::test_flag_that_conflicts_with_within_range_is_uncertain[LL]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:18.908Z",
+      "status": "PASS",
+      "execution_ms": 3,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-068.png",
+      "sha256": "518c4a7f48df95aa2e41022acda8af1cc319c93f652ffd571f6fd1b1cce41fed"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-069",
+      "underlying_test": "tests.test_bound_output::test_uncertain_report_card_status_is_unknown_after_validation",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:19.200Z",
+      "status": "PASS",
+      "execution_ms": 29,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-069.png",
+      "sha256": "fbb2096360525239a21173a594b6a687b7e618f19a415eed1f4f7556a8f0541b"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-070",
+      "underlying_test": "tests.test_bound_output::test_reader_verifies_fallback_at_real_read_report_boundary[False]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:19.636Z",
+      "status": "PASS",
+      "execution_ms": 6,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-070.png",
+      "sha256": "d41716f2e20ed4ede8d4fc0041a441271d8bc55bc3a362d167a7aa43b5e726a6"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-071",
+      "underlying_test": "tests.test_bound_output::test_reader_verifies_fallback_at_real_read_report_boundary[True]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:20.031Z",
+      "status": "PASS",
+      "execution_ms": 6,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-071.png",
+      "sha256": "83c189ffe646dff97af72e54459a4bc3869da6bceedd752ba2fd51a2233b6c91"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-072",
+      "underlying_test": "tests.test_bound_output::test_exact_policy_recovery_retains_withheld_verdict_and_output_guard[False]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:20.487Z",
+      "status": "PASS",
+      "execution_ms": 33,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-072.png",
+      "sha256": "c02207c78841cf12d251f6dc0b77b0a15c4a5793f77c19d22067d29c4e6cbe45"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-073",
+      "underlying_test": "tests.test_bound_output::test_exact_policy_recovery_retains_withheld_verdict_and_output_guard[True]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:21.018Z",
+      "status": "PASS",
+      "execution_ms": 33,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-073.png",
+      "sha256": "a6e57a7ac6187d56dcf4c86366800cdb63ea0f5310ae05a57ae416438e22afa1"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-074",
+      "underlying_test": "tests.test_bound_output::test_confirming_raw_cells_cannot_reenable_a_contradictory_comparison",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:21.424Z",
+      "status": "PASS",
+      "execution_ms": 3,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-074.png",
+      "sha256": "aa84738d4da5d8e3cd42a0677ddfedee8ac6269eb1a0658d0da8527a5b7c6228"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-075",
+      "underlying_test": "tests.test_candidate_contracts::test_native_html_keeps_columns_glyphs_negative_values_and_full_reference",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:21.757Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-075.png",
+      "sha256": "b254adadd486bf24f335bb619ab9c26ad1825b1c603ed69b68d6e90cb5e14661"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-076",
+      "underlying_test": "tests.test_candidate_contracts::test_ambiguous_html_never_silently_drops_or_infers_cells[<table><tr><th>Test name</th><th>Result</th><th>Unit</th><th></th><th>Reference value</th></tr>\\n<tr><td>Unfamiliar marker</td><td>-7.25</td><td>10<sup>9</sup>/\\xb5L</td><td>not a flag</td><td>Group A: -6 \\u2013 -2<br>unit</td></tr>\\n<tr><td>Second marker</td><td>Trace</td><td>-</td><td>-</td><td>Not established</td></tr></table>]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:22.104Z",
+      "status": "PASS",
+      "execution_ms": 5,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-076.png",
+      "sha256": "953842f8f4c287f7d142f4ae6a34f73b90c2b61d0a39200fc23ccc0d9b56b87d"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-077",
+      "underlying_test": "tests.test_candidate_contracts::test_ambiguous_html_never_silently_drops_or_infers_cells[<table><tr><th>Test name</th><th>Result</th><th>Unit</th><th></th><th>Reference value</th></tr>\\n<tr><td>Unfamiliar marker</td><td>-7.25</td><td>10<sup>9</sup>/\\xb5L</td><td>L</td><td>Group A: -6 \\u2013 -2<br>unit</td></tr>\\n<tr><td>Second marker</td><td colspan=\"2\">Trace</td><td>-</td><td>-</td><td>Not established</td></tr></table>]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:22.381Z",
+      "status": "PASS",
+      "execution_ms": 3,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-077.png",
+      "sha256": "ac68bfdfc5cb7c851441eb5abef685fbfef79da8529d4a581b349677ec54bf88"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-078",
+      "underlying_test": "tests.test_candidate_contracts::test_ambiguous_html_never_silently_drops_or_infers_cells[<table><tr><th>Test name</th><th>Result</th><th>Unit</th><th></th><th>Reference value</th></tr>\\n<tr><td>Unfamiliar marker</td><td>10<sup>9</sup>/\\xb5L</td><td>L</td><td>Group A: -6 \\u2013 -2<br>unit</td></tr>\\n<tr><td>Second marker</td><td>Trace</td><td>-</td><td>-</td><td>Not established</td></tr></table>]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:22.700Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-078.png",
+      "sha256": "d3d76a151559e68d16ac6a236d8e3899a312aa28117c4abd50c917226ddf9350"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-079",
+      "underlying_test": "tests.test_candidate_contracts::test_ambiguous_html_never_silently_drops_or_infers_cells[<table><tr><th>Test name</th><th>Result</th><th>Unit</th><th></th><th>Reference value</th></tr>\\n<tr><td>Unfamiliar marker</td><td>-7.25</td><td>10<sup>9</sup>/\\xb5L</td><td>L</td><td>Group A: -6 \\u2013 -2<br>unit</td></tr>\\n<tr><td>Second marker</td><td>Trace</td><td>-</td><td>-</td><td>Not established</td></tr>]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:23.038Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-079.png",
+      "sha256": "6b1954dc01c19603332f9f113596c94ced1eb4a0ed5a5d060eaab711821c2602"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-080",
+      "underlying_test": "tests.test_candidate_contracts::test_ambiguous_html_never_silently_drops_or_infers_cells[<table><tr><th>Test name</th><th>Result</th><th>Unit</th><th></th><th>Reference value</th></tr>\\n<tr><td>Unfamiliar marker</td><td>-7.25</td><td>10<sup>9</sup>/\\xb5L</td><td>L</td><td>Group A: -6 \\u2013 -2<br>unit</td></tr>\\n<tr><td>Second marker</td><td>Trace</td><td>-</td><td>-</td><td>Not established</td></tr></table><table><tr><td>Name</td></tr><tr><td>UNTRUSTED_ID</td></tr></table>]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:23.359Z",
+      "status": "PASS",
+      "execution_ms": 3,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-080.png",
+      "sha256": "00bc1e4b2631da122427c3c60508c567f2efe0a76fa00d91bb8497df87a0226a"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-081",
+      "underlying_test": "tests.test_candidate_contracts::test_ambiguous_html_never_silently_drops_or_infers_cells[<table><tr><th>Test name</th><th>Result</th><th>Unit</th><th></th><th>Reference value</th></tr>\\n<tr><td>Unfamiliar marker</td><td>-7.25</td><td>10<sup>9</sup>/\\xb5L</td><td>L</td><td>Group A: -6 \\u2013 -2<br>unit</td></tr>\\n<tr><td>Second marker</td><td><script>unsafe</script></td><td>-</td><td>-</td><td>Not established</td></tr></table>]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:23.655Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-081.png",
+      "sha256": "a99b2a8fd184ea80ee6d6d4a7e4048df611866bfdf019b365607ed0c3f90ad3d"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-082",
+      "underlying_test": "tests.test_candidate_contracts::test_html_explicit_flag_column_accepts_unknown_flag_verbatim",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:23.902Z",
+      "status": "PASS",
+      "execution_ms": 3,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-082.png",
+      "sha256": "bbccc1318eb1a518973901b281e088465ccecf60745c6eeafa62bf3f11939cb1"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-083",
+      "underlying_test": "tests.test_candidate_contracts::test_html_path_preserves_document_guards_without_second_llm",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:24.104Z",
+      "status": "PASS",
+      "execution_ms": 6,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-083.png",
+      "sha256": "349fd984f1a61becdb7656f268865f99aa58f34276fb40661992a71508613008"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-084",
+      "underlying_test": "tests.test_candidate_contracts::test_single_supplied_comparison_is_only_arithmetic[17.3-2.4-9.8-above]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:24.381Z",
+      "status": "PASS",
+      "execution_ms": 3,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-084.png",
+      "sha256": "16f27dbf75e37ce94e40737d008d13ec24d9c8fbbfd1ceafc246cd61de590918"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-085",
+      "underlying_test": "tests.test_candidate_contracts::test_single_supplied_comparison_is_only_arithmetic[-7--8--2-within]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:24.706Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-085.png",
+      "sha256": "a1a5bfe36763df4f7b32fa129659e06bd8c5087c8be5509901454a9bc93885c4"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-086",
+      "underlying_test": "tests.test_candidate_contracts::test_single_supplied_comparison_is_only_arithmetic[0.2-0.3-1.4-below]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:25.079Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-086.png",
+      "sha256": "20324dd31fa3d1ed3bcd3616f71f0cc68e0c3aa3364d4606d8b6a8c4a92f8987"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-087",
+      "underlying_test": "tests.test_candidate_contracts::test_ambiguous_comparison_is_not_completed_from_knowledge[Marker is 7; reference range 3\\u20139 mg/L.]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:25.379Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-087.png",
+      "sha256": "c9948b63b04191c8450543b114ad3d65c07d1be077f84200c9efabd4c4c93f43"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-088",
+      "underlying_test": "tests.test_candidate_contracts::test_ambiguous_comparison_is_not_completed_from_knowledge[Marker is 7 mg/L; reference range 3\\u20139 g/L.]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:25.669Z",
+      "status": "PASS",
+      "execution_ms": 3,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-088.png",
+      "sha256": "0d02e6e0993bee8e9411502030a0a29eafbf8ae549f7c1b3bbd29ea33992f13b"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-089",
+      "underlying_test": "tests.test_candidate_contracts::test_ambiguous_comparison_is_not_completed_from_knowledge[Marker is 7 mg/L; second marker 8 mg/L; range 3\\u20139 mg/L.]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:25.897Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-089.png",
+      "sha256": "39e1138505b0dc16edea2b361db9a597f2adf22b3d6a3ed730d155b6be152432"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-090",
+      "underlying_test": "tests.test_candidate_contracts::test_ambiguous_comparison_is_not_completed_from_knowledge[Marker is 7 mg/L, age 50, range 3\\u20139 mg/L.]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:26.164Z",
+      "status": "PASS",
+      "execution_ms": 3,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-090.png",
+      "sha256": "c7d548597704143d4630809c3106253a608c15c5be5ca2384929afc1d63f7705"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-091",
+      "underlying_test": "tests.test_candidate_contracts::test_ambiguous_comparison_is_not_completed_from_knowledge[Marker is 7 mg/L; range 9\\u20133 mg/L.]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:26.455Z",
+      "status": "PASS",
+      "execution_ms": 3,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-091.png",
+      "sha256": "db4feda1dd114679aa0b76ac049e84506c389627a679c14a0f69564d595b5120"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-092",
+      "underlying_test": "tests.test_candidate_contracts::test_ambiguous_comparison_is_not_completed_from_knowledge[Marker is 7 mg/L; no printed range.]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:26.735Z",
+      "status": "PASS",
+      "execution_ms": 5,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-092.png",
+      "sha256": "eadae91bad05d7d60d07eba9ed883d1a94f47cc31df517254f1058a042705e5c"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-093",
+      "underlying_test": "tests.test_candidate_contracts::test_observation_ids_resolve_authoritative_values_without_model_retyping",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:27.005Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-093.png",
+      "sha256": "a22bdb8b6b118019657c1ae5a1409c62200f93076011db93088edac6dfed3efc"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-094",
+      "underlying_test": "tests.test_candidate_contracts::test_observation_ids_never_override_changed_legacy_values_or_unknown_rows",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:27.241Z",
+      "status": "PASS",
+      "execution_ms": 6,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-094.png",
+      "sha256": "2145cb963d83a1785b669e19da750e159fe3142f8f4b9e790ced1c65e45c7432"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-095",
+      "underlying_test": "tests.test_candidate_contracts::test_pure_text_lab_question_preserves_role_but_excludes_sales_evidence",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:27.529Z",
+      "status": "PASS",
+      "execution_ms": 31,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-095.png",
+      "sha256": "940cc722197cdde82f0f71a5e76c23af97e265e06025244f5722e1c36661f539"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-096",
+      "underlying_test": "tests.test_candidate_contracts::test_explicit_purchase_question_retains_catalog_access",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:27.794Z",
+      "status": "PASS",
+      "execution_ms": 30,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-096.png",
+      "sha256": "f79ea6191c9246cc7e41ddf2e159fd483a5e8dbe1f65e57e9839c58cecec26a0"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-097",
+      "underlying_test": "tests.test_candidate_contracts::test_organization_lookup_returns_only_organization_packages",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:28.035Z",
+      "status": "PASS",
+      "execution_ms": 28,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-097.png",
+      "sha256": "13a5055e107c7f642750c1cc7f39b304fb38fa57e50c73ce97a1c03e2805a8e9"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-098",
+      "underlying_test": "tests.test_candidate_contracts::test_unverified_refund_percentage_rejected_even_in_negation",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:28.298Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-098.png",
+      "sha256": "02c46ff6f7a0e21a988e42b8eece33536bc7c2e6ab91bce785e2d61c307a6da7"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-099",
+      "underlying_test": "tests.test_candidate_contracts::test_ocr_transport_disables_sampling_without_changing_budget_or_attempts",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:28.538Z",
+      "status": "PASS",
+      "execution_ms": 7,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-099.png",
+      "sha256": "a92f785d7d746f71a066c6a86061b5a4a4cc5859295441acdec1fefe0fe43f4e"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-100",
+      "underlying_test": "tests.test_candidate_contracts::test_retrieval_named_analyte_outranks_unrelated_shared_units",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:28.806Z",
+      "status": "PASS",
+      "execution_ms": 5,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-100.png",
+      "sha256": "cbc28c160ee3cea66fd9d6cebda7a3577c4ad0d7d483fa2681d01dac5648e70a"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-101",
+      "underlying_test": "tests.test_candidate_contracts::test_refund_echo_gets_one_rewrite_and_all_checks_run",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:29.084Z",
+      "status": "PASS",
+      "execution_ms": 34,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-101.png",
+      "sha256": "6a8d409e16bc1098a2ad6e589ccb9cd5a2c4f564d851d4f2a55c42ca55cbba98"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-102",
+      "underlying_test": "tests.test_candidate_contracts::test_nonexact_or_negated_value_never_becomes_exact_arithmetic[not ]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:29.372Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-102.png",
+      "sha256": "1a46de5f7f343ce8cb8a76e345a5bb822fe15bd6369dd3d237bf5274436b55bc"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-103",
+      "underlying_test": "tests.test_candidate_contracts::test_nonexact_or_negated_value_never_becomes_exact_arithmetic[maybe ]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:29.593Z",
+      "status": "PASS",
+      "execution_ms": 3,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-103.png",
+      "sha256": "4499a2482f341f72a36fece33cb76183b7d60af2bfef0b7ebebcca5aa4cff2a3"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-104",
+      "underlying_test": "tests.test_candidate_contracts::test_nonexact_or_negated_value_never_becomes_exact_arithmetic[about ]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:29.845Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-104.png",
+      "sha256": "fd263cc3dc25e5c3c719da55284657c90efd96218cb718607af415f1f0ac92b5"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-105",
+      "underlying_test": "tests.test_candidate_contracts::test_nonexact_or_negated_value_never_becomes_exact_arithmetic[> ]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:30.085Z",
+      "status": "PASS",
+      "execution_ms": 5,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-105.png",
+      "sha256": "a8eaf06353e4e4a9c58768e95bc342e18d3e6165ca1cb296d009a8c33e279a4d"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-106",
+      "underlying_test": "tests.test_candidate_contracts::test_nonexact_or_negated_value_never_becomes_exact_arithmetic[<= ]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:30.301Z",
+      "status": "PASS",
+      "execution_ms": 3,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-106.png",
+      "sha256": "844188dfecb211fe53a870f0b1d6999d327d0e49100645259afde8c3455033c1"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-107",
+      "underlying_test": "tests.test_candidate_contracts::test_nonexact_or_negated_value_never_becomes_exact_arithmetic[\\u0e44\\u0e21\\u0e48\\u0e43\\u0e0a\\u0e48 ]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:30.537Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-107.png",
+      "sha256": "865c5a3982c3d0cd86dd0a2ac015fb165c18063de14b8de7b58c68d30bbd05f8"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-108",
+      "underlying_test": "tests.test_candidate_contracts::test_nonexact_or_negated_value_never_becomes_exact_arithmetic[\\u0e1b\\u0e23\\u0e30\\u0e21\\u0e32\\u0e13 ]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:30.719Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-108.png",
+      "sha256": "c46d2c6e0c9f067f0781070c4c6c7b81a24d149df3b2ba1c4cf73e5ff8461927"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-109",
+      "underlying_test": "tests.test_candidate_contracts::test_disconnect_joins_cleanup_but_keeps_pending_work_registered[True]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:30.936Z",
+      "status": "PASS",
+      "execution_ms": 8,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-109.png",
+      "sha256": "fb6e029b534cbe225c1950dc56383cf56ae860fb43c0f8566f64b92a0fa2c56e"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-110",
+      "underlying_test": "tests.test_candidate_contracts::test_disconnect_joins_cleanup_but_keeps_pending_work_registered[False]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:31.166Z",
+      "status": "PASS",
+      "execution_ms": 124,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-110.png",
+      "sha256": "2908d67c981acb04f4f76995a26df6b5cde9ab973bfa8f0663cc47dfc5a98c1a"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-111",
+      "underlying_test": "tests.test_candidate_contracts::test_case_sensitive_units_are_not_assumed_equivalent",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:31.369Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-111.png",
+      "sha256": "0d61fe759a66607baf592dd23dadf46bcac45a870df72af82c9c70f18722d9db"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-112",
+      "underlying_test": "tests.test_candidate_contracts::test_html_unknown_extra_column_is_not_silently_ignored",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:31.690Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-112.png",
+      "sha256": "474c6fcc075a52e72f51f840f70c5c2d01814da71bc6ed43cf4e2d8a035039bb"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-113",
+      "underlying_test": "tests.test_candidate_contracts::test_organization_scope_stays_service_only_with_a_medical_search",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:31.934Z",
+      "status": "PASS",
+      "execution_ms": 30,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-113.png",
+      "sha256": "ef8a159d33230a7c38febf65cecf8cb248f646eab734657a3230772fd5f1cc9f"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-114",
+      "underlying_test": "tests.test_answer_checks::test_test_names_in_thai_questions_are_found",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:32.187Z",
+      "status": "PASS",
+      "execution_ms": 5,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-114.png",
+      "sha256": "86d1dc0244b3f609cf4ecb791b0cd096ca5c0762fc97ffec3f394304bfdf8739"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-115",
+      "underlying_test": "tests.test_answer_checks::test_a_health_question_is_searched_when_the_planner_gives_no_terms",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:32.443Z",
+      "status": "PASS",
+      "execution_ms": 28,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-115.png",
+      "sha256": "b2cfe75d7d238e232c592c21581fcb2208ceffb379a03a444b8e66f6bde0b5db"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-116",
+      "underlying_test": "tests.test_answer_checks::test_amounts_must_be_catalog_prices",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:32.678Z",
+      "status": "PASS",
+      "execution_ms": 15,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-116.png",
+      "sha256": "74051422cf9e0faa8e7e00669ad61bb354b58372d72cb26c3a6c14795eebab54"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-117",
+      "underlying_test": "tests.test_answer_checks::test_a_wrong_price_is_rewritten_once_then_withheld",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:32.936Z",
+      "status": "PASS",
+      "execution_ms": 42,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-117.png",
+      "sha256": "d8c9e65c477dacbe4ede211acd76ee23d86ba7f23056e250629ebbc142c078b2"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-118",
+      "underlying_test": "tests.test_answer_checks::test_critical_flags_always_get_prompt_care_advice",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:33.173Z",
+      "status": "PASS",
+      "execution_ms": 32,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-118.png",
+      "sha256": "c068b166ab6d4707c52acacb45035e7db0f3f82649003b2c5c5a2bc3b18ffc7a"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-119",
+      "underlying_test": "tests.test_answer_checks::test_printed_ranges_in_common_shapes_are_compared[H 0.3 - 1.5-mg/dL-high]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:33.420Z",
+      "status": "PASS",
+      "execution_ms": 5,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-119.png",
+      "sha256": "4d2fd83e2b2e87845725165e719824ef2d64e282c3c54a8e62e76c5fda1dd00a"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-120",
+      "underlying_test": "tests.test_answer_checks::test_printed_ranges_in_common_shapes_are_compared[0.3 - 1.5 H-mg/dL-high]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:33.698Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-120.png",
+      "sha256": "820c7696be7447ece39e45e2396c5fa5b873a63264af3f1593304184a1020161"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-121",
+      "underlying_test": "tests.test_answer_checks::test_printed_ranges_in_common_shapes_are_compared[- 0.3 - 1.5-mg/dL-high]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:33.993Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-121.png",
+      "sha256": "16a9584b8dde03f6561c74af32b8bee7ccf044678524bed952e9e72ee4976fab"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-122",
+      "underlying_test": "tests.test_answer_checks::test_printed_ranges_in_common_shapes_are_compared[0.3 \\u2011 1.5-mg/dL-high]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:34.268Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-122.png",
+      "sha256": "b4e18d5b55ec4b8bf36b78fe73726c4867b7c8bc3809993d24bd118c3f65e09e"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-123",
+      "underlying_test": "tests.test_answer_checks::test_printed_ranges_in_common_shapes_are_compared[(0.3 - 1.5)-mg/dL-high]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:34.548Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-123.png",
+      "sha256": "9d42a16b1ffff2f9e330717091fd33eb1d5a0f7b662c387246731e35715b5503"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-124",
+      "underlying_test": "tests.test_answer_checks::test_printed_ranges_in_common_shapes_are_compared[0.3 to 1.5-mg/dL-high]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:34.852Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-124.png",
+      "sha256": "f5f1c157aa0fbdf039b730c054010c2da9e00dcbe20bca10cc89c0f3f61dd229"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-125",
+      "underlying_test": "tests.test_answer_checks::test_printed_ranges_in_common_shapes_are_compared[0.3 - 1.5 mg/dL--high]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:35.150Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-125.png",
+      "sha256": "bb291aa504215dbecd7455dfe095d8d00133833caa4e441bfa36fe16af22b00b"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-126",
+      "underlying_test": "tests.test_answer_checks::test_printed_ranges_in_common_shapes_are_compared[Female 0.3 - 1.5-mg/dL-unknown]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:35.428Z",
+      "status": "PASS",
+      "execution_ms": 5,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-126.png",
+      "sha256": "1d679ed259c8461af2423502841804faf1022a80a7d8a49609d1f75453eebd8b"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-127",
+      "underlying_test": "tests.test_answer_checks::test_printed_ranges_in_common_shapes_are_compared[0.3 - 1.5 mmol/L-mg/dL-unknown]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:35.738Z",
+      "status": "PASS",
+      "execution_ms": 4,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-127.png",
+      "sha256": "14529099fad877e50daad51ffc2941162e4d3255cd13119e4e275aa2376c759a"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-128",
+      "underlying_test": "tests.test_business_v3::test_business_surface_and_catalog",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:36.090Z",
+      "status": "PASS",
+      "execution_ms": 248,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-128.png",
+      "sha256": "88b89da06b35504e9b6c99899e7b8d18078d1ae65d61d78e6a34fb8b160965d3"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-129",
+      "underlying_test": "tests.test_business_v3::test_session_is_private_and_csrf_required",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:36.324Z",
+      "status": "PASS",
+      "execution_ms": 233,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-129.png",
+      "sha256": "560f48079171351c288b55be0d0bf132aea714ffb4cd7ca78fa298d9e3a927ae"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-130",
+      "underlying_test": "tests.test_business_v3::test_cross_origin_rejected",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:36.562Z",
+      "status": "PASS",
+      "execution_ms": 241,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-130.png",
+      "sha256": "24d37a67fd316ab3a5c647acd32387f7f5c14736d05eb5aa6ac3c581b0f313e7"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-131",
+      "underlying_test": "tests.test_business_v3::test_price_tampering_and_package_validation",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:36.837Z",
+      "status": "PASS",
+      "execution_ms": 237,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-131.png",
+      "sha256": "e9c1dae1afd6b62b35ec45b257e7a87f873a178f4b6ae10d6d380d83460aa825"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-132",
+      "underlying_test": "tests.test_business_v3::test_guest_cannot_book",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:37.088Z",
+      "status": "PASS",
+      "execution_ms": 25,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-132.png",
+      "sha256": "3adfe41b623078ecdb404a0ecccc4f3e061c5147f260db3e98b3f8a1bb5690b6"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-133",
+      "underlying_test": "tests.test_business_v3::test_duplicate_booking_and_price",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:37.356Z",
+      "status": "PASS",
+      "execution_ms": 269,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-133.png",
+      "sha256": "04ee624fbf0ff069b78ff9ecdad1188ca75f1697b8b60d2c5bea0944646be363"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-134",
+      "underlying_test": "tests.test_business_v3::test_idempotency_key_cannot_change_payload",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:37.625Z",
+      "status": "PASS",
+      "execution_ms": 243,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-134.png",
+      "sha256": "b808ce9d84a675c5cda31d7103e265131760c7b6dc05471b950b5bd7608ae2e1"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-135",
+      "underlying_test": "tests.test_business_v3::test_capacity_serialized_across_threads",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:37.908Z",
+      "status": "PASS",
+      "execution_ms": 956,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-135.png",
+      "sha256": "c25074ecf4aeedaec2d9b73e02298d701fae324f454c13cb737a21de926bbf74"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-136",
+      "underlying_test": "tests.test_business_v3::test_followup_package_requires_staff",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:38.127Z",
+      "status": "PASS",
+      "execution_ms": 244,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-136.png",
+      "sha256": "646dfb1b627bc78930744da905cf78e0855bba542d407847a0ce560cd714cc9b"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-137",
+      "underlying_test": "tests.test_business_v3::test_corporate_not_direct_checkout",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:38.419Z",
+      "status": "PASS",
+      "execution_ms": 228,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-137.png",
+      "sha256": "8ad032b172ad9ebb1de008fc99b4123e6d0674058ea00ad5db1a21c07c2270c4"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-138",
+      "underlying_test": "tests.test_business_v3::test_cancel_keeps_payment_separate",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:38.743Z",
+      "status": "PASS",
+      "execution_ms": 272,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-138.png",
+      "sha256": "b671b02029ba73a70f84b98314561c1aadce032050a427e995307daa9c435916"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-139",
+      "underlying_test": "tests.test_business_v3::test_payments_reject_another_owner",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:39.005Z",
+      "status": "PASS",
+      "execution_ms": 439,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-139.png",
+      "sha256": "398b09e07d326976f33de894b63cb80f04497b8a39630345712030ce977d33ac"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-140",
+      "underlying_test": "tests.test_business_v3::test_external_payment_disabled_uses_labelled_simulator",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:39.270Z",
+      "status": "PASS",
+      "execution_ms": 465,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-140.png",
+      "sha256": "e1a1203fdf432dc07e3a5eb0f4cec5a6d66dc34d023a44b22c569630281ecea6"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-141",
+      "underlying_test": "tests.test_business_v3::test_live_stripe_key_rejected",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:39.552Z",
+      "status": "PASS",
+      "execution_ms": 477,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-141.png",
+      "sha256": "4ae6eb36e41a32422f47b70e981b8c57ee08c6c447bd997aef3f0007e1362f11"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-142",
+      "underlying_test": "tests.test_business_v3::test_signed_webhook_amount_and_replay",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:39.851Z",
+      "status": "PASS",
+      "execution_ms": 270,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-142.png",
+      "sha256": "732a454bd14006dc2e226d9ef720eae3890fa65f4e4e70cf33042d221e9dfa34"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-143",
+      "underlying_test": "tests.test_business_v3::test_unsigned_stale_and_live_events_rejected",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:40.270Z",
+      "status": "PASS",
+      "execution_ms": 225,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-143.png",
+      "sha256": "b6931c47c96a2868cc3f94fdb75a132e3be324210ba5cad5b978e957351d019c"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-144",
+      "underlying_test": "tests.test_business_v3::test_staff_requires_role_and_takeover",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:40.668Z",
+      "status": "PASS",
+      "execution_ms": 501,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-144.png",
+      "sha256": "2421e80af2cee7f08954aa8a591172222474c71a62f930d1809c8b04873240fc"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-145",
+      "underlying_test": "tests.test_business_v3::test_staff_reply_keeps_ticket_version_in_sync_after_first_response",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:40.962Z",
+      "status": "PASS",
+      "execution_ms": 661,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-145.png",
+      "sha256": "960982faa328b6884c144a0fd40997340ddb55f43319d98554e750a57b7c2ccb"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-146",
+      "underlying_test": "tests.test_business_v3::test_handoff_binds_exact_chat_and_stale_staff_mutations_fail_closed",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:41.282Z",
+      "status": "PASS",
+      "execution_ms": 1241,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-146.png",
+      "sha256": "98904b6f91b890d30e613e40c19d514e0289d1b5d484e83e8316ed6829f1ed44"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-147",
+      "underlying_test": "tests.test_business_v3::test_handoff_shares_only_selected_items_after_staff_claims_ticket",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:41.679Z",
+      "status": "PASS",
+      "execution_ms": 845,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-147.png",
+      "sha256": "70e55a1225c6cdffe2c43e14eb384bbe689d8c5333e61a05a7b200c7182cde44"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-148",
+      "underlying_test": "tests.test_business_v3::test_handoff_without_selected_history_records_only_request_note_scope",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:42.032Z",
+      "status": "PASS",
+      "execution_ms": 443,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-148.png",
+      "sha256": "52753214a3595c7e384c1770bd270ed0538ffae1a516ba09f549afac7e842dd1"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-149",
+      "underlying_test": "tests.test_business_v3::test_handoff_rejects_message_ids_from_outside_the_current_chat_without_mutation",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:42.297Z",
+      "status": "PASS",
+      "execution_ms": 399,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-149.png",
+      "sha256": "60c90a76ffb577a1c5fd581815075caf93fb64ab6bf17304c49669c4f933d199"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-150",
+      "underlying_test": "tests.test_business_v3::test_customer_can_requeue_ticket_after_staff_returns_chat_to_bot",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:42.553Z",
+      "status": "PASS",
+      "execution_ms": 1368,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-150.png",
+      "sha256": "bb53384412001e0a24b20196ca106c4d82f46f6e774ccc2838a8ae6bc290beae"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-151",
+      "underlying_test": "tests.test_business_v3::test_customer_may_keep_assigned_staff_after_resume_prompt",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:42.860Z",
+      "status": "PASS",
+      "execution_ms": 606,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-151.png",
+      "sha256": "f2979583bd473a3c634d9d304e058ca7b6dc5d17db861d96cbd8786c1de28b49"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-152",
+      "underlying_test": "tests.test_business_v3::test_resume_pending_rejects_chat_messages_without_saving_or_running_agent",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:43.195Z",
+      "status": "PASS",
+      "execution_ms": 570,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-152.png",
+      "sha256": "b912480fbfab377c55195e6ce4bf0a84fd01867727346487333ede3d5e2c1886"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-153",
+      "underlying_test": "tests.test_business_v3::test_resumed_ticket_does_not_block_handoff_from_a_new_chat",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:43.556Z",
+      "status": "PASS",
+      "execution_ms": 662,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-153.png",
+      "sha256": "9c5df5f2ecf00cc550cbf2767fe0c6fac67db4f2376e83b99660a83978df1e94"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-154",
+      "underlying_test": "tests.test_business_v3::test_refund_request_after_resume_requeues_ticket_for_staff",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:43.874Z",
+      "status": "PASS",
+      "execution_ms": 613,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-154.png",
+      "sha256": "04be8d8ab14053a45df5fa66a2cff67f58253985ad9c9364917369b392d73d2b"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-155",
+      "underlying_test": "tests.test_business_v3::test_report_confirmation_during_resume_prompt_is_rejected_without_mutation",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:44.190Z",
+      "status": "PASS",
+      "execution_ms": 634,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-155.png",
+      "sha256": "996b48a3f0e544f24ddd202427ff43d93c70b684288cf137b9c3cae9d6646d05"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-156",
+      "underlying_test": "tests.test_business_v3::test_staff_cannot_skip_resume_confirmation_or_take_closed_ticket",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:44.542Z",
+      "status": "PASS",
+      "execution_ms": 507,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-156.png",
+      "sha256": "eeb02a6c5ec76bbd34944f67ef83108830d8b70ed63c1af7133d6110c1f10087"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-157",
+      "underlying_test": "tests.test_business_v3::test_closed_ticket_blocks_same_chat_and_history_reopen_but_allows_new_chat",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:44.827Z",
+      "status": "PASS",
+      "execution_ms": 600,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-157.png",
+      "sha256": "8f72ca2e62de8cfa5683cfe5877f66d7c290205e1245c5b40c23bbfdf8b6b368"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-158",
+      "underlying_test": "tests.test_business_v3::test_closed_ticket_rejects_report_upload_before_ocr_or_persistence",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:45.219Z",
+      "status": "PASS",
+      "execution_ms": 524,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-158.png",
+      "sha256": "c48f84f64b078cda84d3f6379cb78e101fe4fc4f003014a74f59da11761e9ce8"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-159",
+      "underlying_test": "tests.test_business_v3::test_closed_ticket_rejects_report_confirmation_before_mutation_or_assistant",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:45.607Z",
+      "status": "PASS",
+      "execution_ms": 497,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-159.png",
+      "sha256": "d9442af3c0dc250d087695745183155799845f2962316a1be3c3e4af734a58e8"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-160",
+      "underlying_test": "tests.test_business_v3::test_only_one_staff_claims_ticket_from_same_version",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:45.918Z",
+      "status": "PASS",
+      "execution_ms": 786,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-160.png",
+      "sha256": "50328eb789320a997e50fa8635f0440203f23d2203c8063faeee6870c1377f46"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-161",
+      "underlying_test": "tests.test_business_v3::test_staff_queue_does_not_call_llm",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:46.238Z",
+      "status": "PASS",
+      "execution_ms": 264,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-161.png",
+      "sha256": "b0c929ff1a83e4275013ee230d64a9c782754fde21cd4f9f415bef4549c8f317"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-162",
+      "underlying_test": "tests.test_business_v3::test_llm_failure_does_not_create_transaction",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:46.549Z",
+      "status": "PASS",
+      "execution_ms": 297,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-162.png",
+      "sha256": "54e6b27a8e2379117a73a81a27208027287bed15ce1b5c940181d365b80655eb"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-163",
+      "underlying_test": "tests.test_business_v3::test_llm_proposal_needs_explicit_confirmation",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:46.831Z",
+      "status": "PASS",
+      "execution_ms": 287,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-163.png",
+      "sha256": "ce0a5a0608888e73d4ae97ccd24a9c0ab51e599f065372438a4d9336a693f92c"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-164",
+      "underlying_test": "tests.test_business_v3::test_stop_invalidates_preview",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:47.197Z",
+      "status": "PASS",
+      "execution_ms": 259,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-164.png",
+      "sha256": "964372d4c869bea1eb80354353a53936b5d5d98b92fd1d77bbf71c8345a2bf7a"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-165",
+      "underlying_test": "tests.test_business_v3::test_report_ownership_and_encryption",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:47.535Z",
+      "status": "PASS",
+      "execution_ms": 482,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-165.png",
+      "sha256": "a7ade7f9be666c30c77bd7fb6aca413a9771d90ebd303a791279f25e69af4962"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-166",
+      "underlying_test": "tests.test_business_v3::test_report_requires_confirmation",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:47.902Z",
+      "status": "PASS",
+      "execution_ms": 245,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-166.png",
+      "sha256": "915f77a9f760e5b1ca8c9f89f581940135fc07224695389bbe1bf04563d889e7"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-167",
+      "underlying_test": "tests.test_business_v3::test_line_signature_and_dedup",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:48.268Z",
+      "status": "PASS",
+      "execution_ms": 251,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-167.png",
+      "sha256": "7935449f33c0ffcb7980938b2717c77585a6f87f2b92750cbe2580016b84bba7"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-168",
+      "underlying_test": "tests.test_business_v3::test_line_link_single_use_and_import",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:48.607Z",
+      "status": "PASS",
+      "execution_ms": 259,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-168.png",
+      "sha256": "7ecf437b6ed2f265cab5abb18604226a664b6924a7b3b766cb44663d412957bc"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-169",
+      "underlying_test": "tests.test_business_v3::test_cloud_requires_durable_database",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:48.882Z",
+      "status": "PASS",
+      "execution_ms": 10,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-169.png",
+      "sha256": "53d6f982aac3764953af6e3a3bb388b8ef9a18f12695fb22daa1b1dbac6560d3"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-170",
+      "underlying_test": "tests.test_business_v3::test_business_planner_is_not_keyword_router",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:49.226Z",
+      "status": "PASS",
+      "execution_ms": 10,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-170.png",
+      "sha256": "74e7bd19e79673348d2fa5380000d6ec17585a0109e23fa6424cb3e650b685c6"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-171",
+      "underlying_test": "tests.test_business_v3::test_manager_catalog_and_stale_quote",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:49.551Z",
+      "status": "PASS",
+      "execution_ms": 525,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-171.png",
+      "sha256": "c18c34e772988eec5469ab944fd57ba448c8f5820b9206db0b2d9d4f956d05d6"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-172",
+      "underlying_test": "tests.test_business_v3::test_inactive_package_cannot_be_quoted",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:49.895Z",
+      "status": "PASS",
+      "execution_ms": 239,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-172.png",
+      "sha256": "09929a610fec124934393bb4aebba7937f95c6b9d5c650cdf0ade2bf5d8ef294"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-173",
+      "underlying_test": "tests.test_business_v3::test_organization_quote_acceptance_and_owner",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:50.140Z",
+      "status": "PASS",
+      "execution_ms": 680,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-173.png",
+      "sha256": "798f3c5a683506e720ec5dd420d1f8b23e4d2ff8b09ecedd89086975c5d7db7a"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-174",
+      "underlying_test": "tests.test_business_v3::test_checkout_reuses_fixed_amount_and_method",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:50.418Z",
+      "status": "PASS",
+      "execution_ms": 469,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-174.png",
+      "sha256": "6dbbe6da7e36bcfa89bde4ef55c3565bb823c34bada22bf847ff953960e0469b"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-175",
+      "underlying_test": "tests.test_business_v3::test_center_settlement_and_refund_need_role",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:50.646Z",
+      "status": "PASS",
+      "execution_ms": 720,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-175.png",
+      "sha256": "c97c5a1bb5e92e70b91bd973115d86bdfeac902b6bb499b213e2da2dffa3c297"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-176",
+      "underlying_test": "tests.test_business_v3::test_staff_and_clinical_cannot_settle_center_payment",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:50.908Z",
+      "status": "PASS",
+      "execution_ms": 936,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-176.png",
+      "sha256": "ca7662fa984a6fe5fa7a17c77478b4b01cc36c3616287ccb73f139f27821ec8e"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-177",
+      "underlying_test": "tests.test_business_v3::test_settlement_is_idempotent_and_refund_is_terminal",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:51.218Z",
+      "status": "PASS",
+      "execution_ms": 700,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-177.png",
+      "sha256": "092a8fcc2fc3c0f5dd1f75dfa245ac91c5da9097f608cf3c8082daa1b33c46ad"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-178",
+      "underlying_test": "tests.test_business_v3::test_delayed_stripe_events_preserve_refund_state[checkout.session.completed-refunded]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:51.550Z",
+      "status": "PASS",
+      "execution_ms": 269,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-178.png",
+      "sha256": "81d115ec0180821b9b3ce0ab98cb6e7d2adb6d64b1e6c5c2e00b0f97cdb969c0"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-179",
+      "underlying_test": "tests.test_business_v3::test_delayed_stripe_events_preserve_refund_state[checkout.session.completed-refund_pending]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:51.827Z",
+      "status": "PASS",
+      "execution_ms": 257,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-179.png",
+      "sha256": "a625ad82ff128913e3f025f8ad4dbd1c8e473a37ec9770eb31e84d1f64492334"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-180",
+      "underlying_test": "tests.test_business_v3::test_delayed_stripe_events_preserve_refund_state[checkout.session.async_payment_succeeded-refunded]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:52.121Z",
+      "status": "PASS",
+      "execution_ms": 264,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-180.png",
+      "sha256": "fb8ec1ae57f86ce51c48de819177e98ae0393de2e9aaeb83f87d95b17a01c119"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-181",
+      "underlying_test": "tests.test_business_v3::test_delayed_stripe_events_preserve_refund_state[checkout.session.async_payment_succeeded-refund_pending]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:52.469Z",
+      "status": "PASS",
+      "execution_ms": 275,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-181.png",
+      "sha256": "3c2b42d07a7052326acf40d3d4987f8cb25f5deb7a595de1de9902072beabbc4"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-182",
+      "underlying_test": "tests.test_business_v3::test_delayed_stripe_events_preserve_refund_state[checkout.session.expired-refunded]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:52.745Z",
+      "status": "PASS",
+      "execution_ms": 258,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-182.png",
+      "sha256": "afa100cd18adcf397f99d5d4347591f8afbc43ede705ff48b03ce53b2e1c4e3a"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-183",
+      "underlying_test": "tests.test_business_v3::test_delayed_stripe_events_preserve_refund_state[checkout.session.expired-refund_pending]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:53.026Z",
+      "status": "PASS",
+      "execution_ms": 254,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-183.png",
+      "sha256": "0f3877bbd3cf46f1f94d2cebde8ecc571a9eea5a0c3fe00b16b0b80a56602464"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-184",
+      "underlying_test": "tests.test_business_v3::test_staff_takeover_discards_inflight_model",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:53.328Z",
+      "status": "PASS",
+      "execution_ms": 257,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-184.png",
+      "sha256": "a4014b821509bb65803cda09803eaefafe38f816493b6936600d0dcacc8dd22e"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-185",
+      "underlying_test": "tests.test_business_v3::test_worker_preserves_failed_job_without_fake_success",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:53.637Z",
+      "status": "PASS",
+      "execution_ms": 38,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-185.png",
+      "sha256": "9fd188650c17e9e8e1ede6efe7478feb12b771ea13d925c05e8dc5dc94bbc16c"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-186",
+      "underlying_test": "tests.test_business_v3::test_unlink_cancels_pending_delivery",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:53.926Z",
+      "status": "PASS",
+      "execution_ms": 305,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-186.png",
+      "sha256": "23f527f5e4c80573992b232e1e224f635a4cdb458f135791c805d03af5bb08bd"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-187",
+      "underlying_test": "tests.test_business_v3::test_real_medical_source_manifest_and_runtime_separation",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:54.201Z",
+      "status": "PASS",
+      "execution_ms": 37,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-187.png",
+      "sha256": "18206cfcdce0d74536ac4cbf2c15344b0fecd8e878db0c21db3a993287bc8e8b"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-188",
+      "underlying_test": "tests.test_guest_privacy_302::test_guest_state_never_enters_sql_and_new_page_cannot_recover_it",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:54.498Z",
+      "status": "PASS",
+      "execution_ms": 91,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-188.png",
+      "sha256": "ace8121a168fda76c68c01721de9b742b265207be57a6836f578937ac196640e"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-189",
+      "underlying_test": "tests.test_guest_privacy_302::test_guest_close_checks_csrf_origin_and_is_idempotent",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:54.781Z",
+      "status": "PASS",
+      "execution_ms": 63,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-189.png",
+      "sha256": "51cdaf74d1040545878037c43adf4867119582377a22b02c11078160dbb79354"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-190",
+      "underlying_test": "tests.test_guest_privacy_302::test_guest_ownership_and_staff_handoff_do_not_persist_content",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:55.021Z",
+      "status": "PASS",
+      "execution_ms": 50,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-190.png",
+      "sha256": "6de757af116930f013b96a47e6006329d86bf95c7b4535ea8929449794e1b7bb"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-191",
+      "underlying_test": "tests.test_guest_privacy_302::test_auth_discards_guest_and_preserves_existing_account_history[register]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:55.338Z",
+      "status": "PASS",
+      "execution_ms": 593,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-191.png",
+      "sha256": "191afca237c4c6c9a8c4fdfe1f2e2a8bfd1e605d3f5e07df52eff922c9601af3"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-192",
+      "underlying_test": "tests.test_guest_privacy_302::test_auth_discards_guest_and_preserves_existing_account_history[login]",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:55.651Z",
+      "status": "PASS",
+      "execution_ms": 539,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-192.png",
+      "sha256": "d8ec8113a3f688b329df1a1d8099c4f50c59155579f194bcd3967cde35f16c5a"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-193",
+      "underlying_test": "tests.test_guest_privacy_302::test_new_guest_chat_discards_old_reports_and_keeps_page_quota",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:55.960Z",
+      "status": "PASS",
+      "execution_ms": 54,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-193.png",
+      "sha256": "36bac74430ab854b0a3e27c2471a03c0bdce5ee1e6f6788d01c0ab73170053b0"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-194",
+      "underlying_test": "tests.test_guest_privacy_302::test_guest_expiry_and_rollback_do_not_restore_rows",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:56.331Z",
+      "status": "PASS",
+      "execution_ms": 38,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-194.png",
+      "sha256": "b3e4e42acd5608c7dbd7f8878ec9c2ff116d5d6db97cc542edb74de5ec489abc"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-195",
+      "underlying_test": "tests.test_guest_privacy_302::test_legacy_purge_removes_only_unregistered_web_guests_and_their_notices",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:56.636Z",
+      "status": "PASS",
+      "execution_ms": 22,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-195.png",
+      "sha256": "eda1f8cbbf2612b4ce7272c0762391d459a9840d65d346b2616083e92b82e3dd"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-196",
+      "underlying_test": "tests.test_guest_privacy_302::test_late_ai_result_after_close_cannot_recreate_guest",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:56.889Z",
+      "status": "PASS",
+      "execution_ms": 38,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-196.png",
+      "sha256": "9814ed8f22b4b8816bde3d5db480ca203370257035fedd2a3a6680ad72f3fe07"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-197",
+      "underlying_test": "tests.test_guest_privacy_302::test_late_ocr_after_close_cannot_recreate_guest",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:57.126Z",
+      "status": "PASS",
+      "execution_ms": 459,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-197.png",
+      "sha256": "d60c6f9b02082d9ec3630f375faa08888c0c4230cd852f9c97776c2bdb57af6a"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-198",
+      "underlying_test": "tests.test_guest_privacy_302::test_stop_during_ocr_discards_late_report_from_new_chat",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:57.555Z",
+      "status": "PASS",
+      "execution_ms": 644,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-198.png",
+      "sha256": "83b641d62608855b0506f1393e4c10ebf3955c0fbbb3ca1757e779a6b2cc409c"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-199",
+      "underlying_test": "tests.test_guest_privacy_302::test_guest_capacity_is_bounded_without_disk_fallback",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:57.839Z",
+      "status": "PASS",
+      "execution_ms": 29,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-199.png",
+      "sha256": "306d9e542baa5ff081d227d8b3ac29f301260b49aa0faa4342aaeb128a430743"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-200",
+      "underlying_test": "tests.test_guest_privacy_302::test_guest_upload_over_one_megabyte_does_not_spool_to_disk",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:58.124Z",
+      "status": "PASS",
+      "execution_ms": 483,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-200.png",
+      "sha256": "9bd7bdba17e8b642f068e0f811466176330b99f7bbee94a62da31908403f4928"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-201",
+      "underlying_test": "tests.test_cost_ledger::test_estimate_and_settlement_with_usage",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:58.430Z",
+      "status": "PASS",
+      "execution_ms": 26,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-201.png",
+      "sha256": "c8f716c61ef784a80ddbd3b15b8a9b116d8f9028915144fc52e44e90330a899a"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-202",
+      "underlying_test": "tests.test_cost_ledger::test_failed_call_keeps_conservative_charge",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:58.770Z",
+      "status": "PASS",
+      "execution_ms": 22,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-202.png",
+      "sha256": "22cd0f368f7e9820030003f5573a7e95754b6fba5eb68b95b8134724d5361679"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-203",
+      "underlying_test": "tests.test_cost_ledger::test_fail_closed_on_unknown_model_or_prior_spend",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:59.058Z",
+      "status": "PASS",
+      "execution_ms": 3,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-203.png",
+      "sha256": "891d5177032ff8ad215d8b5264ea4c6c82d1d08411857193459c9bca89dbe792"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-204",
+      "underlying_test": "tests.test_cost_ledger::test_cap_counts_prior_spend_and_blocks_before_request",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:59.314Z",
+      "status": "PASS",
+      "execution_ms": 17,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-204.png",
+      "sha256": "bd859d8b76ac373bde202ff6c619e037c719c6844e1160c0c3f9627c985cae49"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-205",
+      "underlying_test": "tests.test_cost_ledger::test_ledger_survives_restart",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:59.583Z",
+      "status": "PASS",
+      "execution_ms": 29,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-205.png",
+      "sha256": "17903eb19761f6432524a6df46b7182502c2bc3b849939ec9ddfa10769504389"
+    },
+    {
+      "case_id": "unit-source-fidelity-verified-captures-206",
+      "underlying_test": "tests.test_cost_ledger::test_transport_blocks_without_network_call_when_budget_exceeded",
+      "source_xml": "docs/evidence/current/expanded-live-20261012-01/unit-source-fidelity-verified.xml",
+      "mode": "OFFLINE_MOCK",
+      "step": "pytest-result",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "timestamp": "2026-10-12T12:30:59.852Z",
+      "status": "PASS",
+      "execution_ms": 17,
+      "provider_attempts": 0,
+      "file": "docs\\evidence\\current\\expanded-live-20261012-01\\unit-source-fidelity-verified-captures\\unit-source-fidelity-verified-captures-206.png",
+      "sha256": "46e9b07050b2eb197f2dee85dba225e0ed999e79f63f3b5846dcfbfd4012de40"
+    }
+  ]
+}

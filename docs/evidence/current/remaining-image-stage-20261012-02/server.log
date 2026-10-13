@@ -1,0 +1,179 @@
+ACCOUNTING_PREFLIGHT {"prior": 24, "remaining": 3341, "money_remaining": 288.9133, "old_reserved": 0.2281}
+2026-10-12 22:03:54,315 INFO labclear.request: {"event":"startup","at":1791817434.316,"in_flight":0}
+2026-10-12 22:03:57,900 INFO labclear.request: {"event":"document_worker","at":1791817437.9,"request_id":"req_aea855249cc43cf0","worker":"ok","pages":1}
+2026-10-12 22:04:12,080 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 22:04:12,160 WARNING labclear.storage: storage_on_event_loop at=C:\Users\User\Desktop\myProject\LabClear\services\conversation_transport.py:117
+2026-10-12 22:04:12,177 WARNING labclear.storage: storage_on_event_loop at=C:\Users\User\Desktop\myProject\LabClear\services\cost_ledger.py:122
+2026-10-12 22:04:13,509 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 22:04:29,455 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 22:04:29,590 WARNING labclear.report: range_not_compared shapes=9.99 - 9.99 | 9.99 - 99.99 | 999 - 999
+2026-10-12 22:04:29,593 INFO labclear.request: {"event":"ocr_row_binding","at":1791817469.593,"request_id":"req_aea855249cc43cf0","step":"rows","reason":"ambiguous_html_structure"}
+2026-10-12 22:04:29,593 INFO labclear.request: {"event":"ocr_unit_fidelity","at":1791817469.593,"request_id":"req_aea855249cc43cf0","step":"rows","reason":"unique_explicit_name_value_unit_cell:0"}
+2026-10-12 22:04:29,593 INFO labclear.request: {"event":"ocr_unit_source_probe","at":1791817469.593,"request_id":"req_aea855249cc43cf0","step":"rows","reason":"{\"tables\":1,\"incomplete\":false,\"scales\":[15,18],\"latex\":false}"}
+2026-10-12 22:04:30,833 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 22:04:30,965 INFO labclear.request: {"event":"workflow","at":1791817470.965,"request_id":"req_aea855249cc43cf0","turn_id":"14dc2f96a7ffd1d55a1933de9915302f","route":"/chat/report","kind":"ocr","stream":true,"outcome":"done","status":200,"code":null,"origin":null,"step":"rows","duration_ms":33422,"attempts":4,"dropped_events":0}
+2026-10-12 22:04:30,969 INFO labclear.request: {"event":"http","at":1791817470.968,"request_id":"req_aea855249cc43cf0","method":"POST","route":"/api/business/chat/report","status":200,"duration_ms":33422}
+2026-10-12 22:04:31,469 INFO labclear.request: {"event":"http","at":1791817471.469,"request_id":"req_4f880f1765994b8c","method":"GET","route":"/api/business/reports/{id}","status":401,"duration_ms":172}
+2026-10-12 22:04:40,442 INFO labclear.request: {"event":"document_worker","at":1791817480.443,"request_id":"req_8974f2b79e83d46f","worker":"ok","pages":1}
+2026-10-12 22:04:48,854 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 22:04:50,170 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 22:04:50,305 INFO labclear.request: {"event":"workflow","at":1791817490.306,"request_id":"req_8974f2b79e83d46f","turn_id":"94712bec77bb44a4788f9fd239059efc","route":"/chat/report","kind":"ocr","stream":true,"outcome":"error","status":422,"code":"safety_blocked","origin":"client","step":"doc_safety","duration_ms":10187,"attempts":2,"dropped_events":0}
+2026-10-12 22:04:50,308 INFO labclear.request: {"event":"http","at":1791817490.309,"request_id":"req_8974f2b79e83d46f","method":"POST","route":"/api/business/chat/report","status":200,"duration_ms":10187}
+2026-10-12 22:04:59,590 INFO labclear.request: {"event":"document_worker","at":1791817499.59,"request_id":"req_ef501d984a90bc8c","worker":"ok","pages":1}
+2026-10-12 22:05:08,479 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 22:05:09,612 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 22:05:09,685 INFO labclear.request: {"event":"workflow","at":1791817509.686,"request_id":"req_ef501d984a90bc8c","turn_id":"d2406c68fc25829ecbb65216f25da040","route":"/chat/report","kind":"ocr","stream":true,"outcome":"error","status":422,"code":"safety_blocked","origin":"client","step":"doc_safety","duration_ms":10468,"attempts":2,"dropped_events":0}
+2026-10-12 22:05:09,686 INFO labclear.request: {"event":"http","at":1791817509.687,"request_id":"req_ef501d984a90bc8c","method":"POST","route":"/api/business/chat/report","status":200,"duration_ms":10484}
+2026-10-12 22:05:18,798 INFO labclear.request: {"event":"document_worker","at":1791817518.798,"request_id":"req_cc1c4f1fa256c877","worker":"ok","pages":1}
+2026-10-12 22:05:25,189 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 22:05:26,352 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 22:05:26,428 INFO labclear.request: {"event":"workflow","at":1791817526.428,"request_id":"req_cc1c4f1fa256c877","turn_id":"cd5960aed91290dfa50b7164ee63a377","route":"/chat/report","kind":"ocr","stream":true,"outcome":"error","status":422,"code":"safety_blocked","origin":"client","step":"doc_safety","duration_ms":8000,"attempts":2,"dropped_events":0}
+2026-10-12 22:05:26,429 INFO labclear.request: {"event":"http","at":1791817526.429,"request_id":"req_cc1c4f1fa256c877","method":"POST","route":"/api/business/chat/report","status":200,"duration_ms":8000}
+2026-10-12 22:05:35,330 INFO labclear.request: {"event":"document_worker","at":1791817535.33,"request_id":"req_7849b85e6d7ce091","worker":"ok","pages":1}
+2026-10-12 22:05:41,970 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 22:05:43,212 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 22:05:43,350 INFO labclear.request: {"event":"workflow","at":1791817543.351,"request_id":"req_7849b85e6d7ce091","turn_id":"2a17d6a847d79ae2bd97fbf037bf9cc0","route":"/chat/report","kind":"ocr","stream":true,"outcome":"error","status":422,"code":"safety_blocked","origin":"client","step":"doc_safety","duration_ms":8328,"attempts":2,"dropped_events":0}
+2026-10-12 22:05:43,354 INFO labclear.request: {"event":"http","at":1791817543.355,"request_id":"req_7849b85e6d7ce091","method":"POST","route":"/api/business/chat/report","status":200,"duration_ms":8343}
+2026-10-12 22:05:52,706 INFO labclear.request: {"event":"document_worker","at":1791817552.707,"request_id":"req_9c6a6213719679e5","worker":"ok","pages":1}
+2026-10-12 22:06:07,787 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 22:06:10,098 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 22:06:10,289 INFO labclear.request: {"event":"workflow","at":1791817570.29,"request_id":"req_9c6a6213719679e5","turn_id":"f097877cd8fcbaf413e49b6f57bfb6c7","route":"/chat/report","kind":"ocr","stream":true,"outcome":"error","status":422,"code":"safety_blocked","origin":"client","step":"doc_safety","duration_ms":17969,"attempts":2,"dropped_events":0}
+2026-10-12 22:06:10,292 INFO labclear.request: {"event":"http","at":1791817570.292,"request_id":"req_9c6a6213719679e5","method":"POST","route":"/api/business/chat/report","status":200,"duration_ms":18016}
+2026-10-12 22:06:21,057 INFO labclear.request: {"event":"document_worker","at":1791817581.057,"request_id":"req_f8303393d9df02d5","worker":"ok","pages":1}
+2026-10-12 22:06:33,387 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 22:06:34,825 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 22:06:49,730 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 22:06:49,828 WARNING labclear.report: range_not_compared shapes=9.99 - 99.99 | 999 - 999
+2026-10-12 22:06:49,831 INFO labclear.request: {"event":"ocr_row_binding","at":1791817609.831,"request_id":"req_f8303393d9df02d5","step":"rows","reason":"ambiguous_html_structure"}
+2026-10-12 22:06:49,831 INFO labclear.request: {"event":"ocr_unit_fidelity","at":1791817609.832,"request_id":"req_f8303393d9df02d5","step":"rows","reason":"unique_explicit_name_value_unit_cell:0"}
+2026-10-12 22:06:49,831 INFO labclear.request: {"event":"ocr_unit_source_probe","at":1791817609.832,"request_id":"req_f8303393d9df02d5","step":"rows","reason":"{\"tables\":1,\"incomplete\":false,\"scales\":[15,12],\"latex\":false}"}
+2026-10-12 22:06:50,762 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 22:06:50,887 INFO labclear.request: {"event":"workflow","at":1791817610.887,"request_id":"req_f8303393d9df02d5","turn_id":"cc685c7d6e98449d444dbc6f7c720bc0","route":"/chat/report","kind":"ocr","stream":true,"outcome":"done","status":200,"code":null,"origin":null,"step":"rows","duration_ms":30344,"attempts":4,"dropped_events":0}
+2026-10-12 22:06:50,888 INFO labclear.request: {"event":"http","at":1791817610.889,"request_id":"req_f8303393d9df02d5","method":"POST","route":"/api/business/chat/report","status":200,"duration_ms":30407}
+2026-10-12 22:06:51,205 INFO labclear.request: {"event":"http","at":1791817611.205,"request_id":"req_d7872ec9c5a46476","method":"GET","route":"/api/business/reports/{id}","status":401,"duration_ms":0}
+2026-10-12 22:07:00,094 INFO labclear.request: {"event":"document_worker","at":1791817620.094,"request_id":"req_71eb398e2ed1b1ee","worker":"ok","pages":1}
+2026-10-12 22:07:09,133 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 22:07:10,339 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 22:07:19,877 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 22:07:20,010 INFO labclear.request: {"event":"workflow","at":1791817640.011,"request_id":"req_71eb398e2ed1b1ee","turn_id":"618503ad66d9933532f8ef235816a063","route":"/chat/report","kind":"ocr","stream":true,"outcome":"error","status":502,"code":"ocr_alignment_invalid","origin":"app","step":"rows","duration_ms":20266,"attempts":3,"dropped_events":0}
+2026-10-12 22:07:20,011 INFO labclear.request: {"event":"http","at":1791817640.012,"request_id":"req_71eb398e2ed1b1ee","method":"POST","route":"/api/business/chat/report","status":200,"duration_ms":20282}
+2026-10-12 22:07:28,924 INFO labclear.request: {"event":"document_worker","at":1791817648.925,"request_id":"req_7031adf33ddd7f31","worker":"ok","pages":1}
+2026-10-12 22:07:36,291 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 22:07:37,489 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 22:07:47,324 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 22:07:47,476 INFO labclear.request: {"event":"workflow","at":1791817667.476,"request_id":"req_7031adf33ddd7f31","turn_id":"c7a263d3ecd081ebd3bc5f18bb19e344","route":"/chat/report","kind":"ocr","stream":true,"outcome":"error","status":502,"code":"ocr_alignment_invalid","origin":"app","step":"rows","duration_ms":18890,"attempts":3,"dropped_events":0}
+2026-10-12 22:07:47,479 INFO labclear.request: {"event":"http","at":1791817667.479,"request_id":"req_7031adf33ddd7f31","method":"POST","route":"/api/business/chat/report","status":200,"duration_ms":18906}
+2026-10-12 22:07:56,888 INFO labclear.request: {"event":"document_worker","at":1791817676.887,"request_id":"req_f2185b493e6000ec","worker":"ok","pages":1}
+2026-10-12 22:08:05,343 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 22:08:08,924 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 22:08:13,943 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 22:08:14,023 WARNING labclear.report: range_not_compared shapes=aaaaaa 99 - 99 aa/aa
+2026-10-12 22:08:14,025 INFO labclear.request: {"event":"ocr_row_binding","at":1791817694.026,"request_id":"req_f2185b493e6000ec","step":"rows","reason":"ambiguous_html_structure"}
+2026-10-12 22:08:14,026 INFO labclear.request: {"event":"ocr_unit_fidelity","at":1791817694.026,"request_id":"req_f2185b493e6000ec","step":"rows","reason":"unique_explicit_name_value_unit_cell:0"}
+2026-10-12 22:08:14,026 INFO labclear.request: {"event":"ocr_unit_source_probe","at":1791817694.027,"request_id":"req_f2185b493e6000ec","step":"rows","reason":"{\"tables\":1,\"incomplete\":false,\"scales\":[],\"latex\":false}"}
+2026-10-12 22:08:15,172 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 22:08:15,370 INFO labclear.request: {"event":"workflow","at":1791817695.37,"request_id":"req_f2185b493e6000ec","turn_id":"004ace769055ca2a822e898f42ec2c60","route":"/chat/report","kind":"ocr","stream":true,"outcome":"done","status":200,"code":null,"origin":null,"step":"rows","duration_ms":18922,"attempts":4,"dropped_events":0}
+2026-10-12 22:08:15,374 INFO labclear.request: {"event":"http","at":1791817695.374,"request_id":"req_f2185b493e6000ec","method":"POST","route":"/api/business/chat/report","status":200,"duration_ms":18953}
+2026-10-12 22:08:15,690 INFO labclear.request: {"event":"http","at":1791817695.691,"request_id":"req_3fa63e09dd1b1a44","method":"GET","route":"/api/business/reports/{id}","status":401,"duration_ms":46}
+2026-10-12 22:08:24,655 INFO labclear.request: {"event":"document_worker","at":1791817704.655,"request_id":"req_026b0d3d6551fa94","worker":"ok","pages":1}
+2026-10-12 22:08:31,762 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 22:08:32,990 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 22:08:36,226 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 22:08:36,289 WARNING labclear.report: range_not_compared shapes=aaa aaaaaaaaaaa
+2026-10-12 22:08:36,290 INFO labclear.request: {"event":"ocr_row_binding","at":1791817716.29,"request_id":"req_026b0d3d6551fa94","step":"rows","reason":"ambiguous_html_structure"}
+2026-10-12 22:08:36,290 INFO labclear.request: {"event":"ocr_unit_fidelity","at":1791817716.29,"request_id":"req_026b0d3d6551fa94","step":"rows","reason":"unique_explicit_name_value_unit_cell:0"}
+2026-10-12 22:08:36,290 INFO labclear.request: {"event":"ocr_unit_source_probe","at":1791817716.29,"request_id":"req_026b0d3d6551fa94","step":"rows","reason":"{\"tables\":1,\"incomplete\":false,\"scales\":[],\"latex\":false}"}
+2026-10-12 22:08:37,208 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 22:08:37,410 INFO labclear.request: {"event":"workflow","at":1791817717.411,"request_id":"req_026b0d3d6551fa94","turn_id":"2e4f690f9b3cbbf652199618a3396a3c","route":"/chat/report","kind":"ocr","stream":true,"outcome":"done","status":200,"code":null,"origin":null,"step":"rows","duration_ms":13078,"attempts":4,"dropped_events":0}
+2026-10-12 22:08:37,412 INFO labclear.request: {"event":"http","at":1791817717.412,"request_id":"req_026b0d3d6551fa94","method":"POST","route":"/api/business/chat/report","status":200,"duration_ms":13094}
+2026-10-12 22:08:37,679 INFO labclear.request: {"event":"http","at":1791817717.68,"request_id":"req_11048948ebda0237","method":"GET","route":"/api/business/reports/{id}","status":401,"duration_ms":31}
+2026-10-12 22:08:46,478 INFO labclear.request: {"event":"document_worker","at":1791817726.478,"request_id":"req_730bac5b82f9d625","worker":"ok","pages":1}
+2026-10-12 22:09:00,975 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 22:09:02,275 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 22:09:13,543 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 22:09:13,656 WARNING labclear.report: range_not_compared shapes=9.99 - 9.99 | 9.99 - 99.99 | 999 - 999
+2026-10-12 22:09:13,660 INFO labclear.request: {"event":"ocr_row_binding","at":1791817753.66,"request_id":"req_730bac5b82f9d625","step":"rows","reason":"ambiguous_html_structure"}
+2026-10-12 22:09:13,660 INFO labclear.request: {"event":"ocr_unit_fidelity","at":1791817753.66,"request_id":"req_730bac5b82f9d625","step":"rows","reason":"unique_explicit_name_value_unit_cell:0"}
+2026-10-12 22:09:13,660 INFO labclear.request: {"event":"ocr_unit_source_probe","at":1791817753.66,"request_id":"req_730bac5b82f9d625","step":"rows","reason":"{\"tables\":1,\"incomplete\":false,\"scales\":[15,null,null],\"latex\":false}"}
+2026-10-12 22:09:14,770 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 22:09:14,975 INFO labclear.request: {"event":"workflow","at":1791817754.975,"request_id":"req_730bac5b82f9d625","turn_id":"02fc169b76141adb2b5bc9eed3dbcdc0","route":"/chat/report","kind":"ocr","stream":true,"outcome":"done","status":200,"code":null,"origin":null,"step":"rows","duration_ms":28875,"attempts":4,"dropped_events":0}
+2026-10-12 22:09:14,977 INFO labclear.request: {"event":"http","at":1791817754.977,"request_id":"req_730bac5b82f9d625","method":"POST","route":"/api/business/chat/report","status":200,"duration_ms":28890}
+2026-10-12 22:09:15,270 INFO labclear.request: {"event":"http","at":1791817755.27,"request_id":"req_c1dcd0d496aba7f2","method":"GET","route":"/api/business/reports/{id}","status":401,"duration_ms":172}
+2026-10-12 22:09:24,199 INFO labclear.request: {"event":"document_worker","at":1791817764.199,"request_id":"req_0c7ea655d314dbb1","worker":"ok","pages":1}
+2026-10-12 22:09:39,756 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 22:09:40,986 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 22:09:53,919 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 22:09:54,040 WARNING labclear.report: range_not_compared shapes=9.99 - 9.99 | 9.99 - 99.99 | 999 - 999
+2026-10-12 22:09:54,044 INFO labclear.request: {"event":"ocr_row_binding","at":1791817794.044,"request_id":"req_0c7ea655d314dbb1","step":"rows","reason":"ambiguous_html_structure"}
+2026-10-12 22:09:54,044 INFO labclear.request: {"event":"ocr_unit_fidelity","at":1791817794.045,"request_id":"req_0c7ea655d314dbb1","step":"rows","reason":"unique_explicit_name_value_unit_cell:0"}
+2026-10-12 22:09:54,044 INFO labclear.request: {"event":"ocr_unit_source_probe","at":1791817794.045,"request_id":"req_0c7ea655d314dbb1","step":"rows","reason":"{\"tables\":1,\"incomplete\":false,\"scales\":[15,18],\"latex\":false}"}
+2026-10-12 22:09:55,115 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 22:09:55,342 INFO labclear.request: {"event":"workflow","at":1791817795.342,"request_id":"req_0c7ea655d314dbb1","turn_id":"074e4c2253576b5098a06eaaa011d74e","route":"/chat/report","kind":"ocr","stream":true,"outcome":"done","status":200,"code":null,"origin":null,"step":"rows","duration_ms":31500,"attempts":4,"dropped_events":0}
+2026-10-12 22:09:55,343 INFO labclear.request: {"event":"http","at":1791817795.343,"request_id":"req_0c7ea655d314dbb1","method":"POST","route":"/api/business/chat/report","status":200,"duration_ms":31500}
+2026-10-12 22:09:55,698 INFO labclear.request: {"event":"http","at":1791817795.699,"request_id":"req_e49220e6c4bcf9b0","method":"GET","route":"/api/business/reports/{id}","status":401,"duration_ms":141}
+2026-10-12 22:10:04,743 INFO labclear.request: {"event":"document_worker","at":1791817804.743,"request_id":"req_4f507e037d09c520","worker":"ok","pages":1}
+2026-10-12 22:10:12,583 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 22:10:13,750 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 22:10:19,712 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 22:10:19,936 INFO labclear.request: {"event":"workflow","at":1791817819.936,"request_id":"req_4f507e037d09c520","turn_id":"c9d3688cb3cc872a2998c896a2cdffba","route":"/chat/report","kind":"ocr","stream":true,"outcome":"error","status":502,"code":"ocr_alignment_invalid","origin":"app","step":"rows","duration_ms":15640,"attempts":3,"dropped_events":0}
+2026-10-12 22:10:19,937 INFO labclear.request: {"event":"http","at":1791817819.937,"request_id":"req_4f507e037d09c520","method":"POST","route":"/api/business/chat/report","status":200,"duration_ms":15640}
+2026-10-12 22:10:29,031 INFO labclear.request: {"event":"document_worker","at":1791817829.03,"request_id":"req_bf70248688fc8e21","worker":"ok","pages":1}
+2026-10-12 22:10:35,256 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 22:10:36,484 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 22:10:43,408 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 22:10:43,479 WARNING labclear.report: range_not_compared shapes=- | a
+2026-10-12 22:10:43,481 INFO labclear.request: {"event":"ocr_row_binding","at":1791817843.482,"request_id":"req_bf70248688fc8e21","step":"rows","reason":"ambiguous_html_structure"}
+2026-10-12 22:10:43,481 INFO labclear.request: {"event":"ocr_unit_fidelity","at":1791817843.482,"request_id":"req_bf70248688fc8e21","step":"rows","reason":"unique_explicit_name_value_unit_cell:0"}
+2026-10-12 22:10:43,482 INFO labclear.request: {"event":"ocr_unit_source_probe","at":1791817843.482,"request_id":"req_bf70248688fc8e21","step":"rows","reason":"{\"tables\":1,\"incomplete\":false,\"scales\":[],\"latex\":false}"}
+2026-10-12 22:10:44,572 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 22:10:44,835 INFO labclear.request: {"event":"workflow","at":1791817844.834,"request_id":"req_bf70248688fc8e21","turn_id":"b7a130082189349c16d3a1be04eb146c","route":"/chat/report","kind":"ocr","stream":true,"outcome":"done","status":200,"code":null,"origin":null,"step":"rows","duration_ms":16141,"attempts":4,"dropped_events":0}
+2026-10-12 22:10:44,837 INFO labclear.request: {"event":"http","at":1791817844.837,"request_id":"req_bf70248688fc8e21","method":"POST","route":"/api/business/chat/report","status":200,"duration_ms":16157}
+2026-10-12 22:10:45,157 INFO labclear.request: {"event":"http","at":1791817845.156,"request_id":"req_f41f2a4e9f6126ee","method":"GET","route":"/api/business/reports/{id}","status":401,"duration_ms":109}
+2026-10-12 22:10:54,029 INFO labclear.request: {"event":"document_worker","at":1791817854.029,"request_id":"req_74a672ac822d65f0","worker":"ok","pages":1}
+2026-10-12 22:11:01,373 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 22:11:02,494 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 22:11:06,644 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 22:11:06,731 WARNING labclear.report: range_not_compared shapes=-
+2026-10-12 22:11:06,732 INFO labclear.request: {"event":"ocr_row_binding","at":1791817866.732,"request_id":"req_74a672ac822d65f0","step":"rows","reason":"ambiguous_html_structure"}
+2026-10-12 22:11:06,733 INFO labclear.request: {"event":"ocr_unit_fidelity","at":1791817866.733,"request_id":"req_74a672ac822d65f0","step":"rows","reason":"unique_explicit_name_value_unit_cell:0"}
+2026-10-12 22:11:06,733 INFO labclear.request: {"event":"ocr_unit_source_probe","at":1791817866.733,"request_id":"req_74a672ac822d65f0","step":"rows","reason":"{\"tables\":1,\"incomplete\":false,\"scales\":[],\"latex\":false}"}
+2026-10-12 22:11:07,765 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 22:11:08,035 INFO labclear.request: {"event":"workflow","at":1791817868.036,"request_id":"req_74a672ac822d65f0","turn_id":"b41e5b7d5b3f75767b669e29fe91357b","route":"/chat/report","kind":"ocr","stream":true,"outcome":"done","status":200,"code":null,"origin":null,"step":"rows","duration_ms":14359,"attempts":4,"dropped_events":0}
+2026-10-12 22:11:08,038 INFO labclear.request: {"event":"http","at":1791817868.037,"request_id":"req_74a672ac822d65f0","method":"POST","route":"/api/business/chat/report","status":200,"duration_ms":14375}
+2026-10-12 22:11:08,391 INFO labclear.request: {"event":"http","at":1791817868.392,"request_id":"req_8397c8562d4ca871","method":"GET","route":"/api/business/reports/{id}","status":401,"duration_ms":125}
+2026-10-12 22:11:17,385 INFO labclear.request: {"event":"document_worker","at":1791817877.386,"request_id":"req_ec0a6294d374249a","worker":"ok","pages":1}
+2026-10-12 22:11:25,636 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 22:11:26,865 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 22:11:31,964 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 22:11:32,046 WARNING labclear.report: range_not_compared shapes=a/a
+2026-10-12 22:11:32,047 INFO labclear.request: {"event":"ocr_row_binding","at":1791817892.048,"request_id":"req_ec0a6294d374249a","step":"rows","reason":"ambiguous_html_structure"}
+2026-10-12 22:11:32,047 INFO labclear.request: {"event":"ocr_unit_fidelity","at":1791817892.048,"request_id":"req_ec0a6294d374249a","step":"rows","reason":"unique_explicit_name_value_unit_cell:0"}
+2026-10-12 22:11:32,047 INFO labclear.request: {"event":"ocr_unit_source_probe","at":1791817892.048,"request_id":"req_ec0a6294d374249a","step":"rows","reason":"{\"tables\":1,\"incomplete\":false,\"scales\":[],\"latex\":false}"}
+2026-10-12 22:11:32,895 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 22:11:33,137 INFO labclear.request: {"event":"workflow","at":1791817893.137,"request_id":"req_ec0a6294d374249a","turn_id":"bacf1b35b55a6f7a1e5b3b85b2b6e7a0","route":"/chat/report","kind":"ocr","stream":true,"outcome":"done","status":200,"code":null,"origin":null,"step":"rows","duration_ms":16094,"attempts":4,"dropped_events":0}
+2026-10-12 22:11:33,139 INFO labclear.request: {"event":"http","at":1791817893.138,"request_id":"req_ec0a6294d374249a","method":"POST","route":"/api/business/chat/report","status":200,"duration_ms":16110}
+2026-10-12 22:11:33,466 INFO labclear.request: {"event":"http","at":1791817893.465,"request_id":"req_0fae4c86a05ad63b","method":"GET","route":"/api/business/reports/{id}","status":401,"duration_ms":32}
+2026-10-12 22:11:42,402 INFO labclear.request: {"event":"document_worker","at":1791817902.402,"request_id":"req_307982ff58980929","worker":"ok","pages":1}
+2026-10-12 22:11:55,055 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 22:11:56,356 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 22:12:09,873 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 22:12:10,001 WARNING labclear.report: range_not_compared shapes=9.99 - 9.99 | 9.99 - 99.99 | 999 - 999
+2026-10-12 22:12:10,005 INFO labclear.request: {"event":"ocr_row_binding","at":1791817930.006,"request_id":"req_307982ff58980929","step":"rows","reason":"ambiguous_html_structure"}
+2026-10-12 22:12:10,005 INFO labclear.request: {"event":"ocr_unit_fidelity","at":1791817930.006,"request_id":"req_307982ff58980929","step":"rows","reason":"unique_explicit_name_value_unit_cell:0"}
+2026-10-12 22:12:10,006 INFO labclear.request: {"event":"ocr_unit_source_probe","at":1791817930.007,"request_id":"req_307982ff58980929","step":"rows","reason":"{\"tables\":1,\"incomplete\":false,\"scales\":[15,null,null],\"latex\":false}"}
+2026-10-12 22:12:11,306 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 22:12:11,674 INFO labclear.request: {"event":"workflow","at":1791817931.674,"request_id":"req_307982ff58980929","turn_id":"6484e989959ca54fbe28b87245ef3c48","route":"/chat/report","kind":"ocr","stream":true,"outcome":"done","status":200,"code":null,"origin":null,"step":"rows","duration_ms":29641,"attempts":4,"dropped_events":0}
+2026-10-12 22:12:11,676 INFO labclear.request: {"event":"http","at":1791817931.676,"request_id":"req_307982ff58980929","method":"POST","route":"/api/business/chat/report","status":200,"duration_ms":29656}
+2026-10-12 22:12:11,984 INFO labclear.request: {"event":"http","at":1791817931.983,"request_id":"req_3e213de55c26c199","method":"GET","route":"/api/business/reports/{id}","status":401,"duration_ms":47}
+2026-10-12 22:12:21,071 INFO labclear.request: {"event":"document_worker","at":1791817941.072,"request_id":"req_e258186d7df6ec30","worker":"ok","pages":1}
+2026-10-12 22:12:33,630 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 22:12:35,062 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 22:12:49,195 INFO httpx: HTTP Request: POST https://api.opentyphoon.ai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-10-12 22:12:49,299 WARNING labclear.report: range_not_compared shapes=9.99 - 9.99 | 9.99 - 99.99 | 999 - 999
+2026-10-12 22:12:49,302 INFO labclear.request: {"event":"ocr_row_binding","at":1791817969.303,"request_id":"req_e258186d7df6ec30","step":"rows","reason":"ambiguous_html_structure"}
+2026-10-12 22:12:49,302 INFO labclear.request: {"event":"ocr_unit_fidelity","at":1791817969.303,"request_id":"req_e258186d7df6ec30","step":"rows","reason":"unique_explicit_name_value_unit_cell:0"}
+2026-10-12 22:12:49,302 INFO labclear.request: {"event":"ocr_unit_source_probe","at":1791817969.303,"request_id":"req_e258186d7df6ec30","step":"rows","reason":"{\"tables\":1,\"incomplete\":false,\"scales\":[15,18],\"latex\":false}"}
+2026-10-12 22:12:50,643 INFO httpx: HTTP Request: POST https://api.iapp.co.th/v3/store/openthai/systemone "HTTP/1.1 200 OK"
+2026-10-12 22:12:51,012 INFO labclear.request: {"event":"workflow","at":1791817971.012,"request_id":"req_e258186d7df6ec30","turn_id":"64133e6f3ffb2e62caaaf0efb2c4fd52","route":"/chat/report","kind":"ocr","stream":true,"outcome":"done","status":200,"code":null,"origin":null,"step":"rows","duration_ms":30313,"attempts":4,"dropped_events":0}
+2026-10-12 22:12:51,013 INFO labclear.request: {"event":"http","at":1791817971.014,"request_id":"req_e258186d7df6ec30","method":"POST","route":"/api/business/chat/report","status":200,"duration_ms":30329}
+2026-10-12 22:12:51,359 INFO labclear.request: {"event":"http","at":1791817971.36,"request_id":"req_d3b0cee489540a47","method":"GET","route":"/api/business/reports/{id}","status":401,"duration_ms":203}

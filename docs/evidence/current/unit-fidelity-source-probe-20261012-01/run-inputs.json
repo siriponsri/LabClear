@@ -1,0 +1,17 @@
+{
+  "purpose": "Single authorized affected-case diagnosis; no broad repetition",
+  "cases": [
+    {
+      "id": "EXP-OCR-14",
+      "kind": "OCR",
+      "split": "expanded_owner",
+      "turns": [
+        "อ่านรายการ ผล หน่วย ช่วงอ้างอิง และ flag ตามภาพ หากอ่านไม่ได้ให้ระบุว่าไม่ทราบ"
+      ],
+      "image": "C:\\Users\\User\\Desktop\\myProject\\LabClear\\docs\\evidence\\current\\expanded-live-20261012-01\\inputs\\EXP-OCR-14.png",
+      "variant_spec": "rotate 4 degrees / reduced quality",
+      "variant_prepared": true,
+      "source_sample_index": 4
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "planned": 148,
+  "executed": 37,
+  "new_receipted_attempts": 236,
+  "new_receipted_settled_estimate_thb": 8.7031,
+  "by_split": {
+    "rubric_regression": {
+      "PASS": 15,
+      "FAIL": 1,
+      "ERROR": 4
+    },
+    "expanded_owner": {
+      "ERROR": 9,
+      "FAIL": 7,
+      "REVIEW_PENDING": 1,
+      "NOT_RUN": 111
+    }
+  },
+  "classifier_metrics": "PENDING_ADJUDICATION_ERRORS_AND_PENDING_NOT_COUNTED_AS_TN",
+  "canonical_frozen_input_hashes_preserved": true
+}

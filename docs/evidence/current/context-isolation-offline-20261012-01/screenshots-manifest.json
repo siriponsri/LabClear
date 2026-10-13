@@ -1,0 +1,98 @@
+[
+  {
+    "case_id": "CONTEXT01",
+    "file": "CONTEXT01-http-result.png",
+    "source": "docs\\evidence\\current\\context-isolation-offline-20261012-01\\CONTEXT01-http-result.png",
+    "mode": "OFFLINE_HTTP_RESULT_VIEW",
+    "actual_outcome": "PASS",
+    "source_outcome_at": "2026-10-12T17:19:46.789789+00:00",
+    "captured_at": "2026-10-12T17:33:12.539Z",
+    "protocol": "offline-context-1.0",
+    "sha256": "4fb1101d4fb6ee0d2b461ee3df5b2b55568d82f5e5bb254362709a904e2a1e5b",
+    "archive_member": "context-isolation-offline-20261012-01/CONTEXT01-http-result.png"
+  },
+  {
+    "case_id": "CONTEXT02",
+    "file": "CONTEXT02-http-result.png",
+    "source": "docs\\evidence\\current\\context-isolation-offline-20261012-01\\CONTEXT02-http-result.png",
+    "mode": "OFFLINE_HTTP_RESULT_VIEW",
+    "actual_outcome": "PASS",
+    "source_outcome_at": "2026-10-12T17:19:46.879334+00:00",
+    "captured_at": "2026-10-12T17:33:12.626Z",
+    "protocol": "offline-context-1.0",
+    "sha256": "7f6a8c7441a2191343e308ba99b8ca8bfee9aea5d0fe733bb35f5a6f05a6c424",
+    "archive_member": "context-isolation-offline-20261012-01/CONTEXT02-http-result.png"
+  },
+  {
+    "case_id": "CONTEXT03",
+    "file": "CONTEXT03-http-result.png",
+    "source": "docs\\evidence\\current\\context-isolation-offline-20261012-01\\CONTEXT03-http-result.png",
+    "mode": "OFFLINE_HTTP_RESULT_VIEW",
+    "actual_outcome": "PASS",
+    "source_outcome_at": "2026-10-12T17:19:46.983993+00:00",
+    "captured_at": "2026-10-12T17:33:12.707Z",
+    "protocol": "offline-context-1.0",
+    "sha256": "b3aee27f88205e533fe239e0d4fa599eb72d205b0063093fdfc8b66475b3e21c",
+    "archive_member": "context-isolation-offline-20261012-01/CONTEXT03-http-result.png"
+  },
+  {
+    "case_id": "CONTEXT04",
+    "file": "CONTEXT04-http-result.png",
+    "source": "docs\\evidence\\current\\context-isolation-offline-20261012-01\\CONTEXT04-http-result.png",
+    "mode": "OFFLINE_HTTP_RESULT_VIEW",
+    "actual_outcome": "PASS",
+    "source_outcome_at": "2026-10-12T17:19:47.246721+00:00",
+    "captured_at": "2026-10-12T17:33:12.790Z",
+    "protocol": "offline-context-1.0",
+    "sha256": "95e2ea1b86995d6806ca4af3b8a350468be40ba875dbd99be265f55629e4b935",
+    "archive_member": "context-isolation-offline-20261012-01/CONTEXT04-http-result.png"
+  },
+  {
+    "case_id": "CONTEXT05",
+    "file": "CONTEXT05-http-result.png",
+    "source": "docs\\evidence\\current\\context-isolation-offline-20261012-01\\CONTEXT05-http-result.png",
+    "mode": "OFFLINE_HTTP_RESULT_VIEW",
+    "actual_outcome": "PASS",
+    "source_outcome_at": "2026-10-12T17:19:47.292348+00:00",
+    "captured_at": "2026-10-12T17:33:12.878Z",
+    "protocol": "offline-context-1.0",
+    "sha256": "414b0c573bbe05481fb705d6c8cecb2a5cc969f2ef51766411b6c794af3f45d5",
+    "archive_member": "context-isolation-offline-20261012-01/CONTEXT05-http-result.png"
+  },
+  {
+    "case_id": "CONTEXT06",
+    "file": "CONTEXT06-http-result.png",
+    "source": "docs\\evidence\\current\\context-isolation-offline-20261012-01\\CONTEXT06-http-result.png",
+    "mode": "OFFLINE_HTTP_RESULT_VIEW",
+    "actual_outcome": "PASS",
+    "source_outcome_at": "2026-10-12T17:19:47.325576+00:00",
+    "captured_at": "2026-10-12T17:33:12.957Z",
+    "protocol": "offline-context-1.0",
+    "sha256": "ee2f413f8b074137f440eafcae25a9f9adb25846cf7c80cb83bdff9c7b64be49",
+    "archive_member": "context-isolation-offline-20261012-01/CONTEXT06-http-result.png"
+  },
+  {
+    "case_id": "CONTEXT07",
+    "file": "CONTEXT07-http-result.png",
+    "source": "docs\\evidence\\current\\context-isolation-offline-20261012-01\\CONTEXT07-http-result.png",
+    "mode": "OFFLINE_HTTP_RESULT_VIEW",
+    "actual_outcome": "PASS",
+    "source_outcome_at": "2026-10-12T17:19:47.396610+00:00",
+    "captured_at": "2026-10-12T17:33:13.041Z",
+    "protocol": "offline-context-1.0",
+    "sha256": "2ac1ef8d8bf8fc42d0cd76b700ceb2bf935b5eb407ea47c804257f7aa2eb4aac",
+    "archive_member": "context-isolation-offline-20261012-01/CONTEXT07-http-result.png"
+  },
+  {
+    "case_id": "CONTEXT08",
+    "file": "CONTEXT08-http-result.png",
+    "source": "docs\\evidence\\current\\context-isolation-offline-20261012-01\\CONTEXT08-http-result.png",
+    "mode": "OFFLINE_HTTP_RESULT_VIEW",
+    "actual_outcome": "PASS",
+    "source_outcome_at": "2026-10-12T17:19:47.427715+00:00",
+    "captured_at": "2026-10-12T17:33:13.120Z",
+    "protocol": "offline-context-1.0",
+    "sha256": "e39f5c6d86a2d3272b6791121ea4174393396d0a799e4b5e7ddfdc04e896abf3",
+    "archive_member": "context-isolation-offline-20261012-01/CONTEXT08-http-result.png"
+  }
+]
