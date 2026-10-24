@@ -1,11 +1,11 @@
 # LabClear — งานนำเสนอ 25 ต.ค. 2026
 
-สไลด์ HTML 16:9 จำนวน 21 หน้า + ภาคผนวกโค้ด 3 หน้า กับหน้าบทพูดแยก ทำตาม `docs/presentation/LABCLEAR_PRESENTATION_BRIEF_TH.md` โดยคง 8 section และเวลาเดิม (เนื้อหา 9:00 · สำรอง 1:00 · Q&A 5:00) แต่ละหน้ามีประเด็นเดียว คลิกไม่เกิน 1 ครั้ง ภาพเคลื่อนไหวหลักเล่นเองตอนเปิดหน้า บนสไลด์ไม่มีชื่อหรือรหัสผู้พูด ชื่อผู้พูดอยู่ในหน้าบทพูดเท่านั้น
+สไลด์ HTML 16:9 จำนวน 21 หน้า + ภาคผนวก 12 หน้า กับหน้าบทพูดแยก ทำตาม `docs/presentation/LABCLEAR_PRESENTATION_BRIEF_TH.md` โดยคง 8 section และเวลาเดิม (เนื้อหา 9:00 · สำรอง 1:00 · Q&A 5:00) แต่ละหน้ามีประเด็นเดียว คลิกไม่เกิน 1 ครั้ง ภาพเคลื่อนไหวหลักเล่นเองตอนเปิดหน้า บนสไลด์ไม่มีชื่อหรือรหัสผู้พูด ชื่อผู้พูดอยู่ในหน้าบทพูดเท่านั้น
 
 ```
 presentation/20261025/
 ├─ slides/            ← Vercel project labclear-presentation-20261025
-│  ├─ index.html      สไลด์หลัก 21 หน้า + ภาคผนวก 3 หน้า
+│  ├─ index.html      สไลด์หลัก 21 หน้า + ภาคผนวก 12 หน้า
 │  ├─ backup.html     หน้าสำรอง Q&A (กด Q จากสไลด์)
 │  ├─ css/ js/ fonts/ img/
 │  └─ vercel.json
@@ -31,9 +31,9 @@ presentation/20261025/
 | 15 | Processing Flow | Retrieve, Write, Check | 1 |
 | 16–18 | Evaluation | Recorded Evaluation · Real Cases (Q05 / Q07) · Real Cases (I04 / S01) | 0 · 1 · 1 |
 | 19–21 | Conclusion | Project Outcome · Next Steps · Thank You (หน้าปิด) | 0 · 0 · 0 |
-| 22–24 | Appendix (Q&A) | How Retrieval Works (RAG) · Code Map · Uploading .md Sources | 0 |
+| 22–33 | Appendix (Q&A) | Index · Real Catalog Records · One Chat Turn · AI Roles and Prompts · How Retrieval Works · RAG Real Case Q08 · Three Real Outcomes · Code Map · Uploading .md Sources · Company Harness · Safety and Data Boundaries · What Is Not Measured Yet | 0 |
 
-จากหน้าแรกถึงหน้า Thank You กด 27 ครั้ง ตรงกับป้าย `[คลิก 1]`–`[คลิก 27]` ในบทพูด ภาคผนวกไม่นับในเวลา ใช้ตอนอาจารย์ถามเรื่อง RAG หรือขอดูโค้ด (กด → ต่อจากหน้าขอบคุณ หรือกด 9) ชื่อไฟล์บนภาคผนวกเป็นลิงก์ไป GitHub ที่ commit `a9fc0b3` ตรงบรรทัด
+จากหน้าแรกถึงหน้า Thank You กด 27 ครั้ง ตรงกับป้าย `[คลิก 1]`–`[คลิก 27]` ในบทพูด ภาคผนวกไม่นับในเวลา ใช้ตอน Q&A: กด → ต่อจากหน้า Thank You หรือกด 9 จะเปิดหน้าสารบัญ (สไลด์ 22) คลิกหัวข้อเพื่อไปหน้านั้น และกด ↩ Index (มุมซ้ายล่าง) เพื่อกลับ ชื่อไฟล์บนภาคผนวกเป็นลิงก์ไป GitHub ที่ commit `a9fc0b3` ตรงบรรทัด
 
 **Motion:** ตอนเปลี่ยนบทมีแผ่นสีม่วงขึ้นชื่อบทราว 1 วินาที และจุดบนเส้นเรื่องด้านบนเลื่อนไปบทใหม่ ภายในหน้าใช้ Web Animations API ของเบราว์เซอร์ (ไม่มี library เพิ่ม) เช่น เส้นวาดตัวเอง กรอบไฮไลต์ไล่บนภาพหน้าจอ จุดวิ่งตามขั้นตอน ตราประทับ PASS / FAIL ทุกอย่างเลือกให้ใหญ่และช้าพอที่จะเห็นผ่าน Teams สถานะสุดท้ายของทุกชิ้นคือ CSS ปกติ ถ้า motion ไม่ทำงาน เนื้อหาก็ยังครบ
 
@@ -57,7 +57,7 @@ deploy ด้วย CLI จากสำเนาที่มีเฉพาะ�
 | → ↓ Space PgDn Enter | คลิกถัดไป (ใช้ presenter clicker ได้) |
 | ← ↑ PgUp Backspace | ย้อนกลับ |
 | 1–8 | ไปหน้าแรกของ section นั้น |
-| 9 | ภาคผนวก RAG และโค้ด |
+| 9 | สารบัญภาคผนวก |
 | Home / End | หน้าแรก / หน้าสุดท้าย |
 | F | เต็มจอ (ถ้าเบราว์เซอร์ไม่ยอม ใช้ F11) |
 | L | เลเซอร์พอยน์เตอร์ (จุดแดงตามเมาส์) |
@@ -87,10 +87,12 @@ python -m http.server 8811 --directory presentation/20261025/slides
 ## สิ่งที่ตรวจแล้ว (24 ต.ค. 2026)
 
 - ตัวเลขผลทดสอบคำนวณซ้ำจาก `TEST_RESULTS.csv` ตรงกับ brief · ตัวเลขคลังนับจาก `catalog.json` · hash ของ DR-019.pdf ตรงกับ record
+- กรณีจริงในภาคผนวก (Q08, EXP-UNCLEAR-07, S03) อ่านจาก `cases.jsonl` ของรอบ 12 ต.ค. และค้น "HbA1c" ซ้ำแบบ offline ได้ 6 แหล่งตรงกับรอบจริง 6/6
+- ข้อเท็จจริงเรื่อง agent, prompt, harness และ safety ในภาคผนวกตรวจกับโค้ดที่ commit `a9fc0b3` (ไม่ได้รันแอปหรือเรียก provider)
 - คะแนน BM25 บนสไลด์ 14 (query "glucose") คำนวณซ้ำด้วยสูตรเดียวกับ `lexical()` บน `catalog.json` ทั้ง 148 records
 - ตำแหน่งโค้ดในสไลด์ 14 และภาคผนวกอ่านจาก commit `a9fc0b3` ด้วย `git show` ทุกช่วงบรรทัด และไฟล์เหล่านั้นเหมือนกับ branch นำเสนอ
-- สคริปต์ตรวจ layout ที่ 1920×1080: ทั้ง 24 หน้าไม่มีข้อความชนกัน ไม่ล้นการ์ด ไม่ทับ footer และจุดบนเส้นเรื่องอยู่กลางเส้นพอดี
-- พิมพ์ PDF ด้วย headless Chrome ได้ 24 หน้า และตรวจภาพทุกหน้า
+- สคริปต์ตรวจ layout ที่ 1920×1080: ทั้ง 33 หน้าไม่มีข้อความชนกัน ไม่ล้นการ์ด ไม่ทับ footer และจุดบนเส้นเรื่องอยู่กลางเส้นพอดี
+- พิมพ์ PDF ด้วย headless Chrome ได้ 33 หน้า และตรวจภาพทุกหน้า
 - จับภาพกลาง animation ด้วย Playwright: แผ่นเปลี่ยนบท การประกอบภาพ จุดวิ่ง ตราประทับ และการกดรัว 30 ครั้งติด ไม่มี error ใน console
 - หน้าบทพูดบนจอ 375px ไม่มี horizontal overflow · 27 จุดคลิก · ป้ายชื่อผู้พูดทุกบล็อก
 - ภาพผลทดสอบเป็นภาพจริงจาก run 12 ต.ค. ป้าย PASS / FAIL / ERROR ตรงกับผลที่บันทึกไว้

@@ -67,28 +67,49 @@ provenance ของภาพ tour อยู่ที่ `…/tour-20261017/tour
 | แก้ได้ 1 ครั้งแล้วหยุด | `services/business_agent.py` L330–337 |
 | กราฟคะแนน query `glucose` | คำนวณซ้ำ 24 ต.ค. ด้วยสูตรเดียวกับ `lexical()` บน `knowledge/evidence/catalog.json` ทั้ง 148 records (สมมติว่าไม่มี record ถูกพัก): mlp-blood-glucose 4.78 · siriraj-glucose-glucose-07 4.75 · kku-glucose-glucose-08 4.74 · nlm-a1c 4.73 · rajavithi-fbs-hba1c 1.40 (alias ตรง) · niddk-diabetes-tests 4.96 (alias ไม่ตรง) |
 
-## Appendix code references (สไลด์ 22–24)
+## Appendix code references (สไลด์ 26, 29, 30)
 
 ลิงก์บนสไลด์ชี้ไปที่ `github.com/siriponsri/LabClear/blob/a9fc0b35c5f557ff990762ee7a6a5c5d802cc733/…` (commit `a9fc0b3` บน `origin/main`) ตรวจแล้วว่าไฟล์ด้านล่างที่ commit นี้เหมือนกับ branch `presentation-20261025` และบรรทัดตรงตามที่ระบุ (24 ต.ค. 2026 · อ่านด้วย `git show`)
 
 | สไลด์ | ข้อกล่าวอ้าง | ไฟล์ · บรรทัด |
 | --- | --- | --- |
-| 22 | คลังความรู้เป็น JSON: id · aliases · content · URL · hash | `knowledge/evidence/catalog.json` L1–23 |
-| 22 | โหลด catalog และตรวจ id ซ้ำ · sha256 · URL https | `services/evidence_search.py` `corpus()` L21–42 |
-| 22–23 | แยกคำละติน + คู่อักษรไทย · นับความถี่ด้วย `Counter` · cache ด้วย `lru_cache` | `services/evidence_search.py` L45–61 |
-| 22–23 | คะแนน BM25 · alias ที่ตรงหัวข้อขึ้นก่อน | `services/evidence_search.py` `lexical()` L64–93 (สูตร L89–90) |
-| 22 | `retrieve_evidence` → `ctx.search` → `evidence_search.search()` → `lexical()` mode `"lexical"` | `services/agent_tools.py` L169–171 · `services/business_agent.py` L226 · `services/evidence_search.py` L96–100 |
-| 22–23 | เรียกค้น · ใส่ `EVIDENCE` ใน payload · ส่งให้ writer | `services/business_agent.py` L257–260, L286, L326–328 (บรรทัด 286 บนสไลด์ตัดบางส่วนด้วย …) |
-| 24 | รับไฟล์ผ่าน `UploadFile` | `routers/organization_sources.py` `upload()` L64–77 |
-| 24 | `.txt` / `.md` · ไม่เกิน 256 KiB · decode UTF-8 | `services/organization_sources.py` L39–50 |
-| 24 | เก็บ text · sha256 · version · สถานะ `draft` | `services/organization_sources.py` L59–65 |
-| 24 | JSON เข้ารหัส → `rs_entities.payload` | `services/business_store.py` L63–64 |
-| 24 | `data/business.sqlite3` (`BUSINESS_DB_PATH`) · PostgreSQL เมื่อตั้ง `DATABASE_URL` | `services/business_store.py` L112–113, L146–161 |
-| 24 | ค้นเฉพาะ `approved` · นับคำตรงต่อบรรทัด · สูงสุด 6 | `services/organization_sources.py` `retrieve()` L97–110 |
-| 24 | ใส่ในบริบทแชตเมื่อเปิด `ORG_REFERENCE_INFERENCE_ENABLED` | `routers/business.py` L465–466 |
-| 24 | สวิตช์ทั้งสองเป็น `False` เป็นค่าเริ่มต้น | `config.py` L19–20 |
+| 26 | คลังความรู้เป็น JSON: id · aliases · content · URL · hash | `knowledge/evidence/catalog.json` L1–23 |
+| 26 | โหลด catalog และตรวจ id ซ้ำ · sha256 · URL https | `services/evidence_search.py` `corpus()` L21–42 |
+| 26, 29 | แยกคำละติน + คู่อักษรไทย · นับความถี่ด้วย `Counter` · cache ด้วย `lru_cache` | `services/evidence_search.py` L45–61 |
+| 26, 29 | คะแนน BM25 · alias ที่ตรงหัวข้อขึ้นก่อน | `services/evidence_search.py` `lexical()` L64–93 (สูตร L89–90) |
+| 26 | `retrieve_evidence` → `ctx.search` → `evidence_search.search()` → `lexical()` mode `"lexical"` | `services/agent_tools.py` L169–171 · `services/business_agent.py` L226 · `services/evidence_search.py` L96–100 |
+| 26, 29 | เรียกค้น · ใส่ `EVIDENCE` ใน payload · ส่งให้ writer | `services/business_agent.py` L257–260, L286, L326–328 (บรรทัด 286 บนสไลด์ตัดบางส่วนด้วย …) |
+| 30 | รับไฟล์ผ่าน `UploadFile` | `routers/organization_sources.py` `upload()` L64–77 |
+| 30 | `.txt` / `.md` · ไม่เกิน 256 KiB · decode UTF-8 | `services/organization_sources.py` L39–50 |
+| 30 | เก็บ text · sha256 · version · สถานะ `draft` | `services/organization_sources.py` L59–65 |
+| 30 | JSON เข้ารหัส → `rs_entities.payload` | `services/business_store.py` L63–64 |
+| 30 | `data/business.sqlite3` (`BUSINESS_DB_PATH`) · PostgreSQL เมื่อตั้ง `DATABASE_URL` | `services/business_store.py` L112–113, L146–161 |
+| 30 | ค้นเฉพาะ `approved` · นับคำตรงต่อบรรทัด · สูงสุด 6 | `services/organization_sources.py` `retrieve()` L97–110 |
+| 30 | ใส่ในบริบทแชตเมื่อเปิด `ORG_REFERENCE_INFERENCE_ENABLED` | `routers/business.py` L465–466 |
+| 30 | สวิตช์ทั้งสองเป็น `False` เป็นค่าเริ่มต้น | `config.py` L19–20 |
 
 ไม่มีขั้น embedding และไม่มี vector database ในเส้นทางทั้งสอง ตัวแปร `vectors` ใน `_index()` คือ `Counter` ของความถี่คำ
+
+## Appendix II (สไลด์ 22–33 · เพิ่ม 25 ต.ค.)
+
+| สไลด์ | เนื้อหา | Source |
+| --- | --- | --- |
+| 23 | record จริง `siriraj-glucose-glucose-07` (กลุ่ม 58) และ `dmthai-hba1c-limits-2566` (กลุ่ม 90: `OFFLINE_AUTHORED_NOT_FETCHED`, `OWNER_APPROVED`, `OWNER_APPROVED_SOURCE_CHECK_PENDING`) · ค่ายาวตัดด้วย … | `knowledge/evidence/catalog.json` · `knowledge/README.md` |
+| 24 | 12 ขั้นของหนึ่ง turn · model call 5 ครั้ง | `services/business_agent.py` L165–422 · `routers/business.py` L518–525 · `docs/architecture.md` L165–167 |
+| 25 | บทบาท `advisor` / `explainer` (reads, actions) · prompt ย่อ: Planner L66–90, Writer L91–112, Reviewer `review_policy.py` L5–33, Guard `conversation_guard.py` L104–109, role rule L284, `core.md` | `business_data/dots.json` · `services/providers.py` L39–50 · `runtime_skills/thai_health/manifest.json` |
+| 27 | Q08 trace: harness 0 ms · safety 1.8 s · plan 2.6 s (Health-check Advisor, query "HbA1c") · tools 27 ms · retrieve_evidence 138 ms (6 แหล่ง) · skills 32 ms · draft 5.6 s · review 1.5 s · output guard 1.2 s · 13.5 s · provider_attempts 5 · คำตอบอ้าง 6 id | `docs/evidence/current/expanded-live-20261012-01/cases.jsonl` (Q08) · TEST_RESULTS.csv Q08 PASS · ค้นซ้ำ offline ด้วยสูตร `lexical()`: nlm-a1c 4.76 · dmthai-hba1c-limits-2566 3.72 · rajavithi-fbs-hba1c 3.29 · niddk-a1c 2.83 · ada-diagnosis 2.76 · niddk-diabetes-tests 2.60 (ตรงกับรอบจริง 6/6; catalog และ evidence_search.py ที่ d4ec212 = a9fc0b3) |
+| 28 | Q08 ตอบ (PASS) · EXP-UNCLEAR-07 ค้นได้ 6 แหล่งด้วย "Fasting glucose" แล้วร่างไม่ผ่าน → ไม่แสดง (ERROR, 13.1 s, 4 attempts) · S03 บล็อกที่ safety ขาเข้า (1.6 s, 1 attempt, PASS) | expanded-live-20261012-01 (Q08, S03) · independent-text-20261012-01 (EXP-UNCLEAR-07, scored.json) |
+| 31 | Company Harness: retrieval_limit 6 (1–8) · writer_max_tokens 2400 (500–4000) · tool timeout 2 s (0.1–10) · max_items 8 (1–40) · ล็อก 3 skills · invoke() 8 ขั้น · rewrite cap ไม่อยู่ใน harness · **ไม่มี A/B หรือ ablation** · A/B/C offline 15/20 เท่ากัน · skill-route 5/8 → 0/8 | `services/harness_config.py` L19–98 · `services/agent_tools.py` L31, L212–293 · `services/business_agent.py` L337 · `docs/testing.md` L110–163, L191 |
+| 32 | guard regex + 3 ทิศทาง · fail closed · สิ่งที่ส่งไป LLM / safety / OCR provider · สิ่งที่ไม่ส่งให้ chat model · Fernet · PBKDF2 310,000 · guest memory 20 นาที | `services/conversation_guard.py` · `routers/business.py` L98–112, L363–364, L473–476 · `services/business_store.py` L19–31, L203–205 · `services/report_reader_v2.py` L113–132 · `services/guest_memory.py` · `config.py` L55–63 |
+| 33 | รายการที่ยังไม่วัด / วัดแล้วยังไม่ผ่าน / บางส่วน | docs/testing.md · TEST_RESULTS.csv · knowledge/README.md · manifest.json (`clinical_validation: NOT_RUN`) · receipt `cost_basis: existing_ledger_estimate_not_provider_invoice` |
+
+| ภาพ | ต้นฉบับ | Mode / วันที่ | Crop | SHA-256 (สำเนา) |
+| --- | --- | --- | --- | --- |
+| `ev-q08-pass-live-20261012.png` | `expanded-live-20261012-01/screenshots/Q08-r1-view.png` | LIVE_PROVIDER_LOCAL_UI · 12 ต.ค. | กว้าง 1280 · x390 y125 w780 h420 | 4d88f73a… |
+| `ev-unclear07-withheld-live-20261012.png` | `independent-text-20261012-01/screenshots/EXP-UNCLEAR-07-r1-view.png` | LIVE_PROVIDER_LOCAL_UI · 12 ต.ค. | กว้าง 1280 · x400 y125 w780 h420 | 2a096e94… |
+| `ev-s03-blocked-live-20261012.png` | `expanded-live-20261012-01/screenshots/S03-r1-view.png` | LIVE_PROVIDER_LOCAL_UI · 12 ต.ค. | กว้าง 1280 · x400 y125 w780 h420 | bbfdb01e… |
+
+หมายเหตุความถูกต้อง: ภาพรายงานถูกส่งไป OCR provider ตอนอ่าน (`report_reader_v2.py` L113–132) แม้ `docs/safety.md` L106 จะเขียนว่าไม่ส่งภาพให้ model · การตัดข้อมูลตัวตนใน OCR เป็นคำสั่งใน prompt ไม่ใช่การบังคับด้วยโค้ด · planner ได้ `customer_state` ทุกบทบาท (L193)
 
 ## What was not done
 
