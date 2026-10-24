@@ -1,0 +1,500 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>LabClear Presentation</title>
+<meta name="description" content="LabClear — นำเสนอโครงงาน: Business, Knowledge, Functions, Architecture, Evaluation">
+<link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="fonts/ibm-plex-sans-thai-thai-500-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/geist-variable.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="css/deck.css?v=1792839057">
+</head>
+<body>
+<noscript><p style="padding:16px;font:16px/1.5 sans-serif">JavaScript ปิดอยู่: แสดงทุกเฟรมแบบเลื่อนอ่าน เนื้อหาครบ แต่ไม่มีการเคลื่อนกล้องและ animation</p></noscript>
+
+<div class="viewport" id="viewport">
+<div class="world" id="world">
+
+  <!-- ===== World art (seen on the overview / recap map) ===== -->
+  <div class="world-art wa-intro" id="wa-intro">
+    <div class="wa-title"><img src="img/mark.svg" alt=""><span class="name">LabClear</span></div>
+    <div class="wa-sub">ผู้ช่วยข้อมูลบริการตรวจสุขภาพและทบทวนค่าบนรายงาน</div>
+    <div class="wa-tags"><span>ต้นแบบเพื่อการศึกษา</span><span>ธุรกิจจำลอง</span><span>ใช้รายงานสังเคราะห์</span></div>
+  </div>
+  <div class="world-art wa-intro" id="wa-team">
+    <div class="wa-team">
+      <div class="wa-person"><span class="b">A</span><div><div class="n">นายวัชรินทร์ บัวสอน</div><div class="r">Business · Knowledge Base</div></div></div>
+      <div class="wa-person p2"><span class="b">B</span><div><div class="n">นายศิริพล ศรีเฮงไพบูลย์</div><div class="r">Functions · Technical Architecture</div></div></div>
+    </div>
+  </div>
+  <div class="world-art wa-home" id="wa-home">
+    <figure>
+      <div class="shot" style="--cx:360;--cy:120;--cw:1200;--ch:1180"><img src="img/w01-home-mock-20261017.png" alt="หน้าแรกของเว็บ LabClear (ระบบจำลอง)" loading="eager"><div class="alt">ภาพหน้าแรกไม่พร้อม</div></div>
+      <figcaption><span class="pill mock">Recorded · OFFLINE mock UI · 17 ต.ค. 2026</span></figcaption>
+    </figure>
+  </div>
+  <div class="world-art wa-recap" id="wa-recap">
+    <div class="wa-outcome"><span class="k">Project Outcome</span>เชื่อม<em>ข้อมูลบริการ</em> <em>คลังอ้างอิง</em> <em>ฟังก์ชันผู้ใช้</em><br>และ <em>workflow ตรวจคำตอบ</em> ไว้ในต้นแบบเดียว</div>
+  </div>
+
+  <div class="region-label is-chapter" data-region="0"><div class="no">01</div><div class="en">Business<span class="tick">✓</span></div><div class="th">โจทย์และขอบเขตบริการ</div><span class="who">A · วัชรินทร์</span></div>
+  <div class="region-label is-chapter" data-region="1"><div class="no">02</div><div class="en">Knowledge<span class="tick">✓</span></div><div class="th">ข้อมูลที่ใช้ตอบและแหล่งอ้างอิง</div><span class="who">A · วัชรินทร์</span></div>
+  <div class="region-label is-chapter" data-region="2"><div class="no">03</div><div class="en">Functions<span class="tick">✓</span></div><div class="th">สิ่งที่ผู้ใช้และเจ้าหน้าที่ทำได้</div><span class="who b">B · ศิริพล</span></div>
+  <div class="region-label is-chapter" data-region="3"><div class="no">04</div><div class="en">Architecture<span class="tick">✓</span></div><div class="th">องค์ประกอบและขั้นตอนประมวลผล</div><span class="who b">B · ศิริพล</span></div>
+  <div class="region-label is-chapter" data-region="4"><div class="no">05</div><div class="en">Evaluation<span class="tick">✓</span></div><div class="th">ผลทดสอบและสิ่งที่ต้องพัฒนาต่อ</div><span class="who b">B · ศิริพล</span></div>
+  <div class="region-label" data-region="5"><div class="no">→</div><div class="en">Next Steps</div><div class="th">งานถัดไปจากผลทดสอบ</div><span class="who">A · วัชรินทร์</span></div>
+
+  <!-- ===== Title card (reading / print fallback only) ===== -->
+  <section class="frame title-card" aria-label="Project Overview">
+    <div class="f">
+      <div class="f-head"><span class="f-kicker">Project Overview</span></div>
+      <h2 class="f-title">LabClear</h2>
+      <p class="f-say">ผู้ช่วยข้อมูลบริการตรวจสุขภาพและทบทวนค่าบนรายงาน</p>
+      <p class="f-say sm" style="color:var(--muted)">Business → Knowledge → Functions → Architecture → Evaluation</p>
+      <p style="font-size:2.6rem;margin-top:4rem">A · นายวัชรินทร์ บัวสอน — Business · Knowledge Base<br>B · นายศิริพล ศรีเฮงไพบูลย์ — Functions · Technical Architecture<br><span style="color:var(--muted)">ต้นแบบเพื่อการศึกษา · ธุรกิจจำลอง · ใช้รายงานสังเคราะห์</span></p>
+    </div>
+  </section>
+
+  <!-- ================= 01 BUSINESS ================= -->
+  <section class="frame" id="b1" data-sec="2" data-region="0" data-cell="0" aria-label="Business Understanding — Problem">
+    <div class="f">
+      <div class="f-head" data-auto><span class="f-kicker">Business Understanding</span><span class="f-sub">Problem</span></div>
+      <p class="f-say" data-auto style="--i:1">คำถามเรื่องบริการทุกแบบ<br>ต้องตอบจาก<em>ข้อมูลชุดเดียวกัน</em></p>
+      <div class="f-body">
+        <div class="converge">
+          <svg class="svg-lines" viewBox="0 0 1680 360" preserveAspectRatio="none" aria-hidden="true">
+            <path class="draw" data-step-draw="1" d="M330 30 C 650 30 700 180 940 180"/>
+            <path class="draw" data-step-draw="1" style="--delay:120ms" d="M330 130 C 650 130 700 180 940 180"/>
+            <path class="draw" data-step-draw="1" style="--delay:240ms" d="M330 230 C 650 230 700 180 940 180"/>
+            <path class="draw" data-step-draw="1" style="--delay:360ms" d="M330 330 C 650 330 700 180 940 180"/>
+          </svg>
+          <div class="words">
+            <span data-auto style="--i:2">รายการตรวจ</span><span data-auto style="--i:3">ราคา</span><span data-auto style="--i:4">การเตรียมตัว</span><span data-auto style="--i:5">นัดหมาย</span>
+          </div>
+          <div class="hub fx-pop" data-step="1" style="--i:4"><i></i><span>ข้อมูลบริการ<br>ต้นทางเดียว</span></div>
+        </div>
+      </div>
+    </div>
+    <footer class="f-foot"><span>ที่มา: docs/business.md (E02) · เป็นโจทย์ที่ทีมออกแบบให้รองรับ ไม่ได้วัดความถี่จากคลินิกจริง</span><span class="who">A · Business 1/4</span></footer>
+  </section>
+
+  <section class="frame" id="b2" data-sec="2" data-region="0" data-cell="1" aria-label="Business Understanding — Users">
+    <div class="f">
+      <div class="f-head" data-auto><span class="f-kicker">Business Understanding</span><span class="f-sub">Users</span></div>
+      <p class="f-say" data-auto style="--i:1">ผู้ใช้งานหลัก <em>4 กลุ่ม</em> ตามหน้าที่</p>
+      <div class="f-body">
+        <div class="users">
+          <div data-auto style="--i:2"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M8 10h32v22H20l-9 7v-7H8z"/><path d="M20 17a4 4 0 1 1 6 3.5c-1.4.8-2 1.6-2 3"/><path d="M24 28v.5"/></svg><h4>ผู้สอบถามแพ็กเกจ</h4><p>เทียบรายการตรวจ ราคา การเตรียมตัว</p></div>
+          <div data-auto style="--i:3"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M12 6h17l7 7v29H12z"/><path d="M29 6v7h7"/><path d="M18 22h12M18 28h12M18 34h8"/></svg><h4>ผู้มีรายงานผลตรวจ</h4><p>ทบทวนค่าบนรายงานของตัวเอง</p></div>
+          <div data-auto style="--i:4"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M8 42V12l14-5v35M22 18h18v24"/><path d="M13 16h4M13 23h4M13 30h4M28 25h6M28 32h6"/><path d="M4 42h40"/></svg><h4>ผู้ประสานงานองค์กร</h4><p>ขอข้อมูลแพ็กเกจสำหรับกลุ่มพนักงาน</p></div>
+          <div data-auto style="--i:5"><svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="17" r="7"/><path d="M10 41c1.5-8 7-12 14-12s12.5 4 14 12"/></svg><h4>เจ้าหน้าที่</h4><p>รับคำขอ และตัดสินเรื่องที่ต้องใช้คน</p></div>
+        </div>
+      </div>
+    </div>
+    <footer class="f-foot"><span>ที่มา: docs/business.md (E02) · แบ่งตามหน้าที่ ไม่ใช่ persona</span><span class="who">A · Business 2/4</span></footer>
+  </section>
+
+  <section class="frame" id="b3" data-sec="2" data-region="0" data-cell="2" aria-label="Business Understanding — Scope">
+    <div class="f">
+      <div class="f-head" data-auto><span class="f-kicker">Business Understanding</span><span class="f-sub">Scope</span></div>
+      <div class="f-body" style="margin-top:3rem">
+        <div class="scope">
+          <div>
+            <div class="big" data-auto style="--i:1"><span class="num" data-count="18">18</span><span class="lbl">แพ็กเกจจำลอง</span></div>
+            <div data-auto style="--i:2">
+              <div class="split"><i style="flex:15"></i><i style="flex:3"></i></div>
+              <div class="split-lbl"><span>บุคคล 15</span><span>องค์กร 3</span></div>
+            </div>
+            <div class="centers" data-auto style="--i:3">ศูนย์บริการจำลอง 3 แห่ง<span>กรุงเทพฯ · เชียงใหม่ · ขอนแก่น</span></div>
+          </div>
+          <figure class="fx-pop" data-step="1">
+            <div class="shot" style="--cx:386;--cy:129;--cw:1151;--ch:760"><img src="img/w02-packages-mock-20261017.png" alt="หน้าแพ็กเกจตรวจ: 18 รายการ เริ่มจาก Essential Check ฿1,190 และ Workday Check ฿1,690" loading="eager"><div class="alt">ภาพหน้าแพ็กเกจไม่พร้อม · 18 แพ็กเกจจำลอง</div></div>
+            <figcaption><span class="pill mock">Recorded · OFFLINE mock UI · 17 ต.ค. 2026</span>หน้าแพ็กเกจ · ราคาจำลอง</figcaption>
+          </figure>
+        </div>
+      </div>
+    </div>
+    <footer class="f-foot"><span>ที่มา: business_data/catalog.json (2026-10-05-proposed, is_demo) · branches.json (E03) · ขนาดข้อมูลจำลอง ไม่ใช่ผลทางธุรกิจ</span><span class="who">A · Business 3/4</span></footer>
+  </section>
+
+  <section class="frame" id="b4" data-sec="2" data-region="0" data-cell="3" aria-label="Business Understanding — Responsibility">
+    <div class="f">
+      <div class="f-head" data-auto><span class="f-kicker">Business Understanding</span><span class="f-sub">Responsibility</span></div>
+      <p class="f-say" data-auto style="--i:1">ผู้ช่วย<em>เตรียม</em> · ผู้ใช้<em>ยืนยัน</em> · เจ้าหน้าที่<em>ตัดสิน</em></p>
+      <div class="f-body">
+        <div class="chain">
+          <div class="lineback"></div>
+          <div data-auto style="--i:3"><span class="dot">1</span><h4>ผู้ช่วย</h4><p>ให้ข้อมูล<br>และเตรียมคำขอ</p></div>
+          <div data-auto style="--i:6"><span class="dot">2</span><h4>ผู้ใช้</h4><p>ตรวจรายละเอียด<br>และยืนยัน</p></div>
+          <div data-auto style="--i:9"><span class="dot fill">3</span><h4>เจ้าหน้าที่</h4><p>รับพิจารณา<br>นัดหมาย</p></div>
+        </div>
+        <p class="chain-note" data-auto style="--i:11">การตัดสินใจที่ต้องใช้คน ยังอยู่กับผู้ใช้และเจ้าหน้าที่</p>
+      </div>
+    </div>
+    <footer class="f-foot"><span>ที่มา: docs/business.md, docs/customer-journey.md (E02, E05)</span><span class="who">A · Business 4/4</span></footer>
+  </section>
+
+  <!-- ================= 02 KNOWLEDGE ================= -->
+  <section class="frame" id="k1" data-sec="3" data-region="1" data-cell="0" aria-label="Knowledge Base Design — Two kinds of data">
+    <div class="f">
+      <div class="f-head" data-auto><span class="f-kicker">Knowledge Base Design</span><span class="f-sub">Two kinds of data</span></div>
+      <p class="f-say" data-auto style="--i:1">แยก<em>ข้อมูลธุรกิจ</em> ออกจาก<em>ความรู้ทั่วไป</em></p>
+      <div class="f-body">
+        <div class="two">
+          <div data-auto style="--i:2"><div class="mark"></div><h4>Business Data</h4><p class="use">ใช้ตอบเรื่องบริการ</p><p class="list">แพ็กเกจ · ราคา · ศูนย์บริการ<br>นโยบาย · แผนบริการ<br>เว็บไซต์ ผู้ช่วย และหน้าจอเจ้าหน้าที่ ใช้ต้นทางเดียวกัน</p></div>
+          <div data-auto style="--i:4"><div class="mark v"></div><h4>Medical Reference Library</h4><p class="use">ใช้ประกอบความรู้ทั่วไป</p><p class="list">สรุปจากแหล่งสาธารณะ พร้อมลิงก์ต้นฉบับ<br>เช่น MedlinePlus / NLM และศิริราช</p></div>
+        </div>
+        <p class="boundary" data-auto style="--i:7">การเทียบค่าบนรายงาน ใช้<b>ช่วงอ้างอิงที่พิมพ์บนรายงานที่ผู้ใช้ยืนยันแล้ว</b> ไม่ใช้ช่วงจากคลังความรู้</p>
+      </div>
+    </div>
+    <footer class="f-foot"><span>ที่มา: business_data/*.json (E03) · knowledge/README.md (E04)</span><span class="who">A · Knowledge 1/4</span></footer>
+  </section>
+
+  <section class="frame" id="k2" data-sec="3" data-region="1" data-cell="1" aria-label="Knowledge Base Design — Library size">
+    <div class="f">
+      <div class="f-head" data-auto><span class="f-kicker">Knowledge Base Design</span><span class="f-sub">Medical Reference Library</span></div>
+      <div class="f-body" style="margin-top:3.4rem">
+        <div class="recs">
+          <div data-auto style="--i:1"><div class="num" data-count="148">148</div><div class="num-lbl">records<small>รายการข้อมูลในคลัง ไม่ใช่บทความที่ตรวจครบ</small></div></div>
+          <div>
+            <div class="waffle" id="waffle" data-reviewed="58" data-pending="90" role="img" aria-label="148 records: 58 ระบุว่าผ่านการทบทวนเดิม, 90 เจ้าของอนุมัติและรอตรวจต้นฉบับ"></div>
+            <div class="wlegend" data-auto style="--i:6"><span><i></i><b>58</b>&nbsp;ระบุว่าผ่านการทบทวนเดิม</span><span><i class="p"></i><b>90</b>&nbsp;เจ้าของอนุมัติ · รอตรวจต้นฉบับ</span></div>
+          </div>
+        </div>
+        <div class="pubs" data-step="1">
+          <div class="h">29 ชื่อผู้เผยแพร่ <span>· จำนวนชื่อตาม catalog ไม่ใช่องค์กรที่ร่วมรับรอง</span></div>
+          <div class="bar">
+            <div style="flex:35;--j:0"><i></i><b>MedlinePlus / NLM</b><small>35 records</small></div>
+            <div style="flex:46;--j:1"><i></i><b>Siriraj (2 ชื่อ)</b><small>23 + 23 records</small></div>
+            <div style="flex:67;--j:2"><i></i><b>อีก 27 ชื่อ</b><small>67 records · ไทยและต่างประเทศ</small></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <footer class="f-foot"><span>ที่มา: knowledge/evidence/catalog.json version 2026-10-09-owner-approved-148 (E04) · การอนุมัติของเจ้าของไม่ใช่การรับรองทางคลินิก</span><span class="who">A · Knowledge 2/4</span></footer>
+  </section>
+
+  <section class="frame" id="k3" data-sec="3" data-region="1" data-cell="2" aria-label="Knowledge Base Design — Example record">
+    <div class="f">
+      <div class="f-head" data-auto><span class="f-kicker">Knowledge Base Design</span><span class="f-sub">Example record → source</span></div>
+      <p class="f-say sm" data-auto style="--i:1">คำถามไทย → record → <em>เอกสารต้นทางจริง</em></p>
+      <div class="f-body" style="margin-top:4rem">
+        <div class="kmx">
+          <div class="kmx-left">
+            <div class="kmx-q" data-auto style="--i:2"><span class="bubble">“น้ำตาล…”</span>
+              <div class="aliases"><span class="hit">น้ำตาล</span><span>กลูโคส</span><span>FBS</span><span>Glucose</span></div></div>
+            <div class="record" data-auto style="--i:4">
+              <div class="rid">siriraj-glucose-glucose-07</div>
+              <h4>Siriraj Hospital: Glucose</h4>
+              <dl><dt>ค่าในแหล่ง</dt><dd><b class="hl-val">อายุ &gt; 15 ปี · 74–99 mg/dL</b></dd><dt>สถานะ</dt><dd>กลุ่ม 58 · ทบทวน 2026-10-03</dd><dt>ต้นทาง</dt><dd>PDF หน้า 2 · <span class="mono">sha256 f1028e33…</span></dd></dl>
+            </div>
+          </div>
+          <figure class="kmx-doc" data-step="1">
+            <div class="doc"><img src="img/km-dr019-p2-glucose.png" alt="ส่วนหนึ่งของคู่มือการส่งตรวจ ศิริราชพยาบาล: ค่าอ้างอิง Glucose อายุมากกว่า 15 ปี 74-99 mg/dL" loading="eager"><span class="mark-row"></span></div>
+            <figcaption><span class="pill">Publisher PDF · knowledge/medical_sources/raw/DR-019.pdf · หน้า 2</span>ตัดเฉพาะส่วนตาราง</figcaption>
+          </figure>
+        </div>
+      </div>
+    </div>
+    <footer class="f-foot"><span>ที่มา: catalog.json record siriraj-glucose-glucose-07 (E04) · คู่มือการส่งตรวจ ศิริราชพยาบาล · ใช้เทียบแหล่งเท่านั้น · สิทธิ์เผยแพร่ซ้ำยังไม่ยืนยัน ใช้เพื่อการศึกษา</span><span class="who">A · Knowledge 3/4</span></footer>
+  </section>
+
+  <section class="frame" id="k4" data-sec="3" data-region="1" data-cell="3" aria-label="Knowledge Base Design — Source and update control">
+    <div class="f">
+      <div class="f-head" data-auto><span class="f-kicker">Knowledge Base Design</span><span class="f-sub">Source &amp; Update Control</span></div>
+      <p class="f-say" data-auto style="--i:1">ทุก record <em>ตรวจย้อนกลับได้</em> และ<em>ปรับได้</em></p>
+      <div class="f-body">
+        <div class="duo k4">
+          <div class="ctrl-list">
+            <div data-auto style="--i:2"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M17 8l-4 32M33 8l-4 32M9 18h32M7 30h32"/></svg><div><h4>ID · ผู้เผยแพร่ · URL · hash</h4><p>เก็บครบทุก record</p></div></div>
+            <div data-auto style="--i:4"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M10 6h14l6 6v20H10z"/><path d="M24 6v6h6"/><path d="M30 26h6a6 6 0 0 1 0 12h-6M34 32H22"/></svg><div><h4>Publisher PDF 21 ไฟล์ ↔ 42 records</h4><p>PDF ที่สร้างจาก summary มีป้ายแยก</p></div></div>
+            <div data-auto style="--i:6"><svg viewBox="0 0 48 48" aria-hidden="true"><rect x="6" y="16" width="36" height="16" rx="8"/><circle cx="34" cy="24" r="5"/></svg><div><h4>พัก / เปิดใช้ record ได้</h4><p>record ที่พักไว้ จะไม่ถูกนำไปตอบ</p></div></div>
+          </div>
+          <figure data-auto style="--i:3">
+            <div class="shot" style="--cx:470;--cy:84;--cw:680;--ch:676;width:52rem"><img src="img/s02-knowledge-mock-20261017.png" alt="หน้าคลังความรู้ของผู้จัดการ: 148 จาก 148 รายการ พร้อมผู้เผยแพร่และสถานะการทบทวน" loading="eager"><div class="alt">ภาพหลักฐาน S02 ไม่พร้อม · หน้าคลังความรู้</div></div>
+            <figcaption><span class="pill mock">Recorded · OFFLINE mock UI · 17 ต.ค. 2026</span>Admin</figcaption>
+          </figure>
+        </div>
+      </div>
+    </div>
+    <footer class="f-foot"><span>ที่มา: knowledge/README.md · services/knowledge_admin.py (E04, E11) · 90 records ยังรอตรวจต้นฉบับ</span><span class="who">A · Knowledge 4/4</span></footer>
+  </section>
+
+  <!-- ================= 03 FUNCTIONS ================= -->
+  <section class="frame" id="f1" data-sec="4" data-region="2" data-cell="0" aria-label="Core Functions — Three groups">
+    <div class="f">
+      <div class="f-head" data-auto><span class="f-kicker">Core Functions</span><span class="f-sub">Overview</span></div>
+      <p class="f-say" data-auto style="--i:1">ฟังก์ชันหลัก <em>3 กลุ่ม</em> พร้อมจุดยืนยันที่ชัดเจน</p>
+      <div class="f-body">
+        <div class="groups">
+          <div data-auto style="--i:2"><div class="no">01</div><h4>Service Information</h4><p>สอบถามและเปรียบเทียบแพ็กเกจ ราคา นโยบาย</p></div>
+          <div data-auto style="--i:4"><div class="no">02</div><h4>Appointment &amp; Handoff</h4><p>ส่งคำขอนัดหมาย · เจ้าหน้าที่รับพิจารณา</p></div>
+          <div data-auto style="--i:6"><div class="no">03</div><h4>Report Review</h4><p>อ่านค่า · ผู้ใช้ตรวจและยืนยัน · แสดงหรือแจ้งเหตุ</p></div>
+        </div>
+        <p class="explain" data-auto style="--i:8"><i></i>คำตอบที่เสร็จสมบูรณ์ มีแหล่งอ้างอิงและ Process Explainability</p>
+      </div>
+    </div>
+    <footer class="f-foot"><span>ที่มา: docs/customer-journey.md (E05) · docs/api.md (E06)</span><span class="who">B · Functions 1/4</span></footer>
+  </section>
+
+  <section class="frame" id="f2" data-sec="4" data-region="2" data-cell="1" aria-label="Core Functions — Service Information">
+    <div class="f">
+      <div class="f-head" data-auto><span class="f-kicker">Core Functions</span><span class="f-sub">01 · Service Information</span></div>
+      <div class="f-body" style="margin-top:4rem">
+        <div class="duo">
+          <div class="side">
+            <p class="pt" data-auto style="--i:1">ถาม-เทียบแพ็กเกจ<br>จาก<em>ข้อมูลธุรกิจชุดเดียว</em></p>
+            <p class="small" data-auto style="--i:3">ตัวอย่าง Essential Check กับ Workday Check<br>ผู้ช่วยอธิบายความต่าง พร้อมแหล่งอ้างอิง</p>
+          </div>
+          <figure data-auto style="--i:2">
+            <div class="shot" style="--cx:392;--cy:292;--cw:1136;--ch:440"><img src="img/s01-compare-mock-20261017.png" alt="หน้าเทียบแพ็กเกจ Essential Check กับ Workday Check" loading="eager"><div class="alt">ภาพหลักฐาน S01 ไม่พร้อม · หน้าเทียบแพ็กเกจจำลอง</div></div>
+            <figcaption><span class="pill mock">Recorded · OFFLINE mock UI · 17 ต.ค. 2026</span>ราคาจำลอง</figcaption>
+          </figure>
+        </div>
+      </div>
+    </div>
+    <footer class="f-foot"><span>ที่มา: tour-20261017/tour.json · shots/t04-compare.png (S01)</span><span class="who">B · Functions 2/4</span></footer>
+  </section>
+
+  <section class="frame" id="f3" data-sec="4" data-region="2" data-cell="2" aria-label="Core Functions — Appointment and Handoff">
+    <div class="f">
+      <div class="f-head" data-auto><span class="f-kicker">Core Functions</span><span class="f-sub">02 · Appointment &amp; Handoff</span></div>
+      <div class="f-body" style="margin-top:4rem">
+        <div class="duo">
+          <div class="side">
+            <p class="pt" data-auto style="--i:1"><em>คำขอนัดหมาย</em><br>ยังไม่ใช่นัดที่ยืนยันแล้ว</p>
+            <div class="states">
+              <div data-auto style="--i:3"><i></i>ตรวจรายละเอียดก่อนส่ง</div>
+              <div class="w" data-auto style="--i:5"><i></i>ส่งคำขอ · รอการยืนยัน</div>
+              <div class="o" data-auto style="--i:7"><i></i>เจ้าหน้าที่รับพิจารณา</div>
+            </div>
+            <p class="small" data-auto style="--i:8">ส่งต่อคนเมื่อจำเป็น · การชำระเงินเป็นระบบจำลอง</p>
+          </div>
+          <figure data-auto style="--i:2">
+            <div class="shot" style="--cx:396;--cy:92;--cw:1128;--ch:378"><img src="img/s03a-request-sent-mock-20261017.png" alt="หน้านัดหมายของฉัน: คำขอ Essential Check รอการยืนยัน ยังไม่ชำระ" loading="eager"><div class="alt">ภาพหลักฐาน S03 ไม่พร้อม · คำขอนัดหมายรอการยืนยัน</div></div>
+            <figcaption><span class="pill mock">Recorded · OFFLINE mock UI · 17 ต.ค. 2026</span>สถานะ “รอการยืนยัน”</figcaption>
+          </figure>
+        </div>
+      </div>
+    </div>
+    <footer class="f-foot"><span>ที่มา: docs/customer-journey.md (E05) · routers/business.py (E08) · shots/t13-book-sent.png (S03)</span><span class="who">B · Functions 3/4</span></footer>
+  </section>
+
+  <section class="frame" id="f4" data-sec="4" data-region="2" data-cell="3" aria-label="Core Functions — Report Review">
+    <div class="f">
+      <div class="f-head" data-auto><span class="f-kicker">Core Functions</span><span class="f-sub">03 · Report Review</span></div>
+      <div class="f-body" style="margin-top:4rem">
+        <div class="duo">
+          <div class="side">
+            <div class="steps4">
+              <div data-auto style="--i:1">อ่านภาพหรือ PDF</div>
+              <div data-auto style="--i:2">ผู้ใช้ตรวจและแก้ค่า</div>
+              <div data-auto style="--i:3">ยืนยัน</div>
+              <div data-auto style="--i:4"><span>แสดงข้อมูลที่ผ่านการตรวจ<br><span class="x">หรือแจ้งเหตุที่ไม่แสดง</span></span></div>
+            </div>
+            <p class="small" data-step="1">ดู <b>แหล่งอ้างอิง</b> และ <b>Process Explainability</b> — ขั้นตอน เครื่องมือ และเวลา ที่เกิดขึ้นจริง</p>
+          </div>
+          <div class="viewer">
+            <figure data-auto data-until="1" style="--i:2">
+              <div class="shot" style="--cx:742;--cy:150;--cw:712;--ch:620;width:66rem"><img src="img/s05a-report-review-live-20261013.png" alt="ตารางค่าที่อ่านได้จากรายงานสังเคราะห์ พร้อมคำเตือนให้ตรวจทุกแถวก่อนยืนยัน" loading="eager"><div class="alt">ภาพหลักฐาน S05 ไม่พร้อม · ผู้ใช้ต้องตรวจยืนยันค่าก่อน</div></div>
+              <figcaption><span class="pill">Recorded · Live provider / Local UI · 13 ต.ค. 2026</span>รายงานสังเคราะห์</figcaption>
+            </figure>
+            <figure data-step="1">
+              <div class="shot" style="--cx:726;--cy:668;--cw:734;--ch:256"><img src="img/s04-trace-live-20261013.png" alt="Process Explainability: Company Harness, safety check, plan, tool lookup_packages พร้อมเวลา" loading="eager"><div class="alt">ภาพหลักฐาน S04 ไม่พร้อม · process trace</div></div>
+              <figcaption><span class="pill">Recorded · Live provider / Local UI · 13 ต.ค. 2026</span>ภาพ capture ไม่ใช่ benchmark ใหม่</figcaption>
+            </figure>
+          </div>
+        </div>
+      </div>
+    </div>
+    <footer class="f-foot"><span>ที่มา: services/report_reader_v2.py, report_binding.py (E08) · live-20261013/capture-run.json (S04, S05)</span><span class="who">B · Functions 4/4</span></footer>
+  </section>
+
+  <!-- ================= 04 ARCHITECTURE ================= -->
+  <section class="frame" id="a1" data-sec="5" data-region="3" data-cell="0" aria-label="System Architecture">
+    <div class="f">
+      <div class="f-head" data-auto><span class="f-kicker">System Architecture</span><span class="f-sub">Architecture · 1/2</span></div>
+      <div class="arch-tags" data-auto style="--i:1"><span class="pill">หนึ่ง deployable web service</span><span class="pill plain">AI roles = บทบาทภายใน workflow</span><span class="pill plain">ไม่ใช้ vector database</span></div>
+      <div class="f-body" style="margin-top:4rem">
+        <div class="arch">
+          <svg class="svg-lines" viewBox="0 0 1680 640" preserveAspectRatio="none" aria-hidden="true">
+            <path class="draw acc" data-step-draw="0" d="M260 300 H342"/>
+            <path class="draw acc" data-step-draw="1" d="M652 260 C 676 260 676 150 698 150"/>
+            <path class="draw acc" data-step-draw="1" style="--delay:150ms" d="M652 340 C 676 340 676 450 698 450"/>
+            <path class="draw acc" data-step-draw="2" d="M1040 150 H1080"/>
+            <path class="draw acc" data-step-draw="3" d="M500 420 V600 H1250 V560"/>
+            <path class="draw ink" data-step-draw="4" d="M870 40 V12 H1560 V40"/>
+            <path class="draw ink" data-step-draw="4" style="--delay:250ms" d="M580 420 V630 H1600 V330"/>
+          </svg>
+          <div class="box" data-auto style="--i:2;left:0;top:20rem;width:26rem"><h4>Browser</h4><p>Customer · Staff · Admin</p></div>
+          <div class="fence" data-auto style="--i:2;left:32rem;top:1.6rem;width:111rem;height:59rem"><span>LabClear web service · FastAPI</span></div>
+          <div class="box core" data-auto style="--i:3;left:35rem;top:19rem;width:30rem;height:23rem"><h4><small>1</small>FastAPI API</h4><p>routing · session / CSRF<br>ownership · business actions</p></div>
+          <div class="box fx-pop" data-step="1" style="left:70rem;top:4rem;width:34rem;height:22rem"><h4><small>2</small>AI Workflow</h4><p>planner · Advisor / Explainer<br>typed tools · skills · checks</p></div>
+          <div class="box fx-pop" data-step="1" style="--i:1;left:70rem;top:34rem;width:34rem;height:22rem"><h4><small>3</small>Document Worker</h4><p>ตรวจและเตรียมภาพ/PDF<br>subprocess จำกัดเวลา/ทรัพยากร</p></div>
+          <div class="box fx-pop" data-step="2" style="left:108rem;top:4rem;width:32rem;height:22rem"><h4><small>4</small>Local Knowledge</h4><p>business JSON + medical catalog</p><span class="tagline">BM25 · คำและ aliases</span></div>
+          <div class="box fx-pop" data-step="3" style="left:108rem;top:34rem;width:32rem;height:22rem"><h4><small>5</small>Encrypted State</h4><p>payload เข้ารหัส<br>SQLite ในเครื่อง <b>หรือ</b> PostgreSQL (hosted)</p></div>
+          <div class="box ext fx-pop" data-step="4" style="left:146rem;top:4rem;width:22rem;height:29rem"><h4><small>6</small>Providers</h4><p>LLM<br>safety<br>OCR</p><span class="tagline">นอกขอบเขต service</span></div>
+          <span class="wlbl" data-step="4" style="left:100rem;top:-.6rem">HTTPS · LLM / safety</span>
+          <span class="wlbl" data-step="4" style="left:100rem;top:61.6rem">HTTPS · OCR (เส้นทางอ่านรายงาน)</span>
+        </div>
+      </div>
+    </div>
+    <footer class="f-foot"><span>ที่มา: docs/architecture.md (E06) · business_agent.py, agent_tools.py, evidence_search.py, business_store.py, document_worker.py (E07, E09) · โครงสร้างจาก source ไม่ใช่ผลทดสอบ scale/uptime</span><span class="who">B · Architecture 1/3</span></footer>
+  </section>
+
+  <section class="frame" id="a2" data-sec="6" data-region="3" data-cell="1" aria-label="Processing Flow and Safeguards — Message">
+    <div class="f">
+      <div class="f-head" data-auto><span class="f-kicker">Processing Flow &amp; Safeguards</span><span class="f-sub">Architecture · 2/2 · ข้อความ</span></div>
+      <p class="f-say sm" data-auto style="--i:1">ค้นข้อมูล → เขียน → <em>ตรวจ</em> ก่อนแสดงคำตอบ</p>
+      <div class="f-body" style="margin-top:4.4rem">
+        <div class="flow5">
+          <div class="line"></div>
+          <div class="n" data-auto style="--i:2"><i>1</i><h4>Guard &amp; Plan</h4><p>ตรวจข้อความ วางแผน เลือกบทบาท</p></div>
+          <div class="n" data-auto style="--i:4"><i>2</i><h4>Tools &amp; Retrieval</h4><p>อ่านตามสิทธิ์ · ค้น BM25</p></div>
+          <div class="n" data-auto style="--i:6"><i>3</i><h4>Draft</h4><p>เขียนจากข้อมูลที่ได้</p></div>
+          <div class="n key" data-auto style="--i:8"><i>4</i><h4>Checks &amp; Review</h4><p>อ้างอิง · ราคา · ค่า/หน่วย</p></div>
+          <div class="n" data-auto style="--i:10"><i>5</i><h4>Output</h4><p>คำตอบ + แหล่งข้อมูล + trace</p></div>
+        </div>
+        <div class="stopnote" data-step="1">ไม่ผ่าน / ไม่แน่ชัด → แจ้งเหตุ · หยุด · ส่งต่อคน <small>ไม่ใช่ทุกเส้นจบที่คำตอบ</small></div>
+      </div>
+    </div>
+    <footer class="f-foot"><span>ที่มา: business_agent.py, answer_checks.py, conversation_guard.py · docs/safety.md (E07, E10) · reviewer = อีก model call แยกจาก writer</span><span class="who">B · Architecture 2/3</span></footer>
+  </section>
+
+  <section class="frame" id="a3" data-sec="6" data-region="3" data-cell="bc" aria-label="Processing Flow and Safeguards — Report">
+    <div class="f">
+      <div class="f-head" data-auto><span class="f-kicker">Processing Flow &amp; Safeguards</span><span class="f-sub">Architecture · 2/2 · รายงาน</span></div>
+      <p class="f-say sm" data-auto style="--i:1">ค่าบนรายงานต้อง<em>ผ่านการตรวจของผู้ใช้</em>ก่อนนำไปใช้</p>
+      <div class="f-body" style="margin-top:4.4rem">
+        <div class="flow5 rep">
+          <div class="line"></div>
+          <div class="n" data-auto style="--i:2"><i>1</i><h4>ภาพ / PDF</h4><p>ข้อมูลสังเคราะห์</p></div>
+          <div class="n" data-auto style="--i:4"><i>2</i><h4>OCR + checks</h4><p>หน่วยไม่รองรับ → หยุด</p></div>
+          <div class="n" data-auto style="--i:6"><i>3</i><h4>แถวรอตรวจ</h4><p>draft rows</p></div>
+          <div class="n user" data-auto style="--i:8"><i>4</i><h4>ผู้ใช้ยืนยัน</h4><p>ตรวจ / แก้ / ยืนยัน</p></div>
+          <div class="n" data-auto style="--i:10"><i>5</i><h4>ใช้ในคำตอบ</h4><p>เฉพาะค่าที่ผ่าน</p></div>
+        </div>
+        <div class="notes2" data-step="1">
+          <div>มี<b>จุดตรวจและการจำกัดสิทธิ์ใน source</b> ไม่ได้แปลว่าปลอดภัย 100%</div>
+          <div><b>Process trace</b> คือขั้นตอน เครื่องมือ แหล่งข้อมูล และเวลา ไม่ใช่ความคิดภายในของโมเดล</div>
+        </div>
+      </div>
+    </div>
+    <footer class="f-foot"><span>ที่มา: report_reader_v2.py, lab_units.py, guest_memory.py (E08, E11) · ภาพรายงานถูกส่งไป OCR provider ที่ตั้งค่าไว้</span><span class="who">B · Architecture 3/3</span></footer>
+  </section>
+
+  <!-- ================= 05 EVALUATION ================= -->
+  <section class="frame" id="e1" data-sec="7" data-region="4" data-cell="m0" aria-label="Evaluation and Key Findings — Results">
+    <div class="f">
+      <div class="f-head" data-auto><span class="f-kicker">Evaluation &amp; Key Findings</span><span class="f-sub">Recorded Evaluation · 12 Oct 2026</span></div>
+      <div class="runline" data-auto style="--i:1;margin-top:2.4rem"><span class="pill">provider จริงผ่าน Local UI</span><span class="pill plain">ข้อมูลสังเคราะห์</span><span class="pill plain mono">4.0.0-rc3 · d4ec212</span></div>
+      <div class="etable">
+        <div class="erow head" data-auto style="--i:2"><span>ชุดทดสอบ</span><span>ผลตรวจเนื้อหาในรายงาน (รายกรณี)</span><span>Median เวลาที่บันทึก</span></div>
+        <div class="erow" data-step="1">
+          <div class="set">10 คำถาม<small>Q01–Q10</small></div>
+          <div><div class="cells"><i class="partial" style="--c:0">Q01</i><i class="partial" style="--c:1">Q02</i><i class="pass" style="--c:2">Q03</i><i class="pass" style="--c:3">Q04</i><i class="pass" style="--c:4">Q05</i><i class="pass" style="--c:5">Q06</i><i class="fail" style="--c:6">Q07</i><i class="pass" style="--c:7">Q08</i><i class="pass" style="--c:8">Q09</i><i class="fail" style="--c:9">Q10</i></div>
+            <div class="verdict"><span class="ok">6 PASS</span><span class="pa">2 PARTIAL</span><span class="fa">2 FAIL</span></div></div>
+          <div class="median"><span class="num" data-count="13.67" data-decimals="2">13.67</span><span class="u">s</span><small>9.31–24.21 s</small></div>
+        </div>
+        <div class="erow" data-step="2">
+          <div class="set">5 ภาพรายงาน<small>I01–I05</small></div>
+          <div><div class="cells"><i class="fail" style="--c:0">I01</i><i class="error" style="--c:1">I02</i><i class="error" style="--c:2">I03</i><i class="error" style="--c:3">I04</i><i class="error" style="--c:4">I05</i></div>
+            <div class="verdict"><span class="fa">1 FAIL</span><span class="er">4 ERROR</span><small>ยังไม่มี complete PASS ในชุดนี้</small></div></div>
+          <div class="median"><span class="num" data-count="44.44" data-decimals="2">44.44</span><span class="u">s</span><small>23.44–60.33 s</small></div>
+        </div>
+        <div class="erow" data-step="3">
+          <div class="set">5 Safety cases<small>S01–S05</small></div>
+          <div><div class="cells"><i class="pass" style="--c:0">S01</i><i class="pass" style="--c:1">S02</i><i class="pass" style="--c:2">S03</i><i class="pass" style="--c:3">S04</i><i class="pass" style="--c:4">S05</i></div>
+            <div class="verdict"><span class="ok">5 PASS</span><small style="color:var(--warn)">ชุดจำกัด · ชุดขยายพบข้อผิดพลาดของ input guard</small></div></div>
+          <div class="median"><span class="num" data-count="1.64" data-decimals="2">1.64</span><span class="u">s</span><small>0.34–11.87 s</small></div>
+        </div>
+      </div>
+    </div>
+    <footer class="f-foot"><span>ที่มา: TEST_RESULTS.csv · expanded-live-20261012-01/run.json, scored.json (E12) · dirty diff 7d89285d…</span><span class="who">B · Evaluation 1/2</span></footer>
+  </section>
+
+  <section class="frame" id="e2" data-sec="7" data-region="4" data-cell="m1" aria-label="Evaluation and Key Findings — Findings">
+    <div class="f">
+      <div class="f-head" data-auto><span class="f-kicker">Evaluation &amp; Key Findings</span><span class="f-sub">Key Findings</span></div>
+      <p class="f-say" data-auto style="--i:1">ใช้งานตามโครงสร้างได้ แต่<em>คุณภาพข้อความและ OCR</em><br>ยังต้องพัฒนา</p>
+      <div class="f-body">
+        <div class="find">
+          <div data-auto style="--i:3"><h4>สิ่งที่พบ</h4>
+            <p class="pt">คำตอบบางข้อเพิ่มข้อมูลที่แหล่งอ้างอิงไม่รองรับ<small>เช่น Q07 นำอายุใบเสนอราคา ไปพูดเป็นเวลาติดต่อกลับ</small></p>
+            <p class="pt">OCR / หน่วย และความครบถ้วนยังไม่ผ่าน</p>
+          </div>
+          <div data-auto style="--i:5"><h4>อ่านตัวเลขอย่างไร</h4>
+            <p class="mut">เวลา = จากกดส่งหรือกดยืนยันรายงาน จน UI จบงาน <b>รวมกรณีที่ไม่สำเร็จ</b></p>
+            <p class="mut">คะแนนอัตโนมัติเดิม 15 PASS / 1 FAIL / 4 ERROR <b>แยกจาก</b>ผลตรวจเนื้อหา</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <footer class="f-foot"><span>ที่มา: LabClear_Full_Report_TH.md, semantic-review-summary.json (E13) · classifier-metrics.json (E14)</span><span class="who">B · Evaluation 2/2</span></footer>
+  </section>
+
+  <!-- ================= NEXT STEPS ================= -->
+  <section class="frame" id="n1" data-sec="8" data-region="5" data-cell="center" aria-label="Conclusion and Next Steps">
+    <div class="f">
+      <div class="f-head" data-auto><span class="f-kicker">Conclusion &amp; Next Steps</span><span class="f-sub">Next Steps</span></div>
+      <p class="f-say" data-auto style="--i:1">ขั้นต่อไป: เพิ่ม<em>ความน่าเชื่อถือ</em>ของข้อมูลและผลลัพธ์</p>
+      <div class="f-body">
+        <div class="nexts">
+          <div data-auto style="--i:3"><span class="k">1</span><h4>ตรวจต้นฉบับ records ที่ค้าง</h4><p>และปรับการอ้างอิงให้ตรงข้อกล่าวอ้าง</p></div>
+          <div data-auto style="--i:5"><span class="k">2</span><h4>พัฒนา OCR และการตรวจค่า/หน่วย</h4><p>โดยคงการยืนยันของผู้ใช้ไว้</p></div>
+          <div data-auto style="--i:7"><span class="k">3</span><h4>ทดสอบซ้ำบนรุ่นที่ระบุชัด</h4><p>ตรวจเนื้อหาแยกจากคะแนนอัตโนมัติ</p></div>
+        </div>
+        <div class="closing">
+          <div><div class="thanks" data-step="1">ขอบคุณครับ · ยินดีตอบคำถาม</div><div class="scope-l" data-auto style="--i:9">โครงงานเพื่อการศึกษา · ข้อมูลสังเคราะห์ · ยังไม่มี clinical validation</div></div>
+          <div class="links" data-auto style="--i:10"><a href="https://github.com/siriponsri/LabClear" target="_blank" rel="noopener noreferrer">github.com/siriponsri/LabClear</a><a href="https://labclear.onrender.com/" target="_blank" rel="noopener noreferrer">labclear.onrender.com</a><small>ลิงก์ให้กดเอง · สไลด์ไม่ได้ตรวจสถานะเว็บสด</small></div>
+        </div>
+      </div>
+    </div>
+    <footer class="f-foot"><span>ที่มา: E01, E12–E15 · งานถัดไปมาจากข้อค้นพบใน Evaluation · ช่วง Q&amp;A ค้างหน้านี้ และเปิดสำรองด้วยปุ่ม Q</span><span class="who">A · Next Steps</span></footer>
+  </section>
+
+</div>
+</div>
+
+<div class="hud" id="hud" aria-hidden="true">
+  <div class="hud-rail">
+    <div class="hud-brand"><img src="img/mark.svg" alt="">LabClear</div>
+    <div class="hud-line"><i></i></div>
+    <div id="hud-stations"></div>
+    <div class="hud-ctx" id="hud-ctx"></div>
+  </div>
+</div>
+
+<nav class="controls" aria-label="ควบคุมการนำเสนอ">
+  <button type="button" data-act="prev" aria-label="ก่อนหน้า">←</button>
+  <span class="counter" id="counter">1 / 8</span>
+  <button type="button" data-act="next" aria-label="ถัดไป">→</button>
+  <button type="button" data-act="map" aria-label="ภาพรวม (O)">◱</button>
+  <button type="button" data-act="full" aria-label="เต็มจอ (F)">⛶</button>
+  <button type="button" data-act="laser" aria-label="เลเซอร์ (L)">●</button>
+  <a href="backup.html" aria-label="สไลด์สำรอง Q&amp;A (Q)">Q&amp;A</a>
+  <button type="button" data-act="help" aria-label="คีย์ลัด (H)">?</button>
+</nav>
+<div class="laser" id="laser" aria-hidden="true"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div class="help" id="help" role="dialog" aria-modal="true" aria-label="คีย์ลัด">
+  <div class="help-card">
+    <h2>คีย์ลัด</h2>
+    <dl>
+      <dt>→ ↓ Space PgDn</dt><dd>คลิกถัดไป</dd>
+      <dt>← ↑ PgUp</dt><dd>ย้อนกลับ</dd>
+      <dt>Home / End</dt><dd>เริ่มต้น / Next Steps</dd>
+      <dt>1 – 8</dt><dd>ไปต้น section นั้น</dd>
+      <dt>O</dt><dd>ซูมออกดูภาพรวม (กดอีกครั้งเพื่อกลับ)</dd>
+      <dt>F</dt><dd>เต็มจอ</dd>
+      <dt>L</dt><dd>เลเซอร์พอยน์เตอร์</dd>
+      <dt>Q</dt><dd>สไลด์สำรอง Q&amp;A</dd>
+      <dt>H / ?</dt><dd>แสดง/ซ่อนหน้านี้</dd>
+    </dl>
+  </div>
+</div>
+<script src="js/deck.js?v=1792839057"></script>
+</body>
+</html>
