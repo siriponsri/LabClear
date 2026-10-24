@@ -10,8 +10,8 @@
 </head>
 <body>
 <header class="top">
-  <a class="back" href="index.html#/n1" id="back">← กลับสไลด์หลัก (Esc)</a>
-  <div class="ttl"><img src="img/mark.svg" alt=""><b>LabClear</b><span>Q&amp;A Backup · ไม่อยู่ในเวลานำเสนอ 9 นาที</span></div>
+  <a class="back" href="index.html#/13" id="back">← กลับสไลด์หลัก (Esc)</a>
+  <div class="ttl"><img src="img/mark.svg" alt=""><b>LabClear</b><span>Q&amp;A · ข้อมูลประกอบ</span></div>
 </header>
 
 <nav class="toc" aria-label="หัวข้อสำรอง">
@@ -19,7 +19,7 @@
 </nav>
 
 <main>
-<section id="q1"><div class="lead">ตอบหลัก: A · วัชรินทร์</div><h2>ธุรกิจจำลองและเป้าหมาย</h2>
+<section id="q1"><h2>ธุรกิจจำลองและเป้าหมาย</h2>
   <ul>
     <li>อาจารย์ยอมรับการใช้ธุรกิจจำลองแล้ว · แพ็กเกจ ราคา ศูนย์ การนัด การชำระเงิน และรายงานเป็น<b>ข้อมูลจำลอง</b></li>
     <li>18 แพ็กเกจ (บุคคล 15 / องค์กร 3) · ศูนย์จำลอง 3 แห่ง · ผู้ใช้ 4 กลุ่มตามหน้าที่</li>
@@ -28,7 +28,7 @@
   <p class="src">E01 SOURCE_AND_CLAIM_MAP · E02 docs/business.md · E03 business_data/*.json</p>
 </section>
 
-<section id="q2"><div class="lead">ตอบหลัก: A · วัชรินทร์</div><h2>คลังความรู้เชื่อถือได้แค่ไหน</h2>
+<section id="q2"><h2>คลังความรู้เชื่อถือได้แค่ไหน</h2>
   <div class="grid2">
     <ul>
       <li>148 records · 58 ระบุว่าผ่านการทบทวนเดิม · <b>90 เจ้าของอนุมัติแต่ยังรอตรวจต้นฉบับ</b> (OWNER_APPROVED_SOURCE_CHECK_PENDING)</li>
@@ -43,7 +43,7 @@
   <p class="src">E04 knowledge/README.md, knowledge/evidence/catalog.json (version 2026-10-09-owner-approved-148) · E11 services/knowledge_admin.py</p>
 </section>
 
-<section id="q3"><div class="lead">ตอบหลัก: B · ศิริพล</div><h2>ทำไมเลือก BM25</h2>
+<section id="q3"><h2>ทำไมเลือก BM25</h2>
   <ul>
     <li>ค้นจาก title, aliases และ content · ภาษาอังกฤษแยกเป็นคำ · ภาษาไทยแยกเป็นชิ้นละ 2 ตัวอักษรซ้อนกัน</li>
     <li><b>ไม่เรียก embedding API และไม่มี vector database</b> · ตรวจย้อนได้ว่าคำไหนทำให้เจอ</li>
@@ -53,7 +53,7 @@
   <p class="src">E09 services/evidence_search.py · E07 services/agent_tools.py · knowledge/README.md</p>
 </section>
 
-<section id="q4"><div class="lead">ตอบหลัก: B · ศิริพล</div><h2>หนึ่งข้อความผ่านอะไรบ้าง</h2>
+<section id="q4"><h2>หนึ่งข้อความผ่านอะไรบ้าง</h2>
   <ol class="flow">
     <li><b>Guard &amp; Plan</b> ตรวจข้อความ วางแผน เลือกบทบาท</li>
     <li><b>Tools &amp; Retrieval</b> อ่านข้อมูลตามสิทธิ์ ค้น BM25 เลือก skills</li>
@@ -66,7 +66,7 @@
   <p class="src">E07 services/business_agent.py, runtime_skills.py · E10 docs/safety.md, answer_checks.py</p>
 </section>
 
-<section id="q5"><div class="lead">ตอบหลัก: B · ศิริพล</div><h2>API และจุดยืนยันอยู่ตรงไหน</h2>
+<section id="q5"><h2>API และจุดยืนยันอยู่ตรงไหน</h2>
   <table>
     <tr><th>งาน</th><th>Endpoint</th></tr>
     <tr><td>สนทนา</td><td class="mono">POST /api/business/chat</td></tr>
@@ -79,7 +79,7 @@
   <p class="src">E06 docs/api.md · E08 routers/business.py</p>
 </section>
 
-<section id="q6"><div class="lead">ตอบหลัก: B · ศิริพล</div><h2>ข้อมูลรายงานออกนอกเครื่องหรือไม่</h2>
+<section id="q6"><h2>ข้อมูลรายงานออกนอกเครื่องหรือไม่</h2>
   <ul>
     <li>ภาพรายงาน<b>ต้องส่งไป OCR provider ที่ตั้งค่าไว้</b> · คำสั่งให้ละเว้นชื่อ ไม่ได้พิสูจน์ว่าชื่อบนภาพถูกลบก่อนส่ง</li>
     <li>ต้นฉบับและแถวที่ยังไม่ยืนยัน ถูกกันออกจากบริบทสนทนาตาม source · ข้อความที่ยืนยันแล้วอาจผ่าน provider ที่เกี่ยวข้อง</li>
@@ -89,7 +89,7 @@
   <p class="src">E08 services/report_reader_v2.py · E09 services/business_store.py · E11 services/guest_memory.py · docs/safety.md</p>
 </section>
 
-<section id="q7"><div class="lead">ตอบหลัก: B · ศิริพล</div><h2>ทำไม Safety 5/5 แต่ยังมีข้อจำกัด</h2>
+<section id="q7"><h2>ทำไม Safety 5/5 แต่ยังมีข้อจำกัด</h2>
   <div class="grid2">
     <div><p>S01–S05 ผ่านทั้ง 5 ในรอบ 12 ต.ค. แต่เป็น<b>ชุดจำกัด</b></p>
       <p>ชุดขยาย 24 inputs วัดเฉพาะ <span class="mono">safety_in</span> (ไม่ใช่ final answer safety):</p></div>
@@ -102,7 +102,7 @@
   <p class="src">E14 docs/evidence/current/full-course-report-20261012/classifier-metrics.json · คนละ denominator กับ S01–S05</p>
 </section>
 
-<section id="q8"><div class="lead">ตอบหลัก: B · ศิริพล</div><h2>ภาพอ่านผิดตรงไหน · ป้องกันอย่างไร</h2>
+<section id="q8"><h2>ภาพอ่านผิดตรงไหน · ป้องกันอย่างไร</h2>
   <div class="grid2">
     <div>
       <table>
@@ -119,7 +119,7 @@
   <p class="src">E12 TEST_RESULTS.csv · E15 COVERAGE_MATRIX.md · E08 services/lab_units.py</p>
 </section>
 
-<section id="q9"><div class="lead">ตอบหลัก: B · ศิริพล</div><h2>คะแนนอัตโนมัติกับการตรวจเนื้อหาต่างกันอย่างไร</h2>
+<section id="q9"><h2>คะแนนอัตโนมัติกับการตรวจเนื้อหาต่างกันอย่างไร</h2>
   <table>
     <tr><th>ชุด</th><th>Automated verdict เดิม</th><th>Report review</th><th>Median</th><th>Range</th></tr>
     <tr><td>Question n=10</td><td>10 PASS</td><td>6 PASS / 2 PARTIAL / 2 FAIL</td><td>13.67 s</td><td>9.307–24.207 s</td></tr>
@@ -134,7 +134,7 @@
   <p class="src">E12 TEST_RESULTS.csv, scored.json · E13 LabClear_Full_Report_TH.md</p>
 </section>
 
-<section id="q10"><div class="lead">ตอบหลัก: B · ศิริพล</div><h2>รุ่นที่ทดสอบตรงกับวันนี้หรือไม่</h2>
+<section id="q10"><h2>รุ่นที่ทดสอบตรงกับวันนี้หรือไม่</h2>
   <table>
     <tr><td>Run</td><td class="mono">expanded-live-20261012-01</td></tr>
     <tr><td>Mode</td><td class="mono">LIVE_PROVIDER_LOCAL_UI</td></tr>
@@ -148,7 +148,7 @@
   <p class="src">E12 docs/evidence/current/expanded-live-20261012-01/run.json</p>
 </section>
 
-<section id="q11"><div class="lead">ใช้เมื่อถูกถาม</div><h2>ชุดหลักฐานอื่น (แยกจากผลหลัก)</h2>
+<section id="q11"><h2>ชุดหลักฐานอื่น (แยกจากผลหลัก)</h2>
   <table>
     <tr><th>ชุด</th><th>ผล / ข้อจำกัด</th></tr>
     <tr><td>Independent text</td><td>62 scenarios · 77 turns จริงจากแผน 78 · 9 PASS / 20 PARTIAL / 22 FAIL / 11 ERROR (ไม่ใช่ 62 คำถามเดี่ยว)</td></tr>

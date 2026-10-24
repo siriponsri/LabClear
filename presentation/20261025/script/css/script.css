@@ -74,3 +74,18 @@ code { font-size: .85em; padding: 1px 6px; border-radius: 6px; background: var(-
 hr { border: 0; border-top: 1px solid var(--hair); margin: 24px 0; }
 @media (max-width: 560px) { :root { --fs: 19px; } .say { padding-left: 54px; } .say::before { left: 10px; } .clock .plan { display: none; } }
 @media print { .bar { display: none; } body { background: #fff; color: #000; } .say { break-inside: avoid; } }
+
+/* Readability: name label on every spoken block, roomy lines */
+:root { --fs: 22px; }
+body { line-height: 1.85; }
+.say { padding: 14px 18px 16px; }
+.say::before { content: none; }
+.spk { display: inline-block; margin-bottom: 6px; padding: 1px 12px; border-radius: 99px; font-size: 14px; font-weight: 700; letter-spacing: .02em; background: var(--a); color: #fff; line-height: 1.7; }
+.say.B .spk { background: var(--b); color: var(--bg); }
+.say .spk + * , .say .spk { vertical-align: middle; }
+.say { display: block; }
+.say .spk { display: table; }
+.click { font-size: .9em; font-weight: 500; padding: 10px 14px; }
+.click b { font-weight: 700; }
+h3 { font-size: 1.02em; color: var(--ink); background: var(--b-wash); padding: 6px 12px; border-radius: 10px; display: inline-block; }
+@media (max-width: 560px) { :root { --fs: 20px; } .say { padding: 12px 14px 14px; } }

@@ -5,6 +5,7 @@
   var doc = document.getElementById('doc');
   var jump = document.getElementById('jump');
   var sections = [];
+  var NAMES = { A: 'วัชรินทร์', B: 'ศิริพล' };
 
   function esc(s) { return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
   function inline(s) {
@@ -47,7 +48,7 @@
         return;
       }
       if ((m = /^::cue\s+(.+)/.exec(line))) { closeList(); out.push('<p class="cue">' + inline(m[1]) + '</p>'); return; }
-      if ((m = /^([AB]):\s*(.+)/.exec(line))) { closeList(); out.push('<p class="say ' + m[1] + '" data-who="' + m[1] + '">' + inline(m[2]) + '</p>'); return; }
+      if ((m = /^([AB]):\s*(.+)/.exec(line))) { closeList(); out.push('<p class="say ' + m[1] + '" data-who="' + m[1] + '"><span class="spk">' + NAMES[m[1]] + '</span>' + inline(m[2]) + '</p>'); return; }
       if ((m = /^\[คลิก\s*(\d+)\]\s*(.*)/.exec(line))) { closeList(); out.push('<p class="click"><b>คลิก ' + m[1] + '</b><span>' + inline(m[2]) + '</span></p>'); return; }
       if ((m = /^>\s*(.+)/.exec(line))) {
         closeList();
@@ -83,8 +84,9 @@
   var fs = parseFloat(store('lc-fs')) || 0;
   function setFs(px) { fs = Math.max(15, Math.min(34, px)); document.documentElement.style.setProperty('--fs', fs + 'px'); store('lc-fs', fs); }
   if (fs) setFs(fs);
-  document.getElementById('bigger').onclick = function () { setFs((fs || 21) + 2); };
-  document.getElementById('smaller').onclick = function () { setFs((fs || 21) - 2); };
+  function curFs() { return fs || parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--fs')) || 20; }
+  document.getElementById('bigger').onclick = function () { setFs(curFs() + 2); };
+  document.getElementById('smaller').onclick = function () { setFs(curFs() - 2); };
 
   /* ---------- Pacing clock ---------- */
   var tEl = document.getElementById('t'), planEl = document.getElementById('plan'), goBtn = document.getElementById('go');
