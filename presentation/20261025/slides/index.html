@@ -9,7 +9,7 @@
 <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="fonts/ibm-plex-sans-thai-thai-500-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/geist-variable.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="css/deck.css?v=11">
+<link rel="stylesheet" href="css/deck.css?v=12">
 </head>
 <body>
 <noscript><p style="padding:16px;font:16px/1.5 sans-serif">JavaScript ปิดอยู่: แสดงสไลด์ทั้งหมดแบบเลื่อนอ่าน เนื้อหาครบทุกหน้า</p></noscript>
@@ -339,7 +339,7 @@
 </section>
 
 <!-- ================= 13 · Architecture ================= -->
-<section class="slide" data-sec="5" data-chapter="3" data-ctx="Architecture · 1/2" aria-label="System Architecture">
+<section class="slide" data-sec="5" data-chapter="3" data-ctx="Architecture · 1/3" aria-label="System Architecture">
   <div class="page">
     <header class="head">
       <div class="kicker">System Architecture</div>
@@ -375,8 +375,68 @@
   <footer class="foot"><span>ที่มา: docs/architecture.md (E06) · services/*.py (E07, E09) · ไม่ใช้ vector database · โครงสร้างจาก source ไม่ใช่ผลทดสอบ scale/uptime</span><span class="pg"></span></footer>
 </section>
 
-<!-- ================= 14 · Processing Flow ================= -->
-<section class="slide" data-sec="6" data-chapter="3" data-ctx="Architecture · 2/2" aria-label="Processing Flow and Safeguards">
+<!-- ================= 14 · RAG in LabClear ================= -->
+<section class="slide" data-sec="5" data-chapter="3" data-ctx="Architecture · 2/3" aria-label="RAG technique in LabClear">
+  <div class="page">
+    <header class="head">
+      <div class="kicker">System Architecture · RAG</div>
+      <h2 class="title">Plan, Search, Cite</h2>
+      <p class="lede">RAG ของ LabClear: <em>planner เขียนคำค้น</em> · ค้นด้วย <em>BM25 + alias</em> · ตอบได้เฉพาะ<em>แหล่งที่ค้นเจอ</em> · ไม่ใช้ embedding</p>
+    </header>
+    <div class="body">
+      <div class="rag">
+        <div class="rag-line" data-a="grow" data-t="300" data-d="2600"></div>
+        <span class="packet" data-a="packet" data-t="400" data-d="3200" data-even data-path="9;27.1;57.3;89.9"></span>
+        <div class="col" data-a="rise" data-t="300">
+          <div class="ph"><i>1</i><span>Plan</span></div>
+          <h4>Planner เขียนคำค้น</h4>
+          <p>LLM สรุปคำถามเป็นชื่อการตรวจภาษาอังกฤษ</p>
+          <span class="qchip" data-a="type" data-t="900">query: glucose</span>
+          <p class="small">ไม่ใส่ชื่อคนหรือค่าในรายงาน</p>
+          <div class="fallback">ถ้าคำค้นว่าง → ใช้ alias ที่เจอในข้อความ</div>
+        </div>
+        <div class="col" data-a="rise" data-t="900">
+          <div class="ph"><i>2</i><span>Gate</span></div>
+          <h4>ค้นได้ตามสิทธิ์</h4>
+          <div class="gate"><svg class="icon" viewBox="0 0 48 48" aria-hidden="true"><rect x="10" y="21" width="28" height="20" rx="3"/><path d="M16 21v-6a8 8 0 0 1 16 0v6"/></svg><span>เฉพาะบทบาทที่อ่าน <b>medical</b></span></div>
+          <div class="gate"><svg class="icon" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="16"/><path d="M20 17v14M28 17v14"/></svg><span>record ที่<b>พัก</b>ไว้ถูกตัดออก</span></div>
+          <div class="gate"><svg class="icon" viewBox="0 0 48 48" aria-hidden="true"><path d="M24 6l15 6v11c0 9-6.5 16-15 19-8.5-3-15-10-15-19V12z"/><path d="M17 24l5 5 9-10"/></svg><span>ตรวจ <b>hash</b> ทุก record ตอนโหลด</span></div>
+        </div>
+        <div class="col hero" data-a="rise" data-t="1500">
+          <div class="ph"><i>3</i><span>Search · BM25 + alias</span></div>
+          <div class="toks" data-a="fade" data-t="1700"><span class="lbl">แยกคำ</span><code>glucose</code><span class="arr">→</span><b>glucose</b><span class="sep"></span><code>น้ำตาล</code><span class="arr">→</span><b>น้</b><b>้ำ</b><b>ำต</b><b>ตา</b><b>าล</b></div>
+          <div class="rank">
+              <div class="r"><span class="id">mlp-blood-glucose</span><span class="track"><i class="bar" style="width:96.4%" data-a="grow" data-t="2100" data-d="900"></i></span><span class="sc" data-a="fade" data-t="2500">4.78</span><span class="al" data-a="pop" data-t="2600">alias ✓</span></div>
+              <div class="r"><span class="id">siriraj-glucose-glucose-07</span><span class="track"><i class="bar" style="width:95.8%" data-a="grow" data-t="2240" data-d="900"></i></span><span class="sc" data-a="fade" data-t="2640">4.75</span><span class="al" data-a="pop" data-t="2740">alias ✓</span></div>
+              <div class="r"><span class="id">kku-glucose-glucose-08</span><span class="track"><i class="bar" style="width:95.6%" data-a="grow" data-t="2380" data-d="900"></i></span><span class="sc" data-a="fade" data-t="2780">4.74</span><span class="al" data-a="pop" data-t="2880">alias ✓</span></div>
+              <div class="r"><span class="id">nlm-a1c</span><span class="track"><i class="bar" style="width:95.4%" data-a="grow" data-t="2520" data-d="900"></i></span><span class="sc" data-a="fade" data-t="2920">4.73</span><span class="al" data-a="pop" data-t="3020">alias ✓</span></div>
+              <div class="r"><span class="id">rajavithi-fbs-hba1c</span><span class="track"><i class="bar" style="width:28.2%" data-a="grow" data-t="2660" data-d="900"></i></span><span class="sc" data-a="fade" data-t="3060">1.40</span><span class="al" data-a="pop" data-t="3160">alias ✓</span></div>
+              <div class="r no"><span class="id">niddk-diabetes-tests</span><span class="track"><i class="bar" style="width:100.0%" data-a="grow" data-t="2800" data-d="900"></i></span><span class="sc" data-a="fade" data-t="3200">4.96</span><span class="al" data-a="pop" data-t="3300">ไม่ตรง alias</span></div>
+          </div>
+          <p class="cap">query = glucose · 148 records · คืน 6 รายการ (ค่าเริ่มต้น) · alias ตรงขึ้นก่อน</p>
+        </div>
+        <div class="col" data-a="rise" data-t="3000">
+          <div class="ph"><i>4</i><span>Cite</span></div>
+          <h4>Writer ตอบจาก EVIDENCE</h4>
+          <p>อ้างได้เฉพาะ id ที่ค้นเจอ</p>
+          <div class="cite ok" data-a="pop" data-t="3600"><b>✓</b><code>[siriraj-glucose-glucose-07]</code><span>อยู่ในผลค้น</span></div>
+          <div class="cite bad" data-a="pop" data-t="4000"><b>✗</b><code>[id นอกผลค้น]</code><span>ไม่แสดงคำตอบ</span></div>
+          <p class="small" data-a="fade" data-t="4300">ไม่ผ่าน → แก้ได้ 1 ครั้ง แล้วหยุด</p>
+        </div>
+      </div>
+      <div class="ragcode" data-step="1" data-a="rise" data-t="0">
+        <div class="cl"><span class="f"><a href="https://github.com/siriponsri/LabClear/blob/a9fc0b35c5f557ff990762ee7a6a5c5d802cc733/services/business_agent.py#L259" target="_blank" rel="noopener noreferrer">business_agent.py · L259</a></span><code>found=await agent_tools.invoke(tools,'retrieve_evidence',{'query':plan.query,'limit':runtime_config['retrieval_limit']})</code></div>
+        <div class="cl"><span class="f"><a href="https://github.com/siriponsri/LabClear/blob/a9fc0b35c5f557ff990762ee7a6a5c5d802cc733/services/evidence_search.py#L93" target="_blank" rel="noopener noreferrer">evidence_search.py · L93</a></span><code>sorted(scores, key=lambda x: (-x[0], -x[1], docs[x[2]]["id"]))[:limit]</code></div>
+        <div class="cl"><span class="f"><a href="https://github.com/siriponsri/LabClear/blob/a9fc0b35c5f557ff990762ee7a6a5c5d802cc733/services/conversation_agent.py#L245-L249" target="_blank" rel="noopener noreferrer">conversation_agent.py · L247</a></span><code>if not set(inline) &lt;= known:</code></div>
+        <a class="appx" href="#/22">ดูโค้ดเต็ม · Appendix →</a>
+      </div>
+    </div>
+  </div>
+  <footer class="foot"><span>ที่มา: business_agent.py L74–75, L199–203, L257–260 · knowledge_admin.py L25–27 · evidence_search.py L45–93 · harness_config.py L41 · conversation_agent.py L245–253 (a9fc0b3) · คะแนนคำนวณซ้ำด้วยสูตร lexical() บน catalog.json</span><span class="pg"></span></footer>
+</section>
+
+<!-- ================= 15 · Processing Flow ================= -->
+<section class="slide" data-sec="6" data-chapter="3" data-ctx="Architecture · 3/3" aria-label="Processing Flow and Safeguards">
   <div class="page">
     <header class="head">
       <div class="kicker">Processing Flow &amp; Safeguards</div>
@@ -546,13 +606,35 @@
         <div data-a="lift" data-t="550"><span class="k">2</span><b>พัฒนา OCR และการตรวจค่า / หน่วย</b><span>โดยคงการยืนยันของผู้ใช้ไว้</span></div>
         <div data-a="lift" data-t="800"><span class="k">3</span><b>ทดสอบซ้ำบนรุ่นที่ระบุชัด</b><span>ตรวจเนื้อหาแยกจากคะแนนอัตโนมัติ</span></div>
       </div>
-      <div class="closing" data-step="1" data-a="rise" data-t="0">
-        <div><div class="thanks">ขอบคุณครับ · ยินดีตอบคำถาม</div><div class="scope">โครงงานเพื่อการศึกษา · ข้อมูลสังเคราะห์ · ยังไม่มี clinical validation</div></div>
-        <div class="links"><a href="https://github.com/siriponsri/LabClear" target="_blank" rel="noopener noreferrer">github.com/siriponsri/LabClear</a><a href="https://labclear.onrender.com/" target="_blank" rel="noopener noreferrer">labclear.onrender.com</a><small>ลิงก์ให้กดเอง · สไลด์ไม่ได้ตรวจสถานะเว็บสด</small></div>
-      </div>
+      <div class="band nexts-band" data-a="rise" data-t="1300"><span class="dot"></span><span>เป้าหมายถัดไป: <b>แหล่งข้อมูลถูกต้อง</b> · <b>อ่านค่าแม่นขึ้น</b> · <b>ผลทดสอบตรวจย้อนได้</b></span></div>
     </div>
   </div>
   <footer class="foot"><span>ที่มา: งานถัดไปมาจากข้อค้นพบใน Evaluation (E12–E15)</span><span class="pg"></span></footer>
+</section>
+
+<!-- ================= 21 · Thank you / Q&A ================= -->
+<section class="slide end-slide" data-sec="8" data-chapter="end" data-ctx="Thank You" aria-label="Thank you and Q&amp;A">
+  <div class="page">
+    <div class="end-in">
+      <div class="end-mark" data-a="pop" data-t="200"><img src="img/mark.svg" alt=""></div>
+      <h2 class="end-title" data-a="reveal" data-t="450">Thank You</h2>
+      <p class="end-sub" data-a="rise" data-t="800">ขอบคุณครับ</p>
+      <div class="end-line">
+        <div class="ln" data-a="grow" data-t="1100" data-d="1400"></div>
+        <span style="left:0%" data-a="pop" data-t="1200"><i></i>Business</span>
+        <span style="left:25%" data-a="pop" data-t="1450"><i></i>Knowledge</span>
+        <span style="left:50%" data-a="pop" data-t="1700"><i></i>Functions</span>
+        <span style="left:75%" data-a="pop" data-t="1950"><i></i>Architecture</span>
+        <span style="left:100%" data-a="pop" data-t="2200"><i></i>Evaluation</span>
+      </div>
+      <div class="end-links" data-a="fade" data-t="2500">
+        <a href="https://github.com/siriponsri/LabClear" target="_blank" rel="noopener noreferrer">github.com/siriponsri/LabClear</a>
+        <a href="https://labclear.onrender.com/" target="_blank" rel="noopener noreferrer">labclear.onrender.com</a>
+        <a class="appx" href="#/22">Appendix · RAG และโค้ด →</a>
+      </div>
+    </div>
+    <p class="end-scope" data-a="fade" data-t="2800">Q&amp;A · โครงงานเพื่อการศึกษา · ธุรกิจจำลอง · ข้อมูลสังเคราะห์ · ยังไม่มี clinical validation · ลิงก์ให้กดเอง สไลด์ไม่ได้ตรวจสถานะเว็บสด</p>
+  </div>
 </section>
 
 <!-- ================= A1 · Appendix: Retrieval ================= -->
@@ -648,7 +730,7 @@
 
 <nav class="controls" aria-label="ควบคุมการนำเสนอ">
   <button type="button" data-act="prev" aria-label="ก่อนหน้า">←</button>
-  <span class="counter" id="counter">1 / 22</span>
+  <span class="counter" id="counter">1 / 24</span>
   <button type="button" data-act="next" aria-label="ถัดไป">→</button>
   <button type="button" data-act="full" aria-label="เต็มจอ (F)">⛶</button>
   <button type="button" data-act="laser" aria-label="เลเซอร์ (L)">●</button>
@@ -673,6 +755,6 @@
     </dl>
   </div>
 </div>
-<script src="js/deck.js?v=9"></script>
+<script src="js/deck.js?v=10"></script>
 </body>
 </html>
