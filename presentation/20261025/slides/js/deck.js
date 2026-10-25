@@ -3,6 +3,7 @@
    animation (Web Animations API) data-t ms after the slide or its click starts. */
 (function () {
   'use strict';
+  var rsT; // debounce timer for re-measuring connectors
 
   var root = document.documentElement;
   var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
@@ -79,6 +80,8 @@
     function miss() { var s = img.closest('.shot'); if (s) s.classList.add('is-missing'); }
     if (img.complete && img.naturalWidth === 0) miss();
     img.addEventListener('error', miss);
+    // A late image shifts the elements a connector points at, so re-measure once it lands.
+    img.addEventListener('load', function () { clearTimeout(rsT); rsT = setTimeout(measure, 50); });
   });
 
   function measure() {
@@ -553,7 +556,6 @@
     tx0 = null;
   }, { passive: true });
   window.addEventListener('beforeprint', function () { endNav(); slides.forEach(stopAll); });
-  var rsT;
   window.addEventListener('resize', function () { clearTimeout(rsT); rsT = setTimeout(measure, 150); });
 
   /* ---------- Start ---------- */
