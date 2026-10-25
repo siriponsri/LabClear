@@ -9,7 +9,7 @@
 <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="fonts/ibm-plex-sans-thai-thai-500-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/geist-variable.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="css/deck.css?v=13">
+<link rel="stylesheet" href="css/deck.css?v=14">
 </head>
 <body>
 <noscript><p style="padding:16px;font:16px/1.5 sans-serif">JavaScript ปิดอยู่: แสดงสไลด์ทั้งหมดแบบเลื่อนอ่าน เนื้อหาครบทุกหน้า</p></noscript>
@@ -643,7 +643,7 @@
     <header class="head">
       <div class="kicker">Appendix · Q&A</div>
       <h2 class="title">Appendix Index</h2>
-      <p class="lede">คลิกหัวข้อเพื่อไปหน้านั้น · กด <em>9</em> เพื่อกลับมาที่หน้านี้</p>
+      <p class="lede">คลิกหัวข้อเพื่อไปหน้านั้น · พิมพ์ <em>22 แล้ว Enter</em> หรือกด <em>G</em> เพื่อกลับมาหาหน้านี้</p>
     </header>
     <div class="body">
       <div class="tiles">
@@ -1064,6 +1064,7 @@
   <button type="button" data-act="prev" aria-label="ก่อนหน้า">←</button>
   <span class="counter" id="counter">1 / 33</span>
   <button type="button" data-act="next" aria-label="ถัดไป">→</button>
+  <button type="button" data-act="grid" aria-label="ภาพรวมสไลด์ (G)">▦</button>
   <button type="button" data-act="full" aria-label="เต็มจอ (F)">⛶</button>
   <button type="button" data-act="laser" aria-label="เลเซอร์ (L)">●</button>
   <a href="backup.html" aria-label="สไลด์สำรอง Q&amp;A (Q)">Q&amp;A</a>
@@ -1078,8 +1079,8 @@
       <dt>→ ↓ Space PgDn</dt><dd>คลิกถัดไป</dd>
       <dt>← ↑ PgUp</dt><dd>ย้อนกลับ</dd>
       <dt>Home / End</dt><dd>สไลด์แรก / สไลด์สุดท้าย</dd>
-      <dt>1 – 8</dt><dd>ไปต้น section นั้น</dd>
-      <dt>9</dt><dd>Appendix: RAG และโค้ด</dd>
+      <dt>G</dt><dd>ภาพรวมทุกสไลด์ · พิมพ์ค้นหาเลขหรือหัวข้อ</dd>
+      <dt>เลข + Enter</dt><dd>ไปสไลด์นั้นทันที เช่น 5 แล้ว Enter</dd>
       <dt>F</dt><dd>เต็มจอ</dd>
       <dt>L</dt><dd>เลเซอร์พอยน์เตอร์</dd>
       <dt>Q</dt><dd>สไลด์สำรอง Q&amp;A</dd>
@@ -1087,6 +1088,6 @@
     </dl>
   </div>
 </div>
-<script src="js/deck.js?v=11"></script>
+<script src="js/deck.js?v=12"></script>
 </body>
 </html>

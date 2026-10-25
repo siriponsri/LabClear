@@ -710,3 +710,32 @@ a.ref:hover { background: var(--thread); }
 .ans .stamp { right: auto; left: 26rem; }
 .foot .toidx { margin-left: 0; margin-right: -2.4rem; }
 .foot > span:not(.pg) { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* ---------- Slide overview (G): thumbnails grouped by chapter, searchable ---------- */
+.ov { display: none; position: fixed; inset: 0; z-index: 66; overflow: auto; padding: 28px 44px 56px; background: rgba(12, 11, 16, .95); color: #fff; font-family: var(--sans); }
+.ov.is-on { display: block; }
+.ov-bar { position: sticky; top: -28px; z-index: 2; display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; margin: -28px -44px 8px; padding: 28px 44px 20px; background: linear-gradient(rgba(12, 11, 16, .98) 75%, rgba(12, 11, 16, 0)); }
+.ov-q { flex: 0 1 620px; height: 50px; padding: 0 20px; border: 0; border-radius: 12px; background: #fff; color: var(--ink); font: 500 18px/1 var(--sans); outline: none; box-shadow: 0 0 0 3px transparent; }
+.ov-q:focus { box-shadow: 0 0 0 3px #B9A2F0; }
+.ov-hint { font: 500 14px/1.4 var(--sans); color: #A9A5B5; }
+.ov-groups { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 24px 40px; }
+.ov-g[hidden], .ov-t[hidden] { display: none; }
+.ov-g h3 { margin: 0 0 10px; font: 600 13px/1 var(--sans); letter-spacing: .1em; text-transform: uppercase; color: #B9A2F0; }
+.ov-row { display: flex; flex-wrap: wrap; gap: 14px 12px; max-width: calc(var(--tw) * 8 + 12px * 7); }
+.ov-t { all: unset; box-sizing: border-box; cursor: pointer; display: grid; gap: 7px; width: var(--tw); }
+.ov-th { position: relative; display: block; width: var(--tw); aspect-ratio: 16 / 9; overflow: hidden; border-radius: 8px; background: #fff; box-shadow: 0 0 0 1px rgba(255, 255, 255, .14); transition: box-shadow 120ms, transform 120ms; }
+.ov .ov-th .slide { position: absolute; left: 0; top: 0; transform: scale(var(--k)); transform-origin: 0 0; visibility: visible; border-radius: 0; box-shadow: none; pointer-events: none; }
+.ov .ov-th .slide *, .ov .ov-th .slide *::before, .ov .ov-th .slide *::after { animation: none !important; }
+.ov-l { display: flex; gap: 8px; align-items: baseline; min-width: 0; font: 500 13px/1.35 var(--sans); color: #CFCAD9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ov-l b { flex: none; font: 600 13px/1 var(--mono); color: #fff; }
+.ov-t.is-cur .ov-th { box-shadow: 0 0 0 3px #fff; }
+.ov-t.is-cur .ov-l::after { content: "· กำลังแสดง"; color: #B9A2F0; margin-left: 2px; }
+.ov-t:hover .ov-th, .ov-t.is-sel .ov-th { box-shadow: 0 0 0 4px #B9A2F0; transform: translateY(-2px); }
+.ov-t.is-sel .ov-l { color: #fff; }
+.ov-none { margin: 40px 0 0; font: 500 18px/1.5 var(--sans); color: #A9A5B5; }
+html.is-ov .controls, html.is-ov .laser { display: none !important; }
+html.is-ov.is-idle .ov, html.is-ov.is-idle .ov * { cursor: auto !important; }
+html.is-ov.is-idle .ov .ov-t { cursor: pointer !important; }
+@media print { .ov { display: none !important; } }
+.ov-t.is-weak { opacity: .5; }
+.ov-t.is-weak.is-sel, .ov-t.is-weak:hover { opacity: 1; }

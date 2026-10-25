@@ -82,11 +82,11 @@
   });
 
   function measure() {
-    document.querySelectorAll('.svg-lines path').forEach(function (p) {
+    document.querySelectorAll('.deck .svg-lines path').forEach(function (p) {
       try { var len = Math.ceil(p.getTotalLength()) + 2; p._len = len; p.style.strokeDasharray = len; } catch (e) { /* not laid out */ }
     });
     // Connector from one element to another, drawn in the svg's own pixel space.
-    document.querySelectorAll('.link-svg').forEach(function (svg) {
+    document.querySelectorAll('.deck .link-svg').forEach(function (svg) {
       var a = document.querySelector(svg.getAttribute('data-from')), b = document.querySelector(svg.getAttribute('data-to'));
       if (!a || !b) return;
       var box = svg.getBoundingClientRect(), ra = a.getBoundingClientRect(), rb = b.getBoundingClientRect();
@@ -337,10 +337,7 @@
     if (step > 0) show(cur, step - 1, -1);
     else if (cur > 0) show(cur - 1, slides[cur - 1]._steps, -1);
   }
-  function firstOfSection(sec) {
-    for (var i = 0; i < total; i++) if (+slides[i].getAttribute('data-sec') === sec) return i;
-    return cur;
-  }
+  function jump(i) { if (i >= 0 && i < total && i !== cur) show(i, 0, i < cur ? -1 : 2); }
 
   /* ---------- UI helpers ---------- */
   var toastEl = document.getElementById('toast'), toastT;
@@ -360,11 +357,167 @@
   var idleT;
   function wake() { root.classList.remove('is-idle'); clearTimeout(idleT); idleT = setTimeout(function () { root.classList.add('is-idle'); }, 2200); }
 
+  /* ---------- Go to a slide: number + Enter ---------- */
+  var goBuf = '', goT;
+  function goKey(d) {
+    goBuf = (goBuf + d).slice(-2);
+    clearTimeout(toastT); clearTimeout(goT);
+    toastEl.textContent = 'ไปสไลด์ ' + goBuf + ' · กด Enter';
+    toastEl.classList.add('is-on');
+    goT = setTimeout(goClear, 2500);
+  }
+  function goClear() { goBuf = ''; clearTimeout(goT); toastEl.classList.remove('is-on'); }
+  function goEnter() {
+    var n = +goBuf;
+    goClear();
+    if (n >= 1 && n <= total) jump(n - 1); else toast('ไม่มีสไลด์ ' + n + ' · มีทั้งหมด ' + total + ' หน้า');
+  }
+
+  /* ---------- Overview: every slide as a thumbnail, grouped by chapter, searchable (G) ---------- */
+  var GROUPS = { all: 'Overview', end: 'Conclusion', appx: 'Appendix' };
+  var ov = null, ovSel = 0;
+  function groupName(s) { var c = chapterOf(s); return typeof c === 'number' ? CHAPTERS[c] : GROUPS[c] || ''; }
+  function titleOf(s) {
+    var t = s.querySelector('.title, .end-title, .t-name b');
+    return (t ? t.textContent : s.getAttribute('aria-label') || '').replace(/\s+/g, ' ').trim();
+  }
+  function textOf(s, sel) { var el = s.querySelector(sel); return el ? el.textContent : ''; }
+  function esc(t) { return t.replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
+  function buildOverview() {
+    ov = document.createElement('div');
+    ov.className = 'ov';
+    ov.setAttribute('role', 'dialog');
+    ov.setAttribute('aria-modal', 'true');
+    ov.setAttribute('aria-label', 'ภาพรวมสไลด์');
+    ov.innerHTML = '<div class="ov-bar"><input class="ov-q" type="search" autocomplete="off" placeholder="พิมพ์เลขสไลด์หรือหัวข้อ เช่น 5, business, harness, น้ำตาล" aria-label="ค้นหาสไลด์">' +
+      '<span class="ov-hint">↵ เปิด · ← ↑ ↓ → เลือก · Esc ปิด</span></div><div class="ov-groups"></div><p class="ov-none" hidden>ไม่พบสไลด์ที่ตรงกับคำค้น</p>';
+    var groups = ov.querySelector('.ov-groups'), last = null, row = null;
+    slides.forEach(function (s, i) {
+      var g = groupName(s);
+      if (g !== last) {
+        var box = document.createElement('section');
+        box.className = 'ov-g';
+        box.innerHTML = '<h3>' + g + '</h3><div class="ov-row"></div>';
+        groups.appendChild(box);
+        row = box.querySelector('.ov-row');
+        last = g;
+      }
+      var t = document.createElement('button');
+      t.type = 'button';
+      t.className = 'ov-t';
+      t._i = i;
+      // Title-level text ranks first; body text still finds a slide (shown dimmer).
+      t._head = [g, titleOf(s), s.getAttribute('data-ctx'), textOf(s, '.kicker'), textOf(s, '.lede')].join(' ').toLowerCase();
+      t._body = textOf(s, '.page').replace(/\s+/g, ' ').toLowerCase();
+      // A live copy of the slide in its final state, scaled down; no ids, links or steps.
+      var clone = s.cloneNode(true);
+      clone.classList.remove('is-current', 'is-leaving');
+      clone.setAttribute('aria-hidden', 'true');
+      clone.removeAttribute('aria-label');
+      clone.querySelectorAll('[id]').forEach(function (el) { el.removeAttribute('id'); });
+      clone.querySelectorAll('.is-off').forEach(function (el) { el.classList.remove('is-off'); });
+      clone.querySelectorAll('a, button').forEach(function (el) { el.setAttribute('tabindex', '-1'); });
+      var th = document.createElement('span');
+      th.className = 'ov-th';
+      th.appendChild(clone);
+      t.appendChild(th);
+      t.insertAdjacentHTML('beforeend', '<span class="ov-l"><b>' + (i + 1) + '</b>' + esc(titleOf(s)) + '</span>');
+      row.appendChild(t);
+    });
+    document.body.appendChild(ov);
+    var q = ov.querySelector('.ov-q');
+    q.addEventListener('input', ovFilter);
+    ov.addEventListener('click', function (e) {
+      var t = e.target.closest('.ov-t');
+      if (t) { closeOverview(); jump(t._i); }
+      else if (!e.target.closest('.ov-bar')) closeOverview();
+    });
+    ov.addEventListener('keydown', function (e) {
+      switch (e.key) {
+        case 'Escape': closeOverview(); break;
+        case 'Enter': var t = ovTiles()[ovSel]; if (t && !t.hidden) { closeOverview(); jump(t._i); } break;
+        case 'ArrowRight': ovMove(1, 0); break;
+        case 'ArrowLeft': ovMove(-1, 0); break;
+        case 'ArrowDown': ovMove(0, 1); break;
+        case 'ArrowUp': ovMove(0, -1); break;
+        default: return;
+      }
+      e.preventDefault();
+      e.stopPropagation();
+    });
+  }
+  function ovTiles() { return Array.prototype.slice.call(ov.querySelectorAll('.ov-t')); }
+  function ovVisible() { return ovTiles().filter(function (t) { return !t.hidden; }); }
+  function ovSelect(t) {
+    ovTiles().forEach(function (x) { x.classList.toggle('is-sel', x === t); });
+    if (t) { ovSel = t._i; t.scrollIntoView({ block: 'nearest' }); }
+  }
+  function ovFilter() {
+    var q = ov.querySelector('.ov-q').value.trim().toLowerCase(), num = /^\d+$/.test(q);
+    ovTiles().forEach(function (t) {
+      var head = !q || (num ? String(t._i + 1).indexOf(q) === 0 : t._head.indexOf(q) >= 0);
+      var body = !num && !!q && t._body.indexOf(q) >= 0;
+      t.hidden = !head && !body;
+      t.classList.toggle('is-weak', !head && body);
+    });
+    ov.querySelectorAll('.ov-g').forEach(function (g) { g.hidden = !g.querySelector('.ov-t:not([hidden])'); });
+    var vis = ovVisible(), strong = vis.filter(function (t) { return !t.classList.contains('is-weak'); }), selT = ovTiles()[ovSel];
+    var exact = num && vis.filter(function (t) { return String(t._i + 1) === q; })[0];
+    ov.querySelector('.ov-none').hidden = vis.length > 0;
+    ovSelect(exact || (q ? strong[0] || vis[0] : selT));
+  }
+  function ovMove(dx, dy) {
+    var vis = ovVisible(), at = ovTiles()[ovSel];
+    if (!vis.length) return;
+    if (vis.indexOf(at) < 0) { ovSelect(vis[0]); return; }
+    if (dx) { var j = vis.indexOf(at) + dx; if (j >= 0 && j < vis.length) ovSelect(vis[j]); return; }
+    // Up/down: the nearest tile in the next row above or below.
+    var r = at.getBoundingClientRect(), cx = r.left + r.width / 2, best = null, bd = Infinity;
+    vis.forEach(function (t) {
+      var b = t.getBoundingClientRect(), gap = dy > 0 ? b.top - r.bottom : r.top - b.bottom;
+      if (gap < -2) return;
+      var d = gap * 4 + Math.abs(b.left + b.width / 2 - cx);
+      if (d < bd) { bd = d; best = t; }
+    });
+    if (best) ovSelect(best);
+  }
+  function ovOpen() { return !!ov && ov.classList.contains('is-on'); }
+  function openOverview() {
+    if (narrow.matches) return;
+    if (!ov) buildOverview();
+    goClear();
+    toggleHelp(false);
+    var slidePx = parseFloat(getComputedStyle(root).fontSize) * 192;
+    var w = Math.max(150, Math.min(230, (window.innerWidth - 150) / 8.6));
+    ov.style.setProperty('--tw', w + 'px');
+    ov.style.setProperty('--k', w / slidePx);
+    ovTiles().forEach(function (t) { t.classList.toggle('is-cur', t._i === cur); });
+    ov.querySelector('.ov-q').value = '';
+    ovSel = cur;
+    ov.classList.add('is-on');
+    root.classList.add('is-ov');
+    ovFilter();
+    ov.querySelector('.ov-q').focus();
+  }
+  function closeOverview() {
+    if (!ovOpen()) return;
+    ov.classList.remove('is-on');
+    root.classList.remove('is-ov');
+    ov.querySelector('.ov-q').blur();
+  }
+
   /* ---------- Events ---------- */
   document.addEventListener('keydown', function (e) {
-    if (e.altKey || e.ctrlKey || e.metaKey || narrow.matches) return;
+    if (e.altKey || e.ctrlKey || e.metaKey || narrow.matches || ovOpen()) return;
     var k = e.key;
     if (helpEl.classList.contains('is-on') && /^(Escape|h|H|\?)$/.test(k)) { toggleHelp(false); e.preventDefault(); return; }
+    if (/^[0-9]$/.test(k)) { goKey(k); e.preventDefault(); return; }
+    if (goBuf) {
+      if (k === 'Enter') { goEnter(); e.preventDefault(); return; }
+      if (k === 'Backspace') { goBuf = goBuf.slice(0, -1); if (goBuf) goKey(''); else goClear(); e.preventDefault(); return; }
+      if (k === 'Escape') { goClear(); e.preventDefault(); return; }
+      goClear();
+    }
     switch (k) {
       case 'ArrowRight': case 'ArrowDown': case 'PageDown': case ' ': case 'Enter': next(); break;
       case 'ArrowLeft': case 'ArrowUp': case 'PageUp': case 'Backspace': prev(); break;
@@ -374,9 +527,8 @@
       case 'l': case 'L': toggleLaser(); break;
       case 'q': case 'Q': window.location.href = 'backup.html'; break;
       case 'h': case 'H': case '?': toggleHelp(); break;
-      default:
-        if (/^[1-9]$/.test(k)) { var i = firstOfSection(+k); show(i, 0, i < cur ? -1 : 2); }
-        else return;
+      case 'g': case 'G': openOverview(); break;
+      default: return;
     }
     e.preventDefault();
   });
@@ -384,7 +536,7 @@
     var b = e.target.closest('[data-act]');
     if (!b) return;
     e.preventDefault();
-    ({ next: next, prev: prev, full: fullscreen, laser: toggleLaser, help: toggleHelp })[b.getAttribute('data-act')]();
+    ({ next: next, prev: prev, full: fullscreen, laser: toggleLaser, help: toggleHelp, grid: openOverview })[b.getAttribute('data-act')]();
     b.blur();
   });
   helpEl.addEventListener('click', function () { toggleHelp(false); });
