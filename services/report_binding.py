@@ -21,6 +21,9 @@ def row_issues(rows):
         if keys.count(key)>1:found.append('duplicate_name')
         reference=str(row.get('reference') or '').strip()
         unit=str(row.get('unit') or '').strip()
+        from services.lab_units import unit_issue
+        unit_problem=unit_issue(unit)
+        if unit_problem:found.append(unit_problem)
         if _FLAG_PREFIX.search(reference):found.append('flag_in_reference')
         tail=_UNIT_SUFFIX.search(reference)
         if tail and unit and unit!='-' and tail[1]!=unit:found.append('reference_unit_mismatch')
@@ -36,6 +39,8 @@ def row_issues(rows):
 def normalize_confirmed(fields):
     """Keep printed cells; confirmation must not re-enable ambiguous comparisons."""
     from services.lab_fields_v2 import normalize
+    from services.lab_units import require_supported_units
+    require_supported_units(fields)
     rows=normalize(fields)
     problems=row_issues(rows)
     for row in rows:
@@ -62,6 +67,8 @@ def render(answer,report,evidence,language,message):
     """
     if not report.get('confirmed'):raise ConversationError('confirmation_required','Confirm report values first.',409)
     rows=report.get('fields',[])
+    from services.lab_units import require_supported_units
+    require_supported_units(rows)
     by_id={r.get('id'):r for r in rows}
     if len(by_id)!=len(rows) or None in by_id:
         raise ConversationError('observation_invalid','Report row identities are ambiguous.',502)

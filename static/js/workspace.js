@@ -714,7 +714,7 @@
     });
     if (!bookings.length) bookingList.append(el('p', 'No appointments to share.', 'small muted'));
     bookingChoices.append(bookingList);
-    const noticeText = el('p', 'The request note is sent as written. The assistant pauses while the team replies. Urgent health concerns should not wait in this queue.', 'small muted');
+    const noticeText = el('p', 'Sending shares your note and only the messages or appointments you select with the team handling this request. The request is stored as a support ticket; its retention period is still awaiting owner approval. The assistant pauses while the team replies. Urgent health concerns should not wait in this queue.', 'small muted');
     form.append(f.wrap, messageChoices, bookingChoices, noticeText,
       button('Send to our team', async () => {
         if (!form.reportValidity()) return;

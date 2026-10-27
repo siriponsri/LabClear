@@ -1,0 +1,28 @@
+/* Actual local prototype UI recording. Agent/OCR are explicit doubles, never AI validation. */
+const fs=require('fs'),path=require('path'),crypto=require('crypto'),{spawn}=require('child_process'),{chromium}=require('playwright');
+const root=path.resolve('.'),ev=path.join(root,'docs/evidence/current/delivery-audit-repairs-20261012'),out=path.join(root,'docs/presentation'),base='http://127.0.0.1:8109';
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+(async()=>{let server,b,ctx;const segments=[];try{
+server=spawn(path.join(root,'.venv/Scripts/python.exe'),['scripts/delivery_demo_server.py'],{cwd:root,windowsHide:true,stdio:['ignore','pipe','pipe']});const log=fs.createWriteStream(path.join(ev,'demo-server-run2.log'));server.stdout.pipe(log);server.stderr.pipe(log);
+for(let i=0;i<60;i++){try{if((await fetch(base+'/health')).ok)break;}catch{}if(i===59)throw Error('Local demo server unavailable');await wait(250);}
+b=await chromium.launch({headless:true});ctx=await b.newContext({viewport:{width:1280,height:720},recordVideo:{dir:path.join(ev,'demo-video'),size:{width:1280,height:720}}});
+await ctx.route('**/*',async r=>{const u=new URL(r.request().url());if(u.hostname==='127.0.0.1'&&u.port==='8109')return r.continue();return r.abort();});
+const p=await ctx.newPage();const start=Date.now();const video=p.video();
+await p.addInitScript(()=>{const observer=new MutationObserver(()=>{if(document.body&&!document.getElementById('demo-banner')){const el=document.createElement('div');el.id='demo-banner';el.style='position:fixed;bottom:0;left:0;right:0;z-index:2147483647;background:#241a35;color:white;padding:10px 24px;font:25px "TH SarabunPSK",sans-serif;pointer-events:none;line-height:1.2';el.innerHTML='<b>LabClear สาธิตในเครื่องด้วยข้อมูลจำลอง</b><br>หน้าเว็บและ API จริง คำตอบจากโมเดลจำลอง ไม่เรียกผู้ให้บริการ AI';document.body.append(el);}});observer.observe(document,{childList:true,subtree:true});});
+async function caption(text){await p.locator('#demo-banner').evaluate((el,t)=>{el.textContent=t+'\nหน้าเว็บ/API จริง ใช้ agent double ไม่ใช่ผล AI ใหม่';el.style.whiteSpace='pre-line'},text);}
+async function hold(until){await wait(Math.max(0,start+until*1000-Date.now()));}
+async function segment(at,label,text,action){await hold(at);await action();await caption(text);segments.push({at_seconds:at,title:label,caption:text,actual_elapsed:(Date.now()-start)/1000,mode:'OFFLINE_REAL_UI_EXPLICIT_MODEL_DOUBLE'});console.log(label);}
+await segment(0,'ชื่อโครงงาน', 'LabClear ผู้ช่วยข้อมูลบริการและอ่านรายงานจำลอง\nวัชรินทร์ บัวสอน 68076055 และศิริพล ศรีเฮงไพบูลย์ 68076060',()=>p.goto(base+'/',{waitUntil:'networkidle'}));
+await segment(14,'ธุรกิจ', 'ยังไม่ใช้เชิงพาณิชย์ รายการบริการและราคาเป็นข้อมูลสาธิต\nตัวอย่างงานลูกค้า: ตรวจรายการแพ็กเกจและเปรียบเทียบราคา',()=>p.goto(base+'/packages',{waitUntil:'networkidle'}));
+await segment(34,'รายละเอียดแพ็กเกจ', 'เปิดรายละเอียดบริการจากข้อมูลในระบบ\nไม่รับรองประโยชน์ทางคลินิก และไม่แต่งส่วนลด',()=>p.goto(base+'/packages/P02',{waitUntil:'networkidle'}));
+await segment(51,'เปรียบเทียบ', 'เปรียบเทียบรายการตรวจและราคาโดยตรงจากข้อมูล\nส่วนนี้ทำงานในเครื่อง ไม่ต้องเรียก AI',()=>p.goto(base+'/compare?ids=P01,P02',{waitUntil:'networkidle'}));
+await segment(68,'หน้าแชต', 'หน้าแชตจริงแสดงสถานะระหว่างทำงาน\nข้อความตอบต่อไปเป็น double เพื่อสาธิตการจัดการข้อผิดพลาด',async()=>{await p.goto(base+'/app',{waitUntil:'networkidle'});await p.locator('#message').fill('UI_TEST_FAIL_ONCE');await p.locator('#send').click();});
+await segment(89,'ข้อผิดพลาด', 'ระบบแสดงข้อผิดพลาดแทนการสร้างคำตอบขึ้นเอง\nตอนนี้ส่งคำถามใหม่เพื่อดูการทำงานของหน้าแชต',async()=>{await p.locator('#message').fill('ช่วยอธิบายขอบเขตของผู้ช่วย');await p.locator('#send').click();await p.getByText('Offline UI test double: your question was received.').last().waitFor();});
+await segment(110,'เริ่มแชตใหม่', 'เริ่มแชตใหม่ผ่านปุ่มจริง แล้วตรวจว่าข้อความก่อนหน้าไม่ปรากฏ\nการตรวจบริบท HTTP แยกต่างหากผ่าน 8 ข้อ ไม่วัดโมเดลจริง',async()=>{await p.locator('.cl-new').click();await p.locator('#message').fill('ข้อความในแชตใหม่ ใช้ข้อมูลจำลองเท่านั้น');await p.locator('#send').click();await p.getByText('Offline UI test double: your question was received.').last().waitFor();});
+await segment(131,'ส่วนประกอบระบบ', 'หน้าเว็บส่งข้อความให้ FastAPI ตรวจสิทธิ์และเลือกข้อมูล\nตัวควบคุมค้นแหล่งที่อนุมัติ เขียน ตรวจคำตอบ และส่งผลกลับ',async()=>{});
+await segment(148,'ข้อจำกัด', 'ผลจริงเดิมพบหน่วยจากภาพ 10³/µL เปลี่ยนเป็น 10⁹/µL\nคำอธิบายภาพและน้ำเสียง 30 กรณียังไม่รัน ไม่รับรองการวินิจฉัย',async()=>{});
+await segment(162,'เครดิต', 'Business วัชรินทร์ บัวสอน 68076055\nArchitecture ศิริพล ศรีเฮงไพบูลย์ 68076060\nคลิปมีคำบรรยาย ไม่มีเสียง ใช้ข้อมูลจำลอง ไม่มีการเรียก AI ใหม่',async()=>{});
+await hold(174);await ctx.close();ctx=null;const original=await video.path(),final=path.join(out,'LabClear_Academic_Demo_TH.webm');fs.copyFileSync(original,final);
+fs.writeFileSync(path.join(out,'LabClear_Academic_Demo_Timings.json'),JSON.stringify({target_seconds:174,segments,provider_calls:0,mode:'ACTUAL_LOCAL_PROTOTYPE_UI_WITH_EXPLICIT_MODEL_DOUBLE',audio:'NONE_THAI_CAPTIONS',limits:'No live-provider inference or OCR accuracy demonstration. Does not prove all coursework requirements fulfilled.'},null,2));
+fs.writeFileSync(path.join(ev,'demo-recording.json'),JSON.stringify({file:final,original,bytes:fs.statSync(final).size,sha256:crypto.createHash('sha256').update(fs.readFileSync(final)).digest('hex'),segments,provider_calls:0,playback:'PENDING'},null,2));console.log('Recorded '+final);
+}finally{if(ctx)await ctx.close();if(b)await b.close();if(server)server.kill();}})().catch(e=>{console.error(e.stack);process.exit(1)});

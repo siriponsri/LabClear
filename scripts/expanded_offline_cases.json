@@ -1,0 +1,32 @@
+{
+  "version": "1.0.0",
+  "mode": "OFFLINE_MOCK",
+  "reliability": [
+    "tests/test_resilience.py::test_admission_refuses_beyond_the_limits_and_releases_once",
+    "tests/test_resilience.py::test_draining_refuses_new_work",
+    "tests/test_resilience.py::test_checkpoint_and_call_budget_follow_the_deadline",
+    "tests/test_resilience.py::test_bounded_turns_the_deadline_into_request_timeout",
+    "tests/test_resilience.py::test_cleanup_never_raises",
+    "tests/test_resilience.py::test_channel_bounds_steps_but_always_delivers_the_terminal_event",
+    "tests/test_resilience.py::test_every_response_has_a_request_id_and_errors_repeat_it",
+    "tests/test_resilience.py::test_server_busy_is_a_503_with_retry_after_before_any_work",
+    "tests/test_resilience.py::test_structured_log_keeps_only_documented_keys",
+    "tests/test_resilience.py::test_provider_statuses_are_classified_with_their_origin",
+    "tests/test_cost_ledger.py::test_estimate_and_settlement_with_usage",
+    "tests/test_cost_ledger.py::test_failed_call_keeps_conservative_charge",
+    "tests/test_cost_ledger.py::test_fail_closed_on_unknown_model_or_prior_spend",
+    "tests/test_cost_ledger.py::test_cap_counts_prior_spend_and_blocks_before_request",
+    "tests/test_cost_ledger.py::test_ledger_survives_restart",
+    "tests/test_cost_ledger.py::test_transport_blocks_without_network_call_when_budget_exceeded",
+    "tests/test_expanded_attempt_gate.py::test_prior_attempts_reduce_remaining",
+    "tests/test_expanded_attempt_gate.py::test_ceiling_blocks_before_attempt",
+    "tests/test_expanded_attempt_gate.py::test_inflight_reserved_counts_concurrently",
+    "tests/test_expanded_attempt_gate.py::test_failure_never_refunds",
+    "tests/test_expanded_attempt_gate.py::test_cancellation_never_refunds",
+    "tests/test_expanded_attempt_gate.py::test_reopen_preserves_attempts",
+    "tests/test_expanded_attempt_gate.py::test_workflow_cap_includes_guard_vision_repair",
+    "tests/test_expanded_attempt_gate.py::test_duplicate_finish_does_not_double_count"
+  ],
+  "ui": ["UI-01","UI-02","UI-02b","UI-04","UI-05","UI-06","UI-07","UI-08","UI-09","UI-14","UI-15","UI-16","UI-16b","UI-16c","UI-17","UI-19","UI-20","UI-23","UI-25","UI-28","UI-30","UI-31","UI-33","UI-34"],
+  "note": "24 reliability + 24 UI planned scenarios. Full existing UAT is executed to retain prerequisites; its 14 additional regression cases are reported separately, not relabeled as planned scenarios. 16 reliability tests and all UI cases reused; 8 gate tests added."
+}

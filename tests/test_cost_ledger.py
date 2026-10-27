@@ -79,6 +79,25 @@ def test_ledger_survives_restart():
     assert cost_ledger.status()["settled_thb"] == first
 
 
+def test_verified_free_reporting_preserves_history_above_estimated_cap(monkeypatch):
+    monkeypatch.setattr(settings, "PROJECT_BUDGET_PRIOR_SPEND_THB", "301")
+    zero={"input_per_mtok":0,"output_per_mtok":0}
+    with pytest.raises(ConversationError):
+        cost_ledger.reserve("free-model", body(), zero)
+    r=cost_ledger.reserve("free-model", body(), zero, verified_free_reporting_only=True)
+    cost_ledger.settle(r, None, "succeeded")
+    assert cost_ledger.status()["calls"] == 1
+    assert cost_ledger.status()["prior_spend_thb"] == 301
+    assert cost_ledger.status()["cap_thb"] == 300
+
+
+@pytest.mark.parametrize("price", [None,{"input_per_mtok":1,"output_per_mtok":0},{"input_per_mtok":0,"output_per_mtok":1}])
+def test_reporting_only_rejects_paid_or_unknown_price(price):
+    with pytest.raises(ConversationError):
+        cost_ledger.reserve("priced-model", body(), price, verified_free_reporting_only=True)
+    assert cost_ledger.status()["calls"] == 0
+
+
 def test_transport_blocks_without_network_call_when_budget_exceeded(monkeypatch):
     monkeypatch.setattr(settings, "PROVIDER_NETWORK_ENABLED", True)
     monkeypatch.setattr(settings, "PROJECT_BUDGET_PRIOR_SPEND_THB", "300")

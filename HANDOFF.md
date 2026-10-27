@@ -1,41 +1,45 @@
-# LabClear Handoff
+# LabClear P0 Handoff
 
-## Current Goal
+## Goal state
 
-Finish the HTML-first LabClear presentation and closeout. The HTML deck is the final presentation; PDF is a static fallback. Sabai Spa Lab 6, PPTist, Slides.com, and Presenton are out of scope.
+P0 is **PAUSED, NOT COMPLETE**, at the GL-01 handoff-sharing receipt checkpoint, following the owner's direction. The business and architecture report updates and PDF render QA are complete for this checkpoint. The existing HTML presentation remains a separate completed deliverable; no presentation clip was produced in this checkpoint.
 
-## Deliverables
+## Completed checkpoint
 
-- Primary deck: `presentation/index.html` (10 core slides, 5 appendix slides; estimated speech 8:30 plus 0:30 reserve).
-- Editable source assets: `presentation/labclear-workflow-diagram.html`, `presentation/labclear-interactive-infographic.html`, and `presentation/labclear-workflow.infographic`.
-- Static fallback: `docs/report/LabClear_Slides.pdf`.
-- Business and architecture reports: `docs/report/LabClear_Business_Report_TH.md` and `docs/report/LabClear_Architecture_Report_TH.md`, rendered using the existing theme and bundled Thai font fallback.
+- Implemented an append-only receipt for selected handoff scope, notice version, purpose, actor and timestamp; retained the existing encrypted ticket storage path.
+- Local Playwright UAT: **38 PASS / 0 FAIL**, 64 screenshots. `tests/test_business_v3.py`: **60 passed**, with one existing Starlette/httpx deprecation warning.
+- Updated the business and architecture report sources with before/after results, requirement-to-test evidence, review outcome and unresolved GL-01 limits; rebuilt their PDFs and the HTML deck's static PDF fallback.
+- Render QA: **3 PDFs / 64 pages**, 0 empty pages, 0 pages without Thai text, 0 replacement glyphs, 3 image objects. Contact sheets cover all pages; full-size covers and checkpoint/final pages were visually inspected.
+- MAIN performed a serial review after implementation. Reviewer independence is reduced; this is not independent approval.
 
-## Evidence
+## Evidence and candidate
 
-- App UAT: `docs/evidence/current/browser-uat-final-20261012-04/`; 37 PASS, 0 FAIL, 0 browser errors, 63 screenshots, exit code 0. Synthetic/local fixtures; LLM and OCR mocked. Candidate app commit `38e39f03a8a21a294001cbb2bd146a4c7ea611eb`.
-- Offline Python suite: `docs/evidence/current/browser-uat-resume-20261012-01/offline-pytest.xml`; 547 passed, 1 deprecation warning, exit code 0.
-- HTML deck QA: `docs/evidence/current/presentation-html-final-20261012-final/html-deck-qa.json`; fresh local run, 16 PASS, 0 FAIL, 0 BLOCKED, 39 screenshots. Candidate HEAD is `38e39f03a8a21a294001cbb2bd146a4c7ea611eb`; source hashes are recorded in the JSON. HTML SHA-256 `55bb0d3ea0e1d24c2c4ab8e799fae89e307507e866c469bf345c93c4ce289609`; static print PDF is 15 pages, SHA-256 `527943468f9dd454368707bed2b2f5ece3d0f36520782b13e4073b543ffef5dd`.
-- Report render: `rtk uv run --no-project --with pypdfium2 --with pillow python scripts/verify_report_pdfs.py docs/evidence/current/report-render-final-20261012-05`; PASS for 3 PDFs / 59 pages (Business 14, Architecture 30, Slides 15), 0 empty pages, 0 pages without Thai text, 0 replacement glyphs. Evidence and PDF hashes: `docs/evidence/current/report-render-final-20261012-05/report-render-qa.json`. Contact sheets and Architecture page 28 were visually checked after adding page-break protection for list items. TH Sarabun New is absent; the existing IBM Plex Sans Thai fallback was used.
-- Render check for payload commit `432967a2bbb4e749dbb3efa6495026220541adf3`: GET `/health` returned HTTP 200 at `2026-10-12T08:06:56Z`; GET `/ready` returned HTTP 200 at `2026-10-12T08:06:55Z` with storage `ok`; both JSON bodies reported the same commit SHA. This confirms those endpoints at that time, not ongoing uptime or production readiness.
-- Marketing review: `docs/evidence/current/gl05-settlement-role-fence-20261011/marketing-review-gl05-20261011.md`, performed by a platform Marketing subagent against an earlier worktree. It recommends leaving demo prices unchanged and labels audience/pricing points as hypotheses; it is not customer research or a fresh review of this closeout.
+- P0 test candidate base: `c1d54939d05d4a2a978ce960835e51c2ea655a6c` on `main`. Application/report/evidence changes remain dirty and uncommitted; this local commit records the owner requirements only. No push or deploy occurred in this checkpoint.
+- An untracked `student_report/` directory was present at final status; only its filenames were inspected. It was not changed and must be preserved/reviewed separately.
+- Application/test diff fingerprint at UAT start: `573ebca630f42656892570798afb1f24dfe8b9675c141b988146ce6d6e7949be`.
+- UAT details, cases, screenshots and limitations: [`p0-phase-handoff-20261012-01/README.md`](docs/evidence/current/p0-phase-handoff-20261012-01/README.md).
+- UAT raw results: [`browser-uat.json`](docs/evidence/current/p0-phase-handoff-20261012-01/browser-uat-final-02/browser-uat.json). Backend results: [`pytest-business-v3-final-02.xml`](docs/evidence/current/p0-phase-handoff-20261012-01/pytest-business-v3-final-02.xml).
+- PDF render manifest and images: [`report-render-qa.json`](docs/evidence/current/report-render-main-20261012-02/report-render-qa.json) and the same evidence directory's contact sheets and selected full-size pages.
+- Updated report sources: [`LabClear_Business_Report_TH.md`](docs/report/LabClear_Business_Report_TH.md), [`LabClear_Architecture_Report_TH.md`](docs/report/LabClear_Architecture_Report_TH.md); rendered PDFs are in `docs/report/`.
+- Environment: Windows 11 build `10.0.26200`, Node `24.19.0`, Playwright `1.56.1`, Chromium `141.0.7390.37`, Python `3.12.10`, pypdfium2 `5.14.0`, Pillow `12.3.0`. UAT used synthetic data, isolated SQLite and mocked LLM/OCR; provider networking was disabled.
 
-## Constraints and Risks
+## Blockers and limits
 
-- UAT uses synthetic data and mocked LLM/OCR. Earlier Typhoon and OpenThai smoke checks each made one synthetic request for connectivity/format only; no live request was made in this closeout.
-- No live catalog pricing change, real payment, OCR request, or external spend was made. Booking/payment/package values remain simulated.
-- Clinical/model/OCR quality, production privacy, durable retention/backup/restore, production reliability, market demand, unit economics, and timed spoken rehearsal remain NOT_RUN or unknown.
-- Review result: MAIN completed a serial read-only review of candidate tree `c823e4d8ef08c59bf26399d1347a575df43d5123`, based on source commit `38e39f03a8a21a294001cbb2bd146a4c7ea611eb`. No blocking findings remained after correcting stale reviewer status and PDF pagination. Account independence is reduced/unverified; this is not independent approval.
+- **GL-01 remains BLOCKED.** Legal basis, approved retention, purpose-specific consent, withdrawal/deletion policy and controls require owner/legal decisions. The receipt records `owner_review_required`; this does not approve retention or close privacy review.
+- Production retention/deletion, backup/restore, payment settlement, live LLM/OCR quality, clinical validity, demand, unit economics and timed presentation rehearsal remain NOT_RUN or unknown.
+- No live provider/OCR request, real payment, live catalog price change, push or deploy occurred in this checkpoint.
+- TH Sarabun New is not installed in the render environment; PDFs used the existing IBM Plex Sans Thai fallback. This is documented and does not alter the report theme.
+- The static slide PDF passed visual render inspection, but slide 8 still shows the earlier `37/37` and 63-screenshot UAT snapshot. The latest P0 UAT is `38 PASS / 0 FAIL` with 64 screenshots. Refresh the slide before presenting the latest UAT result; this checkpoint did not change the deck.
 
-## Hygiene and Git State
+## Owner submission requirements received
 
-- The tracked presentation inventory contains only the HTML deck, its required local assets/vendor licenses, planning/source/QA docs, and companion diagrams. No Presenton, PPTist, or Slides.com payload filename remains.
-- Retain historical evidence that documents regressions and the required HTML release screenshots. The final report and UAT evidence are project-related and remain in scope.
-- Payload commit `432967a2bbb4e749dbb3efa6495026220541adf3` and subsequent documentation-only closeout updates were pushed to `origin/main`; those follow-ups do not change app or presentation source.
-- Preserve the linked worktree `C:\Users\User\orca\workspaces\LabClear\candlefish` at detached commit `2a98a27`. Its clean, fully merged local branch `siriponsri/candlefish` was removed; no worktree files were deleted.
-- No `.env`, secret, credential, private-key, or certificate path was present in the committed change set.
-- Registered local Project Brain `labclear` was updated through `brain-handoff.ps1` and refreshed through `brain-refresh.ps1`; `brain-status.ps1` reported FRESH at the then-current `9c953d9` HEAD. It is refreshed again after this final documentation-only commit.
+- Owner designates the untracked `student_report/` pack as requirements for submission preparation within two days of 2026-10-12 (internal target approximately 2026-10-14; exact cutoff time not specified). The eight Markdown files match the hashes and byte sizes in `student_report/MANIFEST.json`; the directory remains untracked and untouched. Do not stage, commit, or push this folder.
+- The pack calls for a Thai coursework report source plus Google Doc and PDF; an academic demo video no longer than 3:00 (target 2:50); a separate 3:30 pitch video requested by the owner; evidence for 10 questions, 5 image cases, 5 safety cases, response times and 3 before/after improvements; reproducible source access; and a 12-slide editable PPTX/PDF with Thai speaker notes according to `05_SLIDES_BRIEF.md`.
+- **Unresolved format conflict:** the slide brief asks for PPTX/PDF, while the prior explicit owner instruction made HTML the final deck and cancelled PPTX. Do not change the deck format until the owner confirms which instruction governs.
+- `MANIFEST.json` states that `Final Project.docx` and `Week 12.pdf` were the source inputs but are not included, and that the pack creator did not inspect the repository or run tests/render final media. The package hashes verify its Markdown files, not the missing source-document extraction. The course checklist also reports conflicting 3/4-minute video limits; prioritize an academic cut at or below 3:00 and keep the pitch separate.
+- Current repository evidence is later than the pack's creation: report PDFs have current render QA, but the coursework DOCX is still described in `docs/report/README.md` as Word-only with placeholders; the existing HTML slide PDF retains an earlier UAT metric; no final video was produced in this checkpoint. Google Docs/Drive upload, sharing changes, and course submission remain NOT_DONE and require scoped authorization.
+- The broad P0 goal remains paused. The two-day submission-preparation request is separate; no P0 resumption, external upload, or submission is implied by reading this pack.
 
-## Closeout State
+## Resume point
 
-Presentation, repository hygiene, local branch cleanup, commit, push, post-push health check, and Project Brain synchronization are complete. No code action remains. Known unverified areas remain listed above; the spoken timing is an estimate, not a timed rehearsal.
+Next actor: owner, with legal input as needed. First decision: approve or revise the GL-01 legal basis, retention period, purpose-specific notice/consent and withdrawal/deletion requirements. Then implement and test the required controls before claiming GL-01 complete. Keep this goal paused until that decision; do not interpret this checkpoint as privacy, compliance, clinical, production-readiness or commercial go-live approval.

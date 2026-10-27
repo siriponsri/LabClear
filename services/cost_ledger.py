@@ -141,17 +141,21 @@ def _priced_models() -> list[str]:
         return []
 
 
-def reserve(model: str, body: dict, price: dict | None = None) -> CostReservation | None:
+def reserve(model: str, body: dict, price: dict | None = None, *, verified_free_reporting_only: bool = False) -> CostReservation | None:
     if not settings.COST_LEDGER_ENABLED:
         return None
     from services import business_store as db
     cost = estimate(model, body, price)
+    # Harness opt-in only: a reviewed free endpoint has zero current monetary cost.
+    # Nonzero or unknown prices retain the normal project cap, even in this mode.
+    if verified_free_reporting_only and (price is None or cost != 0 or any(float(price[k]) != 0 for k in ("input_per_mtok", "output_per_mtok"))):
+        raise ConversationError("free_reporting_price_invalid", "Reporting-only mode requires a verified zero price.", 503)
     prior = prior_spend()
     if not math.isfinite(settings.PROJECT_BUDGET_THB) or settings.PROJECT_BUDGET_THB <= 0:
         raise ConversationError("budget_invalid", "The project budget must be finite and positive.", 503)
     with db.transaction() as tx:
         data = _ledger(tx)
-        if prior + data["settled_thb"] + data["reserved_thb"] + cost > settings.PROJECT_BUDGET_THB:
+        if not verified_free_reporting_only and prior + data["settled_thb"] + data["reserved_thb"] + cost > settings.PROJECT_BUDGET_THB:
             raise ConversationError("budget_exhausted",
                                     "The configured project AI budget would be exceeded. AI replies are paused; non-AI features still work.", 429)
         data["reserved_thb"] += cost

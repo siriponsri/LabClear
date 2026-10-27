@@ -11,7 +11,9 @@ from tests.test_business_dots import script
 from tests.test_business_v3 import isolated,client  # noqa: F401
 
 MED={'id':'nlm-x','title':'Reference intervals','data_class':'public_education','content':'Reference intervals vary by laboratory.'}
-ROWS=[{'id':'a','name':'Marker Alpha\nดัชนีอัลฟา','value':'17.00','unit':'10⁹/µL','reference':'2.0–9.0','printed_flag':'H','status':'high'},
+# Valid count notation keeps these prose-binding tests focused on their contract;
+# unsupported micro-denominator scales have dedicated unit-fidelity rejection tests.
+ROWS=[{'id':'a','name':'Marker Alpha\nดัชนีอัลฟา','value':'17.00','unit':'10⁹/L','reference':'2.0–9.0','printed_flag':'H','status':'high'},
       {'id':'b','name':'Marker Beta','value':'4.25','unit':'g/L','reference':'3.0–6.0','printed_flag':'','status':'within'}]
 REPORT={'confirmed':True,'fields':ROWS}
 

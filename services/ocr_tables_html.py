@@ -16,6 +16,7 @@ class _Tables(HTMLParser):
         super().__init__(convert_charrefs=True)
         self.tables=[]; self.table=None; self.row=None; self.cell=None
         self.script=''; self.invalid=False
+        self.cell_span=1; self.row_spans=[]
 
     def handle_starttag(self, tag, attrs):
         attrs=dict(attrs)
@@ -26,9 +27,13 @@ class _Tables(HTMLParser):
             if tag=='tr':
                 if self.row is not None:self.invalid=True
                 self.row=[]
+                self.row_spans=[]
             elif tag in {'td','th'}:
                 if self.row is None or self.cell is not None:self.invalid=True
-                if any(attrs.get(k,'1')!='1' for k in ('rowspan','colspan')):self.invalid=True
+                if attrs.get('rowspan','1')!='1':self.invalid=True
+                try:self.cell_span=int(attrs.get('colspan','1'))
+                except ValueError:self.cell_span=0
+                if not 1<=self.cell_span<=12:self.invalid=True
                 self.cell=[]
             elif self.cell is not None:
                 if tag=='br':self.cell.append(' ')
@@ -39,10 +44,19 @@ class _Tables(HTMLParser):
         if tag in {'td','th'}:
             if self.cell is None or self.row is None:self.invalid=True;return
             self.row.append(''.join(self.cell).strip());self.cell=None;self.script=''
+            self.row_spans.append(self.cell_span)
         elif tag=='tr':
             if self.row is None or self.cell is not None or self.table is None:self.invalid=True;return
             if len(self.row)>12:self.invalid=True
-            self.table.append(self.row);self.row=None
+            # An explicit full-width textual section is not a result row. Partial
+            # data-cell spans remain ambiguous and must never be inferred.
+            section=(len(self.row)==1 and bool(self.table) and
+                     self.row_spans==[len(self.table[0])] and
+                     not re.search(r'\d',self.row[0]))
+            if not section:
+                if any(s!=1 for s in self.row_spans):self.invalid=True
+                self.table.append(self.row)
+            self.row=None
             if len(self.table)>65:self.invalid=True
         elif tag=='table':
             if self.table is None or self.row is not None or self.cell is not None:self.invalid=True;return
@@ -64,16 +78,18 @@ def parse_html_rows(text):
     for table in parser.tables:
         if len(table)<2:return None
         headers=table[0]
-        if len(headers)!=5:return None
+        if not 5<=len(headers)<=7:return None
         mapping=_header(headers)
         if mapping is None:
             # A visibly separate unnamed flag column may be identified only when
             # all other headers are explicit and EVERY cell is a flag marker.
             blanks=[i for i,h in enumerate(headers) if not h.strip()]
-            if len(headers)!=5 or len(blanks)!=1:return None
+            if len(blanks)!=1:return None
             candidate=list(headers);candidate[blanks[0]]='Flag';mapping=_header(candidate)
             if mapping is None:return None
-            if any(len(r)!=5 or r[blanks[0]].upper() not in _FLAGS for r in table[1:]):return None
+            if any(len(r)!=len(headers) or r[blanks[0]].upper() not in _FLAGS for r in table[1:]):return None
+        extras=[h for i,h in enumerate(headers) if i not in mapping.values()]
+        if any(re.sub(r'[^a-z]','',h.casefold()) not in {'method','specimen'} for h in extras):return None
         for cells in table[1:]:
             if len(cells)!=len(headers):return None
             row={key:cells[column] for key,column in mapping.items()}

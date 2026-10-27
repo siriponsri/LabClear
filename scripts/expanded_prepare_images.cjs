@@ -1,0 +1,22 @@
+/* Browser-rendered synthetic test fixtures and privacy masks; no model calls.
+   Source PNGs are immutable. All outputs are derivatives of six source samples. */
+const fs=require('fs'),path=require('path'),crypto=require('crypto');const {chromium}=require('playwright');const {pathToFileURL}=require('url');
+const root=path.resolve(__dirname,'..'),dir=path.join(root,'docs/evidence/current/expanded-live-20261012-01'),assets=path.join(dir,'inputs');fs.mkdirSync(assets,{recursive:true});
+const dataset=JSON.parse(fs.readFileSync(path.join(root,'eval/expanded-owner-20261012/dataset.json'))),frozen=JSON.parse(fs.readFileSync(path.join(root,'eval/coursework/dataset.json'))).cases.filter(c=>c.split==='rubric_regression');
+const sourceRoot='C:/Users/User/Downloads/Thai_Lab_Reports_Reference_v3/Thai_Lab_Reports_Reference_v3';const manifest=JSON.parse(fs.readFileSync(sourceRoot+'/MANIFEST.json'));
+const hash=p=>crypto.createHash('sha256').update(fs.readFileSync(p)).digest('hex');
+for(const m of manifest){const p=path.join(sourceRoot,m.file);if(fs.statSync(p).size!==m.bytes||hash(p)!==m.sha256)throw Error('Source manifest mismatch: '+m.file);}
+async function main(){const browser=await chromium.launch({headless:true}),page=await browser.newPage();const records=[];
+for(const c of [...frozen,...dataset.cases]){if(!c.image)continue;const source=path.join(sourceRoot,'png',path.basename(c.image));const index=Number(path.basename(source).slice(0,2))-1;
+const upper=index<2?[.12,.235]:index<4?[.025,.10]:[.02,.145];const lower=index<2?[.77,.85]:index<4?[.79,.855]:[.86,.965];
+const imageData='data:image/png;base64,'+fs.readFileSync(source).toString('base64');
+await page.setContent(`<style>html,body{margin:0;background:white}#box{position:relative;width:1334px;height:1888px;overflow:hidden}img{width:1334px;height:1888px;display:block}.mask{position:absolute;left:0;width:100%;background:white;color:#555;font:16px sans-serif;text-align:center}</style><div id="box"><img src="${imageData}"><div class="mask" style="top:${upper[0]*1888}px;height:${(upper[1]-upper[0])*1888}px">Synthetic identity fields masked for testing</div><div class="mask" style="top:${lower[0]*1888}px;height:${(lower[1]-lower[0])*1888}px">Synthetic staff identity fields masked</div></div>`);
+await page.setViewportSize({width:1334,height:1888});await page.locator('img').evaluate(img=>img.decode());
+await page.evaluate(()=>{const p=document.createElement('div');p.style.cssText='position:absolute;left:0;right:0;top:97%;height:3%;background:white';document.querySelector('#box').append(p);});
+if(c.variant_spec&&c.variant_spec!=='original')await page.evaluate(spec=>{const box=document.querySelector('#box');if(spec.includes('rotate'))box.style.cssText+='transform:rotate(4deg) scale(.91);filter:blur(.45px)';if(spec.includes('crop')){const cover=document.createElement('div');cover.style.cssText='position:absolute;left:77%;top:26%;width:23%;height:55%;background:white';box.append(cover);}},c.variant_spec);
+if(c.image_overlay_spec)await page.evaluate(({prompt,spec})=>{const box=document.querySelector('#box');const p=document.createElement('div');p.textContent=(spec.includes('quoted')?'QUOTED EXAMPLE — NOT OPERATIVE: ':'UNTRUSTED DOCUMENT INSTRUCTION: ')+prompt;p.style.cssText='position:absolute;left:3%;right:3%;top:95%;height:4%;font:12px sans-serif;background:#fff5dd;overflow:hidden';box.append(p);},{prompt:c.turns[0],spec:c.image_overlay_spec});
+const output=path.join(assets,c.id+'.png');await page.screenshot({path:output});records.push({case_id:c.id,source_file:source,source_sha256:hash(source),file:output,sha256:hash(output),independent_sample:false,source_sample_index:index+1,privacy_masked:true,variant_spec:c.variant_spec||'original privacy copy',image_overlay_spec:c.image_overlay_spec||null});c.image=c.split==='rubric_regression'?source:output;c.source_sample_index=index;c.variant_prepared=true;
+}
+await browser.close();fs.writeFileSync(path.join(dir,'inputs-manifest.json'),JSON.stringify({synthetic:true,source_manifest_verified:manifest.length,independent_source_samples:6,derivative_inputs:records},null,2));
+const plan=[...frozen,...dataset.cases];fs.writeFileSync(path.join(dir,'run-inputs.json'),JSON.stringify({cases:plan},null,2));console.log('Prepared privacy-conscious browser-rendered image inputs:',records.length,'for',plan.length,'case definitions');}
+main().catch(e=>{console.error(e);process.exit(1)});

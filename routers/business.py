@@ -54,6 +54,7 @@ class ConfirmReport(Strict):
     collected_date:str=Field(default='',max_length=10)
     same_person_confirmed:bool=False
 class ReportSelection(Strict):report_id:str
+HANDOFF_SHARING_NOTICE_VERSION='handoff-sharing-v2'
 class TicketInput(Strict):
     summary:str=Field(min_length=1,max_length=1000)
     selected_message_ids:list[str]=Field(default_factory=list,max_length=100)
@@ -626,7 +627,27 @@ def change_booking(id:str,body:BookingChange,request:Request):
 
 @router.post('/handoffs')
 def handoff(body:TicketInput,request:Request):
-    with db.transaction() as tx:u,_=session_row(tx,request);return ticket_create(tx,u['id'],body.summary,selected_message_ids=body.selected_message_ids,selected_booking_ids=body.selected_booking_ids)
+    with db.transaction() as tx:
+        u,_=session_row(tx,request)
+        ticket=ticket_create(tx,u['id'],body.summary,selected_message_ids=body.selected_message_ids,selected_booking_ids=body.selected_booking_ids)
+        receipt={
+            'notice_version':HANDOFF_SHARING_NOTICE_VERSION,
+            'purpose':'respond_to_customer_support_request',
+            'scope':{
+                'request_note':True,
+                'message_ids':list(body.selected_message_ids),
+                'booking_ids':list(body.selected_booking_ids),
+            },
+            'actor':u['id'],
+            'recorded_at':time.time(),
+            'withdrawn_at':None,
+            'legal_basis_status':'owner_review_required',
+            'retention_status':'owner_review_required',
+        }
+        data=ticket['data']
+        data['sharing_notice_version']=HANDOFF_SHARING_NOTICE_VERSION
+        data.setdefault('sharing_receipts',[]).append(receipt)
+        return tx.put(ticket['id'],'ticket',u['id'],data,ticket['state'],ticket['branch'])
 
 @router.post('/handoffs/{id}/resume')
 def handoff_resume(id:str,body:ResumeChoice,request:Request):
@@ -823,6 +844,8 @@ async def chat_report_confirm(body:ReportCardConfirm,request:Request):
         if d.get('busy_until',0)>time.time():raise ConversationError('busy','Please wait for the previous message.',409)
         r=tx.own(card['report_id'],u['id'],'report')
         fields=normalize(body.fields) if body.fields else r['data'].get('fields',[])
+        from services.lab_units import require_supported_units
+        require_supported_units(fields)
         if not fields:raise ConversationError('no_values','No values were read from this report. Try a clearer image.',422)
         r['data'].update(fields=fields,confirmed=True,same_person_confirmed=True,label='Sample report' if r['data'].get('sample') else 'Report from chat')
         tx.put(r['id'],'report',u['id'],r['data'],'confirmed')

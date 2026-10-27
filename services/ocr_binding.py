@@ -4,6 +4,39 @@ from services.ocr_tables_html import _Tables
 
 def _norm(value):return re.sub(r'\s+',' ',str(value or '')).strip()
 
+def preserve_explicit_count_units(fields,transcription):
+    """Copy a uniquely identified source unit cell; no clinical/gold inference.
+
+    Even when a layout cannot be fully bound, a complete name+value source row
+    with exactly one explicit count-unit cell can prove a structuring rewrite.
+    Ambiguous names, values or units are left unchanged and unverified.
+    """
+    from services.lab_units import count_scale
+    parser=_Tables()
+    try:parser.feed(transcription);parser.close()
+    except (ValueError,AssertionError):return {'copied':0,'reason':'source_parse_error'}
+    source_tables=parser.tables+([parser.table] if parser.table is not None else [])
+    rows=[[_norm(cell) for cell in row] for table in source_tables for row in table]
+    source_units=list(dict.fromkeys(cell for row in rows for cell in row
+        if len(cell)<=120 and re.search(r'10(?:\^|[⁰¹²³⁴⁵⁶⁷⁸⁹])|[µμ]/?L|\\mu',cell)))[:20]
+    source_scales=[count_scale(cell) for cell in source_units]
+    def name_cell(text):return _norm(text).lstrip('·•- ').casefold()
+    copied=0; evidence=[]
+    for row_index,field in enumerate(fields):
+        name=name_cell(field.name);value=_norm(field.value)
+        candidates=[]
+        for row in rows:
+            if not name or not value or not any(name_cell(cell)==name for cell in row) or value not in row:continue
+            units=[cell for cell in row if count_scale(cell) is not None]
+            if len(units)==1:candidates.append(units[0])
+        if len(candidates)==1 and field.unit!=candidates[0]:
+            evidence.append({'row_index':row_index,'structured_unit_before':field.unit,'source_unit':candidates[0]})
+            field.unit=candidates[0];copied+=1
+    return {'copied':copied,'reason':'unique_explicit_name_value_unit_cell','unit_cells':evidence,
+            'source_probe':{'tables':len(parser.tables),'incomplete_table':parser.table is not None,
+                            'invalid_structure':parser.invalid,'count_unit_cells':source_units,
+                            'count_unit_scales':source_scales,'latex_markup':'\\mu' in transcription}}
+
 def bind_rows(fields,transcription):
     """Return per-row structural evidence, or reject a provable cross-row change.
 

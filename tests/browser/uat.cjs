@@ -249,10 +249,14 @@ async function signUp(page, email) {
 
         await customer.locator('#staff-request').click(); await customer.getByLabel('How can our team help?').fill('UI UAT live help request');
         await customer.locator('[data-share-message-id="' + selectedHistoryMessage.id + '"]').check();
-        await shot(customer, 'handoff-consent-selected-1440');
+        await shot(customer, 'handoff-sharing-selected-1440');
         const handoffResponsePromise=customer.waitForResponse(r=>r.url().endsWith('/handoffs') && r.request().method()==='POST');
         await customer.getByRole('button', { name: 'Send to our team' }).click();
         const handoffTicket=await (await handoffResponsePromise).json();
+        const sharingReceipt=handoffTicket.data?.sharing_receipts?.slice(-1)[0];
+        assert(sharingReceipt?.notice_version==='handoff-sharing-v2', 'support-sharing notice version was not recorded');
+        assert(sharingReceipt?.scope?.request_note===true && sharingReceipt.scope.message_ids.includes(selectedHistoryMessage.id), 'sharing receipt did not match the note and selected message');
+        assert(sharingReceipt?.legal_basis_status==='owner_review_required' && sharingReceipt?.retention_status==='owner_review_required', 'unapproved privacy decisions were presented as resolved');
         await customer.locator('#handoff-state').filter({ hasText: /queued/ }).waitFor();
         workspace=(await (await customer.request.get(base + '/api/business/workspace')).json());
         const binding={ticket_id:handoffTicket.id||null,ticket_state:handoffTicket.state||null,ticket_chat_id:handoffTicket.data?.chat_id||null,active_chat_id:workspace.conversation.chat_id||null,mode:workspace.conversation.mode||null};
@@ -346,6 +350,8 @@ async function signUp(page, email) {
         const secondHandoffPromise=customer.waitForResponse(r=>r.url().endsWith('/handoffs') && r.request().method()==='POST');
         await customer.getByRole('button', { name: 'Send to our team' }).click();
         const secondTicket=await (await secondHandoffPromise).json();
+        const requeueReceipts=secondTicket.data?.sharing_receipts || [];
+        assert(requeueReceipts.length===2 && requeueReceipts[0].scope.message_ids.includes(selectedHistoryMessage.id) && requeueReceipts[1].scope.message_ids.length===0, 'requeue did not preserve the original sharing receipt and append the note-only receipt');
         await customer.locator('#handoff-state').filter({ hasText: /queued/ }).waitFor();
         workspace=(await (await customer.request.get(base + '/api/business/workspace')).json());
         const requeued=workspace.tickets.find(t=>t.id===handoffTicket.id); assert(requeued?.state==='waiting' && !requeued.data.assigned_to && requeued.data.chat_id===workspace.conversation.chat_id, 'second customer handoff did not return the ticket to the unassigned queue');
@@ -377,7 +383,15 @@ async function signUp(page, email) {
         assert(await customer.locator('#attach').isDisabled() && await customer.locator('#demo-open').isDisabled(), 'closed chat still allowed report attachments');
         assert(await noOverflow(customer), 'closed chat overflowed at mobile width');
         await shot(customer, 'handoff-closed-390');
-        await customer.locator('#handoff-state').getByRole('button', { name: 'New chat', exact: true }).click();
+        const closedThreadNewChat = customer.waitForResponse(r =>
+          r.url().endsWith('/api/business/chats') && r.request().method()==='POST'
+        );
+        const [newChatResponse] = await Promise.all([
+          closedThreadNewChat,
+          customer.locator('#handoff-state').getByRole('button', { name: 'New chat', exact: true }).click()
+        ]);
+        assert(newChatResponse.ok(), 'new chat request failed from the closed thread');
+        await customer.waitForFunction(() => document.querySelector('#message')?.disabled === false, null, { timeout: 12000 });
         let fresh=(await (await customer.request.get(base + '/api/business/workspace')).json());
         assert(fresh.conversation.chat_id!==botChatId && fresh.conversation.mode==='bot', 'new chat did not start in bot mode');
         await customer.locator('#message').fill('UI_TEST_AFTER_CLOSED_NEW_CHAT'); await customer.locator('#send').click();
@@ -426,11 +440,13 @@ async function signUp(page, email) {
         const choices=customer.locator('[data-share-message-id]');
         assert(await choices.count()>=1, 'handoff did not offer explicit per-message sharing');
         assert(!await choices.evaluateAll(xs=>xs.some(x=>x.checked)), 'chat history was preselected for sharing');
-        await shot(customer, 'handoff-consent-none-1440');
+        await shot(customer, 'handoff-sharing-none-1440');
         const responsePromise=customer.waitForResponse(r=>r.url().endsWith('/handoffs') && r.request().method()==='POST');
         await customer.getByLabel('How can our team help?').fill('UI_TEST_NO_TRANSCRIPT');
         await customer.getByRole('button', { name: 'Send to our team' }).click();
         const ticket=await (await responsePromise).json();
+        const sharingReceipt=ticket.data?.sharing_receipts?.slice(-1)[0];
+        assert(sharingReceipt?.scope?.request_note===true && sharingReceipt.scope.message_ids.length===0 && sharingReceipt.scope.booking_ids.length===0, 'note-only request receipt included unselected history');
         const preview=(await (await s.request.get(base + '/api/business/staff/tickets/' + ticket.id)).json());
         assert(preview.conversation.messages.length===0 && preview.bookings.length===0, 'unassigned staff queue exposed unselected history or bookings');
         await s.locator('[data-view=staff]').click();
@@ -439,6 +455,29 @@ async function signUp(page, email) {
         assert(await s.getByText('UI_TEST_UNSHARED_HANDOFF_MARKER', { exact: true }).count()===0, 'unselected chat content appeared in staff UI');
         await shot(s, 'handoff-queue-no-history-1440');
       } finally { await isolatedContext.close(); }
+    });
+    await check('UI-16c', 'Handoff sharing notice fits a mobile dialog without clipping or control overlap', async () => {
+      const mobileContext=await browser.newContext({ viewport: { width: 390, height: 844 } });
+      const mobile=await mobileContext.newPage(); watch(mobile, 'handoff mobile');
+      try {
+        await mobile.goto(base + '/app', { waitUntil: 'networkidle' });
+        await signUp(mobile, 'handoff-mobile-ui16c@example.invalid');
+        await mobile.locator('#staff-request').click();
+        const notice=mobile.getByText(/retention period is still awaiting owner approval/);
+        await notice.waitFor();
+        await mobile.waitForFunction(() => {
+          const dialog = document.querySelector('#modal');
+          return dialog && dialog.getAnimations({ subtree: true }).every(animation => animation.playState === 'finished');
+        });
+        assert(await noOverflow(mobile), 'mobile handoff dialog caused horizontal overflow');
+        const dialogBox=await mobile.locator('#modal').boundingBox();
+        const noticeBox=await notice.boundingBox();
+        const submitBox=await mobile.getByRole('button', { name: 'Send to our team' }).boundingBox();
+        assert(dialogBox && dialogBox.x>=0 && dialogBox.x+dialogBox.width<=390, 'dialog crossed the mobile viewport');
+        assert(noticeBox && noticeBox.x>=dialogBox.x && noticeBox.x+noticeBox.width<=dialogBox.x+dialogBox.width, 'sharing notice was clipped horizontally');
+        assert(submitBox && noticeBox.y+noticeBox.height<=submitBox.y+2, 'sharing notice overlaps the submit button');
+        await shot(mobile, 'handoff-sharing-mobile-390');
+      } finally { await mobileContext.close(); }
     });
     await check('UI-17', 'Manager: price edit persists and reaches the public catalog; branch staff cannot see manager tools', async () => {
       await s.locator('[data-view=catalog-admin]').click(); await s.getByLabel('Essential Check price in THB').fill('1250');

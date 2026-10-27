@@ -29,6 +29,9 @@ log = logging.getLogger("labclear.report")
 
 
 def status(value: str, reference: str, unit: str = "") -> str:
+    from services.lab_units import unit_issue
+    if unit_issue(unit):
+        return "unknown"
     value = value.strip()
     ref = reference.strip().translate(_DASHES).replace("\u2264", "<=").replace("\u2265", ">=")
     ref = re.sub(r"\s+(?:to|\u0e16\u0e36\u0e07)\s+", " - ", ref, flags=re.I).strip()

@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "slides-20261025",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "http.server", "8811", "--bind", "127.0.0.1", "--directory", "presentation/20261025/slides"],
+      "port": 8811
+    },
+    {
+      "name": "script-20261025",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "http.server", "8812", "--bind", "127.0.0.1", "--directory", "presentation/20261025/script"],
+      "port": 8812
+    }
+  ]
+}

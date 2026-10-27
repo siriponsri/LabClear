@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>LabClear Q&amp;A Backup</title>
+<link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/backup.css?v=1792839057">
+</head>
+<body>
+<header class="top">
+  <a class="back" href="index.html#/21" id="back">← กลับสไลด์หลัก (Esc)</a>
+  <div class="ttl"><img src="img/mark.svg" alt=""><b>LabClear</b><span>Q&amp;A · ข้อมูลประกอบ</span></div>
+</header>
+
+<nav class="toc" aria-label="หัวข้อสำรอง">
+  <a href="#q1">1 ธุรกิจจำลอง</a><a href="#q2">2 คลังความรู้</a><a href="#q3">3 ทำไม BM25</a><a href="#q4">4 หนึ่งข้อความผ่านอะไร</a><a href="#q5">5 API และจุดยืนยัน</a><a href="#q6">6 ข้อมูลรายงานออกนอกเครื่องไหม</a><a href="#q7">7 Safety 5/5 กับชุดขยาย</a><a href="#q8">8 ภาพอ่านผิดตรงไหน</a><a href="#q9">9 คะแนนอัตโนมัติ vs ตรวจเนื้อหา</a><a href="#q10">10 รุ่นที่ทดสอบ</a><a href="#q11">11 ชุดหลักฐานอื่น</a>
+</nav>
+
+<main>
+<section id="q1"><h2>ธุรกิจจำลองและเป้าหมาย</h2>
+  <ul>
+    <li>อาจารย์ยอมรับการใช้ธุรกิจจำลองแล้ว · แพ็กเกจ ราคา ศูนย์ การนัด การชำระเงิน และรายงานเป็น<b>ข้อมูลจำลอง</b></li>
+    <li>18 แพ็กเกจ (บุคคล 15 / องค์กร 3) · ศูนย์จำลอง 3 แห่ง · ผู้ใช้ 4 กลุ่มตามหน้าที่</li>
+    <li>ลดภาระงานหรือเพิ่มยอดขาย <b>เป็นเป้าหมายที่ยังไม่ได้วัด</b> ไม่มีตัวเลข ROI</li>
+  </ul>
+  <p class="src">E01 SOURCE_AND_CLAIM_MAP · E02 docs/business.md · E03 business_data/*.json</p>
+</section>
+
+<section id="q2"><h2>คลังความรู้เชื่อถือได้แค่ไหน</h2>
+  <div class="grid2">
+    <ul>
+      <li>148 records · 58 ระบุว่าผ่านการทบทวนเดิม · <b>90 เจ้าของอนุมัติแต่ยังรอตรวจต้นฉบับ</b> (OWNER_APPROVED_SOURCE_CHECK_PENDING)</li>
+      <li>การอนุมัติของเจ้าของ <b>ไม่ใช่</b> การรับรองทางคลินิก</li>
+      <li>Publisher PDF 21 ไฟล์ เชื่อมกับ 42 records · PDF ที่สร้างจาก summary มีป้ายแยก</li>
+      <li>29 = จำนวนชื่อผู้เผยแพร่ใน catalog (Siriraj นับเป็น 2 ชื่อ) ไม่ใช่องค์กรที่ร่วมรับรอง</li>
+      <li>ตอนโหลด ระบบตรวจ ID ซ้ำ, data class, content_sha256, HTTPS URL; ถ้าข้อใดไม่ผ่าน จะไม่ใช้ทั้งคลัง</li>
+      <li>เฉพาะ 90 records ใหม่ที่มี field ประเภทผู้เผยแพร่: international_reference 32 · international_agency 27 · thai_professional_society 13 · thai_hospital 13 · thai_government 5</li>
+    </ul>
+    <figure><div class="shot" style="--cx:470;--cy:84;--cw:680;--ch:676"><img src="img/s02-knowledge-mock-20261017.png" alt="หน้าคลังความรู้ของผู้จัดการ 148 รายการ"></div><figcaption><span class="pill mock">Recorded · OFFLINE mock UI · 17 ต.ค. 2026</span></figcaption></figure>
+  </div>
+  <p class="src">E04 knowledge/README.md, knowledge/evidence/catalog.json (version 2026-10-09-owner-approved-148) · E11 services/knowledge_admin.py</p>
+</section>
+
+<section id="q3"><h2>ทำไมเลือก BM25</h2>
+  <ul>
+    <li>ค้นจาก title, aliases และ content · ภาษาอังกฤษแยกเป็นคำ · ภาษาไทยแยกเป็นชิ้นละ 2 ตัวอักษรซ้อนกัน</li>
+    <li><b>ไม่เรียก embedding API และไม่มี vector database</b> · ตรวจย้อนได้ว่าคำไหนทำให้เจอ</li>
+    <li>ยังไม่ได้พิสูจน์ว่าดีกว่า vector search · เป็นการเลือกที่เหมาะกับคลังขนาดเล็กและตรวจสอบง่าย</li>
+    <li>จำนวนผลต่อการค้นตั้งได้ 1–8 (ค่าเริ่มต้น 6) · record ที่พักไว้ไม่ถูกค้น</li>
+  </ul>
+  <p class="src">E09 services/evidence_search.py · E07 services/agent_tools.py · knowledge/README.md</p>
+</section>
+
+<section id="q4"><h2>หนึ่งข้อความผ่านอะไรบ้าง</h2>
+  <ol class="flow">
+    <li><b>Guard &amp; Plan</b> ตรวจข้อความ วางแผน เลือกบทบาท</li>
+    <li><b>Tools &amp; Retrieval</b> อ่านข้อมูลตามสิทธิ์ ค้น BM25 เลือก skills</li>
+    <li><b>Draft</b> writer เขียนจากข้อมูลที่ได้</li>
+    <li><b>Checks &amp; Review</b> deterministic checks + reviewer (อีก model call) ตรวจอ้างอิง ราคา ค่า/หน่วย ขอบเขต</li>
+    <li><b>Output</b> ตรวจอีกครั้ง → คำตอบ แหล่งข้อมูล process trace · ไม่ผ่าน → แจ้งเหตุ / หยุด / ส่งต่อคน</li>
+  </ol>
+  <p>Browser รับสถานะขั้นตอนและผลผ่าน NDJSON stream · trace คือขั้นตอน เครื่องมือ แหล่งข้อมูล และเวลา <b>ไม่ใช่</b>ความคิดภายในของโมเดล</p>
+  <figure class="wide"><div class="shot" style="--cx:726;--cy:668;--cw:734;--ch:256"><img src="img/s04-trace-live-20261013.png" alt="Process Explainability trace"></div><figcaption><span class="pill">Recorded · Live provider / Local UI · 13 ต.ค. 2026</span>ภาพ capture ไม่ใช่ benchmark</figcaption></figure>
+  <p class="src">E07 services/business_agent.py, runtime_skills.py · E10 docs/safety.md, answer_checks.py</p>
+</section>
+
+<section id="q5"><h2>API และจุดยืนยันอยู่ตรงไหน</h2>
+  <table>
+    <tr><th>งาน</th><th>Endpoint</th></tr>
+    <tr><td>สนทนา</td><td class="mono">POST /api/business/chat</td></tr>
+    <tr><td>แนบรายงาน</td><td class="mono">POST /api/business/chat/report</td></tr>
+    <tr><td>ผู้ใช้ยืนยันค่าในรายงาน</td><td class="mono">POST /api/business/chat/report/confirm</td></tr>
+    <tr><td>ยืนยันคำขอนัดหมาย</td><td class="mono">POST /api/business/confirm</td></tr>
+    <tr><td>เจ้าหน้าที่ตัดสินคำขอ</td><td class="mono">/api/business/staff/bookings/{booking_id}/decision</td></tr>
+  </table>
+  <p>มี session, CSRF, same-origin, ownership และ role checks ใน source</p>
+  <p class="src">E06 docs/api.md · E08 routers/business.py</p>
+</section>
+
+<section id="q6"><h2>ข้อมูลรายงานออกนอกเครื่องหรือไม่</h2>
+  <ul>
+    <li>ภาพรายงาน<b>ต้องส่งไป OCR provider ที่ตั้งค่าไว้</b> · คำสั่งให้ละเว้นชื่อ ไม่ได้พิสูจน์ว่าชื่อบนภาพถูกลบก่อนส่ง</li>
+    <li>ต้นฉบับและแถวที่ยังไม่ยืนยัน ถูกกันออกจากบริบทสนทนาตาม source · ข้อความที่ยืนยันแล้วอาจผ่าน provider ที่เกี่ยวข้อง</li>
+    <li>payload เข้ารหัสใน storage (ไม่ใช่ end-to-end ทุกเส้นทาง) · guest data อยู่ใน process memory แบบมีอายุ</li>
+    <li>ประเด็น legal basis, retention/deletion และ production privacy <b>ยังไม่ปิดครบ</b> · ไม่อ้าง compliance</li>
+  </ul>
+  <p class="src">E08 services/report_reader_v2.py · E09 services/business_store.py · E11 services/guest_memory.py · docs/safety.md</p>
+</section>
+
+<section id="q7"><h2>ทำไม Safety 5/5 แต่ยังมีข้อจำกัด</h2>
+  <div class="grid2">
+    <div><p>S01–S05 ผ่านทั้ง 5 ในรอบ 12 ต.ค. แต่เป็น<b>ชุดจำกัด</b></p>
+      <p>ชุดขยาย 24 inputs วัดเฉพาะ <span class="mono">safety_in</span> (ไม่ใช่ final answer safety):</p></div>
+    <table class="cm">
+      <tr><th></th><th>guard บล็อก</th><th>guard ปล่อย</th></tr>
+      <tr><th>คำขอไม่ปลอดภัย 12</th><td class="ok">TP 6</td><td class="bad">FN 6</td></tr>
+      <tr><th>คำขอปลอดภัย 12</th><td class="bad">FP 1</td><td class="ok">TN 11</td></tr>
+    </table>
+  </div>
+  <p class="src">E14 docs/evidence/current/full-course-report-20261012/classifier-metrics.json · คนละ denominator กับ S01–S05</p>
+</section>
+
+<section id="q8"><h2>ภาพอ่านผิดตรงไหน · ป้องกันอย่างไร</h2>
+  <div class="grid2">
+    <div>
+      <table>
+        <tr><th>Case</th><th>ผล</th><th>สาเหตุที่บันทึก</th></tr>
+        <tr><td>I01</td><td class="bad">FAIL</td><td>ไม่ได้คำอธิบายที่ผ่านการตรวจ (reviewer withheld)</td></tr>
+        <tr><td>I02</td><td class="err">ERROR</td><td class="mono">ocr_alignment_invalid</td></tr>
+        <tr><td>I03</td><td class="err">ERROR</td><td class="mono">provider_response_invalid</td></tr>
+        <tr><td>I04–I05</td><td class="err">ERROR</td><td class="mono">evidence_review_failed</td></tr>
+      </table>
+      <p>ERROR ไม่ใช่การวินิจฉัยผิด · ผู้ใช้ต้องยืนยันค่าก่อนใช้ · unit retests 9 ครั้งบน 2 case IDs ยัง UNIT_UNVERIFIED</p>
+    </div>
+    <figure><div class="shot" style="--cx:730;--cy:560;--cw:740;--ch:300"><img src="img/s05b-report-withheld-live-20261013.png" alt="ระบบไม่แสดงคำอธิบายเพราะไม่ผ่านการตรวจ"></div><figcaption><span class="pill">Recorded · Live provider / Local UI · 13 ต.ค. 2026</span>ไฟล์ชื่อ explained แต่จริงคือ “ยังไม่ได้ตอบ”</figcaption></figure>
+  </div>
+  <p class="src">E12 TEST_RESULTS.csv · E15 COVERAGE_MATRIX.md · E08 services/lab_units.py</p>
+</section>
+
+<section id="q9"><h2>คะแนนอัตโนมัติกับการตรวจเนื้อหาต่างกันอย่างไร</h2>
+  <table>
+    <tr><th>ชุด</th><th>Automated verdict เดิม</th><th>Report review</th><th>Median</th><th>Range</th></tr>
+    <tr><td>Question n=10</td><td>10 PASS</td><td>6 PASS / 2 PARTIAL / 2 FAIL</td><td>13.67 s</td><td>9.307–24.207 s</td></tr>
+    <tr><td>Image n=5</td><td>1 FAIL / 4 ERROR</td><td>1 FAIL / 4 ERROR</td><td>44.44 s</td><td>23.440–60.325 s</td></tr>
+    <tr><td>Safety n=5</td><td>5 PASS</td><td>5 PASS</td><td>1.64 s</td><td>0.338–11.872 s</td></tr>
+  </table>
+  <ul>
+    <li>PARTIAL: Q01 citation coverage · Q02 ข้อกล่าวอ้างทางสุขภาพที่ต้องตรวจ</li>
+    <li>FAIL: Q07 อ้างเวลาติดต่อกลับ 7 วันทำการ จากข้อมูลอายุใบเสนอราคา · Q10 ถามไทยแต่ตอบอังกฤษ</li>
+    <li>aggregate เดิม 15 PASS / 1 FAIL / 4 ERROR เป็นสัญญาณจาก rubric อัตโนมัติ ไม่ใช่การรับรองคุณภาพ</li>
+  </ul>
+  <p class="src">E12 TEST_RESULTS.csv, scored.json · E13 LabClear_Full_Report_TH.md</p>
+</section>
+
+<section id="q10"><h2>รุ่นที่ทดสอบตรงกับวันนี้หรือไม่</h2>
+  <table>
+    <tr><td>Run</td><td class="mono">expanded-live-20261012-01</td></tr>
+    <tr><td>Mode</td><td class="mono">LIVE_PROVIDER_LOCAL_UI</td></tr>
+    <tr><td>Started</td><td>12 ต.ค. 2026 · 18:18:56 น. (เวลาไทย)</td></tr>
+    <tr><td>App version</td><td class="mono">4.0.0-rc3</td></tr>
+    <tr><td>Base HEAD</td><td class="mono">d4ec2123c704acf571a02a188ef1c8c0c57e0827</td></tr>
+    <tr><td>Dirty diff SHA-256</td><td class="mono">7d89285d7ef693027dec67a4cb42ffe484417dbf39ea892c28f3742f71cbc881</td></tr>
+    <tr><td>เวลา</td><td>จากกด Send หรือปุ่มยืนยันรายงาน จน UI จบ turn · รวมผลที่ไม่สำเร็จ</td></tr>
+  </table>
+  <p><b>ไม่ได้ตรวจ hosted / runtime ปัจจุบันแบบสด</b> · HEAD เดียวกันไม่ได้แปลว่า source เหมือนกันทุก run เพราะมีไฟล์ที่ยังไม่ commit</p>
+  <p class="src">E12 docs/evidence/current/expanded-live-20261012-01/run.json</p>
+</section>
+
+<section id="q11"><h2>ชุดหลักฐานอื่น (แยกจากผลหลัก)</h2>
+  <table>
+    <tr><th>ชุด</th><th>ผล / ข้อจำกัด</th></tr>
+    <tr><td>Independent text</td><td>62 scenarios · 77 turns จริงจากแผน 78 · 9 PASS / 20 PARTIAL / 22 FAIL / 11 ERROR (ไม่ใช่ 62 คำถามเดี่ยว)</td></tr>
+    <tr><td>Later image stage</td><td>19 executions ขั้นอ่าน: 11 drafts / 5 document-safety blocks / 3 alignment errors · ไม่ใช่ 19 end-to-end PASS</td></tr>
+    <tr><td>Image sources</td><td>6 ภาพต้นทางอิสระ · crops / variants / repeats ไม่เพิ่มจำนวน</td></tr>
+    <tr><td>Grounding / tone</td><td>30 cases ยัง NOT_RUN (GROUND 12 + TONE 18)</td></tr>
+    <tr><td>Historical UI suite</td><td>37 PASS / 1 FAIL จาก 38 flows (UI-28 click timeout) · ใช้ doubles ไม่ใช่คุณภาพโมเดล</td></tr>
+    <tr><td>Offline resilience</td><td>fault suite 12/12 · browser recovery 10/10 · fixture ไม่ใช่ uptime บน Render</td></tr>
+  </table>
+  <p class="src">E13 semantic-review-summary.json · E15 COVERAGE_MATRIX.md, DELIVERY_REPORT.md · brief หัวข้อ 4</p>
+</section>
+
+<p class="nores">ถ้าไม่มีหลักฐาน: “ส่วนนี้ยังไม่มีผลตรวจในชุดที่บันทึกไว้ครับ ตอนนี้ยืนยันได้เฉพาะ… และงานถัดไปคือ…”</p>
+</main>
+<script src="js/backup.js?v=1"></script>
+</body>
+</html>

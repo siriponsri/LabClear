@@ -261,6 +261,14 @@ def test_handoff_shares_only_selected_items_after_staff_claims_ticket():
         'selected_message_ids':[first['id']],
         'selected_booking_ids':[selected_booking['id']],
     }).json()
+    receipt=ticket['data']['sharing_receipts'][0]
+    assert receipt['notice_version']=='handoff-sharing-v2'
+    assert receipt['purpose']=='respond_to_customer_support_request'
+    assert receipt['scope']=={'request_note':True,'message_ids':[first['id']],'booking_ids':[selected_booking['id']]}
+    assert receipt['actor']==owner and receipt['recorded_at']>0 and receipt['withdrawn_at'] is None
+    assert receipt['legal_basis_status']=='owner_review_required'
+    assert receipt['retention_status']=='owner_review_required'
+    assert 'A synthetic support request' not in str(receipt)
 
     s=client();promote(s)
     queued=s.get('/api/business/staff/tickets/'+ticket['id']).json()
@@ -277,6 +285,15 @@ def test_handoff_shares_only_selected_items_after_staff_claims_ticket():
     assert private_booking['id'] not in {b['id'] for b in view['bookings']}
     customer_view=c.get('/api/business/workspace').json()['conversation']['messages']
     assert any(m['content']=='UNSELECTED_PRIVATE_MESSAGE' for m in customer_view)
+
+
+def test_handoff_without_selected_history_records_only_request_note_scope():
+    c=client();owner=c.get('/api/business/workspace').json()['user']['id']
+    ticket=c.post('/api/business/handoffs',json={'summary':'Synthetic note only'}).json()
+    receipt=ticket['data']['sharing_receipts'][0]
+    assert receipt['scope']=={'request_note':True,'message_ids':[],'booking_ids':[]}
+    assert receipt['actor']==owner and receipt['recorded_at']>0
+    assert 'Synthetic note only' not in str(receipt)
 
 def test_handoff_rejects_message_ids_from_outside_the_current_chat_without_mutation():
     c=client();before=c.get('/api/business/workspace').json()
